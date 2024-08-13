@@ -121,47 +121,49 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Esto evita que aparezca la flecha de retroceso
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: Column(
-          children: [
-            Logo(size: 150.0), // Añade el widget del logo
-            SizedBox(height: 28.0), // Espacio entre el logo y el primer input
-            CustomInput(
-              text: 'Usuario',
-              input: _inputControllers['username']!,
-              border: _borderColors['username']!,
-              error: _errorMessages['username'],
-            ),
-            SizedBox(height: 16.0),
-            CustomInput(
-              text: 'Contraseña',
-              input: _inputControllers['password']!,
-              obscureText: true, 
-              border: _borderColors['password']!,
-              error: _errorMessages['password'],
-            ),
-            SizedBox(height: 28.0),
-            CustomButton(
-              label: 'Iniciar Sesión',
-              onPressed: _call,
-              isLoading: _submitting, // Pasar el estado de carga al botón
-            ), // Empuja los elementos hacia abajo
-            Label(
-              name: '¿Olvidaste tu contraseña?',
-              route: 'recover-account', // Usa la ruta definida en AppRoutes
-              color: AppColors.black, // Color del texto
-            ),
-            Spacer(),
-            SizedBox(height: 8.0),
-            Label(
-              name: 'Crear cuenta nueva',
-              route: 'register', // Usa la ruta definida en AppRoutes
-              color: AppColors.primaryBlue, // Color del texto
-            ),
-          ],
+        child: SingleChildScrollView( // Permite el desplazamiento
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Logo(size: 150.0),
+              SizedBox(height: 28.0),
+              CustomInput(
+                text: 'Usuario',
+                input: _inputControllers['username']!,
+                border: _borderColors['username']!,
+                error: _errorMessages['username'],
+              ),
+              SizedBox(height: 16.0),
+              CustomInput(
+                text: 'Contraseña',
+                input: _inputControllers['password']!,
+                obscureText: true,
+                border: _borderColors['password']!,
+                error: _errorMessages['password'],
+              ),
+              SizedBox(height: 28.0),
+              CustomButton(
+                label: 'Iniciar Sesión',
+                onPressed: _call,
+                isLoading: _submitting,
+              ),
+              Label(
+                name: '¿Olvidaste tu contraseña?',
+                route: 'recover-account',
+                color: AppColors.black,
+              ),
+              SizedBox(height: 8.0),
+              Label(
+                name: 'Crear cuenta nueva',
+                route: 'register',
+                color: AppColors.primaryBlue,
+              ),
+            ],
+          ),
         ),
       ),
     );
