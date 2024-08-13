@@ -76,7 +76,9 @@ class UserCommandLogout {
         }
         return ValidationResponse.fromServiceResponse(response);         
       }
-    } on FlutterError catch (flutterError) {
+    }on SocketException catch (e) {
+        return ApiError();
+    }on FlutterError catch (flutterError) {
       throw Exception(
         'Error en la aplicación Flutter: ${flutterError.message}');
     }
@@ -84,7 +86,36 @@ class UserCommandLogout {
 }
 
 
+class UserCommandRegister {
+  final UserRegister _registerUserService;
 
+  UserCommandRegister(this._registerUserService);
+
+  Future<dynamic> execute(
+      String name, String username, String password, String email, String birthdate) async {
+    try {
+      var response = await _registerUserService.registerUser(name, username, password, email, birthdate);
+      
+      if (response.statusCode == 200) {
+
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+          return InternalServerError.fromServiceResponse(response);
+      } else {
+          var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);         
+      }
+    }on SocketException catch (e) {
+        return ApiError();
+    }on FlutterError catch (flutterError) {
+      throw Exception(
+        'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
 
 
 
