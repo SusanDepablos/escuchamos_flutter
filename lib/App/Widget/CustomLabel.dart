@@ -17,7 +17,7 @@ class Label extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, route); // Navega a la ruta especificada
+        Navigator.pushReplacementNamed(context, route); // Navega a la ruta especificada
       },
       child: Container(
         padding: EdgeInsets.all(16.0),

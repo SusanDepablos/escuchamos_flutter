@@ -62,3 +62,39 @@ class UserLogout {
 
 
 
+class UserRegister {
+  Future<ServiceResponse> registerUser(String name, String username, String password, String email, String birthdate) async {
+    // Define el URL al que se enviará la solicitud POST
+    final url = Uri.parse('${ApiUrl.baseUrl}register/');
+
+    // Define el cuerpo de la solicitud POST
+    final body = jsonEncode({
+      'name': name,
+      'username': username,
+      'password': password,
+      'email': email,
+      'birthdate': birthdate,
+    });
+
+
+
+    // Define las cabeceras para la solicitud
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // Realiza la solicitud POST
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    // Retorna la respuesta de la API envuelta en ServiceResponse
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+
+}
