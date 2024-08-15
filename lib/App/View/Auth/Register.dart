@@ -5,6 +5,8 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
+import 'package:escuchamos_flutter/App/Widget/CustomDateInput.dart';
+import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -167,6 +169,7 @@ class _RegisterState extends State<Register> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              LogoBanner(size: 130.0),
               CustomInput(
                 text: 'Nombre y Apellido',
                 input: _inputControllers['name']!,
@@ -196,7 +199,7 @@ class _RegisterState extends State<Register> {
                 error: _errorMessages['email'],
               ),
               SizedBox(height: 16.0),
-              CustomInput(
+              CustomDateInput(
                 text: 'Fecha de Nacimiento',
                 input: _inputControllers['birthdate']!,
                 border: _borderColors['birthdate']!,

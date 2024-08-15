@@ -5,7 +5,7 @@ class ApiUrl{
   // ---------------------------URL base de la API ---------------------------//
 
   //url para pruebas locales:
-  static const String baseUrl = 'http://127.0.0.1:8000/api/';
+  static const String baseUrl = 'https://escuchamos-mcu6.onrender.com/';
 
   //url para pruebas en el servidor:
   // static const String baseUrl = 'https://escuchamos.onrender.com';
