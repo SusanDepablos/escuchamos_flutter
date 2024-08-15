@@ -57,6 +57,7 @@ class _CustomDateInputState extends State<CustomDateInput> {
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
+      locale: const Locale('es', ''), // Idioma español para el selector de fechas
     );
 
     if (pickedDate != null) {
