@@ -9,6 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/CustomDateInput.dart';
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/terms_and_conditions_checkbox.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Register extends StatefulWidget {
@@ -161,7 +162,17 @@ class _RegisterState extends State<Register> {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    appBar: AppBar(),
+    backgroundColor: Colors.white,
+    appBar: AppBar(
+      backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
+      elevation: 0, // Opcional: Quitar la sombra debajo del AppBar
+      iconTheme: IconThemeData(color: Colors.black), // Cambia el color de los íconos a negro
+      titleTextStyle: TextStyle(
+        color: Colors.black, // Cambia el color del texto del título a negro
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
     body: Padding(
       padding: const EdgeInsets.all(13.0),
       child: SingleChildScrollView( // Permite el desplazamiento
@@ -206,11 +217,7 @@ Widget build(BuildContext context) {
               error: _errorMessages['birthdate'],
             ),
             SizedBox(height: 8.0),
-            Label(
-              name: 'Aceptar términos y condiciones',
-              route: '',
-              color: AppColors.black,
-            ),
+            CustomCheckboxListTile(),
             SizedBox(height: 28.0),
             CustomButton(
               label: 'Registrarse',

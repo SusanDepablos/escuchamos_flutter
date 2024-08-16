@@ -120,7 +120,9 @@ class _LoginState extends State<Login> {
 @override
   Widget build(BuildContext context) {
     return Scaffold(
+    backgroundColor: Colors.white,
       appBar: AppBar(
+      backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
         automaticallyImplyLeading: false,
       ),
       body: Padding(
@@ -152,11 +154,12 @@ class _LoginState extends State<Login> {
                 isLoading: _submitting,
               ),
               Label(
-                name: '¿Olvidaste tu contraseña?',
+                name: 'Recuperar tú cuenta',
                 route: 'recover-account',
                 color: AppColors.black,
               ),
-              SizedBox(height: 8.0),
+              SizedBox(height: 8.0
+              ),
               Label(
                 name: 'Crear cuenta nueva',
                 route: 'register',
