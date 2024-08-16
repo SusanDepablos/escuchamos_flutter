@@ -22,13 +22,17 @@ class LogoBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/banner.png', // Ruta a tu imagen de banner
-      width: size,
-      height: size,
+    return Center(
+      child: Image.asset(
+        'assets/banner.png', // Ruta a tu imagen de banner
+        width: MediaQuery.of(context).size.width * 0.8, // Ajusta el ancho al 80% del tamaño de la pantalla
+        fit: BoxFit.cover,
+      ),
     );
   }
 }
+
+
 
 
 

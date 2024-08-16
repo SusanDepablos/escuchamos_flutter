@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:escuchamos_flutter/Constants/Constants.dart';
+
 class CustomDateInput extends StatefulWidget {
   final String text;
   final TextEditingController input;
@@ -51,21 +53,38 @@ class _CustomDateInputState extends State<CustomDateInput> {
     _updateClearIconVisibility();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-      locale: const Locale('es', ''), // Idioma español para el selector de fechas
-    );
+Future<void> _selectDate(BuildContext context) async {
+  DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime(2100),
+    locale: const Locale('es', ''), // Idioma español para el selector de fechas
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          primaryColor: AppColors.primaryBlue, // Color de la barra superior (AppBar)
+          colorScheme: ColorScheme.light(
+            primary: AppColors.primaryBlue, // Color del día seleccionado
+            onPrimary: Colors.white, // Color del texto en el día seleccionado
+            onSurface: Colors.black, // Color del texto en los días no seleccionados
+          ),
+          buttonTheme: ButtonThemeData(
+            textTheme: ButtonTextTheme.primary, // Color del texto de los botones (OK/CANCEL)
+          ),
+        ),
+        child: child!,
+      );
+    },
+  );
 
-    if (pickedDate != null) {
-      setState(() {
-        _controller.text = "${pickedDate.toLocal()}".split(' ')[0];
-      });
-    }
+  if (pickedDate != null) {
+    setState(() {
+      _controller.text = "${pickedDate.toLocal()}".split(' ')[0];
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

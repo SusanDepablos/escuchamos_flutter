@@ -159,74 +159,74 @@ class _RegisterState extends State<Register> {
   }
 
 @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(13.0),
-        child: SingleChildScrollView( // Permite el desplazamiento
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LogoBanner(size: 130.0),
-              CustomInput(
-                text: 'Nombre y Apellido',
-                input: _inputControllers['name']!,
-                border: _borderColors['name']!,
-                error: _errorMessages['name'],
-              ),
-              SizedBox(height: 16.0),
-              CustomInput(
-                text: 'Usuario',
-                input: _inputControllers['username']!,
-                border: _borderColors['username']!,
-                error: _errorMessages['username'],
-              ),
-              SizedBox(height: 16.0),
-              CustomInput(
-                text: 'Contraseña',
-                input: _inputControllers['password']!,
-                obscureText: true,
-                border: _borderColors['password']!,
-                error: _errorMessages['password'],
-              ),
-              SizedBox(height: 16.0),
-              CustomInput(
-                text: 'Correo electrónico',
-                input: _inputControllers['email']!,
-                border: _borderColors['email']!,
-                error: _errorMessages['email'],
-              ),
-              SizedBox(height: 16.0),
-              CustomDateInput(
-                text: 'Fecha de Nacimiento',
-                input: _inputControllers['birthdate']!,
-                border: _borderColors['birthdate']!,
-                error: _errorMessages['birthdate'],
-              ),
-              SizedBox(height: 8.0),
-              Label(
-                name: 'Aceptar terminos y condiciones',
-                route: '',
-                color: AppColors.black,
-              ),
-              SizedBox(height: 28.0),
-              CustomButton(
-                label: 'Registrarse',
-                onPressed: _call,
-                isLoading: _submitting,
-              ),
-              SizedBox(height: 8.0),
-              Label(
-                name: 'Iniciar sesion',
-                route: 'login',
-                color: AppColors.primaryBlue,
-              ),
-            ],
-          ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(),
+    body: Padding(
+      padding: const EdgeInsets.all(13.0),
+      child: SingleChildScrollView( // Permite el desplazamiento
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LogoBanner(size: MediaQuery.of(context).size.width), // Ocupa todo el ancho
+            SizedBox(height: 8.0), // Puedes reducir este espacio o eliminarlo
+            CustomInput(
+              text: 'Nombre y Apellido',
+              input: _inputControllers['name']!,
+              border: _borderColors['name']!,
+              error: _errorMessages['name'],
+            ),
+            SizedBox(height: 16.0),
+            CustomInput(
+              text: 'Usuario',
+              input: _inputControllers['username']!,
+              border: _borderColors['username']!,
+              error: _errorMessages['username'],
+            ),
+            SizedBox(height: 16.0),
+            CustomInput(
+              text: 'Contraseña',
+              input: _inputControllers['password']!,
+              obscureText: true,
+              border: _borderColors['password']!,
+              error: _errorMessages['password'],
+            ),
+            SizedBox(height: 16.0),
+            CustomInput(
+              text: 'Correo electrónico',
+              input: _inputControllers['email']!,
+              border: _borderColors['email']!,
+              error: _errorMessages['email'],
+            ),
+            SizedBox(height: 16.0),
+            CustomDateInput(
+              text: 'Fecha de Nacimiento',
+              input: _inputControllers['birthdate']!,
+              border: _borderColors['birthdate']!,
+              error: _errorMessages['birthdate'],
+            ),
+            SizedBox(height: 8.0),
+            Label(
+              name: 'Aceptar términos y condiciones',
+              route: '',
+              color: AppColors.black,
+            ),
+            SizedBox(height: 28.0),
+            CustomButton(
+              label: 'Registrarse',
+              onPressed: _call,
+              isLoading: _submitting,
+            ),
+            SizedBox(height: 8.0),
+            Label(
+              name: 'Iniciar sesión',
+              route: 'login',
+              color: AppColors.primaryBlue,
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
