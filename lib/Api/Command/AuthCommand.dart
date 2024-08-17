@@ -17,7 +17,7 @@ class UserCommandLogin {
 
   UserCommandLogin(this._loginUserService);
 
-  Future<dynamic> execute(
+  Future<dynamic> execute( BuildContext context,
       String username, String password) async {
     try {
       var response = await _loginUserService.loginUser(username, password);
@@ -25,7 +25,7 @@ class UserCommandLogin {
       if (response.statusCode == 200) {
         final loginResponse = LoginResponse.fromJson(response.body);
 
-        // Guarda el token y userId en el almacenamiento seguro
+        // Guarda el token y el userId en el almacenamiento seguro
         final storage = FlutterSecureStorage();
         await storage.write(key: 'token', value: loginResponse.token);
         await storage.write(key: 'user', value: loginResponse.user.toString());
@@ -76,9 +76,9 @@ class UserCommandLogout {
         }
         return ValidationResponse.fromServiceResponse(response);         
       }
-    }on SocketException catch (e) {
-        return ApiError();
-    }on FlutterError catch (flutterError) {
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
       throw Exception(
         'Error en la aplicación Flutter: ${flutterError.message}');
     }

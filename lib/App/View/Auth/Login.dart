@@ -10,7 +10,6 @@ import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Login extends StatefulWidget {
@@ -43,6 +42,7 @@ class _LoginState extends State<Login> {
 
     try {
       var response = await UserCommandLogin(UserLogin()).execute(
+        context,
         _inputControllers['username']!.text,
         _inputControllers['password']!.text,
       );
@@ -74,22 +74,11 @@ class _LoginState extends State<Login> {
           });
         }
       } else if (response is SuccessResponse) {
-        // Extraer los datos del token, userId y groups
-        final storage = FlutterSecureStorage();
-        final token = await storage.read(key: 'token');
-        final user = await storage.read(key: 'user');
-        final groupsString = await storage.read(key: 'groups');
-        final groups = json.decode(groupsString ?? '[]');
 
         // Navegar a la pantalla Home con los datos
-        Navigator.pushNamed(
+        Navigator.pushReplacementNamed(
           context,
           'home',
-          arguments: {
-            'token': token!,
-            'user': user!,
-            'groups': groups,
-          },
         );
       } else {
         showDialog(

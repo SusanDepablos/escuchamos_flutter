@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
+import 'dart:convert';
 
 class Home extends StatelessWidget {
-  final String token;
-  final String user;
-  final List<dynamic> groups;
-
-  Home({
-    required this.token,
-    required this.user,
-    required this.groups,
-  });
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   Future<void> _logout(BuildContext context) async {
+    final token = await _storage.read(key: 'token') ?? '';
+
+    if (token.isEmpty) {
+      // Token está vacío, redirige al usuario a la pantalla de login
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        'login',
+        (route) => false,
+      );
+      return;
+    }
+
     final userCommandLogout = UserCommandLogout(UserLogout());
 
     try {
@@ -30,9 +36,15 @@ class Home extends StatelessWidget {
             message: response.message,
           ),
         );
+        // Elimina el token y otros datos del almacenamiento seguro
+        await _storage.delete(key: 'token');
+        await _storage.delete(key: 'user');
+        await _storage.delete(key: 'groups');
+
+        // Redirige al usuario a la pantalla de login
         Navigator.pushNamedAndRemoveUntil(
           context,
-          'login', // Reemplaza con la ruta a tu pantalla de inicio de sesión
+          'login',
           (route) => false,
         );
       } else {
@@ -44,49 +56,84 @@ class Home extends StatelessWidget {
           ),
         );
       }
-      } catch (e) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
-          ),
-        );
-      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>> _getData() async {
+    final token = await _storage.read(key: 'token') ?? '';
+    final user = await _storage.read(key: 'user') ?? '';
+    final groupsString = await _storage.read(key: 'groups') ?? '[]';
+    final groups = (groupsString.isNotEmpty) ? List<dynamic>.from(json.decode(groupsString)) : [];
+
+    return {
+      'token': token,
+      'user': user,
+      'groups': groups,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        automaticallyImplyLeading: false, // Esto evita que aparezca la flecha de retroceso
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Token: $token', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 16),
-            Text('User: $user', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 16),
-            Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => _logout(context),
-              child: Text('Logout'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Color de fondo rojo para el botón de logout
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _getData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(child: Text('Error: ${snapshot.error}')),
+          );
+        }
+
+        final data = snapshot.data!;
+        final token = data['token'] as String;
+        final user = data['user'] as String;
+        final groups = data['groups'] as List<dynamic>;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Home'),
+            automaticallyImplyLeading: false,
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Token: $token', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 16),
+                Text('User: $user', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 16),
+                Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: () => _logout(context),
+                  child: Text('Logout'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
