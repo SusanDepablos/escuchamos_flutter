@@ -9,7 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/CustomDateInput.dart';
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
-import 'package:escuchamos_flutter/App/Widget/terms_and_conditions_checkbox.dart'; 
+import 'package:escuchamos_flutter/App/Widget/TermsAndConditionsCheckbox.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Register extends StatefulWidget {
@@ -125,14 +125,20 @@ class _RegisterState extends State<Register> {
         }
 
       } else if (response is SuccessResponse) {
-        // Navegar a la pantalla Home con los datos
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
             title: 'Success',
             message: response.message,
           ),
-        );
+        ).then((_) { // Espera hasta que se cierre la ventana emergente
+          Navigator.pushNamed(
+            context,
+            'verify-code',
+            arguments: _inputControllers['email']!.text,
+          );
+
+        });
       } else {
         showDialog(
           context: context,

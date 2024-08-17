@@ -98,3 +98,36 @@ class UserRegister {
   }
 
 }
+
+class UserVerifycode {
+  Future<ServiceResponse> verifycodeUser(String verificationcode, String useremail) async {
+    // Define el URL al que se enviará la solicitud POST
+    final url = Uri.parse('${ApiUrl.baseUrl}email/verification/');
+
+    // Define el cuerpo de la solicitud POST
+    final body = jsonEncode({
+      'verification_code': verificationcode,
+      'user_email': useremail,
+    });
+
+
+    // Define las cabeceras para la solicitud
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // Realiza la solicitud POST
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    // Retorna la respuesta de la API envuelta en ServiceResponse
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+
+}
