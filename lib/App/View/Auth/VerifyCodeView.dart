@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/CountDownTimer.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomDigitInput.dart'; // Importa el widget
 
 class VerifyCodeView extends StatelessWidget {
   final String email;
-  final TextEditingController _codeController = TextEditingController(); // Controlador para el código
+  final TextEditingController _codeController = TextEditingController();
 
   VerifyCodeView({required this.email});
 
@@ -14,7 +15,7 @@ class VerifyCodeView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
+        backgroundColor: Colors.white, 
         automaticallyImplyLeading: false,
       ),
       body: Padding(
@@ -22,15 +23,14 @@ class VerifyCodeView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LogoBanner(size: MediaQuery.of(context).size.width), // Ocupa todo el ancho
-            SizedBox(height: 8.0), // Puedes reducir este espacio o eliminarlo
-            // Agregar el Label con el texto de verificación
+            LogoBanner(size: MediaQuery.of(context).size.width), 
+            SizedBox(height: 8.0), 
             Label(
               name: "Verifica tu correo electrónico",
-              route: "", // Puedes especificar la ruta si se requiere navegación
-              color: Colors.black, // Color del texto
+              route: "", 
+              color: Colors.black, 
             ),
-            SizedBox(height: 8.0), // Espacio entre el Label y el siguiente texto
+            SizedBox(height: 8.0), 
             Text(
               'Escribe el código de 6 dígitos que enviamos a:',
               style: TextStyle(fontSize: 16.0),
@@ -39,12 +39,17 @@ class VerifyCodeView extends StatelessWidget {
               email,
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 26.0), // Espacio antes del campo de código
+            SizedBox(height: 26.0), 
             CustomDigitInput(
-              input: _codeController, // Pasa el controlador al widget de entrada de dígitos
-              border: Colors.blue, // Color del borde del input
+              input: _codeController, 
+              border: Colors.blue, 
             ),
-            // Aquí puedes agregar más widgets si es necesario
+            SizedBox(height: 16.0), 
+            Text(
+              'Puedes solicitar un nuevo código en:',
+              style: TextStyle(fontSize: 16.0, color: Colors.black),
+            ),
+            CountdownTimer(), // Aquí se muestra el temporizador
           ],
         ),
       ),
