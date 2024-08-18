@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class CustomDigitInput extends StatefulWidget {
   final TextEditingController input;
   final Color border;
+  final Color focusedBorderColor;
+  final Color digitTextColor;
+  final Color boxColor;
   final String? error;
 
   CustomDigitInput({
     required this.input,
     this.border = Colors.grey,
+    this.focusedBorderColor = AppColors.primaryBlue,
+    this.digitTextColor = Colors.black,
+    this.boxColor = Colors.white,
     this.error,
   });
 
@@ -96,21 +103,37 @@ class _CustomDigitInputState extends State<CustomDigitInput> {
     return Container(
       width: 40.0,
       height: 50.0,
+      margin: EdgeInsets.symmetric(horizontal: 4.0),
+      decoration: BoxDecoration(
+        color: widget.boxColor, // Color de fondo de cada caja
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4.0,
+            offset: Offset(2, 2),
+          ),
+        ],
+      ),
       child: TextField(
         controller: _controllers[index],
         focusNode: _focusNodes[index],
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
+        style: TextStyle(
+          color: widget.digitTextColor, // Color del texto en cada caja
+          fontWeight: FontWeight.bold,
+        ),
         maxLength: 1,
         decoration: InputDecoration(
           counterText: "",
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(color: widget.border),
+            borderSide: BorderSide(color: AppColors.primaryBlue), // Color del borde cuando no está enfocado
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(color: widget.border),
+            borderSide: BorderSide(color: widget.focusedBorderColor), // Color del borde cuando está enfocado
           ),
         ),
         onChanged: (value) => _onChanged(value, index),
