@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-class LabelButton extends StatelessWidget {
+class LabelButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final TextStyle? style;
@@ -15,9 +15,36 @@ class LabelButton extends StatelessWidget {
   });
 
   @override
+  _LabelButtonState createState() => _LabelButtonState();
+}
+
+class _LabelButtonState extends State<LabelButton> {
+  bool _isDisabled = false;
+
+  void _handlePress() {
+    if (!_isDisabled && !widget.isLoading) {
+      widget.onPressed();
+
+      // Deshabilitar el botón durante 30 segundos
+      setState(() {
+        _isDisabled = true;
+      });
+
+      // Rehabilitar el botón después de 30 segundos
+      Future.delayed(Duration(seconds: 30), () {
+        if (mounted) {
+          setState(() {
+            _isDisabled = false;
+          });
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isLoading ? null : onPressed,
+      onTap: _isDisabled ? null : _handlePress,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Stack(
@@ -25,7 +52,7 @@ class LabelButton extends StatelessWidget {
           children: [
             // Indicador de carga visible cuando isLoading es true
             Visibility(
-              visible: isLoading,
+              visible: widget.isLoading,
               child: SizedBox(
                 width: 16, // Ancho del indicador de carga
                 height: 16, // Alto del indicador de carga
@@ -36,14 +63,15 @@ class LabelButton extends StatelessWidget {
             ),
             // Texto visible cuando isLoading es false
             Visibility(
-              visible: !isLoading,
+              visible: !widget.isLoading,
               child: Text(
-                text,
-                style: style ?? TextStyle(
-                  color: AppColors.primaryBlue, // Color de texto azul por defecto
-                  fontSize: 16, // Tamaño de fuente por defecto
-                  decoration: TextDecoration.underline, // Subrayado como un enlace
-                ),
+                widget.text,
+                style: widget.style ??
+                    TextStyle(
+                      color: _isDisabled ? Colors.grey : AppColors.primaryBlue,
+                      fontSize: 16, // Tamaño de fuente por defecto
+                      decoration: TextDecoration.underline, // Subrayado como un enlace
+                    ),
               ),
             ),
           ],
