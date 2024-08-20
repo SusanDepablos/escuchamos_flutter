@@ -131,3 +131,35 @@ class UserVerifycode {
   }
 
 }
+
+class ResendCode {
+  Future<ServiceResponse> resendcodeUser(String useremail) async {
+    // Define el URL al que se enviará la solicitud POST
+    final url = Uri.parse('${ApiUrl.baseUrl}resend/verification/code/');
+
+    // Define el cuerpo de la solicitud POST
+    final body = jsonEncode({
+      'user_email': useremail,
+    });
+
+
+    // Define las cabeceras para la solicitud
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    // Realiza la solicitud POST
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    // Retorna la respuesta de la API envuelta en ServiceResponse
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+
+}
