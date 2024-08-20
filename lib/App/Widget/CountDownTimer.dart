@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class CountdownTimer extends StatefulWidget {
+  final VoidCallback onTimerEnd; // Callback que se ejecutará cuando el tiempo termine
+
+  CountdownTimer({required this.onTimerEnd});
+
   @override
   _CountdownTimerState createState() => _CountdownTimerState();
 }
@@ -30,6 +34,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
           _remainingTime--;
         } else {
           _timer.cancel(); // Detener el temporizador cuando llegue a cero
+          widget.onTimerEnd(); // Llamar al callback cuando el tiempo se agota
         }
       });
     });
