@@ -132,7 +132,7 @@ class UserVerifycode {
 
 }
 
-class ResendCode {
+class UserResendCode {
   Future<ServiceResponse> resendcodeUser(String useremail) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}resend/verification/code/');
