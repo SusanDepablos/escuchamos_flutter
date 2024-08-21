@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/RecoverAccount.dart';
+import 'package:escuchamos_flutter/App/View/Auth/RecoverAccountVerification.dart';
+import 'package:escuchamos_flutter/App/View/Auth/RecoverAccountChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
 import 'package:escuchamos_flutter/App/View/Auth/VerifyCodeView.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
@@ -10,10 +12,21 @@ class AppRoutes {
     'login': (context) => Login(), // Pantalla de inicio de sesión
     'home': (context) => Home(), // No pasa argumentos aquí
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
+    'recover-account-Verification': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as String;
+      return RecoverAccountVerification(email: args);
+    }, // Pantalla para verificar el código
+
+    'recover-account-Change-Password': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as String;
+      return RecoverAccountChangePassword(email: args);
+    }, // Pantalla para verificar el código
+
     'register': (context) => Register(), // Pantalla para registrar una nueva cuenta
     'verify-code': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return VerifyCodeView(email: args);
     }, // Pantalla para verificar el código
+
   };
 }

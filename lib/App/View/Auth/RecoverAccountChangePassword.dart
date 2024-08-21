@@ -10,24 +10,28 @@ import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart'; 
 
-class RecoverAccount extends StatefulWidget {
+class RecoverAccountChangePassword extends StatefulWidget {
+    final String email;
+
+    RecoverAccountChangePassword({required this.email});
+
   @override
-  _RecoverAccountState createState() => _RecoverAccountState();
+  _RecoverAccountChangePasswordState createState() => _RecoverAccountChangePasswordState();
 }
 
-class _RecoverAccountState extends State<RecoverAccount> {
+class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassword> {
   bool _submitting = false;
 
   final Map<String, TextEditingController> _inputControllers = {
-    'email': TextEditingController(),
+    'password': TextEditingController(),
   };
 
   final Map<String, Color> _borderColors = {
-    'email': Colors.grey,
+    'password': Colors.grey,
   };
 
   final Map<String, String?> _errorMessages = {
-    'email': null,
+    'password': null,
   };
 
   Future<void> _call() async {
@@ -36,34 +40,39 @@ class _RecoverAccountState extends State<RecoverAccount> {
     });
 
     try {
-      var response = await UserCommandRecoverAccount(Userrecoveraccount()).execute(
-        _inputControllers['email']!.text,
+      var response = await UserCommandUserRecoverAccountChangePassword(UserRecoverAccountChangePassword()).execute(
+        widget.email,
+        _inputControllers['password']!.text,
       );
 
 
       if (response is ValidationResponse) {
-        if (response.key['email'] != null) {
+        if (response.key['password'] != null) {
           setState(() {
-            _borderColors['email'] = Colors.red;
-            _errorMessages['email'] = response.message('email');
+            _borderColors['password'] = Colors.red;
+            _errorMessages['password'] = response.message('password');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['email'] = Colors.grey;
-              _errorMessages['email'] = null;
+              _borderColors['password'] = Colors.grey;
+              _errorMessages['password'] = null;
             });
           });
         }
 
   
       } else if (response is SuccessResponse) {
-        // Navegar a la pantalla recover-account-Verification con el correo electrónico como argumento
-        Navigator.pushReplacementNamed(
-          context,
-          'recover-account-Verification',
-          arguments: _inputControllers['email']!.text,
-        );
-      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Éxito',
+            message: response.message,
+          ),
+        ).then((_) {
+          // Navegar a la ruta de login después de cerrar el diálogo
+          Navigator.pushReplacementNamed(context, 'login');
+        });
+      }  else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -106,21 +115,21 @@ class _RecoverAccountState extends State<RecoverAccount> {
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
               Label(
-                name: "Recupera tu cuenta",
+                name: "Restablece tu contraseña",
                 route: "", 
                 color: Colors.black, 
               ),
               SizedBox(height: 8.0), 
               Text(
-                'Introduce tu dirección de correo electrónico',
+                'las contraseñas fuertes incluyen números, letras y signos de puntuación',
                 style: TextStyle(fontSize: 16.0),
               ),
               SizedBox(height: 16.0),
               CustomInput(
-                text: 'Correo electrónico',
-                input: _inputControllers['email']!,
-                border: _borderColors['email']!,
-                error: _errorMessages['email'],
+                text: 'Introduce tu contraseña nueva',
+                input: _inputControllers['password']!,
+                border: _borderColors['password']!,
+                error: _errorMessages['password'],
               ),
               SizedBox(height: 28.0),
               CustomButton(
