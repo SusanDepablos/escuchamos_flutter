@@ -4,6 +4,8 @@ import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
+import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
 
 class Home extends StatelessWidget {
@@ -11,16 +13,6 @@ class Home extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     final token = await _storage.read(key: 'token') ?? '';
-
-    if (token.isEmpty) {
-      // Token está vacío, redirige al usuario a la pantalla de login
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        'login',
-        (route) => false,
-      );
-      return;
-    }
 
     final userCommandLogout = UserCommandLogout(UserLogout());
 
@@ -117,6 +109,12 @@ class Home extends StatelessWidget {
                 Text('User: $user', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 16),
                 Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 8.0),
+                Label(
+                  name: 'Perfil',
+                  route: 'profile',
+                  color: AppColors.primaryBlue,
+                ),
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () => _logout(context),

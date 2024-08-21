@@ -6,6 +6,7 @@ import 'package:escuchamos_flutter/App/View/Auth/RecoverAccountChangePassword.da
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
 import 'package:escuchamos_flutter/App/View/Auth/VerifyCodeView.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
+import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 
 class AppRoutes {
   static final routes = {
@@ -27,6 +28,7 @@ class AppRoutes {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return VerifyCodeView(email: args);
     }, // Pantalla para verificar el código
+    'profile': (context) => EditProfile(), // Pantalla para recuperar la cuenta
 
   };
 }
