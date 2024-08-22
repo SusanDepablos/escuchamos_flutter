@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
+import 'package:escuchamos_flutter/App/Widget/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart'; 
 
@@ -42,6 +42,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
 
 
       if (response is ValidationResponse) {
+
         if (response.key['email'] != null) {
           setState(() {
             _borderColors['email'] = Colors.red;
@@ -54,24 +55,21 @@ class _RecoverAccountState extends State<RecoverAccount> {
             });
           });
         }
-
-  
-      } else if (response is SuccessResponse) {
-        // Navegar a la pantalla recover-account-Verification con el correo electrónico como argumento
-        Navigator.pushReplacementNamed(
-          context,
-          'recover-account-Verification',
-          arguments: _inputControllers['email']!.text,
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
-            message: response.message,
-          ),
-        );
-      }
+        } else if (response is SuccessResponse) {
+          Navigator.pushReplacementNamed(
+            context,
+            'recover-account-Verification',
+            arguments: _inputControllers['email']!.text,
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
+              message: response.message,
+            ),
+          );
+        }
       } catch (e) {
         showDialog(
           context: context,
@@ -89,23 +87,23 @@ class _RecoverAccountState extends State<RecoverAccount> {
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
     backgroundColor: Colors.white,
       appBar: AppBar(
-      backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
+      backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: SingleChildScrollView( // Permite el desplazamiento
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
-              Label(
+              LabelRoute(
                 name: "Recupera tu cuenta",
                 route: "", 
                 color: Colors.black, 
@@ -116,14 +114,14 @@ class _RecoverAccountState extends State<RecoverAccount> {
                 style: TextStyle(fontSize: 16.0),
               ),
               SizedBox(height: 16.0),
-              CustomInput(
+              GenericInput(
                 text: 'Correo electrónico',
                 input: _inputControllers['email']!,
                 border: _borderColors['email']!,
                 error: _errorMessages['email'],
               ),
               SizedBox(height: 28.0),
-              CustomButton(
+              GenericButton(
                 label: 'Enviar',
                 onPressed: _call,
                 isLoading: _submitting,

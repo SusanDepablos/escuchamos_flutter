@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-class CustomButton extends StatelessWidget {
+class GenericButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isLoading;
 
-  CustomButton({
+  GenericButton({
     required this.label,
     required this.onPressed,
     this.isLoading = false,

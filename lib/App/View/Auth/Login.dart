@@ -6,9 +6,9 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
@@ -122,14 +122,14 @@ class _LoginState extends State<Login> {
             children: [
               Logo(size: 150.0),
               SizedBox(height: 28.0),
-              CustomInput(
+              GenericInput(
                 text: 'Usuario',
                 input: _inputControllers['username']!,
                 border: _borderColors['username']!,
                 error: _errorMessages['username'],
               ),
               SizedBox(height: 16.0),
-              CustomInput(
+              GenericInput(
                 text: 'Contraseña',
                 input: _inputControllers['password']!,
                 obscureText: true,
@@ -137,19 +137,19 @@ class _LoginState extends State<Login> {
                 error: _errorMessages['password'],
               ),
               SizedBox(height: 28.0),
-              CustomButton(
+              GenericButton(
                 label: 'Iniciar Sesión',
                 onPressed: _call,
                 isLoading: _submitting,
               ),
-              Label(
+              LabelRoute(
                 name: 'Recuperar tú cuenta',
                 route: 'recover-account',
                 color: AppColors.black,
               ),
               SizedBox(height: 8.0
               ),
-              Label(
+              LabelRoute(
                 name: 'Crear cuenta nueva',
                 route: 'register',
                 color: AppColors.primaryBlue,

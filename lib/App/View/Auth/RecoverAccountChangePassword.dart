@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
+import 'package:escuchamos_flutter/App/Widget/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart'; 
 
 class RecoverAccountChangePassword extends StatefulWidget {
-    final String email;
+  final String email;
 
-    RecoverAccountChangePassword({required this.email});
+  RecoverAccountChangePassword({required this.email});
 
   @override
   _RecoverAccountChangePasswordState createState() => _RecoverAccountChangePasswordState();
@@ -45,8 +45,8 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
         _inputControllers['password']!.text,
       );
 
-
       if (response is ValidationResponse) {
+
         if (response.key['password'] != null) {
           setState(() {
             _borderColors['password'] = Colors.red;
@@ -60,27 +60,26 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
           });
         }
 
-  
-      } else if (response is SuccessResponse) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Éxito',
-            message: response.message,
-          ),
-        ).then((_) {
-          // Navegar a la ruta de login después de cerrar el diálogo
-          Navigator.pushReplacementNamed(context, 'login');
-        });
-      }  else {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
-            message: response.message,
-          ),
-        );
-      }
+        } else if (response is SuccessResponse) {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: 'Éxito',
+              message: response.message,
+            ),
+          ).then((_) {
+
+            Navigator.pushReplacementNamed(context, 'login');
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
+              message: response.message,
+            ),
+          );
+        }
       } catch (e) {
         showDialog(
           context: context,
@@ -103,18 +102,18 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
     return Scaffold(
     backgroundColor: Colors.white,
       appBar: AppBar(
-      backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
+      backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: SingleChildScrollView( // Permite el desplazamiento
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
-              Label(
+              LabelRoute(
                 name: "Restablece tu contraseña",
                 route: "", 
                 color: Colors.black, 
@@ -125,14 +124,14 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
                 style: TextStyle(fontSize: 16.0),
               ),
               SizedBox(height: 16.0),
-              CustomInput(
+              GenericInput(
                 text: 'Introduce tu contraseña nueva',
                 input: _inputControllers['password']!,
                 border: _borderColors['password']!,
                 error: _errorMessages['password'],
               ),
               SizedBox(height: 28.0),
-              CustomButton(
+              GenericButton(
                 label: 'Enviar',
                 onPressed: _call,
                 isLoading: _submitting,

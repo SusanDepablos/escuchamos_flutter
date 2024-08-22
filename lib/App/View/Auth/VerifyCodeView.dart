@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
-import 'package:escuchamos_flutter/App/Widget/CountDownTimer.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomDigitInput.dart'; 
-import 'package:escuchamos_flutter/App/Widget/CustomLabelButton.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Input.dart'; 
+import 'package:escuchamos_flutter/App/Widget/CountTimer.dart'; 
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
+import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 
@@ -23,11 +22,11 @@ class VerifyCodeView extends StatefulWidget {
 
 class _VerifyCodeViewState extends State<VerifyCodeView> {
   final TextEditingController _codeController = TextEditingController();
-  bool _isButtonEnabled = false; // Controla si el botón está habilitado o no
-  bool _isLoading = false; // Controla si el botón está en estado de carga
-  bool _isConfirmLoading = false; // Controla si el botón de confirmación está en estado de carga
+  bool _isButtonEnabled = false; 
+  bool _isLoading = false;
+  bool _isConfirmLoading = false;
 
-  void _onResendCode() async {
+  Future<void> _onResendCode() async {
     setState(() {
       _isLoading = true;
     });
@@ -49,83 +48,84 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
       );
     }
   }
-void _onConfirmCode() async {
-  setState(() {
-    _isConfirmLoading = true;
-  });
 
-  try {
-    UserCommandVerifycode command = UserCommandVerifycode(UserVerifycode());
-    var response = await command.execute(_codeController.text, widget.email);
-
+  Future<void> _onConfirmCode() async {
     setState(() {
-      _isConfirmLoading = false;
+      _isConfirmLoading = true;
     });
 
-    if (response is SuccessResponse) {
-  showDialog(
-    context: context,
-    builder: (context) => PopupWindow(
-      title: 'Éxito',
-      message: response.message,
-    ),
-  ).then((_) {
-    // Navegar a la ruta de login después de cerrar el diálogo
-    Navigator.pushReplacementNamed(context, 'login');
-  });
-} else if (response is SimpleErrorResponse) {
+    try {
+      UserCommandVerifycode command = UserCommandVerifycode(UserVerifycode());
+      var response = await command.execute(_codeController.text, widget.email);
+
+      setState(() {
+        _isConfirmLoading = false;
+      });
+
+      if (response is SuccessResponse) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Éxito',
+            message: response.message,
+          ),
+        ).then((_) {
+
+          Navigator.pushReplacementNamed(context, 'login');
+        });
+      } else if (response is SimpleErrorResponse) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
+        );
+      } else if (response is InternalServerError) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error interno del servidor',
+            message: response.message,
+          ),
+        );
+      } else if (response is ApiError) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de conexión',
+            message: 'No se pudo conectar con el servidor',
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error desconocido',
+            message: 'Ocurrió un error desconocido',
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isConfirmLoading = false;
+      });
+
       showDialog(
         context: context,
         builder: (context) => PopupWindow(
           title: 'Error',
-          message: response.message,
-        ),
-      );
-    } else if (response is InternalServerError) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error interno del servidor',
-          message: response.message,
-        ),
-      );
-    } else if (response is ApiError) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error de conexión',
-          message: 'No se pudo conectar con el servidor',
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error desconocido',
-          message: 'Ocurrió un error desconocido',
+          message: 'Error: ${e.toString()}',
         ),
       );
     }
-  } catch (e) {
-    setState(() {
-      _isConfirmLoading = false;
-    });
-
-    showDialog(
-      context: context,
-      builder: (context) => PopupWindow(
-        title: 'Error',
-        message: 'Error: ${e.toString()}',
-      ),
-    );
   }
-}
 
-void _enableButton() {
-  setState(() {
-    _isButtonEnabled = true;
-  });
-}
+  void _enableButton() {
+    setState(() {
+      _isButtonEnabled = true;
+    });
+  }
 
 
   @override
@@ -143,7 +143,7 @@ void _enableButton() {
           children: [
             LogoBanner(size: MediaQuery.of(context).size.width), 
             SizedBox(height: 8.0), 
-            Label(
+            LabelRoute(
               name: "Verifica tu correo electrónico",
               route: "", 
               color: Colors.black, 
@@ -158,7 +158,7 @@ void _enableButton() {
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 26.0), 
-            CustomDigitInput(
+            DigitBoxInput(
               input: _codeController, 
               border: Colors.blue, 
             ),
@@ -167,18 +167,18 @@ void _enableButton() {
               'Puedes solicitar un nuevo código en:',
               style: TextStyle(fontSize: 16.0, color: Colors.black),
             ),
-            CountdownTimer(
-              onTimerEnd: _enableButton, // Activar el botón cuando el tiempo se agote
+            CountTimer(
+              onTimerEnd: _enableButton,
             ),
             SizedBox(height: 16.0),
             if (_isButtonEnabled)
-              LabelButton(
+              LabelAction(
                 text: "Reenviar código",
                 onPressed: _isLoading ? () {} : _onResendCode,
                 isLoading: _isLoading,
               ),
-            SizedBox(height: 32.0), // Espacio adicional antes del botón de confirmación
-            CustomButton(
+            SizedBox(height: 32.0),
+            GenericButton(
               label: "Confirmar correo",
               onPressed: _isConfirmLoading ? () {} : _onConfirmCode,
               isLoading: _isConfirmLoading,

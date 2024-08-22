@@ -4,11 +4,11 @@ import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; // Asegúrate 
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomInput.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomDateInput.dart';
+import 'package:escuchamos_flutter/App/Widget/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomButton.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/TermsAndConditionsCheckbox.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
@@ -59,6 +59,7 @@ class _RegisterState extends State<Register> {
       );
 
       if (response is ValidationResponse) {
+
         if (response.key['name'] != null) {
           setState(() {
             _borderColors['name'] = Colors.red;
@@ -131,7 +132,7 @@ class _RegisterState extends State<Register> {
             title: 'Success',
             message: response.message,
           ),
-        ).then((_) { // Espera hasta que se cierre la ventana emergente
+        ).then((_) {
           Navigator.pushNamed(
             context,
             'verify-code',
@@ -170,38 +171,38 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Colors.white,
     appBar: AppBar(
-      backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
-      elevation: 0, // Opcional: Quitar la sombra debajo del AppBar
-      iconTheme: IconThemeData(color: Colors.black), // Cambia el color de los íconos a negro
+      backgroundColor: Colors.white,
+      elevation: 0,
+      iconTheme: IconThemeData(color: Colors.black),
       titleTextStyle: TextStyle(
-        color: Colors.black, // Cambia el color del texto del título a negro
+        color: Colors.black,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
     ),
     body: Padding(
       padding: const EdgeInsets.all(13.0),
-      child: SingleChildScrollView( // Permite el desplazamiento
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LogoBanner(size: MediaQuery.of(context).size.width), // Ocupa todo el ancho
-            SizedBox(height: 8.0), // Puedes reducir este espacio o eliminarlo
-            CustomInput(
+            LogoBanner(size: MediaQuery.of(context).size.width),
+            SizedBox(height: 8.0),
+            GenericInput(
               text: 'Nombre y Apellido',
               input: _inputControllers['name']!,
               border: _borderColors['name']!,
               error: _errorMessages['name'],
             ),
             SizedBox(height: 16.0),
-            CustomInput(
+            GenericInput(
               text: 'Usuario',
               input: _inputControllers['username']!,
               border: _borderColors['username']!,
               error: _errorMessages['username'],
             ),
             SizedBox(height: 16.0),
-            CustomInput(
+            GenericInput(
               text: 'Contraseña',
               input: _inputControllers['password']!,
               obscureText: true,
@@ -209,14 +210,14 @@ Widget build(BuildContext context) {
               error: _errorMessages['password'],
             ),
             SizedBox(height: 16.0),
-            CustomInput(
+            GenericInput(
               text: 'Correo electrónico',
               input: _inputControllers['email']!,
               border: _borderColors['email']!,
               error: _errorMessages['email'],
             ),
             SizedBox(height: 16.0),
-            CustomDateInput(
+            DateInput(
               text: 'Fecha de Nacimiento',
               input: _inputControllers['birthdate']!,
               border: _borderColors['birthdate']!,
@@ -225,13 +226,13 @@ Widget build(BuildContext context) {
             SizedBox(height: 8.0),
             CustomCheckboxListTile(),
             SizedBox(height: 28.0),
-            CustomButton(
+            GenericButton(
               label: 'Registrarse',
               onPressed: _call,
               isLoading: _submitting,
             ),
             SizedBox(height: 8.0),
-            Label(
+            LabelRoute(
               name: 'Iniciar sesión',
               route: 'login',
               color: AppColors.primaryBlue,

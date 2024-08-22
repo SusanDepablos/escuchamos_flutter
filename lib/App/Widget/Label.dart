@@ -1,13 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-class LabelButton extends StatefulWidget {
+// Componente de Label que recibe un nombre, una ruta y un color
+class LabelRoute extends StatelessWidget {
+  final String name; // Nombre del Label
+  final String route; // Ruta de navegación
+  final Color color; // Color del texto
+
+  // Constructor del widget Label
+  LabelRoute({
+    required this.name,
+    required this.route,
+    this.color = Colors.blue, // Color por defecto
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacementNamed(
+            context, route); // Navega a la ruta especificada
+      },
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Text(
+          name,
+          style: TextStyle(
+            fontSize: 16,
+            color: color, // Usa el color especificado
+            decoration: TextDecoration.none, // Sin subrayado
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class LabelAction extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final TextStyle? style;
   final bool isLoading;
 
-  LabelButton({
+  LabelAction({
     required this.text,
     required this.onPressed,
     this.style,
@@ -15,10 +52,10 @@ class LabelButton extends StatefulWidget {
   });
 
   @override
-  _LabelButtonState createState() => _LabelButtonState();
+  _LabelActionState createState() => _LabelActionState();
 }
 
-class _LabelButtonState extends State<LabelButton> {
+class _LabelActionState extends State<LabelAction> {
   bool _isDisabled = false;
 
   void _handlePress() {
@@ -70,7 +107,8 @@ class _LabelButtonState extends State<LabelButton> {
                     TextStyle(
                       color: _isDisabled ? Colors.grey : AppColors.primaryBlue,
                       fontSize: 16, // Tamaño de fuente por defecto
-                      decoration: TextDecoration.underline, // Subrayado como un enlace
+                      decoration:
+                          TextDecoration.underline, // Subrayado como un enlace
                     ),
               ),
             ),

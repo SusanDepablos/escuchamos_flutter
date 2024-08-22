@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-class CountdownTimer extends StatefulWidget {
+class CountTimer extends StatefulWidget {
   final VoidCallback onTimerEnd; // Callback que se ejecutará cuando el tiempo termine
 
-  CountdownTimer({required this.onTimerEnd});
+  CountTimer({required this.onTimerEnd});
 
   @override
-  _CountdownTimerState createState() => _CountdownTimerState();
+  _CountTimerState createState() => _CountTimerState();
 }
 
-class _CountdownTimerState extends State<CountdownTimer> {
+class _CountTimerState extends State<CountTimer> {
   late Timer _timer;
   int _remainingTime = 180; // 3 minutos en segundos
 

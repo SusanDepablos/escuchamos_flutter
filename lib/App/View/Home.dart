@@ -4,7 +4,7 @@ import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomLabel.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
 
@@ -110,7 +110,7 @@ class Home extends StatelessWidget {
                 SizedBox(height: 16),
                 Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 8.0),
-                Label(
+                LabelRoute(
                   name: 'Perfil',
                   route: 'profile',
                   color: AppColors.primaryBlue,
