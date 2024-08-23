@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
         // Navegar a la pantalla Home con los datos
         Navigator.pushReplacementNamed(
           context,
-          'home',
+          'Base',
         );
       } else {
         showDialog(

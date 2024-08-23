@@ -6,12 +6,15 @@ import 'package:escuchamos_flutter/App/View/Auth/AccountRecovery/ChangePassword.
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
 import 'package:escuchamos_flutter/App/View/Auth/VerifyCodeView.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
+import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 
 class AppRoutes {
   static final routes = {
 
     'login': (context) => Login(), // Pantalla de inicio de sesión
+
+    'Base': (context) => BaseNavigator(), // Pantalla de plantilla  buttomnavigatorbar
 
     'home': (context) => Home(), // No pasa argumentos aquí
 
