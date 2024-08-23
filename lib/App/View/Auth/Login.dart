@@ -142,22 +142,25 @@ class _LoginState extends State<Login> {
                 onPressed: _call,
                 isLoading: _submitting,
               ),
-              LabelRoute(
+              Center(
+              child: LabelRoute(
                 name: 'Recuperar tú cuenta',
                 route: 'recover-account',
                 color: AppColors.black,
               ),
-              SizedBox(height: 8.0
-              ),
-              LabelRoute(
+            ),
+            SizedBox(height: 8.0),
+            Center(
+              child: LabelRoute(
                 name: 'Crear cuenta nueva',
                 route: 'register',
                 color: AppColors.primaryBlue,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

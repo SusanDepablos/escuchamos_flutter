@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+/// Un widget que muestra un logotipo centrado en la pantalla.
 class Logo extends StatelessWidget {
   final double size;
 
@@ -18,7 +20,7 @@ class Logo extends StatelessWidget {
 }
 
 
-
+/// Un widget que muestra una imagen de banner centrada en la pantalla.
 class LogoBanner extends StatelessWidget {
   final double size;
 

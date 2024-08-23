@@ -5,7 +5,6 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
-import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
@@ -232,10 +231,12 @@ Widget build(BuildContext context) {
               isLoading: _submitting,
             ),
             SizedBox(height: 8.0),
-            LabelRoute(
-              name: 'Iniciar sesión',
-              route: 'login',
-              color: AppColors.primaryBlue,
+            Center(
+              child: LabelRoute(
+                name: 'Iniciar sesión',
+                route: 'login',
+                color: AppColors.primaryBlue,
+              ),
             ),
           ],
         ),

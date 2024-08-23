@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
+
+/// Un widget simple que muestra un texto (label) que actúa como un botón de navegación.
 // Componente de Label que recibe un nombre, una ruta y un color
 class LabelRoute extends StatelessWidget {
   final String name; // Nombre del Label
@@ -38,6 +40,8 @@ class LabelRoute extends StatelessWidget {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/// Un widget interactivo que muestra un texto que actúa como un botón con funcionalidad adicional.
 class LabelAction extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;

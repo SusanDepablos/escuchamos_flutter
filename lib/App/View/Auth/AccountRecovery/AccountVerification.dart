@@ -72,7 +72,7 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
         ).then((_) {
           Navigator.pushReplacementNamed(
                 context,
-                'recover-account-Change-Password',
+                'Change-Password',
                 arguments: widget.email,
               );
         });

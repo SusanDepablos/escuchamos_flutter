@@ -58,7 +58,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
         } else if (response is SuccessResponse) {
           Navigator.pushReplacementNamed(
             context,
-            'recover-account-Verification',
+            'account-Verification',
             arguments: _inputControllers['email']!.text,
           );
         } else {
@@ -103,10 +103,12 @@ class _RecoverAccountState extends State<RecoverAccount> {
             children: [
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
-              LabelRoute(
-                name: "Recupera tu cuenta",
-                route: "", 
-                color: Colors.black, 
+              Center(
+                child: LabelRoute(
+                  name: "Recupera tu cuenta",
+                  route: "", 
+                  color: Colors.black, 
+                ),
               ),
               SizedBox(height: 8.0), 
               Text(

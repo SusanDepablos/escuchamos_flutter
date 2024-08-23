@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
+
+
+/// Un widget personalizado que representa un grupo de seis cajas de entrada de dígitos
 class DigitBoxInput extends StatefulWidget {
   final TextEditingController input;
   final Color border;
@@ -149,6 +152,8 @@ class _DigitBoxInputState extends State<DigitBoxInput> {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/// Este widget permite la entrada de texto alfanumérico con un límite de 8 caracteres.
 class SecureInput extends StatefulWidget {
   final String text;
   final TextEditingController input;
@@ -263,6 +268,8 @@ class _SecureInputState extends State<SecureInput> {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/// Un widget de entrada de texto reutilizable que permite al usuario escribir y gestionar texto.
 class GenericInput extends StatefulWidget {
   final String text;
   final TextEditingController input;
@@ -372,6 +379,8 @@ class __GenericInputState extends State<GenericInput> {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/// Un widget de entrada de fecha personalizado que permite al usuario seleccionar una fecha 
 class DateInput extends StatefulWidget {
   final String text;
   final TextEditingController input;

@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 class ApiUrl{
   // ---------------------------URL base de la API ---------------------------//
 
-  //url para pruebas locales:
-  static const String baseUrl = 'https://escuchamos-mcu6.onrender.com/api/';
-
   //url para pruebas en el servidor:
-  // static const String baseUrl = 'https://escuchamos.onrender.com';
+  static const String baseUrl = 'https://escuchamos-mcu6.onrender.com/api/';
 
   // -------------------------------------------------------------------------//
 }
