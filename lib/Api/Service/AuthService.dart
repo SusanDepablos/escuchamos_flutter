@@ -63,7 +63,7 @@ class UserLogout {
 
 
 class UserRegister {
-  Future<ServiceResponse> registerUser(String name, String username, String password, String email, String birthdate) async {
+  Future<ServiceResponse> registerUser(String name, String username, String password, String email, String birthdate, bool checkbox) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}register/');
 
@@ -74,6 +74,7 @@ class UserRegister {
       'password': password,
       'email': email,
       'birthdate': birthdate,
+      'checkbox' : checkbox,
     });
 
 

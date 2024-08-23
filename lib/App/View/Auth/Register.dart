@@ -7,8 +7,9 @@ import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/SimpleCheckbox.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
-import 'package:escuchamos_flutter/App/Widget/TermsAndConditionsCheckbox.dart'; 
+import 'package:escuchamos_flutter/App/Widget/TermsAndConditionsDialog.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Register extends StatefulWidget {
@@ -18,6 +19,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   bool _submitting = false;
+  bool _checkbox = false;
 
   final Map<String, TextEditingController> _inputControllers = {
     'name': TextEditingController(),
@@ -41,6 +43,7 @@ class _RegisterState extends State<Register> {
     'password': null,
     'email': null,
     'birthdate': null,
+    'checkbox': null
   };
 
   Future<void> _call() async {
@@ -55,6 +58,7 @@ class _RegisterState extends State<Register> {
         _inputControllers['password']!.text,
         _inputControllers['email']!.text,
         _inputControllers['birthdate']!.text,
+        _checkbox,
       );
 
       if (response is ValidationResponse) {
@@ -124,6 +128,19 @@ class _RegisterState extends State<Register> {
           });
         }
 
+        if (response.key['checkbox'] != null) {
+          setState(() {
+            _errorMessages['checkbox'] = response.message('checkbox');
+          });
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              _errorMessages['checkbox'] = null;
+            });
+          });
+          setState(() {
+            _submitting = false;
+          });
+        }
       } else if (response is SuccessResponse) {
         showDialog(
           context: context,
@@ -223,7 +240,24 @@ Widget build(BuildContext context) {
               error: _errorMessages['birthdate'],
             ),
             SizedBox(height: 8.0),
-            CustomCheckboxListTile(),
+              SimpleCheckbox(
+                label: 'Acepto los términos y condiciones',
+                labelColor: AppColors.primaryBlue,
+                onChanged: (bool isChecked) {
+                  setState(() {
+                    _checkbox = isChecked;
+                  });
+                },
+                onLabelTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return TermsAndConditionsDialog();
+                    },
+                  );
+                },
+                error: _errorMessages['checkbox'],
+              ),
             SizedBox(height: 28.0),
             GenericButton(
               label: 'Registrarse',

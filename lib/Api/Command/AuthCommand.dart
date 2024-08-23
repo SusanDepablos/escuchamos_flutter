@@ -92,9 +92,9 @@ class UserCommandRegister {
   UserCommandRegister(this._registerUserService);
 
   Future<dynamic> execute(
-      String name, String username, String password, String email, String birthdate) async {
+      String name, String username, String password, String email, String birthdate, bool checkbox) async {
     try {
-      var response = await _registerUserService.registerUser(name, username, password, email, birthdate);
+      var response = await _registerUserService.registerUser(name, username, password, email, birthdate, checkbox);
       
       if (response.statusCode == 200) {
 
