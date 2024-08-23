@@ -113,11 +113,13 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
             children: [
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
-              LabelRoute(
+              Center(
+              child: LabelRoute(
                 name: "Restablece tu contraseña",
                 route: "", 
                 color: Colors.black, 
               ),
+            ),
               SizedBox(height: 8.0), 
               Text(
                 'las contraseñas fuertes incluyen números, letras y signos de puntuación',

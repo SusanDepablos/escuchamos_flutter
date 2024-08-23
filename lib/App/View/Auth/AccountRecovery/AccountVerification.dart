@@ -146,10 +146,12 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
           children: [
             LogoBanner(size: MediaQuery.of(context).size.width), 
             SizedBox(height: 8.0), 
-            LabelRoute(
-              name: "Verifica tu correo electrónico",
-              route: "", 
-              color: Colors.black, 
+            Center(
+              child: LabelRoute(
+                name: 'Verifica tu correo electrónico',
+                route: '',
+                color: Colors.black,
+              ),
             ),
             SizedBox(height: 8.0), 
             Text(
@@ -175,11 +177,13 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
             ),
             SizedBox(height: 16.0),
             if (_isButtonEnabled)
-              LabelAction(
+              Center(
+              child: LabelAction(
                 text: "Reenviar código",
                 onPressed: _isLoading ? () {} : _onResendCode,
                 isLoading: _isLoading,
               ),
+            ),
             SizedBox(height: 32.0),
             GenericButton(
               label: "Verificar",
