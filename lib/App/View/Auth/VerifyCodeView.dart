@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart'; 
+import 'package:escuchamos_flutter/App/Widget/DigitBox.dart';
 import 'package:escuchamos_flutter/App/Widget/CountTimer.dart'; 
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
@@ -158,7 +159,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 26.0), 
-            DigitBoxInput(
+            DigitBox(
               input: _codeController, 
               border: Colors.blue, 
             ),

@@ -26,8 +26,8 @@ class _LoginState extends State<Login> {
   };
 
   final Map<String, Color> _borderColors = {
-    'username': Colors.grey,
-    'password': Colors.grey,
+    'username': AppColors.inputBasic,
+    'password': AppColors.inputBasic,
   };
 
   final Map<String, String?> _errorMessages = {
@@ -50,12 +50,12 @@ class _LoginState extends State<Login> {
       if (response is ValidationResponse) {
         if (response.key['username'] != null) {
           setState(() {
-            _borderColors['username'] = Colors.red;
+            _borderColors['username'] = AppColors.inputDark;
             _errorMessages['username'] = response.message('username');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['username'] = Colors.grey;
+              _borderColors['username'] = AppColors.inputBasic;
               _errorMessages['username'] = null;
             });
           });
@@ -63,12 +63,12 @@ class _LoginState extends State<Login> {
 
         if (response.key['password'] != null) {
           setState(() {
-            _borderColors['password'] = Colors.red;
+            _borderColors['password'] = AppColors.inputDark;
             _errorMessages['password'] = response.message('password');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['password'] = Colors.grey;
+              _borderColors['password'] = AppColors.inputBasic;
               _errorMessages['password'] = null;
             });
           });
@@ -129,7 +129,7 @@ class _LoginState extends State<Login> {
                 error: _errorMessages['username'],
               ),
               SizedBox(height: 16.0),
-              GenericInput(
+              BasicInput(
                 text: 'Contraseña',
                 input: _inputControllers['password']!,
                 obscureText: true,

@@ -1,5 +1,6 @@
 // simple_checkbox.dart
 import 'package:flutter/material.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class SimpleCheckbox extends StatefulWidget {
   final Function(bool) onChanged;
@@ -64,7 +65,7 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
             child: Text(
               widget.error!,
               style: TextStyle(
-                  color: Colors.red, fontSize: 12),
+                  color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],

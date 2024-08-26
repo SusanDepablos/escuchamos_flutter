@@ -9,7 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/SimpleCheckbox.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
-import 'package:escuchamos_flutter/App/Widget/TermsAndConditionsDialog.dart'; 
+import 'package:escuchamos_flutter/App/Widget/TermsAndConditions.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Register extends StatefulWidget {
@@ -30,11 +30,11 @@ class _RegisterState extends State<Register> {
   };
 
   final Map<String, Color> _borderColors = {
-    'name': Colors.grey,
-    'username': Colors.grey,
-    'password': Colors.grey,
-    'email': Colors.grey,
-    'birthdate': Colors.grey,
+    'name': AppColors.inputBasic,
+    'username': AppColors.inputBasic,
+    'password': AppColors.inputBasic,
+    'email': AppColors.inputBasic,
+    'birthdate': AppColors.inputBasic,
   };
 
   final Map<String, String?> _errorMessages = {
@@ -65,12 +65,12 @@ class _RegisterState extends State<Register> {
 
         if (response.key['name'] != null) {
           setState(() {
-            _borderColors['name'] = Colors.red;
+            _borderColors['name'] = AppColors.inputDark;
             _errorMessages['name'] = response.message('name');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['name'] = Colors.grey;
+              _borderColors['name'] = AppColors.inputBasic;
               _errorMessages['name'] = null;
             });
           });
@@ -78,12 +78,12 @@ class _RegisterState extends State<Register> {
 
         if (response.key['username'] != null) {
           setState(() {
-            _borderColors['username'] = Colors.red;
+            _borderColors['username'] = AppColors.inputDark;
             _errorMessages['username'] = response.message('username');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['username'] = Colors.grey;
+              _borderColors['username'] = AppColors.inputBasic;
               _errorMessages['username'] = null;
             });
           });
@@ -91,12 +91,12 @@ class _RegisterState extends State<Register> {
 
         if (response.key['password'] != null) {
           setState(() {
-            _borderColors['password'] = Colors.red;
+            _borderColors['password'] = AppColors.inputDark;
             _errorMessages['password'] = response.message('password');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['password'] = Colors.grey;
+              _borderColors['password'] = AppColors.inputBasic;
               _errorMessages['password'] = null;
             });
           });
@@ -104,12 +104,12 @@ class _RegisterState extends State<Register> {
 
         if (response.key['email'] != null) {
           setState(() {
-            _borderColors['email'] = Colors.red;
+            _borderColors['email'] = AppColors.inputDark;
             _errorMessages['email'] = response.message('email');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['email'] = Colors.grey;
+              _borderColors['email'] = AppColors.inputBasic;
               _errorMessages['email'] = null;
             });
           });
@@ -117,12 +117,12 @@ class _RegisterState extends State<Register> {
 
         if (response.key['birthdate'] != null) {
           setState(() {
-            _borderColors['birthdate'] = Colors.red;
+            _borderColors['birthdate'] = AppColors.inputDark;
             _errorMessages['birthdate'] = response.message('birthdate');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['birthdate'] = Colors.grey;
+              _borderColors['birthdate'] = AppColors.inputBasic;
               _errorMessages['birthdate'] = null;
             });
           });
@@ -218,7 +218,7 @@ Widget build(BuildContext context) {
               error: _errorMessages['username'],
             ),
             SizedBox(height: 16.0),
-            GenericInput(
+            BasicInput(
               text: 'Contraseña',
               input: _inputControllers['password']!,
               obscureText: true,
@@ -242,7 +242,7 @@ Widget build(BuildContext context) {
             SizedBox(height: 8.0),
               SimpleCheckbox(
                 label: 'Acepto los términos y condiciones',
-                labelColor: AppColors.primaryBlue,
+                labelColor: AppColors.inputDark,
                 onChanged: (bool isChecked) {
                   setState(() {
                     _checkbox = isChecked;
@@ -252,7 +252,7 @@ Widget build(BuildContext context) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return TermsAndConditionsDialog();
+                      return TermsAndConditions();
                     },
                   );
                 },

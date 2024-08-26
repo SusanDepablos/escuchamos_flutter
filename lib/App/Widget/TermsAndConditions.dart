@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-class TermsAndConditionsDialog extends StatelessWidget {
+class TermsAndConditions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

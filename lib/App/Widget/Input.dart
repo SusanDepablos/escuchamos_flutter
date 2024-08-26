@@ -3,210 +3,43 @@ import 'package:flutter/services.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 
-
-/// Un widget personalizado que representa un grupo de seis cajas de entrada de dígitos
-class DigitBoxInput extends StatefulWidget {
-  final TextEditingController input;
-  final Color border;
-  final Color focusedBorderColor;
-  final Color digitTextColor;
-  final Color boxColor;
-  final String? error;
-
-  DigitBoxInput({
-    required this.input,
-    this.border = Colors.grey,
-    this.focusedBorderColor = AppColors.primaryBlue,
-    this.digitTextColor = Colors.black,
-    this.boxColor = Colors.white,
-    this.error,
-  });
-
-  @override
-  _DigitBoxInputState createState() => _DigitBoxInputState();
-}
-
-class _DigitBoxInputState extends State<DigitBoxInput> {
-  List<FocusNode> _focusNodes = [];
-  List<TextEditingController> _controllers = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNodes = List.generate(6, (index) => FocusNode());
-    _controllers = List.generate(6, (index) => TextEditingController());
-
-    // Inicializar el texto del controlador principal
-    widget.input.addListener(_syncControllers);
-  }
-
-  @override
-  void dispose() {
-    _focusNodes.forEach((node) => node.dispose());
-    _controllers.forEach((controller) => controller.dispose());
-    widget.input.removeListener(_syncControllers);
-    super.dispose();
-  }
-
-  void _syncControllers() {
-    final text = widget.input.text;
-    for (int i = 0; i < 6; i++) {
-      if (i < text.length) {
-        _controllers[i].text = text[i];
-      } else {
-        _controllers[i].clear();
-      }
-    }
-  }
-
-  void _onChanged(String value, int index) {
-    if (value.length > 1) {
-      _controllers[index].text = value.substring(0, 1);
-    }
-    if (value.isNotEmpty) {
-      if (index < 5) {
-        FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-      }
-    } else {
-      if (index > 0) {
-        FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
-      }
-    }
-    _updateMainController();
-  }
-
-  void _updateMainController() {
-    String code = _controllers.map((controller) => controller.text).join();
-    widget.input.text = code;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(6, (index) {
-            return _buildDigitBox(index);
-          }),
-        ),
-        if (widget.error != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              widget.error!,
-              style: TextStyle(color: Colors.red, fontSize: 12),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildDigitBox(int index) {
-    return Container(
-      width: 40.0,
-      height: 50.0,
-      margin: EdgeInsets.symmetric(horizontal: 4.0),
-      decoration: BoxDecoration(
-        color: widget.boxColor, // Color de fondo de cada caja
-        borderRadius: BorderRadius.circular(8.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 4.0,
-            offset: Offset(2, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: _controllers[index],
-        focusNode: _focusNodes[index],
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: widget.digitTextColor, // Color del texto en cada caja
-          fontWeight: FontWeight.bold,
-        ),
-        maxLength: 1,
-        decoration: InputDecoration(
-          counterText: "",
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(
-                color: AppColors
-                    .primaryBlue), // Color del borde cuando no está enfocado
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(
-                color: widget
-                    .focusedBorderColor), // Color del borde cuando está enfocado
-          ),
-        ),
-        onChanged: (value) => _onChanged(value, index),
-      ),
-    );
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/// Este widget permite la entrada de texto alfanumérico con un límite de 8 caracteres.
-class SecureInput extends StatefulWidget {
-  final String text;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///"INPUT DE ENTRADA BASICA QUE TIENE LA OPCION DE OCULTAR EL TEXTO, BASE PARA INPUTS"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class BasicInput extends StatefulWidget {
+  final String text; // Nombre del campo
   final TextEditingController input;
   final Color border;
   final String? error;
   final bool obscureText;
 
-  SecureInput({
+  BasicInput({
     required this.text,
     required this.input,
-    this.border = Colors.grey,
+    this.border = AppColors.inputBasic,
     this.error,
     this.obscureText = false,
   });
 
   @override
-  _SecureInputState createState() => _SecureInputState();
+  __BasicInputState createState() => __BasicInputState();
 }
 
-class _SecureInputState extends State<SecureInput> {
+class __BasicInputState extends State<BasicInput> {
   late bool _obscureText;
   late TextEditingController _controller;
-  late FocusNode _focusNode;
-  bool _showClearIcon = false;
 
   @override
   void initState() {
     super.initState();
     _obscureText = widget.obscureText;
     _controller = widget.input;
-    _focusNode = FocusNode();
-    _focusNode.addListener(_updateClearIconVisibility);
-    _controller.addListener(_updateClearIconVisibility);
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_updateClearIconVisibility);
-    _controller.removeListener(_updateClearIconVisibility);
-    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
-  }
-
-  void _updateClearIconVisibility() {
-    setState(() {
-      _showClearIcon = _controller.text.isNotEmpty && _focusNode.hasFocus;
-    });
-  }
-
-  void _clearText() {
-    _controller.clear();
-    _updateClearIconVisibility();
   }
 
   @override
@@ -216,12 +49,117 @@ class _SecureInputState extends State<SecureInput> {
       children: [
         TextField(
           controller: _controller,
+          obscureText: _obscureText,
+          decoration: InputDecoration(
+            labelText: widget.text, // Cambiado de hintText a labelText
+            labelStyle: TextStyle(color: widget.border),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            suffixIcon: widget.obscureText
+                ? IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
+                : null,
+          ),
+        ),
+        if (widget.error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//"INPUT CON UN LÍMITE DE 8 CARACTERES PREDETERMINADOS, HEREDA BASIC INPUT"
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class SecureInput extends BasicInput {
+  final int maxLength;
+
+  SecureInput({
+    required String text,
+    required TextEditingController input,
+    Color border = AppColors.inputBasic,
+    String? error,
+    bool obscureText = true,
+    this.maxLength = 8,
+  }) : super(
+          text: text,
+          input: input,
+          border: border,
+          error: error,
+          obscureText: obscureText,
+        );
+
+  @override
+  __SecureInputState createState() => __SecureInputState();
+}
+
+class __SecureInputState extends __BasicInputState {
+  late FocusNode _focusNode;
+  late bool _obscureText;
+  bool _showClearIcon = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(_updateClearIconVisibility);
+    widget.input.addListener(_updateClearIconVisibility);
+    _obscureText = widget.obscureText;
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_updateClearIconVisibility);
+    widget.input.removeListener(_updateClearIconVisibility);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _updateClearIconVisibility() {
+    setState(() {
+      _showClearIcon = widget.input.text.isNotEmpty && _focusNode.hasFocus;
+    });
+  }
+
+  void _clearText() {
+    widget.input.clear();
+    _updateClearIconVisibility();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.input,
           focusNode: _focusNode,
           obscureText: _obscureText,
-          maxLength: 8, // Limitar a 8 caracteres
+          maxLength:
+              widget is SecureInput ? (widget as SecureInput).maxLength : null,
           inputFormatters: [
             FilteringTextInputFormatter.allow(
-                RegExp(r'[a-zA-Z0-9]')), // Solo alfanumérico
+                RegExp(r'[a-zA-Z0-9]')),
           ],
           decoration: InputDecoration(
             hintText: widget.text,
@@ -233,7 +171,7 @@ class _SecureInputState extends State<SecureInput> {
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(color: widget.border),
             ),
-            suffixIcon: widget.obscureText
+            suffixIcon: _obscureText
                 ? IconButton(
                     icon: Icon(
                       _obscureText ? Icons.visibility_off : Icons.visibility,
@@ -250,7 +188,7 @@ class _SecureInputState extends State<SecureInput> {
                         onPressed: _clearText,
                       )
                     : null,
-            counterText: "", // Oculta el contador de caracteres
+            counterText: "",
           ),
         ),
         if (widget.error != null)
@@ -258,7 +196,7 @@ class _SecureInputState extends State<SecureInput> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: Colors.red, fontSize: 12),
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -267,62 +205,51 @@ class _SecureInputState extends State<SecureInput> {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/// Un widget de entrada de texto reutilizable que permite al usuario escribir y gestionar texto.
-class GenericInput extends StatefulWidget {
-  final String text;
-  final TextEditingController input;
-  final Color border;
-  final String? error;
-  final bool obscureText;
-
+//"INPUT QUE LIMPIA EL TEXTO PRESIONANDO LA X, HEREDA BASIC INPUT"
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class GenericInput extends BasicInput {
   GenericInput({
-    required this.text,
-    required this.input,
-    this.border = Colors.grey,
-    this.error,
-    this.obscureText = false,
-  });
+    required String text,
+    required TextEditingController input,
+    Color border = AppColors.inputBasic,
+    String? error,
+    bool obscureText = false,
+  }) : super(
+          text: text,
+          input: input,
+          border: border,
+          error: error,
+          obscureText: obscureText,
+        );
 
   @override
   __GenericInputState createState() => __GenericInputState();
 }
 
-class __GenericInputState extends State<GenericInput> {
-  late bool _obscureText;
-  late TextEditingController _controller;
-  late FocusNode _focusNode;
+class __GenericInputState extends __BasicInputState {
   bool _showClearIcon = false;
 
   @override
   void initState() {
     super.initState();
-    _obscureText = widget.obscureText;
-    _controller = widget.input;
-    _focusNode = FocusNode();
-    _focusNode.addListener(_updateClearIconVisibility);
-    _controller.addListener(_updateClearIconVisibility);
+    widget.input.addListener(_updateClearIconVisibility);
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_updateClearIconVisibility);
-    _controller.removeListener(_updateClearIconVisibility);
-    _focusNode.dispose();
-    _controller.dispose();
+    widget.input.removeListener(_updateClearIconVisibility);
     super.dispose();
   }
 
   void _updateClearIconVisibility() {
     setState(() {
-      // Mostrar el ícono de la "X" solo si el campo tiene texto y está enfocado
-      _showClearIcon = _controller.text.isNotEmpty && _focusNode.hasFocus;
+      // Mostrar el ícono de la "X" solo si el campo tiene texto
+      _showClearIcon = widget.input.text.isNotEmpty;
     });
   }
 
   void _clearText() {
-    _controller.clear();
+    widget.input.clear();
     _updateClearIconVisibility(); // Asegura que el ícono se actualice
   }
 
@@ -332,11 +259,11 @@ class __GenericInputState extends State<GenericInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
-          controller: _controller,
-          focusNode: _focusNode,
+          controller: widget.input,
           obscureText: _obscureText,
           decoration: InputDecoration(
-            hintText: widget.text,
+            labelText: widget.text, // Cambiado de hintText a labelText
+            labelStyle: TextStyle(color: widget.border), // Estilo para el label
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(color: widget.border),
@@ -369,66 +296,62 @@ class __GenericInputState extends State<GenericInput> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: Colors.red, fontSize: 12),
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
     );
   }
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/// Un widget de entrada de fecha personalizado que permite al usuario seleccionar una fecha 
-class DateInput extends StatefulWidget {
-  final String text;
-  final TextEditingController input;
-  final Color border;
-  final String? error;
-
+///"INPUT DE FECHA, HEREDA BASIC INPUT"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class DateInput extends BasicInput {
   DateInput({
-    required this.text,
-    required this.input,
-    this.border = Colors.grey,
-    this.error,
-  });
+    required String text,
+    required TextEditingController input,
+    Color border = AppColors.inputBasic,
+    String? error,
+  }) : super(
+          text: text,
+          input: input,
+          border: border,
+          error: error,
+          obscureText: false, // No se usa obscureText en DateInput
+        );
 
   @override
-  _DateInputState createState() => _DateInputState();
+  __DateInputState createState() => __DateInputState();
 }
 
-class _DateInputState extends State<DateInput> {
-  late TextEditingController _controller;
+class __DateInputState extends __BasicInputState {
   late FocusNode _focusNode;
   bool _showClearIcon = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.input;
     _focusNode = FocusNode();
     _focusNode.addListener(_updateClearIconVisibility);
-    _controller.addListener(_updateClearIconVisibility);
+    widget.input.addListener(_updateClearIconVisibility);
   }
 
   @override
   void dispose() {
     _focusNode.removeListener(_updateClearIconVisibility);
-    _controller.removeListener(_updateClearIconVisibility);
+    widget.input.removeListener(_updateClearIconVisibility);
     _focusNode.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
   void _updateClearIconVisibility() {
     setState(() {
-      _showClearIcon = _controller.text.isNotEmpty && _focusNode.hasFocus;
+      _showClearIcon = widget.input.text.isNotEmpty && _focusNode.hasFocus;
     });
   }
 
   void _clearText() {
-    _controller.clear();
+    widget.input.clear();
     _updateClearIconVisibility();
   }
 
@@ -463,7 +386,7 @@ class _DateInputState extends State<DateInput> {
 
     if (pickedDate != null) {
       setState(() {
-        _controller.text = "${pickedDate.toLocal()}".split(' ')[0];
+        widget.input.text = "${pickedDate.toLocal()}".split(' ')[0];
       });
     }
   }
@@ -474,13 +397,14 @@ class _DateInputState extends State<DateInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
-          controller: _controller,
+          controller: widget.input,
           focusNode: _focusNode,
           readOnly:
               true, // El campo de texto solo se puede editar a través del selector de fecha
           onTap: () => _selectDate(context),
           decoration: InputDecoration(
-            hintText: widget.text,
+            labelText: widget.text, // Cambiado de hintText a labelText
+            labelStyle: TextStyle(color: widget.border), // Estilo para el label
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(color: widget.border),
@@ -502,10 +426,13 @@ class _DateInputState extends State<DateInput> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: Colors.red, fontSize: 12),
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
     );
   }
 }
+
+
+
