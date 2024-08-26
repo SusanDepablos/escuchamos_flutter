@@ -9,6 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart'; 
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class RecoverAccountChangePassword extends StatefulWidget {
   final String email;
@@ -23,15 +24,15 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
   bool _submitting = false;
 
   final Map<String, TextEditingController> _inputControllers = {
-    'password': TextEditingController(),
+    'new_password': TextEditingController(),
   };
 
   final Map<String, Color> _borderColors = {
-    'password': Colors.grey,
+    'new_password': AppColors.inputBasic,
   };
 
   final Map<String, String?> _errorMessages = {
-    'password': null,
+    'new_password': null,
   };
 
   Future<void> _call() async {
@@ -42,20 +43,20 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
     try {
       var response = await UserCommandUserRecoverAccountChangePassword(UserRecoverAccountChangePassword()).execute(
         widget.email,
-        _inputControllers['password']!.text,
+        _inputControllers['new_password']!.text,
       );
 
       if (response is ValidationResponse) {
 
-        if (response.key['password'] != null) {
+        if (response.key['new_password'] != null) {
           setState(() {
-            _borderColors['password'] = Colors.red;
-            _errorMessages['password'] = response.message('password');
+            _borderColors['new_password'] = AppColors.inputDark;
+            _errorMessages['new_password'] = response.message('new_password');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['password'] = Colors.grey;
-              _errorMessages['password'] = null;
+              _borderColors['new_password'] = AppColors.inputBasic;
+              _errorMessages['new_password'] = null;
             });
           });
         }
@@ -75,7 +76,7 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
+              title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Contraseña Inválida',
               message: response.message,
             ),
           );
@@ -113,24 +114,17 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
             children: [
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
-              Center(
-              child: LabelRoute(
-                name: "Restablece tu contraseña",
-                route: "", 
-                color: Colors.black, 
-              ),
-            ),
-              SizedBox(height: 8.0), 
               Text(
-                'las contraseñas fuertes incluyen números, letras y signos de puntuación',
-                style: TextStyle(fontSize: 16.0),
+                style: TextStyle(fontSize: 14.0),
+                'Las contraseñas fuertes incluyen números, letras y signos de puntuación. Mínimo 8 dígitos.',
               ),
               SizedBox(height: 16.0),
-              GenericInput(
+              BasicInput(
                 text: 'Introduce tu contraseña nueva',
-                input: _inputControllers['password']!,
-                border: _borderColors['password']!,
-                error: _errorMessages['password'],
+                input: _inputControllers['new_password']!,
+                obscureText: true,
+                border: _borderColors['new_password']!,
+                error: _errorMessages['new_password'],
               ),
               SizedBox(height: 28.0),
               GenericButton(

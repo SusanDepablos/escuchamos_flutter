@@ -124,9 +124,9 @@ class UserCommandVerifycode {
   UserCommandVerifycode(this._verifycodeUserService);
 
   Future<dynamic> execute(
-    String verificationcode, String useremail) async {
+    String verification_code, String user_email) async {
     try {
-      var response = await _verifycodeUserService.verifycodeUser(verificationcode, useremail);
+      var response = await _verifycodeUserService.verifycodeUser(verification_code, user_email);
       
       if (response.statusCode == 200) {
 
@@ -149,17 +149,15 @@ class UserCommandVerifycode {
   }
 }
 
-
-
 class UserCommandResendCode {
   final UserResendCode _resendcodeUserService;
 
   UserCommandResendCode(this._resendcodeUserService);
 
   Future<dynamic> execute(
-    String useremail) async {
+    String user_email) async {
     try {
-      var response = await _resendcodeUserService.resendcodeUser(useremail);
+      var response = await _resendcodeUserService.resendcodeUser(user_email);
       
       if (response.statusCode == 200) {
 
@@ -188,9 +186,9 @@ class UserCommandRecoverAccount {
   UserCommandRecoverAccount(this._recoveraccountUserService);
 
   Future<dynamic> execute(
-    String useremail) async {
+    String user_email) async {
     try {
-      var response = await _recoveraccountUserService.recoveraccountUser(useremail);
+      var response = await _recoveraccountUserService.recoveraccountUser(user_email);
       
       if (response.statusCode == 200) {
 
@@ -221,9 +219,9 @@ class UserCommandRecoverAccountVerification {
   UserCommandRecoverAccountVerification(this._recoveraccountverificationUserService);
 
   Future<dynamic> execute(
-    String verificationcode, String useremail) async {
+    String verification_code, String user_email) async {
     try {
-      var response = await _recoveraccountverificationUserService.recoveraccountverificationUser(verificationcode, useremail);
+      var response = await _recoveraccountverificationUserService.recoveraccountverificationUser(verification_code, user_email);
       
       if (response.statusCode == 200) {
 
@@ -253,9 +251,9 @@ class UserCommandUserRecoverAccountChangePassword {
   UserCommandUserRecoverAccountChangePassword(this._recoveraccountchangepasswordUserService);
 
   Future<dynamic> execute(
-    String verificationcode, String useremail) async {
+    String user_email, String new_password) async {
     try {
-      var response = await _recoveraccountchangepasswordUserService.recoveraccountpasswordUser(verificationcode, useremail);
+      var response = await _recoveraccountchangepasswordUserService.recoveraccountpasswordUser(user_email, new_password);
       
       if (response.statusCode == 200) {
 

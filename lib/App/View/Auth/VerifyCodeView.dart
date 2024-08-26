@@ -11,6 +11,7 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class VerifyCodeView extends StatefulWidget {
   final String email;
@@ -144,11 +145,10 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
           children: [
             LogoBanner(size: MediaQuery.of(context).size.width), 
             SizedBox(height: 8.0), 
-            LabelRoute(
-              name: "Verifica tu correo electrónico",
-              route: "", 
-              color: Colors.black, 
-            ),
+            BasicLabel(
+                  name: 'Verifica tu correo electrónico',
+                  color: AppColors.black,
+                ),
             SizedBox(height: 8.0), 
             Text(
               'Escribe el código de 6 dígitos que enviamos a:',
@@ -190,3 +190,4 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
     );
   }
 }
+

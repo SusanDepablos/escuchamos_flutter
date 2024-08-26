@@ -101,14 +101,14 @@ class UserRegister {
 }
 
 class UserVerifycode {
-  Future<ServiceResponse> verifycodeUser(String verificationcode, String useremail) async {
+  Future<ServiceResponse> verifycodeUser(String verification_code, String user_email) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}email/verification/');
 
     // Define el cuerpo de la solicitud POST
     final body = jsonEncode({
-      'verification_code': verificationcode,
-      'user_email': useremail,
+      'verification_code': verification_code,
+      'user_email': user_email,
     });
 
 
@@ -134,13 +134,13 @@ class UserVerifycode {
 }
 
 class UserResendCode {
-  Future<ServiceResponse> resendcodeUser(String useremail) async {
+  Future<ServiceResponse> resendcodeUser(String user_email) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}resend/verification/code/');
 
     // Define el cuerpo de la solicitud POST
     final body = jsonEncode({
-      'user_email': useremail,
+      'user_email': user_email,
     });
 
 
@@ -169,13 +169,13 @@ class UserResendCode {
 
 
 class Userrecoveraccount {
-  Future<ServiceResponse> recoveraccountUser(String useremail) async {
+  Future<ServiceResponse> recoveraccountUser(String user_email) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}recover/account/');
 
     // Define el cuerpo de la solicitud POST
     final body = jsonEncode({
-      'user_email': useremail,
+      'user_email': user_email,
     });
 
 
@@ -203,14 +203,14 @@ class Userrecoveraccount {
 
 
 class UserRecoverAccountVerification {
-  Future<ServiceResponse> recoveraccountverificationUser(String verificationcode, String useremail) async {
+  Future<ServiceResponse> recoveraccountverificationUser(String verification_code, String user_email) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}recover/account/verification/');
 
     // Define el cuerpo de la solicitud POST
     final body = jsonEncode({
-      'verification_code': verificationcode,
-      'user_email': useremail,
+      'verification_code': verification_code,
+      'user_email': user_email,
     });
 
 
@@ -235,17 +235,15 @@ class UserRecoverAccountVerification {
 
 }
 
-
-
 class UserRecoverAccountChangePassword {
-  Future<ServiceResponse> recoveraccountpasswordUser(String useremail, String newpassword) async {
+  Future<ServiceResponse> recoveraccountpasswordUser(String user_email, String new_password) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}recover/account/change/password/');
 
     // Define el cuerpo de la solicitud POST
     final body = jsonEncode({
-      'user_email': useremail,
-      'new_password': newpassword,
+      'user_email': user_email,
+      'new_password': new_password,
     });
 
 

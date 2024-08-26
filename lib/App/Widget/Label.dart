@@ -1,46 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-
-/// Un widget simple que muestra un texto (label) que actúa como un botón de navegación.
-// Componente de Label que recibe un nombre, una ruta y un color
-class LabelRoute extends StatelessWidget {
-  final String name; // Nombre del Label
-  final String route; // Ruta de navegación
-  final Color color; // Color del texto
-
-  // Constructor del widget Label
-  LabelRoute({
-    required this.name,
-    required this.route,
-    this.color = Colors.blue, // Color por defecto
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacementNamed(
-            context, route); // Navega a la ruta especificada
-      },
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Text(
-          name,
-          style: TextStyle(
-            fontSize: 16,
-            color: color, // Usa el color especificado
-            decoration: TextDecoration.none, // Sin subrayado
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 /// Un widget interactivo que muestra un texto que actúa como un botón con funcionalidad adicional.
 class LabelAction extends StatefulWidget {
   final String text;
@@ -122,3 +82,35 @@ class _LabelActionState extends State<LabelAction> {
     );
   }
 }
+
+class BasicLabel extends StatelessWidget {
+  final String name;
+  final VoidCallback? onTap;
+  final Color color;
+
+  // Constructor del widget Label
+  BasicLabel({
+    required this.name,
+    this.onTap, // onTap es opcional
+    this.color = Colors.blue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap, // Si onTap es null, no hace nada
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Text(
+          name,
+          style: TextStyle(
+            fontSize: 16,
+            color: color, // Usa el color especificado
+            decoration: TextDecoration.none, // Sin subrayado
+          ),
+        ),
+      ),
+    );
+  }
+}
+

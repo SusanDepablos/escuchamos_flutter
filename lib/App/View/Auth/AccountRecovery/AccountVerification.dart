@@ -10,6 +10,7 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class RecoverAccountVerification extends StatefulWidget {
   final String email;
@@ -147,10 +148,9 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
             LogoBanner(size: MediaQuery.of(context).size.width), 
             SizedBox(height: 8.0), 
             Center(
-              child: LabelRoute(
+              child:  BasicLabel(
                 name: 'Verifica tu correo electrónico',
-                route: '',
-                color: Colors.black,
+                color: AppColors.black,
               ),
             ),
             SizedBox(height: 8.0), 
@@ -196,3 +196,4 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
     );
   }
 }
+

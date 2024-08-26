@@ -111,7 +111,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
     backgroundColor: Colors.white,
       appBar: AppBar(
-      backgroundColor: Colors.white, // Establece el fondo del AppBar a blanco
+      backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
       ),
       body: Padding(
@@ -143,19 +143,25 @@ class _LoginState extends State<Login> {
                 isLoading: _submitting,
               ),
               Center(
-              child: LabelRoute(
-                name: 'Recuperar tú cuenta',
-                route: 'recover-account',
-                color: AppColors.black,
-              ),
+              child:  BasicLabel(
+                  name: 'Recuperar tú cuenta',
+                  color: AppColors.black,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                        context, 'recover-account');
+                  },
+                ),
             ),
             SizedBox(height: 8.0),
             Center(
-              child: LabelRoute(
-                name: 'Crear cuenta nueva',
-                route: 'register',
-                color: AppColors.primaryBlue,
-              ),
+              child:  BasicLabel(
+                  name: 'Crear cuenta nueva',
+                  color: AppColors.primaryBlue,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                        context, 'register');
+                  },
+                ),
             ),
           ],
         ),
@@ -164,3 +170,4 @@ class _LoginState extends State<Login> {
   );
 }
 }
+

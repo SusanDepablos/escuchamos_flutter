@@ -9,6 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart'; 
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class RecoverAccount extends StatefulWidget {
   @override
@@ -104,10 +105,9 @@ class _RecoverAccountState extends State<RecoverAccount> {
               LogoBanner(size: MediaQuery.of(context).size.width), 
               SizedBox(height: 28.0),
               Center(
-                child: LabelRoute(
-                  name: "Recupera tu cuenta",
-                  route: "", 
-                  color: Colors.black, 
+                child: BasicLabel(
+                  name: 'Recupera tu cuenta',
+                  color: AppColors.black,
                 ),
               ),
               SizedBox(height: 8.0), 
@@ -135,3 +135,4 @@ class _RecoverAccountState extends State<RecoverAccount> {
     );
   }
 }
+

@@ -110,10 +110,13 @@ class Home extends StatelessWidget {
                 SizedBox(height: 16),
                 Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 8.0),
-                LabelRoute(
+                 BasicLabel(
                   name: 'Perfil',
-                  route: 'profile',
                   color: AppColors.primaryBlue,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                        context, 'profile');
+                  },
                 ),
                 SizedBox(height: 32),
                 ElevatedButton(
@@ -135,3 +138,4 @@ class Home extends StatelessWidget {
     );
   }
 }
+

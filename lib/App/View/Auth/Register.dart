@@ -266,11 +266,14 @@ Widget build(BuildContext context) {
             ),
             SizedBox(height: 8.0),
             Center(
-              child: LabelRoute(
-                name: 'Iniciar sesión',
-                route: 'login',
-                color: AppColors.primaryBlue,
-              ),
+              child:  BasicLabel(
+                  name: 'Iniciar sesión',
+                  color: AppColors.primaryBlue,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                        context, 'login');
+                  },
+                ),
             ),
           ],
         ),
