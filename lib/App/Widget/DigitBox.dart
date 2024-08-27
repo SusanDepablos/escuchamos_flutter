@@ -101,17 +101,17 @@ class _DigitBoxState extends State<DigitBox> {
 
   Widget _buildDigitBox(int index) {
     return Container(
-      width: 40.0,
-      height: 50.0,
-      margin: EdgeInsets.symmetric(horizontal: 4.0),
+      width: 35.0, // Tamaño reducido
+      height: 45.0, // Tamaño reducido
+      margin: EdgeInsets.symmetric(horizontal: 3.0), // Espaciado reducido
       decoration: BoxDecoration(
         color: widget.boxColor, // Color de fondo de cada caja
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(6.0), // Radio de borde reducido
         boxShadow: [
           BoxShadow(
             color: Colors.black26,
-            blurRadius: 4.0,
-            offset: Offset(2, 2),
+            blurRadius: 3.0, // Blur reducido
+            offset: Offset(1, 1), // Offset reducido
           ),
         ],
       ),
@@ -123,21 +123,22 @@ class _DigitBoxState extends State<DigitBox> {
         style: TextStyle(
           color: widget.digitTextColor, // Color del texto en cada caja
           fontWeight: FontWeight.bold,
+          fontSize: 18.0, // Tamaño de fuente reducido
         ),
         maxLength: 1,
         decoration: InputDecoration(
-          counterText: "",
+          counterText: "", // Ocultar contador
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(6.0), // Radio de borde reducido
             borderSide: BorderSide(
-                color: AppColors
-                    .primaryBlue), // Color del borde cuando no está enfocado
+              color: widget.border, // Color del borde cuando no está enfocado
+            ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(6.0), // Radio de borde reducido
             borderSide: BorderSide(
-                color: widget
-                    .focusedBorderColor), // Color del borde cuando está enfocado
+              color: widget.focusedBorderColor, // Color del borde cuando está enfocado
+            ),
           ),
         ),
         onChanged: (value) => _onChanged(value, index),

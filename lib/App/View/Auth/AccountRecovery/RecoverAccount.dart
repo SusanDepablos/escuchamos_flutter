@@ -93,8 +93,28 @@ class _RecoverAccountState extends State<RecoverAccount> {
     return Scaffold(
     backgroundColor: Colors.white,
       appBar: AppBar(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
+        title: Stack(
+          children: [
+            // Este Positioned coloca el ícono de retroceso en el lado izquierdo
+            Positioned(
+              left: 0,
+              top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () {
+                  Navigator.pop(context); // Esto regresa a la pantalla anterior
+                },
+              ),
+            ),
+            // Este Center centra el LogoBanner en el AppBar
+            Center(
+              child: LogoBanner(), // Aquí se inserta el LogoBanner centrado
+            ),
+          ],
+        ),
+        centerTitle: true, // Mantiene el título centrado visualmente
       ),
       body: Padding(
         padding: const EdgeInsets.all(13.0),
@@ -102,15 +122,14 @@ class _RecoverAccountState extends State<RecoverAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LogoBanner(size: MediaQuery.of(context).size.width), 
-              SizedBox(height: 28.0),
-              Center(
-                child: BasicLabel(
-                  name: 'Recupera tu cuenta',
-                  color: AppColors.black,
+                Text(
+                'Recupera tu cuenta',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-              SizedBox(height: 8.0), 
+              SizedBox(height: 4.0), 
               Text(
                 'Introduce tu dirección de correo electrónico',
                 style: TextStyle(fontSize: 16.0),

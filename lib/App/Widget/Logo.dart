@@ -24,14 +24,14 @@ class Logo extends StatelessWidget {
 class LogoBanner extends StatelessWidget {
   final double size;
 
-  LogoBanner({this.size = 90.0});
+  LogoBanner({this.size = 70.0});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Image.asset(
         'assets/banner.png', // Ruta a tu imagen de banner
-        width: MediaQuery.of(context).size.width * 0.7, // Ajusta el ancho al 80% del tamaño de la pantalla
+        width: MediaQuery.of(context).size.width * 0.6, // Ajusta el ancho al 80% del tamaño de la pantalla
         fit: BoxFit.cover,
       ),
     );

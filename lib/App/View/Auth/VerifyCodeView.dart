@@ -137,26 +137,29 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
       appBar: AppBar(
         backgroundColor: Colors.white, 
         automaticallyImplyLeading: false,
+      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+        centerTitle: true, // Para centrar el LogoBanner en el AppBar
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LogoBanner(size: MediaQuery.of(context).size.width), 
-            SizedBox(height: 8.0), 
-            BasicLabel(
-                  name: 'Verifica tu correo electrónico',
-                  color: AppColors.black,
+            Text(
+              'Verifica tu correo electrónico',
+              style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold, // Texto en negrita
                 ),
-            SizedBox(height: 8.0), 
+              ),
+            SizedBox(height: 4.0), 
             Text(
               'Escribe el código de 6 dígitos que enviamos a:',
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(fontSize: 13.0),
             ),
             Text(
               widget.email,
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 26.0), 
             DigitBox(
@@ -166,10 +169,13 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             SizedBox(height: 16.0), 
             Text(
               'Puedes solicitar un nuevo código en:',
-              style: TextStyle(fontSize: 16.0, color: Colors.black),
+              style: TextStyle(fontSize: 14.0, color: Colors.black),
             ),
-            CountTimer(
-              onTimerEnd: _enableButton,
+            Align(
+              alignment: Alignment.center, // Puedes ajustar esto para alinear en cualquier lugar
+              child: CountTimer(
+                onTimerEnd: _enableButton,
+              ),
             ),
             SizedBox(height: 16.0),
             if (_isButtonEnabled)

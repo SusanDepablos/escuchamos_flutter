@@ -105,6 +105,8 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
       appBar: AppBar(
       backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
+      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+        centerTitle: true, // Para centrar el LogoBanner en el AppBar
       ),
       body: Padding(
         padding: const EdgeInsets.all(13.0),
@@ -112,10 +114,16 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LogoBanner(size: MediaQuery.of(context).size.width), 
-              SizedBox(height: 28.0),
+                Text(
+                'Actualizar tu Contraseña',
+                style: TextStyle(
+                  fontSize: 19.0,
+                  fontWeight: FontWeight.bold, // Texto en negrita
+                ),
+              ),
+              SizedBox(height: 4.0),
               Text(
-                style: TextStyle(fontSize: 14.0),
+                style: TextStyle(fontSize: 13.0),
                 'Las contraseñas fuertes incluyen números, letras y signos de puntuación. Mínimo 8 dígitos.',
               ),
               SizedBox(height: 16.0),
