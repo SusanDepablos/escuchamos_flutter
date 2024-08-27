@@ -29,7 +29,7 @@ class UserShow {
 }
 
 class UserUpdate {
-  Future<ServiceResponse> updateUser(String name, String biography, String birthdate, ) async {
+  Future<ServiceResponse> updateUser(String name, String biography, String birthdate) async {
     final FlutterSecureStorage _storage = FlutterSecureStorage();
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}user/update/');
@@ -39,7 +39,7 @@ class UserUpdate {
     final body = jsonEncode({
       'name': name.isNotEmpty ? name : " ",
       'biography': biography.isNotEmpty ? biography : " ",
-      'birthdate': birthdate,
+      'birthdate': birthdate.isNotEmpty ? birthdate : " ",
 
     });
 

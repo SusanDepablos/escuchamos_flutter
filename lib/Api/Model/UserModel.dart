@@ -54,7 +54,7 @@ class DataAttributes {
     String email;
     String biography;
     dynamic phoneNumber;
-    DateTime birthdate;
+    dynamic birthdate;
     int countryId;
     DateTime createdAt;
     DateTime updatedAt;
@@ -77,7 +77,7 @@ class DataAttributes {
         email: json["email"],
         biography: json["biography"],
         phoneNumber: json["phone_number"],
-        birthdate: DateTime.parse(json["birthdate"]),
+        birthdate: json["birthdate"],
         countryId: json["country_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -89,7 +89,7 @@ class DataAttributes {
         "email": email,
         "biography": biography,
         "phone_number": phoneNumber,
-        "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+        "birthdate": birthdate,
         "country_id": countryId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
