@@ -7,14 +7,14 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 ///"INPUT DE ENTRADA BASICA QUE TIENE LA OPCION DE OCULTAR EL TEXTO, BASE PARA INPUTS"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class BasicInput extends StatefulWidget {
-  final String text; // Nombre del campo
+  String? text;
   final TextEditingController input;
   final Color border;
   final String? error;
   final bool obscureText;
 
   BasicInput({
-    required this.text,
+    this.text,
     required this.input,
     this.border = AppColors.inputBasic,
     this.error,
@@ -51,7 +51,7 @@ class __BasicInputState extends State<BasicInput> {
           controller: _controller,
           obscureText: _obscureText,
           decoration: InputDecoration(
-            labelText: widget.text, // Cambiado de hintText a labelText
+            labelText: widget.text,
             labelStyle: TextStyle(color: widget.border),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
@@ -75,7 +75,9 @@ class __BasicInputState extends State<BasicInput> {
                 : null,
           ),
         ),
-        if (widget.error != null)
+        if (widget.error != null &&
+            widget
+                .error!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
@@ -88,6 +90,7 @@ class __BasicInputState extends State<BasicInput> {
   }
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //"INPUT CON UN LÍMITE DE 8 CARACTERES PREDETERMINADOS, HEREDA BASIC INPUT"
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +98,7 @@ class SecureInput extends BasicInput {
   final int maxLength;
 
   SecureInput({
-    required String text,
+    String? text,
     required TextEditingController input,
     Color border = AppColors.inputBasic,
     String? error,
@@ -209,7 +212,7 @@ class __SecureInputState extends __BasicInputState {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class GenericInput extends BasicInput {
   GenericInput({
-    required String text,
+    String? text,
     required TextEditingController input,
     Color border = AppColors.inputBasic,
     String? error,
@@ -308,7 +311,7 @@ class __GenericInputState extends __BasicInputState {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class DateInput extends BasicInput {
   DateInput({
-    required String text,
+    String? text,
     required TextEditingController input,
     Color border = AppColors.inputBasic,
     String? error,
