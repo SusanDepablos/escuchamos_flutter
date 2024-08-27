@@ -36,9 +36,9 @@ class _UpdateState extends State<EditProfile> {
   };
 
   final Map<String, String?> _errorMessages = {
-    'name': null, // Mantenemos `String?` para `name` y `biography`
+    'name': null,
     'biography': null,
-    'birthdate': null, // Cambiamos `birthdate` para manejar `DateTime?`
+    'birthdate': null, 
   };
 
   Future<void> _callUser() async {
@@ -106,7 +106,6 @@ class _UpdateState extends State<EditProfile> {
           setState(() {
             _borderColors['name'] = Colors.red;
             _errorMessages['name'] = response.message('name');
-            input['name']!.clear();
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
@@ -120,7 +119,6 @@ class _UpdateState extends State<EditProfile> {
           setState(() {
             _borderColors['birthdate'] = Colors.red;
             _errorMessages['birthdate'] = response.message('birthdate');
-            input['birthdate']!.clear();
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
