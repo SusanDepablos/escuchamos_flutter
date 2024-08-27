@@ -195,6 +195,8 @@ Widget build(BuildContext context) {
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
+      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+        centerTitle: true, // Para centrar el LogoBanner en el AppBar
     ),
     body: Padding(
       padding: const EdgeInsets.all(13.0),
@@ -202,8 +204,6 @@ Widget build(BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LogoBanner(size: MediaQuery.of(context).size.width),
-            SizedBox(height: 8.0),
             GenericInput(
               text: 'Nombre y Apellido',
               input: _inputControllers['name']!,

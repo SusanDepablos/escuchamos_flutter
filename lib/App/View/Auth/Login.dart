@@ -121,7 +121,7 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Logo(size: 150.0),
-              SizedBox(height: 28.0),
+              SizedBox(height: 20.0),
               GenericInput(
                 text: 'Usuario',
                 input: _inputControllers['username']!,
@@ -147,7 +147,7 @@ class _LoginState extends State<Login> {
                   name: 'Recuperar tú cuenta',
                   color: AppColors.black,
                   onTap: () {
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                         context, 'recover-account');
                   },
                 ),
