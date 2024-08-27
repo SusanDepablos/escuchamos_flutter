@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
-import 'package:escuchamos_flutter/Api/Model/UserModel.dart';
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
@@ -30,9 +30,9 @@ class _UpdateState extends State<EditProfile> {
   };
 
     final _borderColors = {
-    'name': Colors.grey,
-    'biography': Colors.grey,
-    'birthdate': Colors.grey
+    'name': AppColors.inputBasic,
+    'biography': AppColors.inputBasic,
+    'birthdate': AppColors.inputBasic
   };
 
   final Map<String, String?> _errorMessages = {
@@ -53,9 +53,9 @@ class _UpdateState extends State<EditProfile> {
         if (response is UserModel) {
           setState(() {
             _user = response;
-            input['name']!.text = _user!.data.attributes.name;
-            input['biography']!.text = _user!.data.attributes.biography;
-            input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0,10);
+              input['name']!.text = _user!.data.attributes.name;
+              input['biography']!.text = _user!.data.attributes.biography ?? '';
+              input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
           });
         } else {
           showDialog(
@@ -97,19 +97,19 @@ class _UpdateState extends State<EditProfile> {
       var response = await UserCommandUpdate(UserUpdate()).execute(
         input['name']!.text,
         input['biography']!.text,
-        input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10)
+        input['birthdate']!.text
       );
 
       if (response is ValidationResponse) {
         
         if (response.key['name'] != null) {
           setState(() {
-            _borderColors['name'] = Colors.red;
+            _borderColors['name'] = AppColors.inputDark;
             _errorMessages['name'] = response.message('name');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['name'] = Colors.grey;
+              _borderColors['name'] = AppColors.inputBasic;
               _errorMessages['name'] = null;
             });
           });
@@ -117,12 +117,12 @@ class _UpdateState extends State<EditProfile> {
 
         if (response.key['birthdate'] != null) {
           setState(() {
-            _borderColors['birthdate'] = Colors.red;
+            _borderColors['birthdate'] = AppColors.inputDark;
             _errorMessages['birthdate'] = response.message('birthdate');
           });
           Future.delayed(Duration(seconds: 2), () {
             setState(() {
-              _borderColors['birthdate'] = Colors.grey;
+              _borderColors['birthdate'] = AppColors.inputBasic;
               _errorMessages['birthdate'] = null;
             });
           });
@@ -158,9 +158,9 @@ class _UpdateState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
         automaticallyImplyLeading: false,
       title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
         centerTitle: true, // Para centrar el LogoBanner en el AppBar

@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final userModel = userModelFromJson(jsonString);
-
 import 'dart:convert';
 
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
@@ -52,10 +48,10 @@ class DataAttributes {
     String username;
     String name;
     String email;
-    String biography;
-    dynamic phoneNumber;
-    dynamic birthdate;
-    int countryId;
+    String? biography;
+    String? phoneNumber;
+    String? birthdate;
+    int? countryId;
     DateTime createdAt;
     DateTime updatedAt;
 
@@ -63,10 +59,10 @@ class DataAttributes {
         required this.username,
         required this.name,
         required this.email,
-        required this.biography,
-        required this.phoneNumber,
-        required this.birthdate,
-        required this.countryId,
+        this.biography,
+        this.phoneNumber,
+        this.birthdate,
+        this.countryId,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -97,14 +93,14 @@ class DataAttributes {
 }
 
 class Relationships {
-    Country country;
+    Country? country;
     List<Group> groups;
     List<FileElement> files;
     int followingCount;
     int followersCount;
 
     Relationships({
-        required this.country,
+        this.country,
         required this.groups,
         required this.files,
         required this.followingCount,
@@ -112,7 +108,7 @@ class Relationships {
     });
 
     factory Relationships.fromJson(Map<String, dynamic> json) => Relationships(
-        country: Country.fromJson(json["country"]),
+        country: json["country"] != null ? Country.fromJson(json["country"]) : null,
         groups: List<Group>.from(json["groups"].map((x) => Group.fromJson(x))),
         files: List<FileElement>.from(json["files"].map((x) => FileElement.fromJson(x))),
         followingCount: json["following_count"],
@@ -120,7 +116,7 @@ class Relationships {
     );
 
     Map<String, dynamic> toJson() => {
-        "country": country.toJson(),
+        "country": country?.toJson(), 
         "groups": List<dynamic>.from(groups.map((x) => x.toJson())),
         "files": List<dynamic>.from(files.map((x) => x.toJson())),
         "following_count": followingCount,
@@ -150,15 +146,15 @@ class Country {
 
 class CountryAttributes {
     String name;
-    String abbreviation;
-    String dialingCode;
+    String? abbreviation;
+    String? dialingCode;
     DateTime createdAt;
     DateTime updatedAt;
 
     CountryAttributes({
         required this.name,
-        required this.abbreviation,
-        required this.dialingCode,
+        this.abbreviation,
+        this.dialingCode,
         required this.createdAt,
         required this.updatedAt,
     });

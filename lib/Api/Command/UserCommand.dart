@@ -4,7 +4,7 @@ import 'dart:convert';
 //Api support
 import 'dart:io';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
-import 'package:escuchamos_flutter/Api/Model/UserModel.dart';
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
