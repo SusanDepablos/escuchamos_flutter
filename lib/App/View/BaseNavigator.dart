@@ -41,68 +41,82 @@ class _BaseNavigatorState extends State<BaseNavigator> {
     _getData(); // Llamar a _getData() al inicializar el estado para cargar los datos
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // 1) AppBar
-      appBar: AppBar(
-        title: Text('Base Navigator'),
-      ),
-      
-      // 2) Body: cambia dependiendo del BottomNavigationBar
-      body: _user.isEmpty && _groups.isEmpty
-          ? Center(child: CircularProgressIndicator()) // Mostrar un indicador de carga mientras se obtienen los datos
-          : _views[_currentIndex], // Mostrar la vista basada en _currentIndex
-      
-      // 3) BottomNavigationBar
-    bottomNavigationBar: Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Espaciado en los laterales y en la parte inferior
-      decoration: BoxDecoration(
-        color: Colors.white, // Fondo blanco para el contenedor
-        borderRadius: BorderRadius.all(Radius.circular(50)), // Bordes redondeados en todas las esquinas
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Color de la sombra con opacidad
-            spreadRadius: 1, // Radio de propagación de la sombra
-            blurRadius: 10, // Radio de desenfoque de la sombra
-            offset: Offset(0, 4), // Desplazamiento de la sombra (hacia abajo)
-          ),
-        ],
-      ),
-      child: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index; // Actualizar _currentIndex para mostrar la vista correspondiente
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined, size: 28), // Icono de estilo más ligero
-            activeIcon: Icon(Icons.home, size: 28), // Icono activo con relleno
-            label: '', // Etiqueta vacía
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search_outlined, size: 28), // Icono de estilo más ligero
-            activeIcon: Icon(Icons.search, size: 28), // Icono activo con relleno
-            label: '', // Etiqueta vacía
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline, size: 28), // Icono de estilo más ligero
-            activeIcon: Icon(Icons.person, size: 28), // Icono activo con relleno
-            label: '', // Etiqueta vacía
-          ),
-        ],
-        backgroundColor: Colors.transparent, // Fondo transparente para el BottomNavigationBar
-        selectedItemColor: AppColors.primaryBlue, // Color del icono seleccionado
-        unselectedItemColor: Colors.grey, // Color del icono no seleccionado
-        showUnselectedLabels: false, // Ocultar etiquetas no seleccionadas
-        type: BottomNavigationBarType.fixed, // Asegura que todos los iconos y textos se mantengan visibles
-        elevation: 0, // Elevación en el BottomNavigationBar en sí
-        iconSize: 28, // Tamaño del icono
-        selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold), // Estilo de texto seleccionado (sin efecto con etiquetas vacías)
-      ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.white,
+      title: Text('Base Navigator'),
     ),
-    );
-  }
+
+
+    // Usar un Stack para superponer el body y el BottomNavigationBar
+    body: Stack(
+      children: [
+        // Body que ocupa toda la pantalla, incluyendo el espacio detrás del BottomNavigationBar
+        Positioned.fill(
+          child: _user.isEmpty && _groups.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : _views[_currentIndex],
+        ),
+
+        
+        // BottomNavigationBar flotante
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 8,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (int index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined, size: 28),
+                  activeIcon: Icon(Icons.home, size: 28),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search_outlined, size: 28),
+                  activeIcon: Icon(Icons.search, size: 28),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline, size: 28),
+                  activeIcon: Icon(Icons.person, size: 28),
+                  label: '',
+                ),
+              ],
+              backgroundColor: Colors.transparent,
+              selectedItemColor: AppColors.primaryBlue,
+              unselectedItemColor: Colors.grey,
+              showUnselectedLabels: false,
+              type: BottomNavigationBarType.fixed,
+              elevation: 0,
+              iconSize: 28,
+              selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 }
