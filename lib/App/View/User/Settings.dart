@@ -69,7 +69,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        toolbarHeight: 120,
+        //toolbarHeight: 120,//espacio de appbar
         title: Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Column(
