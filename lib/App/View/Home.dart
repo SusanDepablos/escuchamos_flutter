@@ -119,7 +119,7 @@ class Home extends StatelessWidget {
                   name: 'Settings',
                   color: AppColors.primaryBlue,
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, 'settings');
+                    Navigator.pushNamed(context, 'settings');
                   },
                 ),
                 SizedBox(height: 32),

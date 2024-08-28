@@ -7,7 +7,7 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
-import 'package:escuchamos_flutter/App/Widget/icons.dart';
+import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
@@ -69,9 +69,9 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        //toolbarHeight: 120,//espacio de appbar
+        toolbarHeight: 80,//espacio de appbar
         title: Padding(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(top: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -103,25 +103,32 @@ class _SettingsState extends State<Settings> {
           children: [
             ListTile(
               leading: Icon(
-                CupertinoIcons.person_crop_circle, 
+                MaterialIcons.person, 
                 color: AppColors.black,
                 size: 30.0, // Ajusta este valor según el tamaño que desees
               ),
               title: Text(
-                'Informacion de la cuenta',
+                'Información de la cuenta',
                 style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w700,
                   color: AppColors.black,
                 ),
               ),
+              subtitle: Text(
+                'Ver y actualizar los detalles de tu cuenta',
+                style: TextStyle(
+                  fontSize: 13.5,
+                  color: AppColors.inputDark,
+                ),
+              ),
               onTap: () {
-                Navigator.pushReplacementNamed(context, 'home');
+                Navigator.pushReplacementNamed(context, 'Base');
               },
             ),
             ListTile(
               leading: Icon(
-                CupertinoIcons.lock_circle, 
+                MaterialIcons.lock, 
                 color: AppColors.black,
                 size: 30.0, // Ajusta este valor según el tamaño que desees
               ),
@@ -133,13 +140,20 @@ class _SettingsState extends State<Settings> {
                   color: Colors.black,
                 ),
               ),
+              subtitle: Text(
+                'Actualiza tu contraseña de forma segura',
+                style: TextStyle(
+                  fontSize: 13.5,
+                  color: AppColors.inputDark,
+                ),
+              ),
               onTap: () {
-                Navigator.pushReplacementNamed(context, 'home');
+                Navigator.pushReplacementNamed(context, 'Base');
               },
             ),
             ListTile(
               leading: Icon(
-                CupertinoIcons.clear_circled, 
+                MaterialIcons.cancel, 
                 color: AppColors.black,
                 size: 30.0, // Ajusta este valor según el tamaño que desees
               ),
@@ -151,12 +165,20 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.black,
                 ),
               ),
+              subtitle: Text(
+                'Desactiva tu cuenta temporalmente',
+                style: TextStyle(
+                  fontSize: 13.5,
+                  color: AppColors.inputDark,
+                ),
+              ),
               onTap: () {
-                Navigator.pushReplacementNamed(context, 'home');
+                Navigator.pushReplacementNamed(context, 'Base');
               },
             ),
           ],
         ),
+
       ),
     );
   }
