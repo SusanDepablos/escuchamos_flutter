@@ -67,7 +67,9 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         centerTitle: true,
         toolbarHeight: 80,//espacio de appbar
         title: Padding(
@@ -118,7 +120,7 @@ class _SettingsState extends State<Settings> {
               subtitle: Text(
                 'Ver y actualizar los detalles de tu cuenta',
                 style: TextStyle(
-                  fontSize: 13.5,
+                  fontSize: 11,
                   color: AppColors.inputDark,
                 ),
               ),
@@ -143,7 +145,7 @@ class _SettingsState extends State<Settings> {
               subtitle: Text(
                 'Actualiza tu contraseña de forma segura',
                 style: TextStyle(
-                  fontSize: 13.5,
+                  fontSize: 11,
                   color: AppColors.inputDark,
                 ),
               ),
@@ -168,7 +170,7 @@ class _SettingsState extends State<Settings> {
               subtitle: Text(
                 'Desactiva tu cuenta temporalmente',
                 style: TextStyle(
-                  fontSize: 13.5,
+                  fontSize: 11,
                   color: AppColors.inputDark,
                 ),
               ),

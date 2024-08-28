@@ -158,13 +158,32 @@ class _UpdateState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteapp,
+    backgroundColor: Colors.white,
       appBar: AppBar(
-      backgroundColor: AppColors.whiteapp,
+        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
-        centerTitle: true, // Para centrar el LogoBanner en el AppBar
+        title: Stack(
+          children: [
+            // Este Positioned coloca el ícono de retroceso en el lado izquierdo
+            Positioned(
+              left: 0,
+              top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: AppColors.black),
+                onPressed: () {
+                  Navigator.pop(context); // Esto regresa a la pantalla anterior
+                },
+              ),
+            ),
+            // Este Center centra el LogoBanner en el AppBar
+            Center(
+              child: LogoBanner(), // Aquí se inserta el LogoBanner centrado
+            ),
+          ],
+        ),
+        centerTitle: true, // Mantiene el título centrado visualmente
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

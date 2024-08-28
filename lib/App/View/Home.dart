@@ -111,7 +111,7 @@ class Home extends StatelessWidget {
                   name: 'Perfil',
                   color: AppColors.primaryBlue,
                   onTap: () {
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                         context, 'profile');
                   },
                 ),

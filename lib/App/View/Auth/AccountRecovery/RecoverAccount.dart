@@ -102,7 +102,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
               left: 0,
               top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.black),
+                icon: Icon(Icons.arrow_back, color: AppColors.black),
                 onPressed: () {
                   Navigator.pop(context); // Esto regresa a la pantalla anterior
                 },
