@@ -95,10 +95,7 @@ class Home extends StatelessWidget {
         final groups = data['groups'] as List<dynamic>;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text('Home'),
-            automaticallyImplyLeading: false,
-          ),
+          backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -110,7 +107,7 @@ class Home extends StatelessWidget {
                 SizedBox(height: 16),
                 Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 8.0),
-                 BasicLabel(
+                BasicLabel(
                   name: 'Perfil',
                   color: AppColors.primaryBlue,
                   onTap: () {
