@@ -8,6 +8,7 @@ import 'package:escuchamos_flutter/App/View/Auth/VerifyCodeView.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings.dart';
 
 class AppRoutes {
   static final routes = {
@@ -19,6 +20,8 @@ class AppRoutes {
     'home': (context) => Home(), // No pasa argumentos aquí
 
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
+
+    'settings': (context) => Settings(), 
 
 
     'account-Verification': (context) {

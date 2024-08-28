@@ -118,6 +118,13 @@ class Home extends StatelessWidget {
                         context, 'profile');
                   },
                 ),
+                  BasicLabel(
+                  name: 'Settings',
+                  color: AppColors.primaryBlue,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, 'settings');
+                  },
+                ),
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () => _logout(context),
