@@ -10,6 +10,7 @@ import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
+import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
 
 class AppRoutes {
   static final routes = {
@@ -24,7 +25,9 @@ class AppRoutes {
 
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
 
-    'settings': (context) => Settings(), 
+    'settings': (context) => Settings(),
+
+    'edit-account': (context) => EditAccount(),  
 
 
     'account-Verification': (context) {

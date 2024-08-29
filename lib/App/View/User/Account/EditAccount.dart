@@ -10,16 +10,20 @@ import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-
-class Settings extends StatefulWidget {
+class EditAccount extends StatefulWidget {
   @override
-  _SettingsState createState() => _SettingsState();
+  _UpdateState createState() => _UpdateState();
 }
 
-class _SettingsState extends State<Settings> {
+class _UpdateState extends State<EditAccount> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   UserModel? _user;
-  String? name;
+  String? username;
+  String? phoneNumber;
+  String? email;
+  String? country;
+  bool isLoading =
+      true; // Agregamos esta variable para controlar el estado de carga
 
   @override
   void initState() {
@@ -39,9 +43,17 @@ class _SettingsState extends State<Settings> {
         if (response is UserModel) {
           setState(() {
             _user = response;
-            name = _user!.data.attributes.name;
+            username = '@${_user!.data.attributes.username}';
+            phoneNumber = _user!.data.attributes.phoneNumber;
+            email = _user!.data.attributes.email;
+            country = _user?.data.relationships.country?.attributes.name;
+            isLoading = false; // La carga ha finalizado
           });
         } else {
+          setState(() {
+            isLoading =
+                false; // Aseguramos que la carga ha finalizado incluso en caso de error
+          });
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
@@ -53,6 +65,9 @@ class _SettingsState extends State<Settings> {
       }
     } catch (e) {
       if (mounted) {
+        setState(() {
+          isLoading = false; // La carga ha finalizado en caso de excepción
+        });
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -77,16 +92,15 @@ class _SettingsState extends State<Settings> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                name ?? '...',
+                'Información de la cuenta',
                 style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight:
-                      FontWeight.w800,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
               ),
               Text(
-                'Configuración',
+                username ?? "...",
                 style: TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.w500, // Negrita básica
@@ -103,13 +117,8 @@ class _SettingsState extends State<Settings> {
           padding: const EdgeInsets.all(16.0),
           children: [
             ListTile(
-              leading: Icon(
-                MaterialIcons.person, 
-                color: AppColors.black,
-                size: 30.0, // Ajusta este valor según el tamaño que desees
-              ),
               title: Text(
-                'Información de la cuenta',
+                'Nombre de usuario',
                 style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w700,
@@ -117,35 +126,12 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               subtitle: Text(
-                'Ver y actualizar los detalles de tu cuenta',
+                username ?? "...", 
                 style: TextStyle(
                   fontSize: 11,
+                  fontWeight: FontWeight.w500, // Negrita básica
                   color: AppColors.inputDark,
-                ),
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, 'edit-account');
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                MaterialIcons.lock, 
-                color: AppColors.black,
-                size: 30.0, // Ajusta este valor según el tamaño que desees
-              ),
-              title: Text(
-                'Cambiar contraseña',
-                style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                ),
-              ),
-              subtitle: Text(
-                'Actualiza tu contraseña de forma segura',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.inputDark,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
               onTap: () {
@@ -153,13 +139,30 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              leading: Icon(
-                MaterialIcons.cancel, 
-                color: AppColors.black,
-                size: 30.0, // Ajusta este valor según el tamaño que desees
-              ),
               title: Text(
-                'Desactivar cuenta',
+                'Teléfono',
+                style: TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+              subtitle: Text(
+                isLoading ? "Cargando..." : (phoneNumber ?? "Añadir"),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500, // Negrita básica
+                  color: AppColors.inputDark,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, 'Base');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Correo electrónico',
                 style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w700,
@@ -167,10 +170,34 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               subtitle: Text(
-                'Desactiva tu cuenta temporalmente',
+                email ?? "...",
                 style: TextStyle(
                   fontSize: 11,
+                  fontWeight: FontWeight.w500, // Negrita básica
                   color: AppColors.inputDark,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, 'Base');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'País',
+                style: TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.black,
+                ),
+              ),
+              subtitle: Text(
+                isLoading ? "..." : (country ?? "Añadir"),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500, // Negrita básica
+                  color: AppColors.inputDark,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
               onTap: () {
@@ -179,7 +206,6 @@ class _SettingsState extends State<Settings> {
             ),
           ],
         ),
-
       ),
     );
   }
