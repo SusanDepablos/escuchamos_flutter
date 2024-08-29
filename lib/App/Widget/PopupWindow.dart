@@ -76,7 +76,7 @@ class PopupWindow extends StatelessWidget {
       ],
       backgroundColor: backgroundColor, // Aplicar color de fondo al diálogo
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16), // Esquinas redondeadas del cuadro de diálogo
+        borderRadius: BorderRadius.circular(30), // Esquinas redondeadas del cuadro de diálogo
       ),
       contentPadding: EdgeInsets.all(20), // Espacio interno del contenido
     );

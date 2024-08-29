@@ -1,7 +1,6 @@
-// lib/App/Widget/Drawer.dart
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart'; 
+import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String name;
@@ -17,24 +16,22 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       child: Container(
         width: MediaQuery.of(context).size.width *
-            0.6, // Ajusta el ancho a un 70% de la pantalla
+            0.6, // Ajusta el ancho a un 60% de la pantalla
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildHeader(), // Sección del encabezado
-            _buildBody(), // Sección del cuerpo
-            Expanded(
-                child:
-                    Container()), // Espacio flexible para empujar el pie hacia abajo
-            _buildFooter(), // Sección del pie
+            _buildBody(context), // Sección del cuerpo
+            Expanded(child: Container()), // Espacio flexible para empujar el pie hacia abajo
+            _buildFooter(context), // Sección del pie
           ],
         ),
       ),
     );
   }
 
-Widget _buildHeader() {
+  Widget _buildHeader() {
     return Column(
       children: [
         Container(
@@ -54,21 +51,18 @@ Widget _buildHeader() {
                       iconSize: 30.0,
                     ),
                   ),
-                  SizedBox(
-                      height: 1), // Espacio entre el CircleAvatar y el nombre
+                  SizedBox(height: 1), // Espacio entre el CircleAvatar y el nombre
                   Text(
-                    'Juan Pérez', // Datos de prueba
+                    name, // Usa el nombre proporcionado
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(
-                      height:
-                          1), // Espacio ajustado entre el nombre y el correo electrónico
+                  SizedBox(height: 1), // Espacio ajustado entre el nombre y el correo electrónico
                   Text(
-                    'juan.perez@example.com', // Datos de prueba
+                    email, // Usa el email proporcionado
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w600, // Negrita básica
@@ -76,9 +70,7 @@ Widget _buildHeader() {
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  SizedBox(
-                      height:
-                          10), // Espacio entre el correo electrónico y los nuevos textos
+                  SizedBox(height: 10), // Espacio entre el correo electrónico y los nuevos textos
                   Row(
                     children: [
                       Text(
@@ -120,70 +112,86 @@ Widget _buildHeader() {
                   ),
                 ],
               ),
-              SizedBox(
-                  width:
-                      16), // Espacio horizontal entre el Column y el borde derecho del Container
+              SizedBox(width: 16), // Espacio horizontal entre el Column y el borde derecho del Container
             ],
           ),
         ),
         Container(
           height: 1.0, // Altura de la línea fina
-          margin: EdgeInsets.symmetric(
-              horizontal: 20.0), // Ajusta el margen horizontal
+          margin: EdgeInsets.symmetric(horizontal: 20.0), // Ajusta el margen horizontal
           decoration: BoxDecoration(
-            color: Colors
-                .grey[300], // Color de la línea fina (ajusta según el diseño)
-            borderRadius: BorderRadius.circular(
-                1.0), // Radio pequeño para redondear los extremos
+            color: Colors.grey[300], // Color de la línea fina (ajusta según el diseño)
+            borderRadius: BorderRadius.circular(1.0), // Radio pequeño para redondear los extremos
           ),
         ),
       ],
     );
   }
 
-
-
-
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            leading: Icon(Icons.home, color: AppColors.primaryBlue),
-            title: Text('Inicio', style: TextStyle(fontSize: 16)),
+          _buildListTile(
+            icon: Icons.person,
+            title: 'Perfil',
             onTap: () {
-              // Acción al presionar 'Inicio'
+              //Navigator.pushNamed(context, 'profile');
             },
           ),
-          ListTile(
-            leading: Icon(Icons.person, color: AppColors.primaryBlue),
-            title: Text('Perfil', style: TextStyle(fontSize: 16)),
+          _buildListTile(
+            icon: Icons.description,
+            title: 'Moderación de contenido',
             onTap: () {
-              // Acción al presionar 'Perfil'
+              //Navigator.pushNamed(context, 'content-moderation');
             },
           ),
-          ListTile(
-            leading: Icon(Icons.settings, color: AppColors.primaryBlue),
-            title: Text('Configuración', style: TextStyle(fontSize: 16)),
-            onTap: () {
-              // Acción al presionar 'Configuración'
-            },
-          ),
+          // Agrega otras opciones aquí si es necesario
         ],
       ),
     );
   }
 
-  Widget _buildFooter() {
-    return ListTile(
-      leading: Icon(Icons.logout, color: AppColors.errorRed),
-      title: Text('Cerrar sesión',
-          style: TextStyle(fontSize: 16, color: Colors.red)),
-      onTap: () {
-        // Acción al presionar 'Cerrar sesión'
-      },
+  Widget _buildListTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: Colors.white,
+      ),
+      margin: const EdgeInsets.only(bottom: 12.0),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        leading: Icon(icon, color: AppColors.primaryBlue, size: 24.0),
+        title: Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildFooter(BuildContext context) {
+    return Column(
+      children: [
+        _buildListTile(
+          icon: Icons.settings, // Icono para Configuración
+          title: 'Configuración',
+          onTap: () {
+            Navigator.pushNamed(context, 'settings');
+          },
+        ),
+        _buildListTile(
+          icon: Icons.info, // Icono para Acerca de
+          title: 'Acerca de',
+          onTap: () {
+            //Navigator.pushNamed(context, 'about');
+          },
+        ),
+      ],
     );
   }
 }

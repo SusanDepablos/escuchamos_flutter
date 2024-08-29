@@ -1,4 +1,3 @@
-// simple_checkbox.dart
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
@@ -6,15 +5,17 @@ class SimpleCheckbox extends StatefulWidget {
   final Function(bool) onChanged;
   final String label;
   final Color labelColor;
-  final VoidCallback?
-      onLabelTap;
+  final Color checkboxColor; // Color de la caja del checkbox
+  final Color checkColor; // Color del check dentro de la caja
+  final VoidCallback? onLabelTap;
   final String? error;
 
   SimpleCheckbox({
     required this.onChanged,
     required this.label,
-    this.labelColor =
-        Colors.black,
+    this.labelColor = Colors.black,
+    this.checkboxColor = AppColors.primaryBlue, // Valor por defecto
+    this.checkColor = Colors.white, // Valor por defecto
     this.onLabelTap,
     this.error,
   });
@@ -35,27 +36,26 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: widget
-                  .onLabelTap,
+              onTap: widget.onLabelTap,
               child: Text(
                 widget.label,
                 style: TextStyle(
-                  color: widget
-                      .labelColor,
+                  color: widget.labelColor,
+                  fontSize: 15, // Tamaño de fuente por defecto
                 ),
               ),
             ),
-            SizedBox(
-                width: 4.0),
+            SizedBox(width: 8.0), // Ajusta el espaciado si es necesario
             Checkbox(
               value: _isChecked,
               onChanged: (bool? value) {
                 setState(() {
-                  _isChecked =
-                      value ?? false;
+                  _isChecked = value ?? false;
                 });
                 widget.onChanged(_isChecked);
               },
+              activeColor: widget.checkboxColor, // Color de la caja cuando está marcada
+              checkColor: widget.checkColor, // Color del check dentro de la caja
             ),
           ],
         ),
@@ -65,7 +65,9 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
             child: Text(
               widget.error!,
               style: TextStyle(
-                  color: AppColors.errorRed, fontSize: 12),
+                color: AppColors.errorRed,
+                fontSize: 12,
+              ),
             ),
           ),
       ],
