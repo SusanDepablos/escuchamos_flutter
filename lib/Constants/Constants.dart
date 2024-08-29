@@ -21,5 +21,6 @@ class AppColors {
   static const Color lightErrorRed = Color.fromRGBO(255, 225, 224, 1); // Rojo claro para notificaciones de error
   static const Color inputBasic = Color.fromARGB(197, 82, 82, 82);
   static const Color inputDark = Color.fromARGB(255, 79, 79, 79);
+  static const Color inputLigth = Color.fromARGB(211, 192, 192, 192);
 }
   // -------------------------------------------------------------------------//
