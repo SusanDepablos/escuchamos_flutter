@@ -71,7 +71,6 @@ class _SettingsState extends State<Settings> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        toolbarHeight: 80,//espacio de appbar
         title: Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Column(

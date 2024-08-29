@@ -132,7 +132,7 @@ class _UpdateState extends State<EditProfile> {
           context: context,
           builder: (context) => PopupWindow(
             title: response is SuccessResponse
-                ? 'Success'
+                ? 'Correcto'
                 : response is InternalServerError
                     ? 'Error'
                     : 'Error de Conexión',
