@@ -6,6 +6,7 @@ import 'package:escuchamos_flutter/App/View/Auth/AccountRecovery/ChangePassword.
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
 import 'package:escuchamos_flutter/App/View/Auth/VerifyCodeView.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
+import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
@@ -18,6 +19,8 @@ class AppRoutes {
     'Base': (context) => BaseNavigator(), // Pantalla de plantilla  buttomnavigatorbar
 
     'home': (context) => Home(), // No pasa argumentos aquí
+
+    'Search': (context) => SearchView(), // No pasa argumentos aquí
 
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
 

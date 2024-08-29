@@ -439,3 +439,94 @@ class __DateInputState extends __BasicInputState {
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///"INPUT DE BUSQUEDA"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class SearchInput extends BasicInput {
+  final VoidCallback? onSearch;
+  final VoidCallback? onClear;
+
+  SearchInput({
+    required TextEditingController input,
+    Color border = AppColors.inputBasic,
+    String? error,
+    this.onSearch,
+    this.onClear,
+    String? text = 'Buscar',
+  }) : super(
+          text: text,
+          input: input,
+          border: border,
+          error: error,
+          obscureText: false, // La barra de búsqueda no oculta el texto
+        );
+
+  @override
+  _SearchInputState createState() => _SearchInputState();
+}
+
+class _SearchInputState extends __BasicInputState {
+  bool _hasText = false; // Nuevo estado para controlar la visibilidad del ícono de la "X"
+
+  @override
+  void initState() {
+    super.initState();
+    // Agrega un listener para actualizar el estado de _hasText basado en el contenido del input
+    _controller.addListener(() {
+      setState(() {
+        _hasText = _controller.text.isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: _controller,
+          obscureText: _obscureText,
+          decoration: InputDecoration(
+            labelText: widget.text,
+            labelStyle: TextStyle(color: widget.border),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            prefixIcon: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: widget is SearchInput ? (widget as SearchInput).onSearch : null,
+            ),
+            suffixIcon: _hasText
+                ? IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      _controller.clear();
+                      setState(() {
+                        _hasText = false; // Resetear el estado para esconder la "X"
+                      });
+                      if (widget is SearchInput) {
+                        (widget as SearchInput).onClear?.call();
+                      }
+                    },
+                  )
+                : null, // Solo muestra el ícono de la "X" si _hasText es true
+          ),
+        ),
+        if (widget.error != null && widget.error!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}

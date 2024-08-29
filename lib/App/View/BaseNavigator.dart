@@ -9,6 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
+import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/CustomDrawer.dart'; // Importar el widget Drawer
@@ -43,7 +44,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
 
   final List<material.Widget> _views = [
     Home(), // Vista 0
-    Center(child: Text('Search View')),
+    SearchView(),
     Center(child: Text('Profile View')),
   ];
 
@@ -57,7 +58,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
   material.Widget build(BuildContext context) {
     return material.Scaffold(
       key: _scaffoldKey, // Asignar el GlobalKey al Scaffold
-        appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: ProfileAvatar(
@@ -65,9 +66,17 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
             _scaffoldKey.currentState?.openDrawer();
           },
         ),
-        title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
-        centerTitle: true, // Para centrar el LogoBanner en el AppBar
+        title: Row(
+          children: [
+            Center(
+              child: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+            ),
+          ],
+        ),
+        centerTitle: true, // Asegúrate de que esta línea esté presente
+        toolbarHeight: kToolbarHeight, // Ajusta la altura del AppBar si es necesario
       ),
+
 
       drawer: CustomDrawer(), // Usar el widget Drawer aquí
 

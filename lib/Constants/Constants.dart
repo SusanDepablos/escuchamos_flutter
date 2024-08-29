@@ -19,8 +19,8 @@ class AppColors {
   static const Color deepPurple = Color.fromRGBO(74, 1, 125, 1); // Morado profundo
   static const Color errorRed = Color.fromRGBO(216, 0, 50, 1); // Rojo para errores
   static const Color lightErrorRed = Color.fromRGBO(255, 225, 224, 1); // Rojo claro para notificaciones de error
-  static const Color inputBasic = Color.fromARGB(197, 82, 82, 82);
-  static const Color inputDark = Color.fromARGB(255, 79, 79, 79);
-  static const Color inputLigth = Color.fromARGB(211, 192, 192, 192);
+  static const Color inputBasic = Color.fromRGBO(82, 82, 82, 0.773);
+  static const Color inputDark = Color.fromRGBO(79, 79, 79, 1);
+  static const Color inputLigth = Color.fromRGBO(192, 192, 192, 0.827);
 }
   // -------------------------------------------------------------------------//
