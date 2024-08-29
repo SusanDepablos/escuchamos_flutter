@@ -3,20 +3,23 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
 
 class CustomDrawer extends StatelessWidget {
-  final String name;
-  final String email;
+  final String? name;
+  final String? username;
+  final int followers;
+  final int following;
 
   CustomDrawer({
-    this.name = 'Juan Pérez',
-    this.email = 'juan.perez@example.com',
+    this.name,
+    this.username,
+    required this.followers,
+    required this.following,
   });
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        width: MediaQuery.of(context).size.width *
-            0.6, // Ajusta el ancho a un 60% de la pantalla
+        width: MediaQuery.of(context).size.width * 0.6, // Ajusta el ancho a un 60% de la pantalla
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,8 +39,7 @@ class CustomDrawer extends StatelessWidget {
       children: [
         Container(
           color: AppColors.whiteapp,
-          padding: EdgeInsets.fromLTRB(
-              15.0, 30.0, 15.0, 0.0), // Aumenta el padding superior
+          padding: EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 0.0), // Aumenta el padding superior
           height: 176.0, // Mantén la altura en 176.0
           child: Row(
             children: [
@@ -53,7 +55,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   SizedBox(height: 1), // Espacio entre el CircleAvatar y el nombre
                   Text(
-                    name, // Usa el nombre proporcionado
+                    name ?? '...', // Usa el nombre proporcionado
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
@@ -62,7 +64,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   SizedBox(height: 1), // Espacio ajustado entre el nombre y el correo electrónico
                   Text(
-                    email, // Usa el email proporcionado
+                    '@$username', // Usa el username proporcionado
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w600, // Negrita básica
@@ -74,7 +76,7 @@ class CustomDrawer extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '10', // Datos de prueba
+                        '$following', // Usa el valor de seguidos proporcionado
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
@@ -83,7 +85,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        'siguiendo', // Datos de prueba
+                        'Siguiendo', // Texto fijo
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -92,7 +94,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       SizedBox(width: 26),
                       Text(
-                        '14', // Datos de prueba
+                        '$followers', // Usa el valor de seguidores proporcionado
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
@@ -101,7 +103,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        'seguidores', // Datos de prueba
+                        'Seguidores', // Texto fijo
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,

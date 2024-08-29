@@ -27,7 +27,23 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
       material.GlobalKey<material.ScaffoldState>();
   int _currentIndex = 0;
   List<dynamic> _groups = [];
+  UserModel? _user;
   String _id = '';
+  String? name;
+  String? username;
+  int? followers;
+  int? following;
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+    _callUser();
+  }
+
+  void reloadView(){
+    _callUser();
+  }
 
   Future<void> _getData() async {
     final id = await _storage.read(key: 'user') ?? '';
@@ -42,17 +58,53 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     });
   }
 
+  Future<void> _callUser() async {
+    final user = await _storage.read(key: 'user') ?? '0';
+    final id = int.parse(user);
+    final userCommand = UserCommandShow(UserShow(), id);
+
+    try {
+      final response = await userCommand.execute();
+
+      if (mounted) {
+        if (response is UserModel) {
+          setState(() {
+            _user = response;
+            name = _user!.data.attributes.name;
+            username = _user!.data.attributes.username;
+            followers = _user!.data.relationships.followersCount;
+            following = _user!.data.relationships.followingCount;
+
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: 'Error de Conexión',
+              message: 'Error de conexión',
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: 'Error: $e',
+          ),
+        );
+      }
+    }
+  }
+
   final List<material.Widget> _views = [
     Home(), // Vista 0
     SearchView(),
     Center(child: Text('Profile View')),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _getData();
-  }
 
   @override
   material.Widget build(BuildContext context) {
@@ -64,6 +116,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         leading: ProfileAvatar(
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
+            reloadView();
           },
         ),
         title: Row(
@@ -77,9 +130,12 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         toolbarHeight: kToolbarHeight, // Ajusta la altura del AppBar si es necesario
       ),
 
-
-      drawer: CustomDrawer(), // Usar el widget Drawer aquí
-
+      drawer: CustomDrawer(
+        name: name,
+        username: username, // Usa el valor por defecto si `username` es null
+        followers: followers ?? 0, // Usa 0 si `followers` es null
+        following: following ?? 0, // Usa 0 si `following` es null
+      ), // Usar el widget Drawer aquí
       body: material.Stack(
         children: [
           material.Positioned.fill(
