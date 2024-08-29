@@ -22,6 +22,7 @@ class _UpdateState extends State<EditProfile> {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   UserModel? _user;
   bool _submitting = false;
+  String? username;
 
   final input = {
     'name': TextEditingController(),
@@ -56,6 +57,7 @@ class _UpdateState extends State<EditProfile> {
               input['name']!.text = _user!.data.attributes.name;
               input['biography']!.text = _user!.data.attributes.biography ?? '';
               input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
+              username = _user!.data.attributes.username;
           });
         } else {
           showDialog(
@@ -159,31 +161,36 @@ class _UpdateState extends State<EditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
     backgroundColor: Colors.white,
-      appBar: AppBar(
+            appBar: AppBar(
         backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        title: Stack(
-          children: [
-            // Este Positioned coloca el ícono de retroceso en el lado izquierdo
-            Positioned(
-              left: 0,
-              top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
-              child: IconButton(
-                icon: Icon(Icons.arrow_back, color: AppColors.black),
-                onPressed: () {
-                  Navigator.pop(context); // Esto regresa a la pantalla anterior
-                },
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Editar Perfil',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight:
+                      FontWeight.w800,
+                  color: AppColors.black,
+                ),
               ),
-            ),
-            // Este Center centra el LogoBanner en el AppBar
-            Center(
-              child: LogoBanner(), // Aquí se inserta el LogoBanner centrado
-            ),
-          ],
+              Text(
+                '@${username ?? '...'}',
+                style: TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w500, // Negrita básica
+                  color: AppColors.inputDark,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ),
         ),
-        centerTitle: true, // Mantiene el título centrado visualmente
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
