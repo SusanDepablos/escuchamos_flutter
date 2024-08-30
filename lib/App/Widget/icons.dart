@@ -21,6 +21,9 @@ class MaterialIcons {
   static const IconData lock = Icons.lock; // Ícono de candado para Cambiar contraseña
   static const IconData cancel = Icons.cancel; // Ícono de cancelar para Desactivar cuenta
   static const IconData delete = Icons.delete; // Alternativa para Desactivar cuenta
+  static const IconData camera = Icons.camera_alt; // Alternativa para Desactivar cuenta
+  static const IconData image = Icons.image; // Alternativa para Desactivar cuenta
+
 }
 
 

@@ -14,13 +14,22 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget avatar = CircleAvatar(
-      radius: avatarSize / 2,
-      backgroundColor: AppColors.inputLigth,
-      child: Icon(
-        Icons.person,
-        color: AppColors.inputDark,
-        size: iconSize,
+    Widget avatar = Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white, // Color del borde
+          width: 3.0, // Grosor del borde
+        ),
+      ),
+      child: CircleAvatar(
+        radius: avatarSize / 2,
+        backgroundColor: AppColors.inputLigth,
+        child: Icon(
+          Icons.person,
+          color: AppColors.inputDark,
+          size: iconSize,
+        ),
       ),
     );
 

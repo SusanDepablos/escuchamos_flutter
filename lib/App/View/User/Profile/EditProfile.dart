@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
@@ -9,8 +10,11 @@ import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:escuchamos_flutter/App/Widget/Logo.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/CoverPhoto.dart'; // Importa el nuevo widget
+import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart'; 
+import 'package:escuchamos_flutter/App/Widget/ImagePickerDialog.dart'; 
+
 
 class EditProfile extends StatefulWidget {
 
@@ -23,6 +27,8 @@ class _UpdateState extends State<EditProfile> {
   UserModel? _user;
   bool _submitting = false;
   String? username;
+  File? _coverPhoto;
+  File? _profileAvatar;
 
   final input = {
     'name': TextEditingController(),
@@ -41,6 +47,25 @@ class _UpdateState extends State<EditProfile> {
     'biography': null,
     'birthdate': null, 
   };
+
+  void _openImagePicker(bool isCoverPhoto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ImagePickerDialog(
+          onImagePicked: (imageFile) {
+            setState(() {
+              if (isCoverPhoto) {
+                _coverPhoto = imageFile;
+              } else {
+                _profileAvatar = imageFile;
+              }
+            });
+          },
+        );
+      },
+    );
+  }
 
   Future<void> _callUser() async {
     final user = await _storage.read(key: 'user') ?? '0';
@@ -196,28 +221,53 @@ class _UpdateState extends State<EditProfile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 8.0),
+            Stack(
+              clipBehavior: Clip.none, // Permite que el contenido fuera del contenedor sea visible
+              alignment: Alignment.center,
+              children: [
+                CoverPhoto(
+                  height: 140.0, // Altura deseada
+                  onPressed: () => _openImagePicker(true),
+                  ),
+                Positioned(
+                  bottom: -35, // Ajusta este valor para que la mitad del avatar esté fuera de la foto de portada
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: ClipOval(
+                      child: ProfileAvatar(
+                        avatarSize: 70.0,
+                        iconSize: 40.0,
+                        onPressed: () => _openImagePicker(true),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 60.0),
             GenericInput(
               text: 'Nombre y Apellido',
               input: input['name']!,
               border: _borderColors['name']!,
               error: _errorMessages['name'],
             ),
-            SizedBox(height: 8.0),
+            SizedBox(height: 20.0),
             GenericInput(
               text: 'Biografía',
               input: input['biography']!,
               border: _borderColors['biography']!,
               error: _errorMessages['biography'],
             ),
-            SizedBox(height: 8.0),
+            SizedBox(height: 20.0),
             DateInput(
               text: 'Fecha de Nacimiento',
               input: input['birthdate']!,
               border: _borderColors['birthdate']!,
               error: _errorMessages['birthdate'],
             ),
-            SizedBox(height: 32.0),
+            SizedBox(height: 35.0),
             GenericButton(
               label: 'Actualizar',
               onPressed: _updateUser,
