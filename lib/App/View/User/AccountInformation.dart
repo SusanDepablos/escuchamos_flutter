@@ -3,19 +3,15 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
-import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
-import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
-import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class EditAccount extends StatefulWidget {
+class AccountInformation extends StatefulWidget {
   @override
-  _UpdateState createState() => _UpdateState();
+  _AccountInformationState createState() => _AccountInformationState();
 }
 
-class _UpdateState extends State<EditAccount> {
+class _AccountInformationState extends State<AccountInformation> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   UserModel? _user;
   String? username;
@@ -135,7 +131,16 @@ class _UpdateState extends State<EditAccount> {
                 ),
               ),
               onTap: () {
-                Navigator.pushReplacementNamed(context, 'Base');
+                Navigator.pushNamed(
+                  context,
+                  'edit-account',
+                  arguments: {
+                    'text': 'Cambiar nombre de usuario',
+                    'label': 'Etiqueta',
+                    'textChanged':  false,
+                    'field': 'username'
+                  },
+                );
               },
             ),
             ListTile(
@@ -148,7 +153,7 @@ class _UpdateState extends State<EditAccount> {
                 ),
               ),
               subtitle: Text(
-                isLoading ? "Cargando..." : (phoneNumber ?? "Añadir"),
+                isLoading ? "..." : (phoneNumber ?? "Añadir"),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w500, // Negrita básica

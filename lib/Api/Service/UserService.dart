@@ -28,8 +28,8 @@ class UserShow {
   }
 }
 
-class UserUpdate {
-  Future<ServiceResponse> updateUser(String name, String biography, String birthdate) async {
+class ProfileUpdate {
+  Future<ServiceResponse> updateProfile(String name, String biography, String birthdate) async {
     final FlutterSecureStorage _storage = FlutterSecureStorage();
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}user/update/');
@@ -49,18 +49,48 @@ class UserUpdate {
       'Authorization': 'Token $token', // Añadir el token en las cabeceras
     };
 
-    // Realiza la solicitud POST
     final response = await http.put(
       url,
       headers: headers,
       body: body,
     );
 
-    // Retorna la respuesta de la API envuelta en ServiceResponse
     return ServiceResponse.fromJsonString(
       utf8.decode(response.bodyBytes),
       response.statusCode,
     );
   }
-
 }
+
+class AccountUpdate {
+  Future<ServiceResponse> updateAccount(String body) async {
+    final FlutterSecureStorage _storage = FlutterSecureStorage();
+
+    final url = Uri.parse('${ApiUrl.baseUrl}user/update/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    try {
+      final response = await http.put(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      return ServiceResponse.fromJsonString(
+        utf8.decode(response.bodyBytes),
+        response.statusCode,
+      );
+    } catch (e) {
+      // Manejo de errores de red o de HTTP
+      throw Exception('Error al actualizar la cuenta: $e');
+    }
+  }
+}
+
+
+  

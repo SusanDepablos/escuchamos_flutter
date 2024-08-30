@@ -35,15 +35,15 @@ class UserCommandShow {
   }
 }
 
-class UserCommandUpdate {
-  final UserUpdate _userUpdateService;
+class ProfileCommandUpdate {
+  final ProfileUpdate _userUpdateService;
 
-  UserCommandUpdate(this._userUpdateService);
+  ProfileCommandUpdate(this._userUpdateService);
 
   Future<dynamic> execute(
-      String name, String biography, String birthdate) async {
+      String name, String biography, String birthdate,) async {
     try {
-      var response = await _userUpdateService.updateUser(
+      var response = await _userUpdateService.updateProfile(
           name, biography, birthdate);
 
       if (response.statusCode == 200) {
@@ -66,3 +66,34 @@ class UserCommandUpdate {
     }
   }
 }
+
+class AccountCommandUpdate {
+  final AccountUpdate _userUpdateService;
+
+  AccountCommandUpdate(this._userUpdateService);
+
+  Future<dynamic> execute({required String body}) async {
+    try {
+      var response = await _userUpdateService.updateAccount(body);
+
+      if (response.statusCode == 200) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
+

@@ -190,7 +190,6 @@ class CustomDrawer extends StatelessWidget {
           icon: Icons.info, // Icono para Acerca de
           title: 'Acerca de',
           onTap: () {
-            //Navigator.pushNamed(context, 'about');
           },
         ),
       ],

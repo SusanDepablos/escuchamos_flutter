@@ -3,9 +3,6 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
-import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
-import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -124,7 +121,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, 'edit-account');
+                Navigator.pushNamed(context, 'account_information');
               },
             ),
             ListTile(

@@ -183,7 +183,7 @@ class _UpdateState extends State<EditProfile> {
     });
 
     try {
-      var response = await UserCommandUpdate(UserUpdate()).execute(
+      var response = await ProfileCommandUpdate(ProfileUpdate()).execute(
         input['name']!.text,
         input['biography']!.text,
         input['birthdate']!.text

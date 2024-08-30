@@ -10,7 +10,8 @@ import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
-import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
+import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
+import 'package:escuchamos_flutter/App/View/User/EditAccount/EditAccount.dart';
 
 class AppRoutes {
   static final routes = {
@@ -27,7 +28,16 @@ class AppRoutes {
 
     'settings': (context) => Settings(),
 
-    'edit-account': (context) => EditAccount(),  
+    'account_information': (context) => AccountInformation(),  
+
+    'edit-account': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final text = args['text'] as String;
+      final label = args['label'] as String;
+      final textChanged = args['textChanged'] as bool;
+      final field = args['field'] as String;
+      return EditAccount(text: text, label: label, textChanged: textChanged, field: field);
+    },
 
 
     'account-Verification': (context) {
