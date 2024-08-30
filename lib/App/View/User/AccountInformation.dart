@@ -27,6 +27,10 @@ class _AccountInformationState extends State<AccountInformation> {
     _callUser();
   }
 
+  void reloadView() {
+    _callUser();
+  }
+
   Future<void> _callUser() async {
     final user = await _storage.read(key: 'user') ?? '0';
     final id = int.parse(user);
@@ -130,17 +134,20 @@ class _AccountInformationState extends State<AccountInformation> {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              onTap: () {
-                Navigator.pushNamed(
+              onTap: () async {
+                // Navega a la página 'edit-account' y espera su resultado
+                final result = await Navigator.pushNamed(
                   context,
                   'edit-account',
                   arguments: {
                     'text': 'Cambiar nombre de usuario',
                     'label': 'Etiqueta',
-                    'textChanged':  false,
+                    'textChanged': false,
                     'field': 'username'
                   },
                 );
+
+                reloadView();
               },
             ),
             ListTile(
@@ -161,8 +168,19 @@ class _AccountInformationState extends State<AccountInformation> {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, 'Base');
+              onTap: () async {
+                final result = await Navigator.pushNamed(
+                  context,
+                  'edit-account',
+                  arguments: {
+                    'text': 'Introduce tu numero de telefónonico',
+                    'label': 'Cambiar numero de telefóno',
+                    'textChanged': true,
+                    'field': 'phone_number'
+                  },
+                );
+
+                reloadView();
               },
             ),
             ListTile(

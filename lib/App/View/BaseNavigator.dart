@@ -116,7 +116,6 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         leading: ProfileAvatar(
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
-            reloadView();
           },
         ),
         title: Row(

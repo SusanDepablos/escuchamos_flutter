@@ -19,13 +19,12 @@ class EditAccount extends StatefulWidget {
   final String? head;
   final String field;
 
-  EditAccount({
-    required this.text,
-    required this.label,
-    this.textChanged = true,
-    this.head,
-    required this.field  
-  });
+  EditAccount(
+      {required this.text,
+      required this.label,
+      this.textChanged = true,
+      this.head,
+      required this.field});
 
   @override
   _UpdateState createState() => _UpdateState();
@@ -95,12 +94,23 @@ class _UpdateState extends State<EditAccount> {
 
     try {
       final body = jsonEncode({
-              widget.field: input['fieldUpdate']!.text,
-            });
+        widget.field: input['fieldUpdate']!.text,
+      });
 
-      var response = await AccountCommandUpdate(AccountUpdate()).execute(body: body,);
+      var response =
+          await AccountCommandUpdate(AccountUpdate()).execute(body: body);
 
-      if (response is ValidationResponse) {
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Correcto',
+            message: response.message,
+          ),
+        );
+
+        Navigator.pop(context);
+      } else if (response is ValidationResponse) {
         if (response.key[widget.field] != null) {
           setState(() {
             _borderColors['fieldUpdate'] = AppColors.inputDark;
@@ -114,20 +124,17 @@ class _UpdateState extends State<EditAccount> {
           });
         }
       } else {
-        showDialog(
+        await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is SuccessResponse
-                ? 'Correcto'
-                : response is InternalServerError
-                    ? 'Error'
-                    : 'Error de Conexión',
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
             message: response.message,
           ),
         );
       }
     } catch (e) {
-      showDialog(
+      await showDialog(
         context: context,
         builder: (context) => PopupWindow(
           title: 'Error',
