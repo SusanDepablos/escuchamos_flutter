@@ -5,11 +5,13 @@ class CoverPhoto extends StatelessWidget {
   final VoidCallback? onPressed;
   final double height; // Ahora solo recibe la altura
   final double iconSize;
+  final ImageProvider? imageProvider; // Agregar este parámetro
 
   CoverPhoto({
     this.onPressed,
     this.height = 120, // Altura requerida
     this.iconSize = 24.0,
+    this.imageProvider, // Inicializar el parámetro
   });
 
   @override
@@ -22,8 +24,13 @@ class CoverPhoto extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.inputLigth,
         borderRadius: BorderRadius.circular(12.0),
-        image: DecorationImage(
-          image: AssetImage('assets/default_cover_photo.png'), // Imagen predeterminada
+        image: imageProvider != null
+              ? DecorationImage(
+                  image: imageProvider!,
+                  fit: BoxFit.cover,
+                )
+              : DecorationImage(
+          image: AssetImage('assets/banner.png'), // Imagen predeterminada
           fit: BoxFit.cover,
         ),
       ),

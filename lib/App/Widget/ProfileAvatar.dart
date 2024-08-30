@@ -5,11 +5,13 @@ class ProfileAvatar extends StatelessWidget {
   final VoidCallback? onPressed;
   final double avatarSize;
   final double iconSize;
+  final ImageProvider? imageProvider; // Agregar este parámetro
 
   ProfileAvatar({
     this.onPressed,
     this.avatarSize = 40.0,
     this.iconSize = 24.0,
+    this.imageProvider, // Inicializar el parámetro
   });
 
   @override
@@ -18,18 +20,21 @@ class ProfileAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.white, // Color del borde
-          width: 3.0, // Grosor del borde
+          color: Colors.white,
+          width: 3.0,
         ),
       ),
       child: CircleAvatar(
         radius: avatarSize / 2,
         backgroundColor: AppColors.inputLigth,
-        child: Icon(
-          Icons.person,
-          color: AppColors.inputDark,
-          size: iconSize,
-        ),
+        backgroundImage: imageProvider, // Usar imagen proporcionada
+        child: imageProvider == null
+            ? Icon(
+                Icons.person,
+                color: AppColors.inputDark,
+                size: iconSize,
+              )
+            : null,
       ),
     );
 
@@ -41,9 +46,7 @@ class ProfileAvatar extends StatelessWidget {
     } else {
       return GestureDetector(
         child: avatar,
-        onTap: () {
-          // No hacer nada si onPressed es null
-        },
+        onTap: () {},
       );
     }
   }

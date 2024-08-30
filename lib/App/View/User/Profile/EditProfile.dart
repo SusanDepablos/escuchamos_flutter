@@ -50,64 +50,41 @@ class _UpdateState extends State<EditProfile> {
     'birthdate': null, 
   };
 
-  void _openImagePicker(bool isCoverPhoto) {
-    showDialog(
+  void _openImagePicker(bool isCoverPhoto) async {
+    final imageFile = await showDialog<File>(
       context: context,
       builder: (BuildContext context) {
         return ImagePickerDialog(
           onImagePicked: (imageFile) {
-            setState(() {
-              // Muestra la vista previa de la imagen seleccionada
-              _showImagePreview(imageFile, isCoverPhoto);
-            });
+            Navigator.of(context).pop(imageFile);
           },
         );
       },
     );
+
+    if (imageFile != null) {
+      setState(() {
+        _isCoverPhoto = isCoverPhoto;
+        _imageToPreview = imageFile;
+        _showImagePreview();
+      });
+    }
   }
-  void _showImagePreview(File imageFile, bool isCoverPhoto) {
+
+  void _showImagePreview() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Vista Previa'),
-          content: Container(
-            width: double.maxFinite,
-            height: 300,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.file(
-                imageFile,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-                setState(() {
-                  // Guarda la imagen seleccionada
-                  if (isCoverPhoto) {
-                    _coverPhoto = imageFile;
-                  } else {
-                    _profileAvatar = imageFile;
-                  }
-                });
-              },
-              child: Text('Confirmar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-              },
-              child: Text('Cancelar'),
-            ),
-          ],
+        return ImagePreview(
+          image: _imageToPreview,
+          onConfirm: _confirmImageSelection,
+          onCancel: _cancelImageSelection,
+          isCoverPhoto: _isCoverPhoto,
         );
       },
     );
   }
+
   void _confirmImageSelection() {
     setState(() {
       if (_isCoverPhoto) {
@@ -268,7 +245,7 @@ class _UpdateState extends State<EditProfile> {
                 '@${username ?? '...'}',
                 style: TextStyle(
                   fontSize: 13.5,
-                  fontWeight: FontWeight.w500, // Negrita básica
+                  fontWeight: FontWeight.w500,
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
@@ -283,15 +260,18 @@ class _UpdateState extends State<EditProfile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
-              clipBehavior: Clip.none, // Permite que el contenido fuera del contenedor sea visible
+              clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
                 CoverPhoto(
-                  height: 140.0, // Altura deseada
+                  height: 140.0,
                   onPressed: () => _openImagePicker(true),
+                  imageProvider: _coverPhoto != null
+                      ? FileImage(_coverPhoto!)
+                      : null, // Pasar la imagen de portada seleccionada
                 ),
                 Positioned(
-                  bottom: -35, // Ajusta este valor para que la mitad del avatar esté fuera de la foto de portada
+                  bottom: -35,
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -301,6 +281,9 @@ class _UpdateState extends State<EditProfile> {
                         avatarSize: 70.0,
                         iconSize: 40.0,
                         onPressed: () => _openImagePicker(false),
+                        imageProvider: _profileAvatar != null
+                            ? FileImage(_profileAvatar!)
+                            : null, // Pasar la imagen de perfil seleccionada
                       ),
                     ),
                   ),
