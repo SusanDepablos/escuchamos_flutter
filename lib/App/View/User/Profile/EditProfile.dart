@@ -14,10 +14,9 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/CoverPhoto.dart'; // Importa el nuevo widget
 import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart'; 
 import 'package:escuchamos_flutter/App/Widget/ImagePickerDialog.dart'; 
-
+import 'package:escuchamos_flutter/App/Widget/FilePreview.dart'; 
 
 class EditProfile extends StatefulWidget {
-
   @override
   _UpdateState createState() => _UpdateState();
 }
@@ -29,6 +28,9 @@ class _UpdateState extends State<EditProfile> {
   String? username;
   File? _coverPhoto;
   File? _profileAvatar;
+  File? _imageToPreview;
+  bool _showPreview = false;
+  bool _isCoverPhoto = true; // Flag to determine which image is being previewed
 
   final input = {
     'name': TextEditingController(),
@@ -36,7 +38,7 @@ class _UpdateState extends State<EditProfile> {
     'birthdate': TextEditingController(),
   };
 
-    final _borderColors = {
+  final _borderColors = {
     'name': AppColors.inputBasic,
     'biography': AppColors.inputBasic,
     'birthdate': AppColors.inputBasic
@@ -55,16 +57,76 @@ class _UpdateState extends State<EditProfile> {
         return ImagePickerDialog(
           onImagePicked: (imageFile) {
             setState(() {
-              if (isCoverPhoto) {
-                _coverPhoto = imageFile;
-              } else {
-                _profileAvatar = imageFile;
-              }
+              // Muestra la vista previa de la imagen seleccionada
+              _showImagePreview(imageFile, isCoverPhoto);
             });
           },
         );
       },
     );
+  }
+  void _showImagePreview(File imageFile, bool isCoverPhoto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Vista Previa'),
+          content: Container(
+            width: double.maxFinite,
+            height: 300,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.file(
+                imageFile,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+                setState(() {
+                  // Guarda la imagen seleccionada
+                  if (isCoverPhoto) {
+                    _coverPhoto = imageFile;
+                  } else {
+                    _profileAvatar = imageFile;
+                  }
+                });
+              },
+              child: Text('Confirmar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void _confirmImageSelection() {
+    setState(() {
+      if (_isCoverPhoto) {
+        _coverPhoto = _imageToPreview;
+      } else {
+        _profileAvatar = _imageToPreview;
+      }
+      _imageToPreview = null;
+      _showPreview = false;
+    });
+    Navigator.of(context).pop(); // Close the preview dialog
+  }
+
+  void _cancelImageSelection() {
+    setState(() {
+      _imageToPreview = null;
+      _showPreview = false;
+    });
+    Navigator.of(context).pop(); // Close the preview dialog
   }
 
   Future<void> _callUser() async {
@@ -79,10 +141,10 @@ class _UpdateState extends State<EditProfile> {
         if (response is UserModel) {
           setState(() {
             _user = response;
-              input['name']!.text = _user!.data.attributes.name;
-              input['biography']!.text = _user!.data.attributes.biography ?? '';
-              input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
-              username = _user!.data.attributes.username;
+            input['name']!.text = _user!.data.attributes.name;
+            input['biography']!.text = _user!.data.attributes.biography ?? '';
+            input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
+            username = _user!.data.attributes.username;
           });
         } else {
           showDialog(
@@ -115,7 +177,7 @@ class _UpdateState extends State<EditProfile> {
     _callUser();
   }
 
-    Future<void> _updateUser() async {
+  Future<void> _updateUser() async {
     setState(() {
       _submitting = true;
     });
@@ -185,8 +247,8 @@ class _UpdateState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.white,
-            appBar: AppBar(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Padding(
@@ -198,8 +260,7 @@ class _UpdateState extends State<EditProfile> {
                 'Editar Perfil',
                 style: const TextStyle(
                   fontSize: 20,
-                  fontWeight:
-                      FontWeight.w800,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
               ),
@@ -228,7 +289,7 @@ class _UpdateState extends State<EditProfile> {
                 CoverPhoto(
                   height: 140.0, // Altura deseada
                   onPressed: () => _openImagePicker(true),
-                  ),
+                ),
                 Positioned(
                   bottom: -35, // Ajusta este valor para que la mitad del avatar esté fuera de la foto de portada
                   child: Container(
@@ -239,7 +300,7 @@ class _UpdateState extends State<EditProfile> {
                       child: ProfileAvatar(
                         avatarSize: 70.0,
                         iconSize: 40.0,
-                        onPressed: () => _openImagePicker(true),
+                        onPressed: () => _openImagePicker(false),
                       ),
                     ),
                   ),
