@@ -11,7 +11,7 @@ import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
 import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
-import 'package:escuchamos_flutter/App/View/User/EditAccount/EditAccount.dart';
+import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
 
 class AppRoutes {
   static final routes = {
