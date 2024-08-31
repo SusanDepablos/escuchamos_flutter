@@ -171,13 +171,7 @@ class _AccountInformationState extends State<AccountInformation> {
               onTap: () async {
                 final result = await Navigator.pushNamed(
                   context,
-                  'edit-account',
-                  arguments: {
-                    'text': 'Introduce tu numero de telefónonico',
-                    'label': 'Cambiar numero de telefóno',
-                    'textChanged': true,
-                    'field': 'phone_number'
-                  },
+                  'phone-update',
                 );
 
                 reloadView();
