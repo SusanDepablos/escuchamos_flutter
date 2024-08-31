@@ -31,7 +31,9 @@ class AppRoutes {
 
     'settings': (context) => Settings(),
 
-    'account_information': (context) => AccountInformation(),  
+    'account_information': (context) => AccountInformation(),
+
+    'phone-update': (context) => PhoneUpdate(),   
 
     'edit-account': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
