@@ -13,6 +13,7 @@ import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
 import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
+import 'package:escuchamos_flutter/app/View/User/Account/PhoneUpdate.dart';
 
 class AppRoutes {
   static final routes = {
