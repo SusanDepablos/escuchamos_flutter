@@ -7,6 +7,15 @@ class ApiUrl{
   static const String baseUrl = 'https://escuchamos-mcu6.onrender.com/api/';
 
   // -------------------------------------------------------------------------//
+
+  //paginas:
+  static const String WebSite = 'https://escuchamos-mcu6.onrender.com/';
+  static const String Facebook= '';
+  static const String Correo = '';
+
+
+
+  // -------------------------------------------------------------------------//
 }
 
   // ---------------------------colores de la app ---------------------------//

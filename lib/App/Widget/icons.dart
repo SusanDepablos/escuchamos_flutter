@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/Constants/Constants.dart';
+
+
 
 
 class CupertinoIcons {
@@ -12,6 +13,8 @@ class CupertinoIcons {
       fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
   static const IconData lock_circle =
       IconData(0xf6f8, fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+    static const IconData instagram = IconData(0xf40e, // Reemplaza con el código correcto si está disponible
+      fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
 }
 
 
@@ -23,11 +26,11 @@ class MaterialIcons {
   static const IconData delete = Icons.delete; // Alternativa para Desactivar cuenta
   static const IconData camera = Icons.camera_alt; // Alternativa para Desactivar cuenta
   static const IconData image = Icons.image; // Alternativa para Desactivar cuenta
-
+  
+  // Añadir los íconos para redes sociales y comunicación
+  static const IconData web = Icons.language; // Ícono para página web
+  static const IconData facebook = Icons.facebook; // Ícono para Facebook
+  static const IconData email = Icons.email; // Ícono para correo electrónico
 }
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//"ICONO DE USUARIO O FOTO PERFIL DE USUARIO"
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

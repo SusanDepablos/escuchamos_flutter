@@ -19,6 +19,24 @@ class Logo extends StatelessWidget {
   }
 }
 
+/// Un widget que muestra un icono centrado en la pantalla.
+class LogoIcon extends StatelessWidget {
+  final double size;
+
+  LogoIcon({this.size = 150.0});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Image.asset(
+        'assets/LogoIcon.png', // Ruta a tu imagen de banner
+        width: MediaQuery.of(context).size.width * 0.3, // Ajusta el ancho al 80% del tamaño de la pantalla
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+}
+
 
 /// Un widget que muestra una imagen de banner centrada en la pantalla.
 class LogoBanner extends StatelessWidget {
