@@ -116,7 +116,8 @@ class _UpdateState extends State<EditProfile> {
     _callUser();
   }
 
-    void _openImagePicker(bool isCoverPhoto) async {
+
+  void _openImagePicker(bool isCoverPhoto) async {
     final imageFile = await showDialog<File>(
       context: context,
       builder: (BuildContext context) {
@@ -124,6 +125,22 @@ class _UpdateState extends State<EditProfile> {
           onImagePicked: (imageFile) {
             Navigator.of(context).pop(imageFile);
           },
+          onDeletePhoto: () {
+            _DeletePhoto(isCoverPhoto ? 'cover' : 'profile');
+            print(isCoverPhoto ? 'cover' : 'profile');
+            setState(() {
+              if (isCoverPhoto) {
+                _coverPhoto = null;
+                _coverPhotoUrl = null;
+              } else {
+                _profileAvatar = null;
+                _profileAvatarUrl = null;
+              }
+            });
+          },
+          hasPhoto: isCoverPhoto
+              ? _coverPhotoUrl != null
+              : _profileAvatarUrl != null,
         );
       },
     );
@@ -278,6 +295,38 @@ class _UpdateState extends State<EditProfile> {
       setState(() {
         _submitting = false;
       });
+    }
+  }
+  Future<void> _DeletePhoto(String type) async {
+    try {
+      var response = await DeleteCommandPhoto(DeletePhoto()).execute(
+        type: type, // Pasa el tipo: 'profile' o 'cover'
+      );
+
+      if (response is ValidationResponse) {
+        // Manejo de validaciones, si es necesario
+      } else {
+        // Mostrar el diálogo con el mensaje de éxito o error
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: response is SuccessResponse
+                ? 'Correcto'
+                : response is InternalServerError
+                    ? 'Error'
+                    : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
     }
   }
 

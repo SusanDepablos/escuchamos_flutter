@@ -126,3 +126,35 @@ class UploadCommandPhoto {
     }
   }
 }
+
+class DeleteCommandPhoto {
+  final DeletePhoto _userPhotoService;
+
+  DeleteCommandPhoto(this._userPhotoService);
+
+  Future<dynamic> execute({required String type}) async {
+    try {
+      // Llamar a la función photoUpload con los parámetros file y type
+      var response = await _userPhotoService.photoDelete(type);
+
+      // Manejar la respuesta según el código de estado
+      if (response.statusCode == 202) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+

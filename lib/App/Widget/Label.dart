@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 /// Un widget interactivo que muestra un texto que actúa como un botón con funcionalidad adicional.
+import 'package:flutter/material.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de importar el archivo de constantes
+
 class LabelAction extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final TextStyle? style;
   final bool isLoading;
+  final IconData? icon; // Campo opcional para el ícono
 
   LabelAction({
     required this.text,
     required this.onPressed,
     this.style,
     this.isLoading = false,
+    this.icon, // Inicialización del campo opcional para el ícono
   });
 
   @override
@@ -62,18 +67,25 @@ class _LabelActionState extends State<LabelAction> {
                 ),
               ),
             ),
-            // Texto visible cuando isLoading es false
+            // Texto e ícono visible cuando isLoading es false
             Visibility(
               visible: !widget.isLoading,
-              child: Text(
-                widget.text,
-                style: widget.style ??
-                    TextStyle(
-                      color: _isDisabled ? Colors.grey : AppColors.primaryBlue,
-                      fontSize: 16, // Tamaño de fuente por defecto
-                      decoration:
-                          TextDecoration.underline, // Subrayado como un enlace
-                    ),
+              child: Row(
+                children: [
+                  if (widget.icon != null) ...[
+                    Icon(widget.icon, size: 24, color: widget.style?.color ?? AppColors.primaryBlue),
+                    SizedBox(width: 8), // Espacio entre el ícono y el texto
+                  ],
+                  Text(
+                    widget.text,
+                    style: widget.style ??
+                        TextStyle(
+                          color: _isDisabled ? Colors.grey : AppColors.primaryBlue,
+                          fontSize: 16, // Tamaño de fuente por defecto
+                          decoration: TextDecoration.underline, // Subrayado como un enlace
+                        ),
+                  ),
+                ],
               ),
             ),
           ],
