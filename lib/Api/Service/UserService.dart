@@ -3,6 +3,7 @@ import 'package:escuchamos_flutter/Api/Response/ServiceResponse.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:io';
 
 class UserShow {
   Future<ServiceResponse> showUser(int id) async {
@@ -91,6 +92,35 @@ class AccountUpdate {
     }
   }
 }
+class UploadPhoto {
+  Future<ServiceResponse> photoUpload(File file, String type) async {
+    final FlutterSecureStorage _storage = FlutterSecureStorage();
 
+    final url = Uri.parse('${ApiUrl.baseUrl}user/upload/photo/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final headers = {
+      'Authorization': 'Token $token',
+    };
+
+    // Crear una solicitud multipart
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
+
+    // Adjuntar el archivo y el tipo al cuerpo del formulario
+    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    request.fields['type'] = type;
+
+    // Enviar la solicitud
+    final streamedResponse = await request.send();
+
+    // Convertir la respuesta en formato `ServiceResponse`
+    final response = await http.Response.fromStream(streamedResponse);
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
 
   

@@ -50,7 +50,73 @@ class _UpdateState extends State<EditProfile> {
     'birthdate': null, 
   };
 
-  void _openImagePicker(bool isCoverPhoto) async {
+  Future<void> _callUser() async {
+    final user = await _storage.read(key: 'user') ?? '0';
+    final id = int.parse(user);
+    final userCommand = UserCommandShow(UserShow(), id);
+
+    try {
+      final response = await userCommand.execute();
+
+      if (mounted) {
+        if (response is UserModel) {
+          setState(() {
+            _user = response;
+            input['name']!.text = _user!.data.attributes.name;
+            input['biography']!.text = _user!.data.attributes.biography ?? '';
+            input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
+            username = _user!.data.attributes.username;
+            // Buscar la URL para el avatar y la portada basándose en el tipo de archivo
+            _profileAvatarUrl = _getFileUrlByType('profile');
+            _coverPhotoUrl = _getFileUrlByType('cover');
+            });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: e.toString(),
+          ),
+        );
+      }
+    }
+  }
+
+  String? _profileAvatarUrl;
+  String? _coverPhotoUrl;
+
+  // Método auxiliar para obtener la URL del archivo por tipo
+  String? _getFileUrlByType(String type) {
+    try {
+      final file = _user?.data.relationships.files.firstWhere(
+        (file) => file.attributes.type == type,
+      );
+      return file!.attributes.url;
+    } catch (e) {
+      return null; // Retorna null si no se encuentra el archivo
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _callUser();
+  }
+
+    void _openImagePicker(bool isCoverPhoto) async {
     final imageFile = await showDialog<File>(
       context: context,
       builder: (BuildContext context) {
@@ -85,7 +151,7 @@ class _UpdateState extends State<EditProfile> {
     );
   }
 
-  void _confirmImageSelection() {
+  void _confirmImageSelection() async {
     setState(() {
       if (_isCoverPhoto) {
         _coverPhoto = _imageToPreview;
@@ -95,7 +161,15 @@ class _UpdateState extends State<EditProfile> {
       _imageToPreview = null;
       _showPreview = false;
     });
-    Navigator.of(context).pop(); // Close the preview dialog
+
+    Navigator.of(context).pop(); // Cierra el diálogo de previsualización
+
+    // Subir la imagen después de que se confirme la selección
+    if (_coverPhoto != null && _isCoverPhoto) {
+      await _uploadPhoto(_coverPhoto!, 'cover');
+    } else if (_profileAvatar != null && !_isCoverPhoto) {
+      await _uploadPhoto(_profileAvatar!, 'profile');
+    }
   }
 
   void _cancelImageSelection() {
@@ -106,52 +180,38 @@ class _UpdateState extends State<EditProfile> {
     Navigator.of(context).pop(); // Close the preview dialog
   }
 
-  Future<void> _callUser() async {
-    final user = await _storage.read(key: 'user') ?? '0';
-    final id = int.parse(user);
-    final userCommand = UserCommandShow(UserShow(), id);
-
+  Future<void> _uploadPhoto(File file, String type) async {
     try {
-      final response = await userCommand.execute();
+      var response = await UploadCommandPhoto(UploadPhoto()).execute(
+        file: file, // Pasa el archivo seleccionado
+        type: type, // Pasa el tipo: 'profile' o 'cover'
+      );
 
-      if (mounted) {
-        if (response is UserModel) {
-          setState(() {
-            _user = response;
-            input['name']!.text = _user!.data.attributes.name;
-            input['biography']!.text = _user!.data.attributes.biography ?? '';
-            input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
-            username = _user!.data.attributes.username;
-          });
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError
-                  ? 'Error'
-                  : 'Error de Conexión',
-              message: response.message,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
+      if (response is ValidationResponse) {
+        // Manejo de validaciones, si es necesario
+      } else {
+        // Mostrar el diálogo con el mensaje de éxito o error
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: response is SuccessResponse
+                ? 'Correcto'
+                : response is InternalServerError
+                    ? 'Error'
+                    : 'Error de Conexión',
+            message: response.message,
           ),
         );
       }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _callUser();
   }
 
   Future<void> _updateUser() async {
@@ -265,11 +325,14 @@ class _UpdateState extends State<EditProfile> {
               children: [
                 CoverPhoto(
                   height: 140.0,
+                  iconSize: 50.0,
                   onPressed: () => _openImagePicker(true),
                   imageProvider: _coverPhoto != null
                       ? FileImage(_coverPhoto!)
-                      : null, // Pasar la imagen de portada seleccionada
-                ),
+                      : (_coverPhotoUrl != null
+                          ? NetworkImage(_coverPhotoUrl!)
+                          : null), // Imagen por defecto
+                  ),
                 Positioned(
                   bottom: -35,
                   child: Container(
@@ -282,8 +345,11 @@ class _UpdateState extends State<EditProfile> {
                         iconSize: 40.0,
                         onPressed: () => _openImagePicker(false),
                         imageProvider: _profileAvatar != null
-                            ? FileImage(_profileAvatar!)
-                            : null, // Pasar la imagen de perfil seleccionada
+                          ? FileImage(_profileAvatar!)
+                          : (_profileAvatarUrl != null
+                              ? NetworkImage(_profileAvatarUrl!)
+                              : null) // Elimina AssetImage
+                      , // Imagen por defecto
                       ),
                     ),
                   ),

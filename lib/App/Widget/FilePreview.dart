@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'package:escuchamos_flutter/App/Widget/Label.dart';
 
 class ImagePreview extends StatelessWidget {
   final File? image;
@@ -92,14 +92,12 @@ class ImagePreview extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
+            LabelAction(
+              text: 'Confirmar',
               onPressed: onConfirm,
-              child: Text(
-                'Confirmar',
-                style: TextStyle(color: Colors.white),
-              ),
+              style: TextStyle(color: Colors.white),
             ),
-          ],
+                ],
         ),
       ),
     );

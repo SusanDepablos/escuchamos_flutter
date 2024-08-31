@@ -3,20 +3,20 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class CoverPhoto extends StatelessWidget {
   final VoidCallback? onPressed;
-  final double height; // Ahora solo recibe la altura
-  final double iconSize;
-  final ImageProvider? imageProvider; // Agregar este parámetro
+  final double height; // Altura de la foto
+  final double iconSize; // Tamaño del ícono
+  final ImageProvider? imageProvider; // Parámetro para la imagen de fondo
 
   CoverPhoto({
     this.onPressed,
-    this.height = 120, // Altura requerida
-    this.iconSize = 24.0,
+    this.height = 120, // Altura por defecto
+    this.iconSize = 24.0, // Tamaño del ícono por defecto
     this.imageProvider, // Inicializar el parámetro
   });
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width; // Obtén el ancho de la pantalla
+    double width = MediaQuery.of(context).size.width; // Obtiene el ancho de la pantalla
 
     Widget coverPhoto = Container(
       width: width, // Usa el ancho de la pantalla
@@ -25,22 +25,21 @@ class CoverPhoto extends StatelessWidget {
         color: AppColors.inputLigth,
         borderRadius: BorderRadius.circular(12.0),
         image: imageProvider != null
-              ? DecorationImage(
-                  image: imageProvider!,
-                  fit: BoxFit.cover,
-                )
-              : DecorationImage(
-          image: AssetImage('assets/banner.png'), // Imagen predeterminada
-          fit: BoxFit.cover,
-        ),
+            ? DecorationImage(
+                image: imageProvider!,
+                fit: BoxFit.cover,
+              )
+            : null,
       ),
-      child: Center(
-        child: Icon(
-          Icons.image,
-          color: AppColors.inputDark,
-          size: iconSize,
-        ),
-      ),
+      child: imageProvider == null
+          ? Center(
+              child: Icon(
+                Icons.image,
+                color: AppColors.inputDark,
+                size: iconSize, // Tamaño del ícono
+              ),
+            )
+          : null, // No muestra el ícono si imageProvider no es null
     );
 
     if (onPressed != null) {
@@ -52,7 +51,7 @@ class CoverPhoto extends StatelessWidget {
       return GestureDetector(
         child: coverPhoto,
         onTap: () {
-          // No hacer nada si onPressed es null
+          // No hace nada si onPressed es null
         },
       );
     }

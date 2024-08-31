@@ -7,12 +7,14 @@ class CustomDrawer extends StatelessWidget {
   final String? username;
   final int followers;
   final int following;
+  final ImageProvider? imageProvider;
 
   CustomDrawer({
     this.name,
     this.username,
     required this.followers,
     required this.following,
+    this.imageProvider, // Inicializa el parámetro
   });
 
   @override
@@ -51,6 +53,7 @@ class CustomDrawer extends StatelessWidget {
                     child: ProfileAvatar(
                       avatarSize: 60.0, // Tamaño del CircleAvatar
                       iconSize: 30.0,
+                      imageProvider: imageProvider, // Pasa el ImageProvider aquí
                     ),
                   ),
                   SizedBox(height: 1), // Espacio entre el CircleAvatar y el nombre

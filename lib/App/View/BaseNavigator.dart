@@ -99,6 +99,18 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     }
   }
 
+  // Método auxiliar para obtener la URL del archivo por tipo
+  String? _getFileUrlByType(String type) {
+    try {
+      final file = _user?.data.relationships.files.firstWhere(
+        (file) => file.attributes.type == type,
+      );
+      return file?.attributes.url;
+    } catch (e) {
+      return null; // Retorna null si no se encuentra el archivo
+    }
+  }
+
   final List<material.Widget> _views = [
     Home(), // Vista 0
     SearchView(),
@@ -108,12 +120,20 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
 
   @override
   material.Widget build(BuildContext context) {
+    // Obtén la URL del avatar si está disponible
+    final String? profileAvatarUrl = _getFileUrlByType('profile');
+    ImageProvider? imageProvider;
+
+    if (profileAvatarUrl != null && profileAvatarUrl.isNotEmpty) {
+      imageProvider = NetworkImage(profileAvatarUrl);
+    }
     return material.Scaffold(
       key: _scaffoldKey, // Asignar el GlobalKey al Scaffold
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: ProfileAvatar(
+          imageProvider: imageProvider,
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
           },
@@ -134,6 +154,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         username: username, // Usa el valor por defecto si `username` es null
         followers: followers ?? 0, // Usa 0 si `followers` es null
         following: following ?? 0, // Usa 0 si `following` es null
+        imageProvider: imageProvider,
       ), // Usar el widget Drawer aquí
       body: material.Stack(
         children: [

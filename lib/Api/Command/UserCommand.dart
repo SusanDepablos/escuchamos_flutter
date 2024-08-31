@@ -96,4 +96,33 @@ class AccountCommandUpdate {
   }
 }
 
+class UploadCommandPhoto {
+  final UploadPhoto _userPhotoService;
 
+  UploadCommandPhoto(this._userPhotoService);
+
+  Future<dynamic> execute({required File file, required String type}) async {
+    try {
+      // Llamar a la función photoUpload con los parámetros file y type
+      var response = await _userPhotoService.photoUpload(file, type);
+
+      // Manejar la respuesta según el código de estado
+      if (response.statusCode == 201) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
