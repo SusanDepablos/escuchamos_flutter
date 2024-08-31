@@ -9,13 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'No se pudo abrir el enlace: $url';
-    }
+void _launchURL(String url) async {
+  final Uri uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri);
+  } else {
+    throw 'No se pudo abrir el enlace: $url';
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -121,14 +122,14 @@ class AboutScreen extends StatelessWidget {
                     LabelAction(
                       icon: MaterialIcons.facebook,
                       onPressed: () {
-                        _launchURL('https://www.facebook.com/tu_pagina'); // Reemplaza con tu enlace de Facebook
+                        _launchURL(ApiUrl.Facebook); // Reemplaza con tu enlace de Facebook
                       },
                     ),
                     SizedBox(width: 24.0), // Espacio entre íconos
                     LabelAction(
                       icon: MaterialIcons.email,
                       onPressed: () {
-                        _launchURL('mailto:contacto@ejemplo.com'); // Reemplaza con tu correo electrónico
+                        _launchURL(ApiUrl.Facebook); // Reemplaza con tu correo electrónico
                       },
                     ),
                   ],

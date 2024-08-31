@@ -5,11 +5,13 @@ class GenericButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isLoading;
+  final Color? color; // Nuevo parámetro para color
 
   GenericButton({
     required this.label,
     required this.onPressed,
     this.isLoading = false,
+    this.color, // Inicialización del nuevo parámetro
   });
 
   @override
@@ -17,7 +19,7 @@ class GenericButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryBlue, // Color de fondo azul
+        backgroundColor: color ?? AppColors.primaryBlue, // Usa el color proporcionado o el predeterminado
         foregroundColor: Colors.white, // Color del texto blanco
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0), // Bordes redondeados

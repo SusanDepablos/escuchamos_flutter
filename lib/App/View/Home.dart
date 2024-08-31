@@ -116,14 +116,6 @@ class Home extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: 8.0),
-                BasicLabel(
-                  name: 'Acerca de',
-                  color: AppColors.primaryBlue,
-                  onTap: () {
-                    Navigator.pushNamed(
-                        context, 'about');
-                  },
-                ),
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () => _logout(context),

@@ -11,6 +11,7 @@ import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
+import 'package:escuchamos_flutter/App/View/User/DeactivateAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
 
@@ -30,6 +31,8 @@ class AppRoutes {
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
 
     'settings': (context) => Settings(),
+
+    'deactivate': (context) => DeactivateAccount(),
 
     'account_information': (context) => AccountInformation(),  
 
