@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 
 class ProfileAvatar extends StatelessWidget {
   final VoidCallback? onPressed;
   final double avatarSize;
   final double iconSize;
-  final ImageProvider? imageProvider; // Agregar este parámetro
+  final ImageProvider? imageProvider;
+  final bool isEditing; // Parámetro para indicar si se está editando
 
   ProfileAvatar({
     this.onPressed,
     this.avatarSize = 40.0,
     this.iconSize = 24.0,
-    this.imageProvider, // Inicializar el parámetro
+    this.imageProvider,
+    this.isEditing = false, // Inicializar el parámetro
   });
 
   @override
@@ -27,16 +30,37 @@ class ProfileAvatar extends StatelessWidget {
       child: CircleAvatar(
         radius: avatarSize / 2,
         backgroundColor: AppColors.inputLigth,
-        backgroundImage: imageProvider, // Usar imagen proporcionada
-        child: imageProvider == null
-            ? Icon(
-                Icons.person,
-                color: AppColors.inputDark,
-                size: iconSize,
-              )
-            : null,
+        backgroundImage: imageProvider,
+        child: Stack(
+          children: [
+            if (imageProvider == null && !isEditing)
+              Center(
+                child: Icon(
+                  MaterialIcons.person,
+                  color: AppColors.inputDark,
+                  size: iconSize,
+                ),
+              ),
+            if (isEditing)
+              Center(
+                child: Icon(
+                  MaterialIcons.addphoto,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+              ),
+          ],
+        ),
       ),
     );
+
+    // Aplica la opacidad solo si isEditing es true y hay una imagen
+    if (isEditing && imageProvider != null) {
+      avatar = Opacity(
+        opacity: 0.6,
+        child: avatar,
+      );
+    }
 
     if (onPressed != null) {
       return IconButton(

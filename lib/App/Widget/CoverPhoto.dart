@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 
 class CoverPhoto extends StatelessWidget {
   final VoidCallback? onPressed;
-  final double height; // Altura de la foto
-  final double iconSize; // Tamaño del ícono
-  final ImageProvider? imageProvider; // Parámetro para la imagen de fondo
+  final double height;
+  final double iconSize;
+  final ImageProvider? imageProvider;
+  final bool isEditing; // Parámetro para indicar si se está editando
 
   CoverPhoto({
     this.onPressed,
-    this.height = 120, // Altura por defecto
-    this.iconSize = 24.0, // Tamaño del ícono por defecto
-    this.imageProvider, // Inicializar el parámetro
+    this.height = 120,
+    this.iconSize = 24.0,
+    this.imageProvider,
+    this.isEditing = false, // Inicializar el parámetro
   });
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width; // Obtiene el ancho de la pantalla
+    double width = MediaQuery.of(context).size.width;
 
     Widget coverPhoto = Container(
-      width: width, // Usa el ancho de la pantalla
-      height: height, // Usa la altura proporcionada
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: AppColors.inputLigth,
         borderRadius: BorderRadius.circular(12.0),
@@ -31,16 +34,35 @@ class CoverPhoto extends StatelessWidget {
               )
             : null,
       ),
-      child: imageProvider == null
-          ? Center(
+      child: Stack(
+        children: [
+          if (imageProvider == null && !isEditing)
+            Center(
               child: Icon(
-                Icons.image,
+                MaterialIcons.image,
                 color: AppColors.inputDark,
-                size: iconSize, // Tamaño del ícono
+                size: iconSize,
               ),
-            )
-          : null, // No muestra el ícono si imageProvider no es null
+            ),
+          if (isEditing)
+            Center(
+              child: Icon(
+                MaterialIcons.addphoto,
+                color: Colors.white,
+                size: iconSize,
+              ),
+            ),
+        ],
+      ),
     );
+
+    // Aplica la opacidad solo si isEditing es true y hay una imagen
+    if (isEditing && imageProvider != null) {
+      coverPhoto = Opacity(
+        opacity: 0.6,
+        child: coverPhoto,
+      );
+    }
 
     if (onPressed != null) {
       return IconButton(
@@ -50,9 +72,7 @@ class CoverPhoto extends StatelessWidget {
     } else {
       return GestureDetector(
         child: coverPhoto,
-        onTap: () {
-          // No hace nada si onPressed es null
-        },
+        onTap: () {},
       );
     }
   }

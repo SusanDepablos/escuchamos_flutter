@@ -23,9 +23,10 @@ class MaterialIcons {
   static const IconData info = Icons.info; // Ícono de información para Información de la cuenta
   static const IconData lock = Icons.lock; // Ícono de candado para Cambiar contraseña
   static const IconData cancel = Icons.cancel; // Ícono de cancelar para Desactivar cuenta
-  static const IconData delete = Icons.delete; // Alternativa para Desactivar cuenta
-  static const IconData camera = Icons.camera_alt; // Alternativa para Desactivar cuenta
-  static const IconData image = Icons.image; // Alternativa para Desactivar cuenta
+  static const IconData delete = Icons.delete; 
+  static const IconData camera = Icons.camera_alt; 
+  static const IconData image = Icons.image; 
+  static const IconData addphoto = Icons.add_a_photo; 
   
   // Añadir los íconos para redes sociales y comunicación
   static const IconData web = Icons.language; // Ícono para página web

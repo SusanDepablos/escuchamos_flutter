@@ -127,7 +127,6 @@ class _UpdateState extends State<EditProfile> {
           },
           onDeletePhoto: () {
             _DeletePhoto(isCoverPhoto ? 'cover' : 'profile');
-            print(isCoverPhoto ? 'cover' : 'profile');
             setState(() {
               if (isCoverPhoto) {
                 _coverPhoto = null;
@@ -363,76 +362,79 @@ class _UpdateState extends State<EditProfile> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                CoverPhoto(
-                  height: 140.0,
-                  iconSize: 50.0,
-                  onPressed: () => _openImagePicker(true),
-                  imageProvider: _coverPhoto != null
-                      ? FileImage(_coverPhoto!)
-                      : (_coverPhotoUrl != null
-                          ? NetworkImage(_coverPhotoUrl!)
-                          : null), // Imagen por defecto
+      body: SingleChildScrollView( // Aquí agregas el SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  CoverPhoto(
+                    height: 140.0,
+                    iconSize: 40.0,
+                    onPressed: () => _openImagePicker(true),
+                    imageProvider: _coverPhoto != null
+                        ? FileImage(_coverPhoto!)
+                        : (_coverPhotoUrl != null
+                            ? NetworkImage(_coverPhotoUrl!)
+                            : null), // Imagen por defecto
+                    isEditing: true,
                   ),
-                Positioned(
-                  bottom: -35,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: ClipOval(
-                      child: ProfileAvatar(
-                        avatarSize: 70.0,
-                        iconSize: 40.0,
-                        onPressed: () => _openImagePicker(false),
-                        imageProvider: _profileAvatar != null
-                          ? FileImage(_profileAvatar!)
-                          : (_profileAvatarUrl != null
-                              ? NetworkImage(_profileAvatarUrl!)
-                              : null) // Elimina AssetImage
-                      , // Imagen por defecto
+                  Positioned(
+                    bottom: -35,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipOval(
+                        child: ProfileAvatar(
+                          avatarSize: 70.0,
+                          iconSize: 30.0,
+                          onPressed: () => _openImagePicker(false),
+                          imageProvider: _profileAvatar != null
+                              ? FileImage(_profileAvatar!)
+                              : (_profileAvatarUrl != null
+                                  ? NetworkImage(_profileAvatarUrl!)
+                                  : null), // Imagen por defecto
+                          isEditing: true,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 60.0),
-            GenericInput(
-              text: 'Nombre y Apellido',
-              input: input['name']!,
-              border: _borderColors['name']!,
-              error: _errorMessages['name'],
-            ),
-            SizedBox(height: 20.0),
-            GenericInput(
-              text: 'Biografía',
-              input: input['biography']!,
-              border: _borderColors['biography']!,
-              error: _errorMessages['biography'],
-            ),
-            SizedBox(height: 20.0),
-            DateInput(
-              text: 'Fecha de Nacimiento',
-              input: input['birthdate']!,
-              border: _borderColors['birthdate']!,
-              error: _errorMessages['birthdate'],
-            ),
-            SizedBox(height: 35.0),
-            GenericButton(
-              label: 'Actualizar',
-              onPressed: _updateUser,
-              isLoading: _submitting,
-            ),
-          ],
+                ],
+              ),
+              SizedBox(height: 60.0),
+              GenericInput(
+                text: 'Nombre y Apellido',
+                input: input['name']!,
+                border: _borderColors['name']!,
+                error: _errorMessages['name'],
+              ),
+              SizedBox(height: 20.0),
+              GenericInput(
+                text: 'Biografía',
+                input: input['biography']!,
+                border: _borderColors['biography']!,
+                error: _errorMessages['biography'],
+              ),
+              SizedBox(height: 20.0),
+              DateInput(
+                text: 'Fecha de Nacimiento',
+                input: input['birthdate']!,
+                border: _borderColors['birthdate']!,
+                error: _errorMessages['birthdate'],
+              ),
+              SizedBox(height: 35.0),
+              GenericButton(
+                label: 'Actualizar',
+                onPressed: _updateUser,
+                isLoading: _submitting,
+              ),
+            ],
+          ),
         ),
       ),
     );
