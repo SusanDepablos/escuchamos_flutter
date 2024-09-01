@@ -14,21 +14,24 @@ class CustomDrawer extends StatelessWidget {
     this.username,
     required this.followers,
     required this.following,
-    this.imageProvider, // Inicializa el parámetro
+    this.imageProvider,
   });
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.6, // Ajusta el ancho a un 60% de la pantalla
-        color: Colors.white,
+        width: MediaQuery.of(context).size.width *
+            0.6, // Ajusta el ancho a un 60% de la pantalla
+        color: AppColors.whiteapp,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildHeader(), // Sección del encabezado
             _buildBody(context), // Sección del cuerpo
-            Expanded(child: Container()), // Espacio flexible para empujar el pie hacia abajo
+            Expanded(
+                child:
+                    Container()), // Espacio flexible para empujar el pie hacia abajo
             _buildFooter(context), // Sección del pie
           ],
         ),
@@ -36,27 +39,31 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+   Widget _buildHeader() {
     return Column(
       children: [
         Container(
           color: AppColors.whiteapp,
-          padding: EdgeInsets.fromLTRB(15.0, 30.0, 15.0, 0.0), // Aumenta el padding superior
-          height: 176.0, // Mantén la altura en 176.0
+          padding: EdgeInsets.fromLTRB(
+              25, // Reduce el padding izquierdo
+              30.0,
+              10.0, // Reduce el padding derecho
+              0.0), // Aumenta el padding superior
+          height: 180.0, // Mantén la altura en 176.0
           child: Row(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: ProfileAvatar(
-                      avatarSize: 60.0, // Tamaño del CircleAvatar
-                      iconSize: 30.0,
-                      imageProvider: imageProvider, // Pasa el ImageProvider aquí
-                    ),
+                  ProfileAvatar(
+                    avatarSize: 55.0, // Tamaño del CircleAvatar
+                    iconSize: 30.0,
+                    imageProvider:
+                        imageProvider,
+                    showBorder: false, // Pasa el ImageProvider aquí
                   ),
-                  SizedBox(height: 1), // Espacio entre el CircleAvatar y el nombre
+                  SizedBox(
+                      height: 5), // Espacio entre el CircleAvatar y el nombre
                   Text(
                     name ?? '...', // Usa el nombre proporcionado
                     style: const TextStyle(
@@ -65,7 +72,9 @@ class CustomDrawer extends StatelessWidget {
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(height: 1), // Espacio ajustado entre el nombre y el correo electrónico
+                  SizedBox(
+                      height:
+                          1), // Espacio ajustado entre el nombre y el correo electrónico
                   Text(
                     '@$username', // Usa el username proporcionado
                     style: TextStyle(
@@ -75,7 +84,9 @@ class CustomDrawer extends StatelessWidget {
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  SizedBox(height: 10), // Espacio entre el correo electrónico y los nuevos textos
+                  SizedBox(
+                      height:
+                          10), // Espacio entre el correo electrónico y los nuevos textos
                   Row(
                     children: [
                       Text(
@@ -117,16 +128,21 @@ class CustomDrawer extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: 16), // Espacio horizontal entre el Column y el borde derecho del Container
+              SizedBox(
+                  width:
+                      16), // Espacio horizontal entre el Column y el borde derecho del Container
             ],
           ),
         ),
         Container(
           height: 1.0, // Altura de la línea fina
-          margin: EdgeInsets.symmetric(horizontal: 20.0), // Ajusta el margen horizontal
+          margin: EdgeInsets.symmetric(
+              horizontal: 20.0), // Ajusta el margen horizontal
           decoration: BoxDecoration(
-            color: Colors.grey[300], // Color de la línea fina (ajusta según el diseño)
-            borderRadius: BorderRadius.circular(1.0), // Radio pequeño para redondear los extremos
+            color: Colors
+                .grey[300], // Color de la línea fina (ajusta según el diseño)
+            borderRadius: BorderRadius.circular(
+                1.0), // Radio pequeño para redondear los extremos
           ),
         ),
       ],
@@ -139,19 +155,31 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildListTile(
-            icon: Icons.person,
-            title: 'Perfil',
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            leading:
+                Icon(Icons.person, color: AppColors.primaryBlue, size: 24.0),
+            title: Text('Perfil',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             onTap: () {
-              //Navigator.pushNamed(context, 'profile');
+              // Navigator.pushNamed(context, 'profile');
             },
+            tileColor:
+                Colors.transparent, // Fondo transparente para el ListTile
           ),
-          _buildListTile(
-            icon: Icons.description,
-            title: 'Moderación de contenido',
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            leading: Icon(Icons.description,
+                color: AppColors.primaryBlue, size: 24.0),
+            title: Text('Moderación de contenido',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             onTap: () {
-              //Navigator.pushNamed(context, 'content-moderation');
+              // Navigator.pushNamed(context, 'content-moderation');
             },
+            tileColor:
+                Colors.transparent, // Fondo transparente para el ListTile
           ),
           // Agrega otras opciones aquí si es necesario
         ],
@@ -159,42 +187,51 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: Colors.white,
-      ),
-      margin: const EdgeInsets.only(bottom: 12.0),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        leading: Icon(icon, color: AppColors.primaryBlue, size: 24.0),
-        title: Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-        onTap: onTap,
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
+Widget _buildFooter(BuildContext context) {
     return Column(
       children: [
-        _buildListTile(
-          icon: Icons.settings, // Icono para Configuración
-          title: 'Configuración',
-          onTap: () {
-            Navigator.pushNamed(context, 'settings');
-          },
+        SizedBox(height: 20), // Ajusta este valor para subir el footer
+
+        // Línea fina comentada por ahora
+        Container(
+          height: 1.0, // Altura de la línea fina
+          margin: EdgeInsets.symmetric(horizontal: 20.0), // Ajusta el margen horizontal
+          decoration: BoxDecoration(
+            color: Colors.grey[300], // Color de la línea fina
+            borderRadius: BorderRadius.circular(1.0), // Radio pequeño para redondear los extremos
+          ),
         ),
-        _buildListTile(
-          icon: Icons.info, // Icono para Acerca de
-          title: 'Acerca de',
-          onTap: () {
-            Navigator.pushNamed(context, 'about');
-          },
+
+        SizedBox(
+          height: 60, // Ajusta la altura del ListTile
+          child: ListTile(
+            leading:
+                Icon(Icons.settings, color: AppColors.primaryBlue, size: 24.0),
+            title: Text('Configuración',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            onTap: () {
+              Navigator.pushNamed(context, 'settings');
+            },
+            tileColor:
+                Colors.transparent, // Fondo transparente para el ListTile
+            contentPadding: EdgeInsets.symmetric(
+                vertical: 9.0, horizontal: 25.0), // Ajusta el padding interno
+          ),
+        ),
+        SizedBox(
+          height: 115, // Ajusta la altura del ListTile
+          child: ListTile(
+            leading: Icon(Icons.info, color: AppColors.primaryBlue, size: 24.0),
+            title: Text('Acerca de',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            onTap: () {
+              Navigator.pushNamed(context, 'about');
+            },
+            tileColor:
+                Colors.transparent, // Fondo transparente para el ListTile
+            contentPadding: EdgeInsets.symmetric(
+                vertical: 7.0, horizontal: 25.0), // Ajusta el padding interno
+          ),
         ),
       ],
     );

@@ -8,6 +8,7 @@ class ProfileAvatar extends StatelessWidget {
   final double iconSize;
   final ImageProvider? imageProvider;
   final bool isEditing; // Parámetro para indicar si se está editando
+  final bool showBorder; // Nuevo parámetro para mostrar u ocultar el borde
 
   ProfileAvatar({
     this.onPressed,
@@ -15,6 +16,7 @@ class ProfileAvatar extends StatelessWidget {
     this.iconSize = 24.0,
     this.imageProvider,
     this.isEditing = false, // Inicializar el parámetro
+    this.showBorder = true, // Inicializar el parámetro
   });
 
   @override
@@ -22,10 +24,12 @@ class ProfileAvatar extends StatelessWidget {
     Widget avatar = Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.white,
-          width: 3.0,
-        ),
+        border: showBorder
+            ? Border.all(
+                color: Colors.white,
+                width: 3.0,
+              )
+            : null, // Mostrar u ocultar el borde
       ),
       child: CircleAvatar(
         radius: avatarSize / 2,
