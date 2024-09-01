@@ -530,3 +530,130 @@ class _SearchInputState extends __BasicInputState {
     );
   }
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class NumericInput extends StatefulWidget {
+  final String? text;
+  final TextEditingController input;
+  final Color border;
+  final String? error;
+  final bool obscureText;
+  final bool isDisabled;
+  final ValueChanged<String>? onChanged;
+
+  NumericInput({
+    this.text,
+    required this.input,
+    this.border = Colors.black,
+    this.error,
+    this.obscureText = false,
+    this.isDisabled = true,
+    this.onChanged,
+  });
+
+  @override
+  _NumericInputState createState() => _NumericInputState();
+}
+
+class _NumericInputState extends State<NumericInput> {
+  bool _obscureText = false;
+  bool _showClearIcon = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.input,
+          obscureText: widget.obscureText && _obscureText,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(10),
+            _NumericInputFormatter(), // Asegúrate de que esta clase esté definida en el mismo archivo o importada
+          ],
+          decoration: InputDecoration(
+            labelText: widget.text,
+            labelStyle: TextStyle(
+                color: widget.isDisabled ? Colors.grey : widget.border),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(
+                  color: widget.isDisabled ? Colors.grey : widget.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(
+                  color: widget.isDisabled ? Colors.grey : widget.border),
+            ),
+            suffixIcon: widget.obscureText
+                ? IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
+                : widget.isDisabled
+                    ? null
+                    : _showClearIcon
+                        ? IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              widget.input.clear();
+                              setState(() {
+                                _showClearIcon = false;
+                              });
+                            },
+                          )
+                        : null,
+          ),
+          enabled: !widget.isDisabled,
+          onChanged: (text) {
+            setState(() {
+              _showClearIcon = text.isNotEmpty;
+            });
+            if (widget.onChanged != null) {
+              widget.onChanged!(text);
+            }
+          },
+        ),
+        if (widget.error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _NumericInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text;
+
+    if (newText == '0') {
+      return oldValue;
+    }
+
+    if (newText.isNotEmpty && newText[0] == '0' && newText.length > 1) {
+      return oldValue;
+    }
+
+    return newValue;
+  }
+}
+
+
+
+
+

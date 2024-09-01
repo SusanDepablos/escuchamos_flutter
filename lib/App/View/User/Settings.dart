@@ -121,7 +121,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, 'account_information');
+                Navigator.pushNamed(context, 'account-information');
               },
             ),
             ListTile(

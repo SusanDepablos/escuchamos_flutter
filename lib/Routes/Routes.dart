@@ -19,15 +19,15 @@ import 'package:escuchamos_flutter/app/View/User/Account/PhoneUpdate.dart';
 class AppRoutes {
   static final routes = {
 
-    'login': (context) => Login(), // Pantalla de inicio de sesión
+    'login': (context) => Login(),
 
-    'Base': (context) => BaseNavigator(), // Pantalla de plantilla  buttomnavigatorbar
+    'Base': (context) => BaseNavigator(),
 
-    'home': (context) => Home(), // No pasa argumentos aquí
+    'home': (context) => Home(), 
 
-    'about': (context) => AboutScreen(), // No pasa argumentos aquí
+    'about': (context) => AboutScreen(),
 
-    'Search': (context) => SearchView(), // No pasa argumentos aquí
+    'Search': (context) => SearchView(),
 
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
 
@@ -35,7 +35,7 @@ class AppRoutes {
 
     'deactivate': (context) => DeactivateAccount(),
 
-    'account_information': (context) => AccountInformation(),  
+    'account-information': (context) => AccountInformation(),  
 
     'phone-update': (context) => PhoneUpdate(),   
 

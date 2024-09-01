@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
+import 'package:escuchamos_flutter/Api/Command/CountryCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/CountryService.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
+import 'package:escuchamos_flutter/Api/Model/CountryModels.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
+import 'package:escuchamos_flutter/App/Widget/Select.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
@@ -13,17 +18,20 @@ import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'dart:convert';
 
 class PhoneUpdate extends StatefulWidget {
-
   @override
   _PhoneUpdateState createState() => _PhoneUpdateState();
 }
 
 class _PhoneUpdateState extends State<PhoneUpdate> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  List<String?> dialingCode = [];
   UserModel? _user;
   bool _submitting = false;
   String? username;
   String? name;
+  String? _selected;
+  bool _isInputEnabled = false; // Estado del NumericInput
+  bool _isButtonLocked = true; // Estado del LockableButton
 
   final input = {
     'phone_number': TextEditingController(),
@@ -75,6 +83,59 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
     }
   }
 
+  Future<void> _callCountries() async {
+    final countryCommand = CountryCommandIndex(CountryIndex());
+
+    try {
+      var response = await countryCommand.execute();
+
+      if (mounted) {
+        if (response is CountriesModel) {
+          setState(() {
+            dialingCode = response.data
+                .map((datum) => datum.attributes.dialingCode)
+                .toSet()
+                .toList();
+
+            if (_selected != null && !dialingCode.contains(_selected)) {
+              _selected = null;
+            }
+            _updateFieldState(); // Actualiza el estado del campo y del botón
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: e.toString(),
+          ),
+        );
+      }
+    }
+  }
+
+  void _updateFieldState() {
+    // Actualiza el estado de habilitación del NumericInput y del LockableButton
+    setState(() {
+      _isInputEnabled = _selected != null && _selected!.isNotEmpty;
+      _isButtonLocked =
+          !(_isInputEnabled && input['phone_number']!.text.isNotEmpty);
+    });
+  }
+
   Future<void> _updateField() async {
     setState(() {
       _submitting = true;
@@ -82,7 +143,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
 
     try {
       final body = jsonEncode({
-        'phone_number': input['phone_number']!.text,
+        'phone_number': '$_selected ${input['phone_number']!.text}',
       });
 
       var response =
@@ -140,6 +201,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
   void initState() {
     super.initState();
     _callUser();
+    _callCountries();
   }
 
   @override
@@ -183,7 +245,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Cambiar numero telefónico',
+                  'Cambiar número telefónico',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 14.5,
@@ -196,30 +258,49 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             SizedBox(height: 8.0),
             Row(
               children: [
-                DropdownButton<String>(
-                  value: null,
-                  hint: Text('Seleccionar'),
-                  items: [], // Lista vacía por ahora
-                  onChanged: (value) {},
+                SizedBox(
+                  width: 50,
+                  child: Select(
+                    selectedValue: _selected,
+                    items: dialingCode,
+                    hintText: '+0',
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    dropdownColor: Colors.white,
+                    iconSize: 0,
+                    onChanged: (value) {
+                      setState(() {
+                        _selected = value;
+                        _updateFieldState(); // Actualiza el estado del campo y del botón
+                      });
+                    },
+                  ),
                 ),
                 SizedBox(width: 8.0),
                 Expanded(
-                  child: GenericInput(
-                    text: 'Introduce tu nuevo  numero telefónico',
+                  child: NumericInput(
+                    text: 'Introduce tu nuevo número telefónico',
                     input: input['phone_number']!,
                     border: _borderColors['phone_number']!,
                     error: _errorMessages['phone_number'],
+                    isDisabled:
+                        !_isInputEnabled, // Habilita o deshabilita el campo
+                    onChanged: (text) {
+                      _updateFieldState(); // Actualiza el estado del botón
+                    },
                   ),
                 ),
               ],
             ),
             SizedBox(height: 32.0),
-            GenericButton(
-              label: 'Actualizar',
-              onPressed: () {
-                _updateField();
-              },
+            LockableButton(
+              label: 'Guardar',
               isLoading: _submitting,
+              isLocked: _isButtonLocked, // Usa isLocked en lugar de isEnabled
+              onPressed: _updateField,
             ),
           ],
         ),
