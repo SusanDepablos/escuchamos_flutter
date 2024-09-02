@@ -128,7 +128,6 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
   }
 
   void _updateFieldState() {
-    // Actualiza el estado de habilitación del NumericInput y del LockableButton
     setState(() {
       _isInputEnabled = _selected != null && _selected!.isNotEmpty;
       _isButtonLocked =
@@ -246,10 +245,10 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                 Text(
                   'Cambiar número telefónico',
                   textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black,
+                    style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.black,
                   ),
                 ),
               ],

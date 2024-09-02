@@ -197,26 +197,26 @@ class _UpdateState extends State<EditAccount> {
                   widget.label,
                   textAlign: TextAlign.left, // Alinea el texto a la izquierda
                   style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.black,
                   ),
                 ),
                 // El segundo texto se oculta si _textChanged; es true
                 if (!widget.textChanged)
+                  SizedBox(height: 1.0),
                   Text(
                     'Usuario Actual: @${username ?? '...'}',
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500, // Negrita básica
-                      color: AppColors.inputDark,
+                      fontSize: 12,
+                      color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
-                  ),
+                  )
               ],
             ),
-            SizedBox(height: 8.0),
+            SizedBox(height: 10.0),
             GenericInput(
               text: widget.text,
               input: input['fieldUpdate']!,
