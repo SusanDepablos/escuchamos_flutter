@@ -156,7 +156,7 @@ class _AccountInformationState extends State<AccountInformation> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black,
+                  color: AppColors.black,
                 ),
               ),
               subtitle: Text(

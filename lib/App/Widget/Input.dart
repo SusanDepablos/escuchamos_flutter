@@ -570,7 +570,7 @@ class _NumericInputState extends State<NumericInput> {
           keyboardType: TextInputType.number,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(10),
+            LengthLimitingTextInputFormatter(15),
             _NumericInputFormatter(), // Asegúrate de que esta clase esté definida en el mismo archivo o importada
           ],
           decoration: InputDecoration(

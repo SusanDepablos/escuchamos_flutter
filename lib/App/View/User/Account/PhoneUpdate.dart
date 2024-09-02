@@ -33,6 +33,8 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
   bool _isInputEnabled = false; // Estado del NumericInput
   bool _isButtonLocked = true; // Estado del LockableButton
 
+  static const int _minDigits = 8; // Cantidad mínima de dígitos
+
   final input = {
     'phone_number': TextEditingController(),
   };
@@ -128,10 +130,11 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
   }
 
   void _updateFieldState() {
+    final phoneNumberLength = input['phone_number']!.text.length;
+
     setState(() {
       _isInputEnabled = _selected != null && _selected!.isNotEmpty;
-      _isButtonLocked =
-          !(_isInputEnabled && input['phone_number']!.text.isNotEmpty);
+      _isButtonLocked = !(_isInputEnabled && phoneNumberLength >= _minDigits);
     });
   }
 
@@ -245,7 +248,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                 Text(
                   'Cambiar número telefónico',
                   textAlign: TextAlign.left,
-                    style: TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: AppColors.black,
@@ -263,11 +266,11 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     items: dialingCode,
                     hintText: '+0',
                     textStyle: TextStyle(
-                      color: Colors.black,
+                      color: AppColors.black,
                       fontSize: 14.5,
                       fontWeight: FontWeight.w800,
                     ),
-                    dropdownColor: Colors.white,
+                    dropdownColor: AppColors.whiteapp,
                     iconSize: 0,
                     onChanged: (value) {
                       setState(() {
