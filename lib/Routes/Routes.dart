@@ -21,13 +21,13 @@ class AppRoutes {
 
     'login': (context) => Login(),
 
-    'Base': (context) => BaseNavigator(),
+    'base': (context) => BaseNavigator(),
 
     'home': (context) => Home(), 
 
     'about': (context) => AboutScreen(),
 
-    'Search': (context) => SearchView(),
+    'search': (context) => SearchView(),
 
     'recover-account': (context) => RecoverAccount(), // Pantalla para recuperar la cuenta
 
@@ -48,27 +48,22 @@ class AppRoutes {
       return EditAccount(text: text, label: label, textChanged: textChanged, field: field);
     },
 
-
     'account-Verification': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return RecoverAccountVerification(email: args);
     }, // Pantalla para verificar el código
 
-
-    'Change-Password': (context) {
+    'change-Password': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return RecoverAccountChangePassword(email: args);
     }, // Pantalla para cambiar contraseña
 
-
     'register': (context) => Register(), // Pantalla para registrar una nueva cuenta
-
 
     'verify-code': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return VerifyCodeView(email: args);
     }, // Pantalla para verificar el código al registrarse
-
 
     'profile': (context) => EditProfile(), // Pantalla de perfil
 

@@ -145,7 +145,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               onPressed: () {
                 Navigator.pushNamed(
                   context,
-                  'Base', // Nombre de la ruta definida en el archivo de rutas
+                  'base', // Nombre de la ruta definida en el archivo de rutas
                 );
               },
               isLoading: false, // Cambia a true si necesitas mostrar un indicador de carga

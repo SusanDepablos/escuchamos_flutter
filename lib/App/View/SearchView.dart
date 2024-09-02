@@ -27,7 +27,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

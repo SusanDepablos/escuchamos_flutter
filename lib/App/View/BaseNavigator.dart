@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
-import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
-import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -33,6 +30,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
   String? username;
   int? followers;
   int? following;
+  bool _isGroupOne = false;
 
   @override
   void initState() {
@@ -55,6 +53,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     setState(() {
       _id = id;
       _groups = groups;
+      _isGroupOne = groups.contains(1);
     });
   }
 
@@ -130,7 +129,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     return material.Scaffold(
       key: _scaffoldKey, // Asignar el GlobalKey al Scaffold
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteapp,
         elevation: 0,
         leading: ProfileAvatar(
           avatarSize: 30.0,
@@ -162,9 +161,11 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
 
           reloadView();
         },
-        // onContentModerationTap: () async {
-        //   await Navigator.pushNamed(context, 'content-moderation');
-        // },
+        onContentModerationTap: () async {
+          if (_isGroupOne) { // Verificar si el usuario está en el grupo 1 antes de navegar
+            await Navigator.pushNamed(context, 'content-moderation');
+          }
+        },
         onSettingsTap: () async {
           final result = await Navigator.pushNamed(context, 'settings');
     
@@ -175,6 +176,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           
           reloadView();
         },
+        showContentModeration: _isGroupOne,
       ),
  // Usar el widget Drawer aquí
       body: material.Stack(
@@ -192,11 +194,11 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
             bottom: 8,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.whiteapp,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: AppColors.black.withOpacity(0.1),
                     spreadRadius: 1,
                     blurRadius: 10,
                     offset: Offset(0, 4),
@@ -229,7 +231,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
                 ],
                 backgroundColor: Colors.transparent,
                 selectedItemColor: AppColors.primaryBlue,
-                unselectedItemColor: Colors.grey,
+                unselectedItemColor: AppColors.inputDark,
                 showUnselectedLabels: false,
                 type: material.BottomNavigationBarType.fixed,
                 elevation: 0,

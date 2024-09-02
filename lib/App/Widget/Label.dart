@@ -68,7 +68,7 @@ class _LabelActionState extends State<LabelAction> {
               child: Row(
                 children: [
                   if (widget.icon != null) ...[
-                    Icon(widget.icon, size: 24, color: widget.style?.color ?? AppColors.primaryBlue),
+                    Icon(widget.icon, size: 24, color: widget.style?.color ?? AppColors.black),
                     SizedBox(width: 8), // Espacio entre el ícono y el texto
                   ],
                   if (!widget.isLoading && widget.text != null)
@@ -79,7 +79,7 @@ class _LabelActionState extends State<LabelAction> {
                     widget.text!,
                     style: widget.style ??
                         TextStyle(
-                          color: _isDisabled ? Colors.grey : AppColors.primaryBlue,
+                          color: _isDisabled ? AppColors.inputDark : AppColors.primaryBlue,
                           fontSize: 16, // Tamaño de fuente por defecto
                           decoration: TextDecoration.underline, // Subrayado como un enlace
                         ),
