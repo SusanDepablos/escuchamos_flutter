@@ -33,3 +33,11 @@ class AppColors {
   static const Color inputLigth = Color.fromRGBO(192, 192, 192, 0.827);
 }
   // -------------------------------------------------------------------------//
+
+class AppFond {
+  static const double title = 20.0; // Tamaño de letra para el título
+  static const double subtitle = 14.0; // Tamaño de letra para el subtítulo
+}
+
+
+  // -------------------------------------------------------------------------//

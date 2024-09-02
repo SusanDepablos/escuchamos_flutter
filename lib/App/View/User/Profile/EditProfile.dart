@@ -350,7 +350,7 @@ class _UpdateState extends State<EditProfile> {
               Text(
                 'Editar Perfil',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
@@ -358,7 +358,7 @@ class _UpdateState extends State<EditProfile> {
               Text(
                 '@${username ?? '...'}',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: AppFond.subtitle,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),

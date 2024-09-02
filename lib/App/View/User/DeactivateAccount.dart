@@ -77,7 +77,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               Text(
                 name ?? '...',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFond.title,
                   fontWeight:
                       FontWeight.w800,
                   color: AppColors.black,
@@ -86,7 +86,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               Text(
                 'Desactivar cuenta',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: AppFond.subtitle,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),

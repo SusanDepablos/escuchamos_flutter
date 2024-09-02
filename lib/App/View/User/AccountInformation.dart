@@ -94,7 +94,7 @@ class _AccountInformationState extends State<AccountInformation> {
               Text(
                 'Información de la cuenta',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
@@ -102,7 +102,7 @@ class _AccountInformationState extends State<AccountInformation> {
               Text(
                 username ?? "...",
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: AppFond.subtitle,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),

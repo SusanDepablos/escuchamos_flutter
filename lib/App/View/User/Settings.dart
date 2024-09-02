@@ -76,7 +76,7 @@ class _SettingsState extends State<Settings> {
               Text(
                 name ?? '...',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFond.title,
                   fontWeight:
                       FontWeight.w800,
                   color: AppColors.black,
@@ -85,7 +85,7 @@ class _SettingsState extends State<Settings> {
               Text(
                 'Configuración',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: AppFond.subtitle,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),

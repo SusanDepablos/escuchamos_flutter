@@ -169,7 +169,7 @@ class _UpdateState extends State<EditAccount> {
               Text(
                 name ?? "...",
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
@@ -177,8 +177,7 @@ class _UpdateState extends State<EditAccount> {
               Text(
                 widget.head ?? 'Configuración',
                 style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500, // Negrita básica
+                  fontSize: AppFond.subtitle,
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),

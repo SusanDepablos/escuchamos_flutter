@@ -219,7 +219,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
               Text(
                 name ?? "...",
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
@@ -227,8 +227,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
               Text(
                 'Configuración',
                 style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500,
+                  fontSize: AppFond.subtitle,
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
