@@ -29,24 +29,33 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 290.0, // Ajusta el tamaño aquí
+      width: MediaQuery.of(context).size.width * 0.85,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.whiteapp,
+          color: AppColors.whiteapp, // Color de fondo del Drawer
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(16.0), // Redondea solo la esquina superior derecha
             bottomRight: Radius.circular(16.0), // Redondea solo la esquina inferior derecha
           ),
           border: Border(
             right: BorderSide(
-              color: Colors.blue, // Cambia el color del borde aquí
-              width: 2.0, // Ajusta el grosor del borde aquí
+              width: 1.5, // Ancho del borde con gradiente
+              color: Colors.transparent, // Usamos color transparente aquí
             ),
+          ),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primaryBlue,
+              AppColors.deepPurple,
+              AppColors.errorRed
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Drawer(
           child: Container(
-            color: AppColors.whiteapp,
+            color: AppColors.whiteapp, // Color de fondo del contenido del Drawer
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -61,7 +70,6 @@ class CustomDrawer extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildHeader() {
     return Column(
@@ -226,7 +234,7 @@ class CustomDrawer extends StatelessWidget {
                 Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
             title: Text(
               'Configuración y privacidad',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             onTap: () async {
               if (onSettingsTap != null) {
@@ -246,7 +254,7 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(MaterialIcons.info, color: AppColors.black, size: 24.0),
             title: Text(
               'Acerca de',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             onTap: () async {
               if (onAboutTap != null) {
