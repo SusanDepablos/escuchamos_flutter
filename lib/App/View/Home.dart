@@ -95,7 +95,7 @@ class Home extends StatelessWidget {
         final groups = data['groups'] as List<dynamic>;
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.whiteapp,
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

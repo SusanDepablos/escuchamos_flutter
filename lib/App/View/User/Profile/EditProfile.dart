@@ -338,9 +338,9 @@ class _UpdateState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteapp,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 10),

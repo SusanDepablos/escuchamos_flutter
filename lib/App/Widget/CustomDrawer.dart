@@ -13,7 +13,7 @@ class CustomDrawer extends StatelessWidget {
   final Future<void> Function()? onContentModerationTap;
   final Future<void> Function()? onSettingsTap;
   final Future<void> Function()? onAboutTap;
-
+  final bool showContentModeration; 
   CustomDrawer({
     this.name,
     this.username,
@@ -24,6 +24,7 @@ class CustomDrawer extends StatelessWidget {
     this.onContentModerationTap,
     this.onSettingsTap,
     this.onAboutTap,
+    this.showContentModeration = false,
   });
 
   @override
@@ -203,7 +204,7 @@ class CustomDrawer extends StatelessWidget {
             title: 'Perfil',
             onTap: onProfileTap,
           ),
-          _buildListTile(
+          if (showContentModeration) _buildListTile(
             icon: MaterialIcons.description,
             title: 'Moderación de contenido',
             onTap: onContentModerationTap,
