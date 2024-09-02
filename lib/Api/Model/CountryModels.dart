@@ -48,6 +48,7 @@ class Attributes {
     String name;
     String? abbreviation;
     String? dialingCode;
+    String? iso;
     DateTime createdAt;
     DateTime updatedAt;
 
@@ -55,6 +56,7 @@ class Attributes {
         required this.name,
         this.abbreviation,
         this.dialingCode,
+        this.iso,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -63,6 +65,7 @@ class Attributes {
         name: json["name"],
         abbreviation: json["abbreviation"],
         dialingCode: json["dialing_code"],
+        iso: json["iso"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
     );
@@ -71,6 +74,7 @@ class Attributes {
         "name": name,
         "abbreviation": abbreviation,
         "dialing_code": dialingCode,
+        "iso": iso,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
     };

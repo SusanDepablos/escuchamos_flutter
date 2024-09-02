@@ -140,8 +140,8 @@ class _AccountInformationState extends State<AccountInformation> {
                   context,
                   'edit-account',
                   arguments: {
-                    'text': 'Cambiar nombre de usuario',
-                    'label': 'Etiqueta',
+                    'text': 'Nombre de usuario',
+                    'label': 'Cambiar nombre de usuario',
                     'textChanged': false,
                     'field': 'username'
                   },

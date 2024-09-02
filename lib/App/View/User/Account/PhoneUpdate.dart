@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:escuchamos_flutter/App/Widget/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Button.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -24,7 +23,7 @@ class PhoneUpdate extends StatefulWidget {
 
 class _PhoneUpdateState extends State<PhoneUpdate> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  List<String?> dialingCode = [];
+  List<Map<String, String?>> countryData = [];
   UserModel? _user;
   bool _submitting = false;
   String? username;
@@ -94,12 +93,15 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
       if (mounted) {
         if (response is CountriesModel) {
           setState(() {
-            dialingCode = response.data
-                .map((datum) => datum.attributes.dialingCode)
-                .toSet()
-                .toList();
+            countryData = response.data.map((datum) {
+              return {
+                'isoCode': datum.attributes.iso,
+                'dialingCode': datum.attributes.dialingCode,
+              };
+            }).toList();
 
-            if (_selected != null && !dialingCode.contains(_selected)) {
+            // Extraer solo los códigos ISO para el dropdown
+            if (_selected != null && !countryData.any((data) => data['isoCode'] == _selected)) {
               _selected = null;
             }
             _updateFieldState(); // Actualiza el estado del campo y del botón
@@ -260,14 +262,14 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             Row(
               children: [
                 SizedBox(
-                  width: 50,
-                  child: Select(
+                  width: 60,
+                  child: SelectWithFlags(
                     selectedValue: _selected,
-                    items: dialingCode,
+                    itemsMap: countryData,
                     hintText: '+0',
                     textStyle: TextStyle(
                       color: AppColors.black,
-                      fontSize: 14.5,
+                      fontSize: 10,
                       fontWeight: FontWeight.w800,
                     ),
                     dropdownColor: AppColors.whiteapp,
@@ -280,10 +282,10 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     },
                   ),
                 ),
-                SizedBox(width: 8.0),
+                SizedBox(width: 15.0),
                 Expanded(
                   child: NumericInput(
-                    text: 'Introduce tu nuevo número telefónico',
+                    text: 'Número telefónico',
                     input: input['phone_number']!,
                     border: _borderColors['phone_number']!,
                     error: _errorMessages['phone_number'],
