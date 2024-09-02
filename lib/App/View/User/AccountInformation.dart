@@ -18,6 +18,7 @@ class _AccountInformationState extends State<AccountInformation> {
   String? phoneNumber;
   String? email;
   String? country;
+  String? name;
   bool isLoading =
       true; // Agregamos esta variable para controlar el estado de carga
 
@@ -47,6 +48,7 @@ class _AccountInformationState extends State<AccountInformation> {
             phoneNumber = _user!.data.attributes.phoneNumber;
             email = _user!.data.attributes.email;
             country = _user?.data.relationships.country?.attributes.name;
+            name = _user?.data.attributes.name;
             isLoading = false; // La carga ha finalizado
           });
         } else {
@@ -82,9 +84,9 @@ class _AccountInformationState extends State<AccountInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteapp,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 10),
@@ -92,7 +94,7 @@ class _AccountInformationState extends State<AccountInformation> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Información de la cuenta',
+                name ?? "...",
                 style: const TextStyle(
                   fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
@@ -100,7 +102,7 @@ class _AccountInformationState extends State<AccountInformation> {
                 ),
               ),
               Text(
-                username ?? "...",
+                'Información de la cuenta',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.black,
