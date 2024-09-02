@@ -151,11 +151,30 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
 
       drawer: CustomDrawer(
         name: name,
-        username: username, // Usa el valor por defecto si `username` es null
-        followers: followers ?? 0, // Usa 0 si `followers` es null
-        following: following ?? 0, // Usa 0 si `following` es null
+        username: username,
+        followers: followers ?? 0,
+        following: following ?? 0,
         imageProvider: imageProvider,
-      ), // Usar el widget Drawer aquí
+        onProfileTap: () async {
+          await Navigator.pushNamed(context, 'profile');
+
+          reloadView();
+        },
+        // onContentModerationTap: () async {
+        //   await Navigator.pushNamed(context, 'content-moderation');
+        // },
+        onSettingsTap: () async {
+          final result = await Navigator.pushNamed(context, 'settings');
+    
+          reloadView();
+        },
+        onAboutTap: () async {
+          final result = await Navigator.pushNamed(context, 'about');
+          
+          reloadView();
+        },
+      ),
+ // Usar el widget Drawer aquí
       body: material.Stack(
         children: [
           material.Positioned.fill(

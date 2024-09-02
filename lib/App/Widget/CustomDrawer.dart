@@ -8,6 +8,10 @@ class CustomDrawer extends StatelessWidget {
   final int followers;
   final int following;
   final ImageProvider? imageProvider;
+  final Future<void> Function()? onProfileTap;
+  final Future<void> Function()? onContentModerationTap;
+  final Future<void> Function()? onSettingsTap;
+  final Future<void> Function()? onAboutTap;
 
   CustomDrawer({
     this.name,
@@ -15,82 +19,80 @@ class CustomDrawer extends StatelessWidget {
     required this.followers,
     required this.following,
     this.imageProvider,
+    this.onProfileTap,
+    this.onContentModerationTap,
+    this.onSettingsTap,
+    this.onAboutTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        width: MediaQuery.of(context).size.width *
-            0.6, // Ajusta el ancho a un 60% de la pantalla
+        width: MediaQuery.of(context).size.width * 0.5,
         color: AppColors.whiteapp,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHeader(), // Sección del encabezado
-            _buildBody(context), // Sección del cuerpo
+            _buildHeader(),
+            _buildBody(context),
             Expanded(
-                child:
-                    Container()), // Espacio flexible para empujar el pie hacia abajo
-            _buildFooter(context), // Sección del pie
+              child: Container(),
+            ),
+            _buildFooter(context),
           ],
         ),
       ),
     );
   }
 
-   Widget _buildHeader() {
+  Widget _buildHeader() {
     return Column(
       children: [
         Container(
           color: AppColors.whiteapp,
           padding: EdgeInsets.fromLTRB(
-              25, // Reduce el padding izquierdo
-              30.0,
-              10.0, // Reduce el padding derecho
-              0.0), // Aumenta el padding superior
-          height: 180.0, // Mantén la altura en 176.0
+            25,
+            30.0,
+            10.0,
+            0.0,
+          ),
+          height: 180.0,
           child: Row(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProfileAvatar(
-                    avatarSize: 55.0, // Tamaño del CircleAvatar
+                    avatarSize: 55.0,
                     iconSize: 30.0,
-                    imageProvider:
-                        imageProvider,
-                    showBorder: false, // Pasa el ImageProvider aquí
+                    imageProvider: imageProvider,
+                    showBorder: false,
                   ),
-                  SizedBox(
-                      height: 5), // Espacio entre el CircleAvatar y el nombre
+                  SizedBox(height: 5),
                   Text(
-                    name ?? '...', // Usa el nombre proporcionado
+                    name ?? '...',
                     style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(
-                      height:
-                          1), // Espacio ajustado entre el nombre y el correo electrónico
+                  SizedBox(height: 1),
                   Text(
-                    '@$username', // Usa el username proporcionado
+                    '@$username',
                     style: TextStyle(
                       fontSize: 11.5,
-                      fontWeight: FontWeight.w600, // Negrita básica
+                      fontWeight: FontWeight.w600,
                       color: AppColors.inputDark,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  SizedBox(
-                      height:
-                          10), // Espacio entre el correo electrónico y los nuevos textos
+                  SizedBox(height: 10),
                   Row(
                     children: [
                       Text(
-                        '$following', // Usa el valor de seguidos proporcionado
+                        '$following',
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
@@ -99,16 +101,16 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        'Siguiendo', // Texto fijo
+                        'Siguiendo',
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           color: AppColors.inputDark,
                         ),
                       ),
-                      SizedBox(width: 26),
+                      SizedBox(width: 35),
                       Text(
-                        '$followers', // Usa el valor de seguidores proporcionado
+                        '$followers',
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
@@ -117,7 +119,7 @@ class CustomDrawer extends StatelessWidget {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        'Seguidores', // Texto fijo
+                        'Seguidores',
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -128,21 +130,18 @@ class CustomDrawer extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
-                  width:
-                      16), // Espacio horizontal entre el Column y el borde derecho del Container
+              SizedBox(width: 16),
             ],
           ),
         ),
         Container(
-          height: 1.0, // Altura de la línea fina
+          height: 1.0,
           margin: EdgeInsets.symmetric(
-              horizontal: 20.0), // Ajusta el margen horizontal
+            horizontal: 20.0,
+          ),
           decoration: BoxDecoration(
-            color: Colors
-                .grey[300], // Color de la línea fina (ajusta según el diseño)
-            borderRadius: BorderRadius.circular(
-                1.0), // Radio pequeño para redondear los extremos
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(1.0),
           ),
         ),
       ],
@@ -150,87 +149,101 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
+    Widget _buildListTile({
+      required IconData icon,
+      required String title,
+      required Future<void> Function()? onTap,
+    }) {
+      return ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+        leading: Icon(icon, color: AppColors.inputDark, size: 24.0),
+        title: Text(
+          title,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        onTap: () async {
+          if (onTap != null) {
+            await onTap();
+          }
+        },
+        tileColor: Colors.transparent,
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            leading:
-                Icon(Icons.person, color: AppColors.primaryBlue, size: 24.0),
-            title: Text('Perfil',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            onTap: () {
-              // Navigator.pushNamed(context, 'profile');
-            },
-            tileColor:
-                Colors.transparent, // Fondo transparente para el ListTile
+          _buildListTile(
+            icon: Icons.person,
+            title: 'Perfil',
+            onTap: onProfileTap,
           ),
-          ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-            leading: Icon(Icons.description,
-                color: AppColors.primaryBlue, size: 24.0),
-            title: Text('Moderación de contenido',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            onTap: () {
-              // Navigator.pushNamed(context, 'content-moderation');
-            },
-            tileColor:
-                Colors.transparent, // Fondo transparente para el ListTile
+          _buildListTile(
+            icon: Icons.description,
+            title: 'Moderación de contenido',
+            onTap: onContentModerationTap,
           ),
-          // Agrega otras opciones aquí si es necesario
         ],
       ),
     );
   }
 
-Widget _buildFooter(BuildContext context) {
+  Widget _buildFooter(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 20), // Ajusta este valor para subir el footer
-
-        // Línea fina comentada por ahora
+        SizedBox(height: 20),
         Container(
-          height: 1.0, // Altura de la línea fina
-          margin: EdgeInsets.symmetric(horizontal: 20.0), // Ajusta el margen horizontal
+          height: 1.0,
+          margin: EdgeInsets.symmetric(
+            horizontal: 20.0,
+          ),
           decoration: BoxDecoration(
-            color: Colors.grey[300], // Color de la línea fina
-            borderRadius: BorderRadius.circular(1.0), // Radio pequeño para redondear los extremos
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(1.0),
           ),
         ),
-
         SizedBox(
-          height: 60, // Ajusta la altura del ListTile
+          height: 60,
           child: ListTile(
             leading:
-                Icon(Icons.settings, color: AppColors.primaryBlue, size: 24.0),
-            title: Text('Configuración',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            onTap: () {
-              Navigator.pushNamed(context, 'settings');
+                Icon(Icons.settings, color: AppColors.inputDark, size: 24.0),
+            title: Text(
+              'Configuración',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            onTap: () async {
+              if (onSettingsTap != null) {
+                await onSettingsTap!(); // Usar '!' para indicar que 'onSettingsTap' no es null
+              }
             },
-            tileColor:
-                Colors.transparent, // Fondo transparente para el ListTile
+            tileColor: Colors.transparent,
             contentPadding: EdgeInsets.symmetric(
-                vertical: 9.0, horizontal: 25.0), // Ajusta el padding interno
+              vertical: 9.0,
+              horizontal: 25.0,
+            ),
           ),
         ),
         SizedBox(
-          height: 115, // Ajusta la altura del ListTile
+          height: 115,
           child: ListTile(
-            leading: Icon(Icons.info, color: AppColors.primaryBlue, size: 24.0),
-            title: Text('Acerca de',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            onTap: () {
-              Navigator.pushNamed(context, 'about');
+            leading: Icon(Icons.info, color: AppColors.inputDark, size: 24.0),
+            title: Text(
+              'Acerca de',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            onTap: () async {
+              if (onAboutTap != null) {
+                await onAboutTap!(); // Usar '!' para indicar que 'onAboutTap' no es null
+              }
             },
-            tileColor:
-                Colors.transparent, // Fondo transparente para el ListTile
+            tileColor: Colors.transparent,
             contentPadding: EdgeInsets.symmetric(
-                vertical: 7.0, horizontal: 25.0), // Ajusta el padding interno
+              vertical: 7.0,
+              horizontal: 25.0,
+            ),
           ),
         ),
       ],
