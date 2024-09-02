@@ -86,9 +86,8 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               Text(
                 'Desactivar cuenta',
                 style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 14,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -105,9 +104,9 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
             Text(
               'Esta acción desactivará tu cuenta',
               style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryBlue, // Cambia al color de tu preferencia
+                fontSize: 18.0,
+                fontWeight: FontWeight.w500,
+                color: AppColors.black, // Cambia al color de tu preferencia
               ),
             ),
             SizedBox(height: 16.0), // Espacio entre el título y el contenido
@@ -125,8 +124,8 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               'Qué más debes saber',
               style: TextStyle(
                 fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryBlue, // Cambia al color de tu preferencia
+                fontWeight: FontWeight.w500,
+                color: AppColors.black, // Cambia al color de tu preferencia
               ),
             ),
             SizedBox(height: 8.0), // Espacio entre el título y el contenido
@@ -140,7 +139,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
             ),
             SizedBox(height: 54.0), // Espacio antes del botón
             
-              Divider(color: AppColors.inputLigth, height: 40.0),
+            Divider(color: AppColors.inputLigth, height: 40.0),
             GenericButton(
               label: 'Desactivar',
               onPressed: () {

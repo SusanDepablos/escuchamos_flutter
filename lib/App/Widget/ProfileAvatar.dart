@@ -26,7 +26,7 @@ class ProfileAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: showBorder
             ? Border.all(
-                color: Colors.white,
+                color: AppColors.whiteapp,
                 width: 3.0,
               )
             : null, // Mostrar u ocultar el borde
@@ -49,7 +49,7 @@ class ProfileAvatar extends StatelessWidget {
               Center(
                 child: Icon(
                   MaterialIcons.addphoto,
-                  color: Colors.white,
+                  color: AppColors.whiteapp,
                   size: iconSize,
                 ),
               ),
@@ -70,6 +70,7 @@ class ProfileAvatar extends StatelessWidget {
       return IconButton(
         icon: avatar,
         onPressed: onPressed,
+        padding: EdgeInsets.zero,
       );
     } else {
       return GestureDetector(

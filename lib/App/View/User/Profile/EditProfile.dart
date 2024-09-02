@@ -116,6 +116,9 @@ class _UpdateState extends State<EditProfile> {
     _callUser();
   }
 
+  void reloadView(){
+    _callUser();
+  }
 
   void _openImagePicker(bool isCoverPhoto) async {
     final imageFile = await showDialog<File>(
@@ -136,6 +139,7 @@ class _UpdateState extends State<EditProfile> {
                 _profileAvatarUrl = null;
               }
             });
+          reloadView();
           },
           hasPhoto: isCoverPhoto
               ? _coverPhotoUrl != null
@@ -186,6 +190,8 @@ class _UpdateState extends State<EditProfile> {
     } else if (_profileAvatar != null && !_isCoverPhoto) {
       await _uploadPhoto(_profileAvatar!, 'profile');
     }
+
+    reloadView();
   }
 
   void _cancelImageSelection() {
@@ -352,9 +358,8 @@ class _UpdateState extends State<EditProfile> {
               Text(
                 '@${username ?? '...'}',
                 style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.inputDark,
+                  fontSize: 14,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),

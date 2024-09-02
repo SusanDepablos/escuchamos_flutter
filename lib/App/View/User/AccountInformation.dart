@@ -94,7 +94,7 @@ class _AccountInformationState extends State<AccountInformation> {
               Text(
                 'Información de la cuenta',
                 style: const TextStyle(
-                  fontSize: 17,
+                  fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
@@ -102,9 +102,8 @@ class _AccountInformationState extends State<AccountInformation> {
               Text(
                 username ?? "...",
                 style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 14,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -114,23 +113,22 @@ class _AccountInformationState extends State<AccountInformation> {
       ),
       body: Center(
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
           children: [
+            SizedBox(height: 16),
             ListTile(
               title: Text(
                 'Nombre de usuario',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
               ),
               subtitle: Text(
                 username ?? "...", 
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -154,17 +152,16 @@ class _AccountInformationState extends State<AccountInformation> {
               title: Text(
                 'Teléfono',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
               subtitle: Text(
                 isLoading ? "..." : (phoneNumber ?? "Añadir"),
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -181,17 +178,16 @@ class _AccountInformationState extends State<AccountInformation> {
               title: Text(
                 'Correo electrónico',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
               ),
               subtitle: Text(
                 email ?? "...",
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -203,17 +199,16 @@ class _AccountInformationState extends State<AccountInformation> {
               title: Text(
                 'País',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
               ),
               subtitle: Text(
                 isLoading ? "..." : (country ?? "Añadir"),
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),

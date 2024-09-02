@@ -85,9 +85,8 @@ class _SettingsState extends State<Settings> {
               Text(
                 'Configuración',
                 style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500, // Negrita básica
-                  color: AppColors.inputDark,
+                  fontSize: 14,
+                  color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -97,27 +96,28 @@ class _SettingsState extends State<Settings> {
       ),
       body: Center(
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
           children: [
+            SizedBox(height: 16),
             ListTile(
               leading: Icon(
                 MaterialIcons.person, 
                 color: AppColors.black,
-                size: 30.0, // Ajusta este valor según el tamaño que desees
+                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: Text(
                 'Información de la cuenta',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                   color: AppColors.black,
                 ),
               ),
               subtitle: Text(
                 'Ver y actualizar los detalles de tu cuenta',
                 style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
               onTap: () {
@@ -128,21 +128,22 @@ class _SettingsState extends State<Settings> {
               leading: Icon(
                 MaterialIcons.lock, 
                 color: AppColors.black,
-                size: 30.0, // Ajusta este valor según el tamaño que desees
+                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: Text(
                 'Cambiar contraseña',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.black,
                 ),
               ),
               subtitle: Text(
                 'Actualiza tu contraseña de forma segura',
                 style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
               onTap: () {
@@ -153,21 +154,22 @@ class _SettingsState extends State<Settings> {
               leading: Icon(
                 MaterialIcons.cancel, 
                 color: AppColors.black,
-                size: 30.0, // Ajusta este valor según el tamaño que desees
+                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: Text(
                 'Desactivar cuenta',
                 style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                   color: AppColors.black,
                 ),
               ),
               subtitle: Text(
                 'Desactiva tu cuenta temporalmente',
                 style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.inputDark,
+                  fontSize: 12,
+                  color: AppColors.black,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
               onTap: () {

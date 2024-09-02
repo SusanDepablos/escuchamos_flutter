@@ -133,6 +133,8 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: ProfileAvatar(
+          avatarSize: 30.0,
+          iconSize: 15.0,
           imageProvider: imageProvider,
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();

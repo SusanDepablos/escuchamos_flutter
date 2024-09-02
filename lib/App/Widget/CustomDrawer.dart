@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
@@ -27,24 +28,40 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
+    return SizedBox(
+      width: 290.0, // Ajusta el tamaño aquí
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        color: AppColors.whiteapp,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            _buildBody(context),
-            Expanded(
-              child: Container(),
+        decoration: BoxDecoration(
+          color: AppColors.whiteapp,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(16.0), // Redondea solo la esquina superior derecha
+            bottomRight: Radius.circular(16.0), // Redondea solo la esquina inferior derecha
+          ),
+          border: Border(
+            right: BorderSide(
+              color: Colors.blue, // Cambia el color del borde aquí
+              width: 2.0, // Ajusta el grosor del borde aquí
             ),
-            _buildFooter(context),
-          ],
+          ),
+        ),
+        child: Drawer(
+          child: Container(
+            color: AppColors.whiteapp,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeader(),
+                _buildBody(context),
+                Expanded(child: Container()),
+                _buildFooter(context),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildHeader() {
     return Column(
@@ -53,38 +70,37 @@ class CustomDrawer extends StatelessWidget {
           color: AppColors.whiteapp,
           padding: EdgeInsets.fromLTRB(
             25,
-            30.0,
+            55.0,
             10.0,
             0.0,
           ),
-          height: 180.0,
+          height: 200,
           child: Row(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProfileAvatar(
-                    avatarSize: 55.0,
+                    avatarSize: 50.0,
                     iconSize: 30.0,
                     imageProvider: imageProvider,
                     showBorder: false,
+                    onPressed: onProfileTap,
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 10),
                   Text(
                     name ?? '...',
                     style: const TextStyle(
-                      fontSize: 17,
+                      fontSize: 18,
                       fontWeight: FontWeight.w800,
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(height: 1),
                   Text(
                     '@$username',
                     style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.inputDark,
+                      fontSize: 14,
+                      color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -94,8 +110,8 @@ class CustomDrawer extends StatelessWidget {
                       Text(
                         '$following',
                         style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.black,
                         ),
                       ),
@@ -103,8 +119,7 @@ class CustomDrawer extends StatelessWidget {
                       Text(
                         'Siguiendo',
                         style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
                           color: AppColors.inputDark,
                         ),
                       ),
@@ -112,8 +127,8 @@ class CustomDrawer extends StatelessWidget {
                       Text(
                         '$followers',
                         style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.black,
                         ),
                       ),
@@ -121,8 +136,7 @@ class CustomDrawer extends StatelessWidget {
                       Text(
                         'Seguidores',
                         style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
                           color: AppColors.inputDark,
                         ),
                       ),
@@ -157,10 +171,10 @@ class CustomDrawer extends StatelessWidget {
       return ListTile(
         contentPadding:
             const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
-        leading: Icon(icon, color: AppColors.inputDark, size: 24.0),
+        leading: Icon(icon, color: AppColors.black, size: 24.0),
         title: Text(
           title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         onTap: () async {
           if (onTap != null) {
@@ -172,17 +186,17 @@ class CustomDrawer extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 18.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildListTile(
-            icon: Icons.person,
+            icon: MaterialIcons.person,
             title: 'Perfil',
             onTap: onProfileTap,
           ),
           _buildListTile(
-            icon: Icons.description,
+            icon: MaterialIcons.description,
             title: 'Moderación de contenido',
             onTap: onContentModerationTap,
           ),
@@ -209,10 +223,10 @@ class CustomDrawer extends StatelessWidget {
           height: 60,
           child: ListTile(
             leading:
-                Icon(Icons.settings, color: AppColors.inputDark, size: 24.0),
+                Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
             title: Text(
-              'Configuración',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              'Configuración y privacidad',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
             ),
             onTap: () async {
               if (onSettingsTap != null) {
@@ -229,10 +243,10 @@ class CustomDrawer extends StatelessWidget {
         SizedBox(
           height: 115,
           child: ListTile(
-            leading: Icon(Icons.info, color: AppColors.inputDark, size: 24.0),
+            leading: Icon(MaterialIcons.info, color: AppColors.black, size: 24.0),
             title: Text(
               'Acerca de',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
             ),
             onTap: () async {
               if (onAboutTap != null) {
