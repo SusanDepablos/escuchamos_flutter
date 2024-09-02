@@ -92,7 +92,7 @@ class SelectWithFlags extends SelectBase<String?> {
     double iconSize = 0,
   }) : super(
           selectedValue: selectedValue,
-          items: itemsMap.map((data) => data['dialingCode']).toList(),
+          items: itemsMap.map((data) => data['dialingCode']! + data['isoCode']!).toList(),
           onChanged: onChanged,
           hintText: hintText,
           textStyle: textStyle,
@@ -103,7 +103,7 @@ class SelectWithFlags extends SelectBase<String?> {
   @override
   Widget buildItem(BuildContext context, String? item) {
     final itemData = itemsMap.firstWhere(
-      (data) => data['dialingCode'] == item,
+      (data) => (data['dialingCode']! + data['isoCode']!) == item,
       orElse: () => {'dialingCode': '', 'isoCode': ''},
     );
     String? code = itemData['isoCode'];
@@ -119,7 +119,7 @@ class SelectWithFlags extends SelectBase<String?> {
         ),
         SizedBox(width: 8.0),
         Text(
-          '${item ?? ''}',
+          '${itemData['dialingCode'] ?? ''}',
           style: textStyle,
         ),
       ],
