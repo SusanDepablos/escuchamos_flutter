@@ -109,9 +109,9 @@ class _LoginState extends State<Login> {
 @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
         automaticallyImplyLeading: false,
       ),
       body: Padding(

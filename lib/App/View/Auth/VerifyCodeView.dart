@@ -133,9 +133,9 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-        backgroundColor: Colors.white, 
+        backgroundColor: AppColors.whiteapp, 
         automaticallyImplyLeading: false,
       title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
         centerTitle: true, // Para centrar el LogoBanner en el AppBar

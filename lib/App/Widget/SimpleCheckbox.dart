@@ -13,9 +13,9 @@ class SimpleCheckbox extends StatefulWidget {
   SimpleCheckbox({
     required this.onChanged,
     required this.label,
-    this.labelColor = Colors.black,
+    this.labelColor = AppColors.black,
     this.checkboxColor = AppColors.primaryBlue, // Valor por defecto
-    this.checkColor = Colors.white, // Valor por defecto
+    this.checkColor = AppColors.whiteapp, // Valor por defecto
     this.onLabelTap,
     this.error,
   });

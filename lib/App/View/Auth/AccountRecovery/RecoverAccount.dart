@@ -91,9 +91,9 @@ class _RecoverAccountState extends State<RecoverAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteapp,
         automaticallyImplyLeading: false,
         title: Stack(
           children: [

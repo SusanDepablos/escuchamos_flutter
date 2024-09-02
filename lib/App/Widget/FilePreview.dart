@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class ImagePreview extends StatelessWidget {
   final File? image;
@@ -23,12 +24,12 @@ class ImagePreview extends StatelessWidget {
     double margin = isCoverPhoto ? 16.0 : 24.0;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.black,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: Icon(Icons.close, color: AppColors.whiteapp),
           onPressed: onCancel,
         ),
       ),
@@ -48,7 +49,7 @@ class ImagePreview extends StatelessWidget {
                   minScale: PhotoViewComputedScale.covered,
                   maxScale: PhotoViewComputedScale.covered * 4,
                   backgroundDecoration: BoxDecoration(
-                    color: Colors.black,
+                    color: AppColors.black,
                   ),
                   enableRotation: false,
                   enablePanAlways: true,
@@ -64,7 +65,7 @@ class ImagePreview extends StatelessWidget {
                       width: width,
                       height: height,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2), // Borde externo blanco
+                        border: Border.all(color: AppColors.whiteapp, width: 2), // Borde externo blanco
                         borderRadius: BorderRadius.circular(8.0), // Borde rectangular
                       ),
                     ),
@@ -78,7 +79,7 @@ class ImagePreview extends StatelessWidget {
                       height: height,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle, // Borde circular para perfil
-                        border: Border.all(color: Colors.white, width: 2), // Resalta el recorte circular
+                        border: Border.all(color: AppColors.whiteapp, width: 2), // Resalta el recorte circular
                       ),
                     ),
                   ),
@@ -88,14 +89,14 @@ class ImagePreview extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        color: AppColors.black,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LabelAction(
               text: 'Confirmar',
               onPressed: onConfirm,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.whiteapp),
             ),
                 ],
         ),

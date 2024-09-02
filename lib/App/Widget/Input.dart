@@ -373,9 +373,9 @@ class __DateInputState extends __BasicInputState {
                 AppColors.primaryBlue, // Color de la barra superior (AppBar)
             colorScheme: ColorScheme.light(
               primary: AppColors.primaryBlue, // Color del día seleccionado
-              onPrimary: Colors.white, // Color del texto en el día seleccionado
+              onPrimary: AppColors.whiteapp, // Color del texto en el día seleccionado
               onSurface:
-                  Colors.black, // Color del texto en los días no seleccionados
+                  AppColors.black, // Color del texto en los días no seleccionados
             ),
             buttonTheme: ButtonThemeData(
               textTheme: ButtonTextTheme

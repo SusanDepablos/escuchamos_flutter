@@ -185,13 +185,13 @@ class _RegisterState extends State<Register> {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.whiteapp,
     appBar: AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteapp,
       elevation: 0,
-      iconTheme: IconThemeData(color: Colors.black),
+      iconTheme: IconThemeData(color: AppColors.black),
       titleTextStyle: TextStyle(
-        color: Colors.black,
+        color: AppColors.black,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),

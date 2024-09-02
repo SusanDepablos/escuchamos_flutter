@@ -45,7 +45,7 @@ class TermsAndConditions extends StatelessWidget {
           },
           style: TextButton.styleFrom(
             backgroundColor: AppColors.primaryBlue, // Color de fondo del botón
-            foregroundColor: Colors.white, // Color del texto del botón
+            foregroundColor: AppColors.whiteapp, // Color del texto del botón
             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0), // Bordes redondeados del botón

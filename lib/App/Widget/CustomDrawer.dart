@@ -163,7 +163,7 @@ class CustomDrawer extends StatelessWidget {
             horizontal: 20.0,
           ),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: AppColors.inputLigth,
             borderRadius: BorderRadius.circular(1.0),
           ),
         ),
@@ -224,7 +224,7 @@ class CustomDrawer extends StatelessWidget {
             horizontal: 20.0,
           ),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: AppColors.inputLigth,
             borderRadius: BorderRadius.circular(1.0),
           ),
         ),

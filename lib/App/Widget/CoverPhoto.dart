@@ -48,7 +48,7 @@ class CoverPhoto extends StatelessWidget {
             Center(
               child: Icon(
                 MaterialIcons.addphoto,
-                color: Colors.white,
+                color: AppColors.whiteapp,
                 size: iconSize,
               ),
             ),
