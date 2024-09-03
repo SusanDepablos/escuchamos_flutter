@@ -82,7 +82,7 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Configuración',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
@@ -99,12 +99,12 @@ class _SettingsState extends State<Settings> {
           children: [
             SizedBox(height: 16),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MaterialIcons.person, 
                 color: AppColors.black,
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
-              title: Text(
+              title: const Text(
                 'Información de la cuenta',
                 style: TextStyle(
                   fontSize: 18,
@@ -112,7 +112,7 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.black,
                 ),
               ),
-              subtitle: Text(
+              subtitle: const Text(
                 'Ver y actualizar los detalles de tu cuenta',
                 style: TextStyle(
                   fontSize: 12,
@@ -125,12 +125,12 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MaterialIcons.lock, 
                 color: AppColors.black,
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
-              title: Text(
+              title: const Text(
                 'Cambiar contraseña',
                 style: TextStyle(
                   fontSize: 18,
@@ -138,7 +138,7 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.black,
                 ),
               ),
-              subtitle: Text(
+              subtitle: const Text(
                 'Actualiza tu contraseña de forma segura',
                 style: TextStyle(
                   fontSize: 12,
