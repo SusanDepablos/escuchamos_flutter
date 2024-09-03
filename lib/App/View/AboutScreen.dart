@@ -5,18 +5,20 @@ import 'package:escuchamos_flutter/App/Widget/Logo.dart'; // Asegúrate de tener
 import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-
-class AboutScreen extends StatelessWidget {
-
-void _launchURL(String url) async {
-  final Uri uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri);
-  } else {
-    throw 'No se pudo abrir el enlace: $url';
-  }
+class AboutScreen extends StatefulWidget {
+  @override
+  _AboutScreenState createState() => _AboutScreenState();
 }
+
+class _AboutScreenState extends State<AboutScreen> {
+  void _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'No se pudo abrir el enlace: $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,8 @@ void _launchURL(String url) async {
             // Ícono de retroceso en el lado izquierdo
             Positioned(
               left: 0,
-              top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
+              top:
+                  9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
               child: IconButton(
                 icon: Icon(Icons.arrow_back, color: AppColors.black),
                 onPressed: () {
@@ -46,9 +49,10 @@ void _launchURL(String url) async {
         ),
         centerTitle: true, // Mantiene el título centrado visualmente
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        // Aquí envolvemos el contenido en un scroll
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -56,7 +60,7 @@ void _launchURL(String url) async {
               _buildSectionTitle('¿Quiénes Somos?'),
               _buildSectionContent(
                 'Somos una comunidad en Rubio, Táchira, dedicada a transformar nuestro entorno social y cultural. EscuChamos nació en 2021 con la misión de empoderar a mujeres y jóvenes, liderando un cambio positivo en sus comunidades.',
-              ),     
+              ),
               // Sección: Nuestra Misión
               _buildSectionTitle('Nuestra Misión'),
               _buildSectionContent(
@@ -111,14 +115,16 @@ void _launchURL(String url) async {
                     LabelAction(
                       icon: MaterialIcons.facebook,
                       onPressed: () {
-                        _launchURL(ApiUrl.Facebook); // Reemplaza con tu enlace de Facebook
+                        _launchURL(ApiUrl
+                            .Facebook); // Reemplaza con tu enlace de Facebook
                       },
                     ),
                     SizedBox(width: 24.0), // Espacio entre íconos
                     LabelAction(
                       icon: MaterialIcons.email,
                       onPressed: () {
-                        _launchURL(ApiUrl.Facebook); // Reemplaza con tu correo electrónico
+                        _launchURL(ApiUrl
+                            .Facebook); // Reemplaza con tu correo electrónico
                       },
                     ),
                   ],
@@ -132,7 +138,6 @@ void _launchURL(String url) async {
                   style: TextStyle(fontSize: 14.0, color: AppColors.inputDark),
                 ),
               ),
-
             ],
           ),
         ),
@@ -167,3 +172,4 @@ void _launchURL(String url) async {
     );
   }
 }
+

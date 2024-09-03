@@ -1,4 +1,4 @@
-import 'package:escuchamos_flutter/App/View/User/Account/ChangePassword.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/AccountRecovery/RecoverAccount.dart';
@@ -12,12 +12,12 @@ import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/Profile.dart';
-import 'package:escuchamos_flutter/App/View/User/Settings.dart';
-import 'package:escuchamos_flutter/App/View/User/DeactivateAccount.dart';
-import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
-import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
+import 'package:escuchamos_flutter/App/View/Settings.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/DeactivateAccount.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
 import 'package:escuchamos_flutter/app/View/User/Account/PhoneUpdate.dart';
-import 'package:escuchamos_flutter/App/View/User/Account/EmailUpdate.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
 
 class AppRoutes {
   static final routes = {
