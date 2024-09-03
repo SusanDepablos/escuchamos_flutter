@@ -33,7 +33,7 @@ class CustomDrawer extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppColors.whiteapp, // Color de fondo del Drawer
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(16.0), // Redondea solo la esquina superior derecha
@@ -78,7 +78,7 @@ class CustomDrawer extends StatelessWidget {
       children: [
         Container(
           color: AppColors.whiteapp,
-          padding: EdgeInsets.fromLTRB(
+          padding: const EdgeInsets.fromLTRB(
             25,
             55.0,
             10.0,
@@ -97,7 +97,7 @@ class CustomDrawer extends StatelessWidget {
                     showBorder: false,
                     onPressed: onProfileTap,
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     name ?? '...',
                     style: const TextStyle(
@@ -108,13 +108,13 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   Text(
                     '@$username',
-                    style: TextStyle(
+                    style:  const  TextStyle(
                       fontSize: 14,
                       color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                         Text(
@@ -134,7 +134,7 @@ class CustomDrawer extends StatelessWidget {
                         ),
                         padding: EdgeInsets.zero,
                       ),
-                      SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
+                      const SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
                       // Número de "Seguidores"
                       Text(
                         '${followers?? '0'}',
@@ -158,13 +158,13 @@ class CustomDrawer extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
             ],
           ),
         ),
         Container(
           height: 1.0,
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             horizontal: 20.0,
           ),
           decoration: BoxDecoration(
@@ -188,7 +188,7 @@ class CustomDrawer extends StatelessWidget {
         leading: Icon(icon, color: AppColors.black, size: 24.0),
         title: Text(
           title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         onTap: () async {
           if (onTap != null) {
@@ -225,7 +225,7 @@ class CustomDrawer extends StatelessWidget {
         SizedBox(height: 20),
         Container(
           height: 1.0,
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             horizontal: 20.0,
           ),
           decoration: BoxDecoration(
@@ -237,8 +237,8 @@ class CustomDrawer extends StatelessWidget {
           height: 60,
           child: ListTile(
             leading:
-                Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
-            title: Text(
+               const Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
+            title: const Text(
               'Configuración y privacidad',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
@@ -248,7 +248,7 @@ class CustomDrawer extends StatelessWidget {
               }
             },
             tileColor: Colors.transparent,
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               vertical: 9.0,
               horizontal: 25.0,
             ),
@@ -257,8 +257,8 @@ class CustomDrawer extends StatelessWidget {
         SizedBox(
           height: 115,
           child: ListTile(
-            leading: Icon(MaterialIcons.info, color: AppColors.black, size: 24.0),
-            title: Text(
+            leading: const Icon(MaterialIcons.info, color: AppColors.black, size: 24.0),
+            title: const Text(
               'Acerca de',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
@@ -268,7 +268,7 @@ class CustomDrawer extends StatelessWidget {
               }
             },
             tileColor: Colors.transparent,
-            contentPadding: EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               vertical: 7.0,
               horizontal: 25.0,
             ),
