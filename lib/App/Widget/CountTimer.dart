@@ -51,7 +51,7 @@ class _CountTimerState extends State<CountTimer> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.whiteapp,
       ),
       child: Text(
         "$minutes:$seconds",

@@ -234,7 +234,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                 ),
               ),
               const Text(
-                'Cambiar correo electrnico',
+                'Configuración',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.inputDark,

@@ -191,3 +191,36 @@ class VerifyPasswordCommand {
 }
 
 
+class ChangePasswordCommand {
+  final ChangePassword _userService;
+
+  ChangePasswordCommand(this._userService);
+
+  Future<dynamic> execute(
+    String old_password, new_password)
+    async {
+    try {
+      var response =
+          await _userService.changePassword(old_password, new_password);
+
+      if (response.statusCode == 200) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
+

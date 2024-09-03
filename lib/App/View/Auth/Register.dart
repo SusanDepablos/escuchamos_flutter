@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/Routes/Routes.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; // Asegúrate de ajustar la ruta
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; // Asegúrate de ajustar la ruta
@@ -270,9 +271,44 @@ Widget build(BuildContext context) {
                   name: 'Iniciar sesión',
                   color: AppColors.primaryBlue,
                   onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, 'login');
-                  },
+                  // Ruta que deseas usar, por ejemplo, 'login'
+                  String routeName = 'login';
+
+                  // Verifica si la ruta existe en AppRoutes
+                  if (AppRoutes.routes.containsKey(routeName)) {
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: Duration(milliseconds: 400), // Duración de la animación
+                        pageBuilder: (context, animation, secondaryAnimation) => AppRoutes.routes[routeName]!(context),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          var begin = Offset(-1.0, 0.0); // Empieza fuera de la pantalla a la izquierda
+                          var end = Offset.zero; // Termina en el centro de la pantalla
+                          var curve = Curves.easeInOut;
+
+                          var slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                          var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+
+                          return SlideTransition(
+                            position: animation.drive(slideTween),
+                            child: FadeTransition(
+                              opacity: animation.drive(fadeTween),
+                              child: ScaleTransition(
+                                scale: Tween<double>(begin: 0.95, end: 1.0).animate(animation),
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    //print('Ruta no encontrada: $routeName');
+                  }
+                },
+
+
+                
                 ),
             ),
           ],

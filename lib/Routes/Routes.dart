@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/View/User/Account/ChangePassword.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/AccountRecovery/RecoverAccount.dart';
@@ -72,6 +73,8 @@ class AppRoutes {
     'edit-profile': (context) => EditProfile(), // Pantalla de perfil
 
     'profile': (context) => Profile(), // Pantalla de perfil
+
+    'user-change-password': (context) => UserChangePassword(), // Pantalla de perfil
 
   };
 }

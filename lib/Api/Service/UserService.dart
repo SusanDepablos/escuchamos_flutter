@@ -183,4 +183,34 @@ class VerifyPasswords {
   }
 }
 
+class ChangePassword {
+  Future<ServiceResponse> changePassword(
+      String old_password, new_password) async {
+    final FlutterSecureStorage _storage = FlutterSecureStorage();
+    final url = Uri.parse('${ApiUrl.baseUrl}user/change/password/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'old_password': old_password,
+      'new_password': new_password,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+
   

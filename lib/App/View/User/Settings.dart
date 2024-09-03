@@ -147,7 +147,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                Navigator.pushReplacementNamed(context, 'Base');
+                Navigator.pushNamed(context, 'user-change-password');
               },
             ),
             ListTile(

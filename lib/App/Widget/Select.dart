@@ -118,7 +118,7 @@ class SelectWithFlags extends SelectBase<String?> {
           width: 20.0,
           height: 14.0,
         ),
-        SizedBox(width: 8.0),
+        SizedBox(width: 6.0),
         Text(
           '${itemData['dialingCode'] ?? ''}',
           style: textStyle,

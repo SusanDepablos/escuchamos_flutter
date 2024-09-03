@@ -112,15 +112,6 @@ class Home extends StatelessWidget {
                 SizedBox(height: 16),
                 Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 8.0),
-                BasicLabel(
-                  name: 'Perfil',
-                  color: AppColors.primaryBlue,
-                  onTap: () {
-                    Navigator.pushNamed(
-                        context, 'edit-profile');
-                  },
-                ),
-                SizedBox(height: 8.0),
                 SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () => _logout(context),

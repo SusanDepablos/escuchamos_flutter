@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/Routes/Routes.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; // Asegúrate de ajustar la ruta
@@ -158,9 +159,44 @@ class _LoginState extends State<Login> {
                   name: 'Crear cuenta nueva',
                   color: AppColors.primaryBlue,
                   onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, 'register');
-                  },
+                  // Ruta que deseas usar, por ejemplo, 'register'
+                  String routeName = 'register';
+
+                  // Verifica si la ruta existe en AppRoutes
+                  if (AppRoutes.routes.containsKey(routeName)) {
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: Duration(milliseconds: 400), // Duración de la animación
+                        pageBuilder: (context, animation, secondaryAnimation) => AppRoutes.routes[routeName]!(context),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          var begin = Offset(1.0, 0.0); // Empieza fuera de la pantalla a la derecha
+                          var end = Offset.zero; // Termina en el centro de la pantalla
+                          var curve = Curves.easeInOut;
+
+                          var slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                          var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+
+                          return SlideTransition(
+                            position: animation.drive(slideTween),
+                            child: FadeTransition(
+                              opacity: animation.drive(fadeTween),
+                              child: ScaleTransition(
+                                scale: Tween<double>(begin: 0.95, end: 1.0).animate(animation),
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    //print('Ruta no encontrada: $routeName');
+                  }
+                },
+
+
+
                 ),
             ),
           ],
