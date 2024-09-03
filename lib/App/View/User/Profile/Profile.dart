@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
@@ -103,15 +102,6 @@ class _UpdateState extends State<Profile> {
     return formatter.format(dateTime);
   }
 
-  void _editProfile() {
-    // Implementa la lógica para editar el perfil aquí
-    print('Editar perfil');
-  }
-
-  Future<void> _logout() async {
-    await _storage.delete(key: 'user'); // Ejemplo de eliminación de datos del almacenamiento
-    Navigator.pushReplacementNamed(context, '/login'); // Redirige a la pantalla de inicio de sesión
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +156,7 @@ class _UpdateState extends State<Profile> {
                   Positioned(
                     bottom: -35,
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(
@@ -183,7 +173,7 @@ class _UpdateState extends State<Profile> {
                   ),
                 ],
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Column(
                 children: [
                   Align(
@@ -197,7 +187,7 @@ class _UpdateState extends State<Profile> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Visibility(
                     visible: biography?.isNotEmpty ?? false,
                     child: Text(
@@ -208,7 +198,7 @@ class _UpdateState extends State<Profile> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -224,7 +214,7 @@ class _UpdateState extends State<Profile> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -245,7 +235,7 @@ class _UpdateState extends State<Profile> {
                         ),
                         padding: EdgeInsets.zero,
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
                         '${followers ?? '0'}',
                         style: const TextStyle(

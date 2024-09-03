@@ -28,6 +28,7 @@ class UserCommandLogin {
         // Guarda el token y el userId en el almacenamiento seguro
         final storage = FlutterSecureStorage();
         await storage.write(key: 'token', value: loginResponse.token);
+        await storage.write(key: 'session_key', value: loginResponse.session_key);
         await storage.write(key: 'user', value: loginResponse.user.toString());
         await storage.write(key: 'groups', value: json.encode(loginResponse.groups));
 
@@ -55,14 +56,15 @@ class UserCommandLogout {
 
   UserCommandLogout(this._logoutUserService);
 
-  Future<dynamic> execute(String token) async {
+  Future<dynamic> execute() async {
     try {
-      var response = await _logoutUserService.logoutUser(token);
+      var response = await _logoutUserService.logoutUser();
 
       if (response.statusCode == 200) {
         // Eliminar el token y la información del usuario del almacenamiento seguro
         final storage = FlutterSecureStorage();
         await storage.delete(key: 'token');
+        await storage.delete(key: 'session_key');
         await storage.delete(key: 'user');
         await storage.delete(key: 'groups');
 

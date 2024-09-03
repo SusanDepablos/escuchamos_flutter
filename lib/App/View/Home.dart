@@ -12,13 +12,12 @@ class Home extends StatelessWidget {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   Future<void> _logout(BuildContext context) async {
-    final token = await _storage.read(key: 'token') ?? '';
 
     final userCommandLogout = UserCommandLogout(UserLogout());
 
     try {
       // Ejecutar el comando de cierre de sesión
-      final response = await userCommandLogout.execute(token);
+      final response = await userCommandLogout.execute();
 
       if (response is SuccessResponse) {
         await showDialog(
@@ -30,6 +29,7 @@ class Home extends StatelessWidget {
         );
         // Elimina el token y otros datos del almacenamiento seguro
         await _storage.delete(key: 'token');
+        await _storage.delete(key: 'session_key');
         await _storage.delete(key: 'user');
         await _storage.delete(key: 'groups');
 
@@ -61,12 +61,14 @@ class Home extends StatelessWidget {
 
   Future<Map<String, dynamic>> _getData() async {
     final token = await _storage.read(key: 'token') ?? '';
+    final session_key = await _storage.read(key: 'session_key') ?? '';
     final user = await _storage.read(key: 'user') ?? '';
     final groupsString = await _storage.read(key: 'groups') ?? '[]';
     final groups = (groupsString.isNotEmpty) ? List<dynamic>.from(json.decode(groupsString)) : [];
 
     return {
       'token': token,
+      'session_key': session_key,
       'user': user,
       'groups': groups,
     };
@@ -91,6 +93,7 @@ class Home extends StatelessWidget {
 
         final data = snapshot.data!;
         final token = data['token'] as String;
+        final session_key = data['session_key'] as String;
         final user = data['user'] as String;
         final groups = data['groups'] as List<dynamic>;
 
@@ -102,6 +105,8 @@ class Home extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Token: $token', style: TextStyle(fontSize: 16)),
+                SizedBox(height: 16),
+                Text('Session: $session_key', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 16),
                 Text('User: $user', style: TextStyle(fontSize: 16)),
                 SizedBox(height: 16),
