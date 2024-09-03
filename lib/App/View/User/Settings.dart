@@ -151,12 +151,12 @@ class _SettingsState extends State<Settings> {
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MaterialIcons.cancel, 
                 color: AppColors.black,
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
-              title: Text(
+              title: const Text(
                 'Desactivar cuenta',
                 style: TextStyle(
                   fontSize: 18,
@@ -164,12 +164,30 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.black,
                 ),
               ),
-              subtitle: Text(
+              subtitle: const Text(
                 'Desactiva tu cuenta temporalmente',
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
+                ),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, 'deactivate');
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                MaterialIcons.logout,
+                color: AppColors.errorRed,
+                size: 25.0, // Ajusta este valor según el tamaño que desees
+              ),
+              title: const Text(
+                'Cerrar sesión',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.errorRed,
                 ),
               ),
               onTap: () {

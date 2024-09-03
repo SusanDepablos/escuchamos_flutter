@@ -233,7 +233,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Cambiar correo electrnico',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
@@ -254,7 +254,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Ingresa contraseña actual',
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -287,8 +287,8 @@ class _VerifyPasswordState extends State<VerifyPassword> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Cambiar correo electrónico',
+                  const Text(
+                     'Cambiar correo electrónico',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 18,
