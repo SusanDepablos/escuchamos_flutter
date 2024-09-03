@@ -135,8 +135,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
         await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Contraseña incorrecta',
             message: response.message,
           ),
         );
