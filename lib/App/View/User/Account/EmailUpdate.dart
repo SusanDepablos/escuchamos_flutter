@@ -10,17 +10,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'dart:convert';
 
 class VerifyPassword extends StatefulWidget {
-  final String? head;
-  final String button;
-  final VoidCallback varFunction;
-
-  VerifyPassword({
-    required this.varFunction,
-    this.head,
-    required this.button
-    });
 
   @override
   _VerifyPasswordState createState() => _VerifyPasswordState();
@@ -32,17 +24,22 @@ class _VerifyPasswordState extends State<VerifyPassword> {
   bool _submitting = false;
   String? username;
   String? name;
+  bool password = true;
+  bool email = false;
 
   final _input = {
     'password': TextEditingController(),
+    'email': TextEditingController(),
   };
 
   final _borderColors = {
     'password': AppColors.inputBasic,
+    'email': AppColors.inputBasic,
   };
 
   final Map<String, String?> _errorMessages = {
     'password': null,
+    'email': null,
   };
 
   Future<void> _callUser() async {
@@ -104,7 +101,9 @@ class _VerifyPasswordState extends State<VerifyPassword> {
           ),
         );
 
-        widget.varFunction();
+        password = false;
+        email = true;
+
       } else if (response is ValidationResponse) {
         if (response.key['password'] != null) {
           setState(() {
@@ -119,6 +118,68 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                 _errorMessages['password'] = null;
               });
             }
+          });
+        }
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      await showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } finally {
+      setState(() {
+        _submitting = false;
+      });
+    }
+  }
+
+  Future<void> _updateEmail() async {
+    setState(() {
+      _submitting = true;
+    });
+
+    try {
+      final body = jsonEncode({
+        'email': _input['email']!.text,
+      });
+
+      var response =
+          await AccountCommandUpdate(AccountUpdate()).execute(body: body);
+
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Correcto',
+            message: response.message,
+          ),
+        );
+
+        Navigator.pop(context);
+      } else if (response is ValidationResponse) {
+        if (response.key['email'] != null) {
+          setState(() {
+            _borderColors['email'] = AppColors.inputDark;
+            _errorMessages['email'] = response.message('email');
+          });
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              _borderColors['email'] = AppColors.inputBasic;
+              _errorMessages['email'] = null;
+            });
           });
         }
       } else {
@@ -173,7 +234,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                 ),
               ),
               Text(
-                widget.head ?? 'Configuración',
+                'Cambiar correo electrnico',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.inputDark,
@@ -188,35 +249,70 @@ class _VerifyPasswordState extends State<VerifyPassword> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Ingresa contraseña actual',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.black,
+            Visibility(
+              visible: password,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Ingresa contraseña actual',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black,
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 10.0),
+                  BasicInput(
+                    text: 'Contraseña actual',
+                    input: _input['password']!,
+                    obscureText: true,
+                    border: _borderColors['password']!,
+                    error: _errorMessages['password'],
+                  ),
+                  SizedBox(height: 29.0),
+                  GenericButton(
+                    label: 'Verificar',
+                    onPressed: () {
+                      _verifyPassword();
+                    },
+                    isLoading: _submitting,
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 10.0),
-            BasicInput(
-              text: 'Contraseña actual',
-              input: _input['password']!,
-              obscureText: true,
-              border: _borderColors['password']!,
-              error: _errorMessages['password'],
-            ),
-            SizedBox(height: 29.0),
-            GenericButton(
-              label: widget.button,
-              onPressed: () {
-                _verifyPassword();
-              },
-              isLoading: _submitting,
+            Visibility(
+              visible: email,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Cambiar correo electrónico',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GenericInput(
+                    text: 'Introduce tu nuevo correo',
+                    input: _input['email']!,
+                    border: _borderColors['email']!,
+                    error: _errorMessages['email'],
+                  ),
+                  SizedBox(height: 29.0),
+                  GenericButton(
+                    label: 'Actualizar',
+                    onPressed: () {
+                      _updateEmail();
+                    },
+                    isLoading: _submitting,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

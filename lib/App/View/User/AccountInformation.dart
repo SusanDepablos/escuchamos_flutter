@@ -19,8 +19,7 @@ class _AccountInformationState extends State<AccountInformation> {
   String? email;
   String? country;
   String? name;
-  bool isLoading =
-      true; // Agregamos esta variable para controlar el estado de carga
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -197,22 +196,6 @@ class _AccountInformationState extends State<AccountInformation> {
                 final result = await Navigator.pushNamed(
                   context,
                   'verify-password',
-                  arguments: {
-                    'head': 'Cambiar correo electrnico',
-                    'button': 'verificar',
-                    'varFunction': () {
-                      Navigator.pushNamed(
-                        context,
-                        'edit-account',
-                        arguments: {
-                          'text': 'Correo electrónico',
-                          'label': 'Cambiar Correo electrónico',
-                          'textChanged': false,
-                          'field': 'email',
-                        },
-                      );
-                    },
-                  },
                 );
 
                 reloadView();
