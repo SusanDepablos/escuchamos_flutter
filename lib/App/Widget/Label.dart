@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 class LabelAction extends StatefulWidget {
   final String? text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final TextStyle? style;
   final bool isLoading;
   final IconData? icon; // Campo opcional para el ícono
+  final double? iconSize; // Nuevo campo opcional para el tamaño del ícono
+  final EdgeInsetsGeometry? padding; // Nuevo campo opcional para padding
 
   LabelAction({
     this.text,
-    required this.onPressed,
+    this.onPressed,
     this.style,
     this.isLoading = false,
     this.icon, // Inicialización del campo opcional para el ícono
+    this.iconSize = 24, // Valor por defecto para el tamaño del ícono
+    this.padding = const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Valor por defecto
   });
 
   @override
@@ -24,7 +28,7 @@ class _LabelActionState extends State<LabelAction> {
 
   void _handlePress() {
     if (!_isDisabled && !widget.isLoading) {
-      widget.onPressed();
+      widget.onPressed!();
 
       // Deshabilitar el botón durante 30 segundos
       setState(() {
@@ -47,7 +51,7 @@ class _LabelActionState extends State<LabelAction> {
     return GestureDetector(
       onTap: _isDisabled ? null : _handlePress,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        padding: widget.padding,
         child: Stack(
           alignment: Alignment.centerLeft,
           children: [
@@ -68,7 +72,7 @@ class _LabelActionState extends State<LabelAction> {
               child: Row(
                 children: [
                   if (widget.icon != null) ...[
-                    Icon(widget.icon, size: 24, color: widget.style?.color ?? AppColors.black),
+                    Icon(widget.icon, size: widget.iconSize, color: widget.style?.color ?? AppColors.black),
                     SizedBox(width: 8), // Espacio entre el ícono y el texto
                   ],
                   if (!widget.isLoading && widget.text != null)

@@ -146,8 +146,15 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
     });
 
     try {
+      final selectedCountry = countryData.firstWhere(
+        (data) => data['dialingCode']! + data['isoCode']! == _selected,
+        orElse: () => {'dialingCode': ''},
+      );
+
+      final dialingCode = selectedCountry['dialingCode'];
+
       final body = jsonEncode({
-        'phone_number': '$_selected ${input['phone_number']!.text}',
+        'phone_number': '$dialingCode ${input['phone_number']!.text}',
       });
 
       var response =

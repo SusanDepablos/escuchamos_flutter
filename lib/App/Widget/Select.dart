@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 abstract class SelectBase<T> extends StatelessWidget {
   final T? selectedValue;
@@ -15,7 +16,7 @@ abstract class SelectBase<T> extends StatelessWidget {
     this.onChanged,
     this.hintText = '+0',
     this.textStyle,
-    this.dropdownColor = Colors.white,
+    this.dropdownColor = AppColors.whiteapp,
     this.iconSize = 0,
   });
 
@@ -57,7 +58,7 @@ class SelectText extends SelectBase<String?> {
     void Function(String?)? onChanged,
     String hintText = '+0',
     TextStyle? textStyle,
-    Color dropdownColor = Colors.white,
+    Color dropdownColor = AppColors.whiteapp,
     double iconSize = 0,
   }) : super(
           selectedValue: selectedValue,
@@ -88,7 +89,7 @@ class SelectWithFlags extends SelectBase<String?> {
     void Function(String?)? onChanged,
     String hintText = '+0',
     TextStyle? textStyle,
-    Color dropdownColor = Colors.white,
+    Color dropdownColor = AppColors.whiteapp,
     double iconSize = 0,
   }) : super(
           selectedValue: selectedValue,

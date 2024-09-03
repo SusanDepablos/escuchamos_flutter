@@ -22,8 +22,11 @@ class MaterialIcons {
   static const IconData camera = Icons.camera_alt; // Ícono de cámara para Tomar o editar una foto
   static const IconData image = Icons.image; // Ícono de imagen para Mostrar una imagen predeterminada
   static const IconData addphoto = Icons.add_a_photo; // Ícono de agregar foto para Añadir o editar una foto
-  static const IconData description = Icons.description; // Ícono de 
-  static const IconData settings = Icons.settings; // Ícono de
+  static const IconData description = Icons.description; // Ícono de descripcion
+  static const IconData settings = Icons.settings; // Ícono de configuracion
+  static const IconData date = Icons.date_range; // Ícono de dia
+  static const IconData edit = Icons.edit; // Ícono de editar
+  static const IconData logout = Icons.logout; // Ícono de cerrar sesión
 
   
   // Añadir los íconos para redes sociales y comunicación

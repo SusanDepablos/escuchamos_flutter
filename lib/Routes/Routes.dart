@@ -10,6 +10,7 @@ import 'package:escuchamos_flutter/App/View/AboutScreen.dart';
 import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
+import 'package:escuchamos_flutter/App/View/User/Profile/Profile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings.dart';
 import 'package:escuchamos_flutter/App/View/User/DeactivateAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
@@ -80,7 +81,9 @@ class AppRoutes {
       return VerifyCodeView(email: args);
     }, // Pantalla para verificar el código al registrarse
 
-    'profile': (context) => EditProfile(), // Pantalla de perfil
+    'edit-profile': (context) => EditProfile(), // Pantalla de perfil
+
+    'profile': (context) => Profile(), // Pantalla de perfil
 
   };
 }

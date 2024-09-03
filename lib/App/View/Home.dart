@@ -112,7 +112,7 @@ class Home extends StatelessWidget {
                   color: AppColors.primaryBlue,
                   onTap: () {
                     Navigator.pushNamed(
-                        context, 'profile');
+                        context, 'edit-profile');
                   },
                 ),
                 SizedBox(height: 8.0),

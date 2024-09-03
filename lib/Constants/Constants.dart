@@ -22,7 +22,8 @@ class ApiUrl{
 class AppColors {
 
   static const Color black = Color.fromRGBO(0, 0, 32, 1); // Color negro
-  static const Color whiteapp = Color.fromRGBO(245, 245, 245, 1); // Color blanco
+  static const Color white = Color.fromRGBO(255, 255, 255, 1); // Color blanco
+  static const Color whiteapp = Color.fromRGBO(245, 245, 245, 1); // Color blanco app
   static const Color primaryBlue = Color.fromRGBO(29, 36, 202, 1); // Azul primario de la app
   static const Color lightBlue = Color.fromRGBO(226, 227, 248, 1); // Azul claro para notificaciones
   static const Color deepPurple = Color.fromRGBO(74, 1, 125, 1); // Morado profundo

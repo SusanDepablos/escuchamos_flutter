@@ -2,12 +2,13 @@ import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
+import 'package:escuchamos_flutter/App/Widget/Label.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String? name;
   final String? username;
-  final int followers;
-  final int following;
+  final int? followers;
+  final int? following;
   final ImageProvider? imageProvider;
   final Future<void> Function()? onProfileTap;
   final Future<void> Function()? onContentModerationTap;
@@ -116,38 +117,42 @@ class CustomDrawer extends StatelessWidget {
                   SizedBox(height: 10),
                   Row(
                     children: [
-                      Text(
-                        '$following',
+                        Text(
+                        '${following ?? '0'}',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: AppColors.black,
                         ),
                       ),
-                      SizedBox(width: 2),
-                      Text(
-                        'Siguiendo',
+                      LabelAction(
+                        text: 'Siguiendo',
+                        onPressed: (){},
                         style: const TextStyle(
                           fontSize: 14,
                           color: AppColors.inputDark,
                         ),
+                        padding: EdgeInsets.zero,
                       ),
-                      SizedBox(width: 35),
+                      SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
+                      // Número de "Seguidores"
                       Text(
-                        '$followers',
+                        '${followers?? '0'}',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: AppColors.black,
                         ),
                       ),
-                      SizedBox(width: 2),
-                      Text(
-                        'Seguidores',
+                      // Etiqueta "Seguidores"
+                      LabelAction(
+                        text: 'Seguidores',
+                        onPressed: (){},
                         style: const TextStyle(
                           fontSize: 14,
                           color: AppColors.inputDark,
                         ),
+                        padding: EdgeInsets.zero,
                       ),
                     ],
                   ),
