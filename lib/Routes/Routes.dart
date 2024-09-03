@@ -15,6 +15,7 @@ import 'package:escuchamos_flutter/App/View/User/DeactivateAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Account/EditAccount.dart';
 import 'package:escuchamos_flutter/app/View/User/Account/PhoneUpdate.dart';
+import 'package:escuchamos_flutter/App/View/User/VerifyPassword/VerifyPassword.dart';
 
 class AppRoutes {
   static final routes = {
@@ -38,6 +39,20 @@ class AppRoutes {
     'account-information': (context) => AccountInformation(),  
 
     'phone-update': (context) => PhoneUpdate(),   
+
+    'verify-password': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final head = args['head'] as String;
+      final button = args['button'] as String;
+      final VoidCallback varFunction = args['varFunction'] as VoidCallback;
+
+      return VerifyPassword(
+        head: head,
+        button: button,
+        varFunction: varFunction, // Pasa la función al widget
+      );
+    },
+
 
     'edit-account': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

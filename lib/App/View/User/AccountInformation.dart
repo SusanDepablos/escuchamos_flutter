@@ -193,8 +193,29 @@ class _AccountInformationState extends State<AccountInformation> {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, 'Base');
+              onTap: () async {
+                final result = await Navigator.pushNamed(
+                  context,
+                  'verify-password',
+                  arguments: {
+                    'head': 'Cambiar correo electrnico',
+                    'button': 'verificar',
+                    'varFunction': () {
+                      Navigator.pushNamed(
+                        context,
+                        'edit-account',
+                        arguments: {
+                          'text': 'Correo electrónico',
+                          'label': 'Cambiar Correo electrónico',
+                          'textChanged': false,
+                          'field': 'email',
+                        },
+                      );
+                    },
+                  },
+                );
+
+                reloadView();
               },
             ),
             ListTile(

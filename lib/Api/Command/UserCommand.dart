@@ -158,3 +158,36 @@ class DeleteCommandPhoto {
   }
 }
 
+class VerifyPasswordCommand {
+  final VerifyPasswords _userService;
+
+  VerifyPasswordCommand(this._userService);
+
+  Future<dynamic> execute(
+    String password,
+  ) async {
+    try {
+      var response =
+          await _userService.verifyPassword(password);
+
+      if (response.statusCode == 200) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
+

@@ -154,4 +154,33 @@ class DeletePhoto {
   }
 }
 
+class VerifyPasswords {
+  Future<ServiceResponse> verifyPassword(
+      String password) async {
+    final FlutterSecureStorage _storage = FlutterSecureStorage();
+    final url = Uri.parse('${ApiUrl.baseUrl}user/verify/password/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'password': password,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+
   
