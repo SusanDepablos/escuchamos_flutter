@@ -26,6 +26,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
   String? name;
   bool password = true;
   bool email = false;
+  String? user_email;
 
   final _input = {
     'password': TextEditingController(),
@@ -55,7 +56,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
           setState(() {
             _user = response;
             name = _user!.data.attributes.name;
-            username = _user!.data.attributes.username;
+            user_email = _user!.data.attributes.email;
           });
         } else {
           showDialog(
@@ -288,12 +289,22 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                     'Cambiar correo electrónico',
+                    'Cambiar correo electrónico',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
+                    ),
+                  ),
+                  SizedBox(height: 1.0),
+                  Text(
+                    'Correo Actual: @${user_email ?? '...'}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.black,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                   SizedBox(height: 10.0),
