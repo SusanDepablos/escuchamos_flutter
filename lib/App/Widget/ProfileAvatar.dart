@@ -7,16 +7,16 @@ class ProfileAvatar extends StatelessWidget {
   final double avatarSize;
   final double iconSize;
   final ImageProvider? imageProvider;
-  final bool isEditing; // Parámetro para indicar si se está editando
-  final bool showBorder; // Nuevo parámetro para mostrar u ocultar el borde
+  final bool isEditing;
+  final bool showBorder;
 
   ProfileAvatar({
     this.onPressed,
     this.avatarSize = 40.0,
     this.iconSize = 24.0,
     this.imageProvider,
-    this.isEditing = false, // Inicializar el parámetro
-    this.showBorder = true, // Inicializar el parámetro
+    this.isEditing = false,
+    this.showBorder = true,
   });
 
   @override
@@ -29,7 +29,7 @@ class ProfileAvatar extends StatelessWidget {
                 color: AppColors.whiteapp,
                 width: 3.0,
               )
-            : null, // Mostrar u ocultar el borde
+            : null,
       ),
       child: CircleAvatar(
         radius: avatarSize / 2,
@@ -66,6 +66,7 @@ class ProfileAvatar extends StatelessWidget {
       );
     }
 
+    // Usar IconButton si onPressed no es nulo
     if (onPressed != null) {
       return IconButton(
         icon: avatar,
@@ -73,6 +74,7 @@ class ProfileAvatar extends StatelessWidget {
         padding: EdgeInsets.zero,
       );
     } else {
+      // Usar GestureDetector si onPressed es nulo
       return GestureDetector(
         child: avatar,
         onTap: () {},

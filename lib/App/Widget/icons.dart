@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+
 class CupertinoIcons {
   static const IconData person_crop_circle = IconData(0xf419,
       fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
@@ -9,7 +9,7 @@ class CupertinoIcons {
       fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
   static const IconData lock_circle =
       IconData(0xf6f8, fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
-    static const IconData instagram = IconData(0xf40e, // Reemplaza con el código correcto si está disponible
+  static const IconData instagram = IconData(0xf40e, // Reemplaza con el código correcto si está disponible
       fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
 }
 
@@ -27,6 +27,8 @@ class MaterialIcons {
   static const IconData date = Icons.date_range; // Ícono de dia
   static const IconData edit = Icons.edit; // Ícono de editar
   static const IconData logout = Icons.logout; // Ícono de cerrar sesión
+  static const IconData back = Icons.arrow_back; // Ícono de cerrar sesión
+
 
   
   // Añadir los íconos para redes sociales y comunicación

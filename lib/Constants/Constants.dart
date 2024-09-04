@@ -23,6 +23,8 @@ class ApiUrl{
   // ---------------------------colores de la app ---------------------------//
 class AppColors {
 
+  
+  static const Color dark = Color.fromRGBO(0, 0, 0, 1); // Color negro
   static const Color black = Color.fromRGBO(0, 0, 32, 1); // Color negro
   static const Color white = Color.fromRGBO(255, 255, 255, 1); // Color blanco
   static const Color whiteapp = Color.fromRGBO(245, 245, 245, 1); // Color blanco app

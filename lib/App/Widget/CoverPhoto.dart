@@ -64,16 +64,16 @@ class CoverPhoto extends StatelessWidget {
       );
     }
 
-    if (onPressed != null) {
-      return IconButton(
-        icon: coverPhoto,
-        onPressed: onPressed,
-      );
-    } else {
-      return GestureDetector(
+    if (isEditing && imageProvider != null) {
+      coverPhoto = Opacity(
+        opacity: 0.6,
         child: coverPhoto,
-        onTap: () {},
       );
     }
+
+    return GestureDetector(
+      child: coverPhoto,
+      onTap: onPressed,
+    );
   }
 }

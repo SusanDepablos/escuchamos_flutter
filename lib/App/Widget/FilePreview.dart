@@ -24,9 +24,9 @@ class ImagePreview extends StatelessWidget {
     double margin = isCoverPhoto ? 16.0 : 24.0;
 
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.dark,
       appBar: AppBar(
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.dark,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.close, color: AppColors.whiteapp),

@@ -389,7 +389,7 @@ class _UpdateState extends State<EditProfile> {
                     isEditing: true,
                   ),
                   Positioned(
-                    bottom: -25,
+                    bottom: -30,
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

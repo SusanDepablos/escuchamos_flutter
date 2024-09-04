@@ -11,6 +11,7 @@ import 'package:escuchamos_flutter/App/Widget/CoverPhoto.dart';
 import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart';
 import 'package:escuchamos_flutter/App/Widget/SettingsMenu.dart';
+import 'package:escuchamos_flutter/App/Widget/FullScreenImage.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
@@ -217,6 +218,18 @@ class _UpdateState extends State<Profile> {
                     imageProvider: _coverPhotoUrl != null
                         ? NetworkImage(_coverPhotoUrl!)
                         : null,
+                    onPressed: () {
+                      if (_coverPhotoUrl != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FullScreenImage(
+                              imageUrl: _coverPhotoUrl!,
+                            ),
+                          ),
+                        );
+                      }
+                    }
                   ),
                   Positioned(
                     bottom: -30,
@@ -228,10 +241,21 @@ class _UpdateState extends State<Profile> {
                         child: ProfileAvatar(
                           avatarSize: 70.0,
                           iconSize: 30.0,
-                          onPressed: () {},
                           imageProvider: (_profileAvatarUrl != null
                               ? NetworkImage(_profileAvatarUrl!)
                               : null),
+                          onPressed: () {
+                            if (_profileAvatarUrl != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FullScreenImage(
+                                    imageUrl: _profileAvatarUrl!,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
