@@ -13,38 +13,21 @@ import 'package:escuchamos_flutter/App/Widget/Select.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'dart:convert';
 
-class PhoneUpdate extends StatefulWidget {
+class CountryUpdate extends StatefulWidget {
   @override
-  _PhoneUpdateState createState() => _PhoneUpdateState();
+  _CountryUpdateState createState() => _CountryUpdateState();
 }
 
-class _PhoneUpdateState extends State<PhoneUpdate> {
+class _CountryUpdateState extends State<CountryUpdate> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   List<Map<String, String?>> countryData = [];
   UserModel? _user;
   bool _submitting = false;
   String? name;
-  String? phone;
+  String? country;
   String? _selected;
-  bool _isInputEnabled = false; // Estado del NumericInput
-  bool _isButtonLocked = true; // Estado del LockableButton
-
-  static const int _minDigits = 8; // Cantidad mínima de dígitos
-
-  final input = {
-    'phone_number': TextEditingController(),
-  };
-
-  final _borderColors = {
-    'phone_number': AppColors.inputBasic,
-  };
-
-  final Map<String, String?> _errorMessages = {
-    'phone_number': null,
-  };
 
   Future<void> _callUser() async {
     final user = await _storage.read(key: 'user') ?? '0';
@@ -59,7 +42,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
           setState(() {
             _user = response;
             name = _user!.data.attributes.name;
-            phone = _user!.data.attributes.phoneNumber;
+            country = _user?.data.relationships.country?.attributes.name;
           });
         } else {
           showDialog(
@@ -96,15 +79,16 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             countryData = response.data.map((datum) {
               return {
                 'isoCode': datum.attributes.iso,
-                'dialingCode': datum.attributes.dialingCode,
+                'name': datum.attributes.name,
+                'id': datum.id.toString(),
               };
             }).toList();
 
             // Extraer solo los códigos ISO para el dropdown
-            if (_selected != null && !countryData.any((data) => data['isoCode'] == _selected)) {
-              _selected = null;
-            }
-            _updateFieldState(); // Actualiza el estado del campo y del botón
+              if (_selected != null && !countryData.any((data) => data['id'] == _selected)) {
+                _selected = null;
+              }
+
           });
         } else {
           showDialog(
@@ -131,30 +115,14 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
     }
   }
 
-  void _updateFieldState() {
-    final phoneNumberLength = input['phone_number']!.text.length;
-
-    setState(() {
-      _isInputEnabled = _selected != null && _selected!.isNotEmpty;
-      _isButtonLocked = !(_isInputEnabled && phoneNumberLength >= _minDigits);
-    });
-  }
-
-  Future<void> _updateField() async {
+  Future<void> _updateCountry() async {
     setState(() {
       _submitting = true;
     });
 
     try {
-      final selectedCountry = countryData.firstWhere(
-        (data) => data['dialingCode']! + data['isoCode']! == _selected,
-        orElse: () => {'dialingCode': ''},
-      );
-
-      final dialingCode = selectedCountry['dialingCode'];
-
       final body = jsonEncode({
-        'phone_number': '$dialingCode ${input['phone_number']!.text}',
+        'country_id': _selected, // o cualquier otro campo que utilices para el ID del país
       });
 
       var response =
@@ -164,31 +132,17 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
         await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Correcto',
+            title: 'Actualización exitosa',
             message: response.message,
           ),
         );
 
         Navigator.pop(context);
-      } else if (response is ValidationResponse) {
-        if (response.key['phone_number'] != null) {
-          setState(() {
-            _borderColors['phone_number'] = AppColors.inputDark;
-            _errorMessages['phone_number'] = response.message('phone_number');
-          });
-          Future.delayed(Duration(seconds: 2), () {
-            setState(() {
-              _borderColors['phone_number'] = AppColors.inputBasic;
-              _errorMessages['phone_number'] = null;
-            });
-          });
-        }
       } else {
         await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            title: 'Error',
             message: response.message,
           ),
         );
@@ -207,6 +161,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
       });
     }
   }
+
 
   @override
   void initState() {
@@ -235,7 +190,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Configuración',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
@@ -254,74 +209,50 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Cambiar número telefónico',
+                const Text(
+                  'Cambiar país',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: AppColors.black,
                   ),
-                ),                  
-                SizedBox(height: 1.0),
-                if (phone != null && phone!.isNotEmpty) 
+                ),
+                const SizedBox(height: 1.0),
+                if (country != null && country!.isNotEmpty) 
                 Text(
-                  'Número actual: $phone',
+                  'País actual: ${country ?? '...'}',
                   textAlign: TextAlign.left,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.black,
                     fontStyle: FontStyle.italic,
                   ),
-                ),
+                )
               ],
             ),
-            SizedBox(height: 8.0),
-            Row(
-              children: [
-                SizedBox(
-                  width: 60,
-                  child: SelectWithFlags(
-                    selectedValue: _selected,
-                    itemsMap: countryData,
-                    hintText: '+0',
-                    textStyle: TextStyle(
-                      color: AppColors.black,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                    ),
-                    dropdownColor: AppColors.whiteapp,
-                    iconSize: 0,
-                    onChanged: (value) {
-                      setState(() {
-                        _selected = value;
-                        _updateFieldState(); // Actualiza el estado del campo y del botón
-                      });
-                    },
-                  ),
+            const SizedBox(height: 16.0),
+            SelectCountryWithFlags(
+                selectedValue: _selected,
+                itemsMap: countryData,
+                hintText: 'Seleccione un país',
+                textStyle: const TextStyle(
+                  color: AppColors.black,
+                  fontSize: 16,
                 ),
-                SizedBox(width: 15.0),
-                Expanded(
-                  child: NumericInput(
-                    text: 'Número telefónico',
-                    input: input['phone_number']!,
-                    border: _borderColors['phone_number']!,
-                    error: _errorMessages['phone_number'],
-                    isDisabled:
-                        !_isInputEnabled, // Habilita o deshabilita el campo
-                    onChanged: (text) {
-                      _updateFieldState(); // Actualiza el estado del botón
-                    },
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 32.0),
-            LockableButton(
-              label: 'Guardar',
+                dropdownColor: AppColors.whiteapp,
+                onChanged: (value) {
+                  setState(() {
+                    _selected = value;
+                    // Aquí puedes almacenar el ID o ISO seleccionado para la actualización
+                  });
+                },
+              ),
+            const SizedBox(height: 32.0),
+            GenericButton(
+              label: 'Actualizar',
+              onPressed: _updateCountry,
               isLoading: _submitting,
-              isLocked: _isButtonLocked, // Usa isLocked en lugar de isEnabled
-              onPressed: _updateField,
             ),
           ],
         ),

@@ -218,8 +218,13 @@ class _AccountInformationState extends State<AccountInformation> {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, 'Base');
+              onTap: () async{
+                final result = await Navigator.pushNamed(
+                  context,
+                  'country-update',
+                );
+
+                reloadView();
               },
             ),
           ],

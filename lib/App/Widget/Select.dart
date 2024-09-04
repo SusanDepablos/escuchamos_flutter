@@ -127,3 +127,74 @@ class SelectWithFlags extends SelectBase<String?> {
     );
   }
 }
+
+class SelectCountryWithFlags extends StatelessWidget {
+  final String? selectedValue;
+  final List<Map<String, String?>> itemsMap;
+  final void Function(String?)? onChanged;
+  final String hintText;
+  final TextStyle? textStyle;
+  final Color dropdownColor;
+  final double iconSize;
+
+  SelectCountryWithFlags({
+    required this.selectedValue,
+    required this.itemsMap,
+    this.onChanged,
+    this.hintText = '+0',
+    this.textStyle,
+    this.dropdownColor = Colors.white,
+    this.iconSize = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity, // Ocupar todo el ancho disponible
+      padding: EdgeInsets.symmetric(horizontal: 12.0),
+      decoration: BoxDecoration(
+        color: AppColors.whiteapp, // Fondo blanco
+        borderRadius: BorderRadius.circular(16.0), // Bordes más redondeados
+        border: Border.all(
+          color: AppColors.inputBasic, // Color del borde
+          width: 1.0, // Grosor del borde
+        ),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String?>(
+          value: selectedValue,
+          hint: Text(
+            hintText,
+            style: textStyle,
+          ),
+          items: itemsMap.map((data) {
+            String? code = data['isoCode'];
+            String flagAssetPath = 'icons/flags/png100px/${code?.toLowerCase()}.png';
+            return DropdownMenuItem<String?>(
+              value: data['id'],
+              child: Row(
+                children: [
+                  Image.asset(
+                    flagAssetPath,
+                    package: 'country_icons',
+                    width: 20.0,
+                    height: 14.0,
+                  ),
+                  SizedBox(width: 8.0),
+                  Text(
+                    data['name'] ?? '',
+                    style: textStyle,
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          dropdownColor: dropdownColor,
+          iconSize: iconSize,
+          isExpanded: true, // Permite que el dropdown use todo el espacio disponible
+        ),
+      ),
+    );
+  }
+}

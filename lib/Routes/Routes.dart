@@ -18,6 +18,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dar
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
 import 'package:escuchamos_flutter/app/View/User/Settings/Account/PhoneUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 
 class AppRoutes {
@@ -41,6 +42,8 @@ class AppRoutes {
     'account-information': (context) => AccountInformation(),
 
     'phone-update': (context) => PhoneUpdate(),
+
+    'country-update': (context) => CountryUpdate(),
 
     'verify-password': (context) => VerifyPassword(),
 

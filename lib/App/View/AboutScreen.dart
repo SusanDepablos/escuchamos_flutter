@@ -26,24 +26,10 @@ class _AboutScreenState extends State<AboutScreen> {
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        automaticallyImplyLeading: false,
-        title: Stack(
+        title: Row(
           children: [
-            // Ícono de retroceso en el lado izquierdo
-            Positioned(
-              left: 0,
-              top:
-                  9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
-              child: IconButton(
-                icon: Icon(Icons.arrow_back, color: AppColors.black),
-                onPressed: () {
-                  Navigator.pop(context); // Regresa a la pantalla anterior
-                },
-              ),
-            ),
-            // Centra el LogoBanner en el AppBar
             Center(
-              child: LogoBanner(), // Inserta el LogoBanner centrado
+              child: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
             ),
           ],
         ),
