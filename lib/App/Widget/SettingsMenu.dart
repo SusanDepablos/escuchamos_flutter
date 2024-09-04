@@ -5,10 +5,12 @@ import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 class SettingsMenu extends StatelessWidget {
   final Future<void> Function() onEditProfile;
   final Future<void> Function() onLogout;
+  final bool isEnabled;
 
   SettingsMenu({
     required this.onEditProfile,
     required this.onLogout,
+    this.isEnabled = true, // Valor predeterminado es true
   });
 
   @override
@@ -18,7 +20,9 @@ class SettingsMenu extends StatelessWidget {
         if (result == 'edit') {
           await onEditProfile(); // Ejecuta la función de navegación al editar perfil
         } else if (result == 'logout') {
-          await onLogout(); // Ejecuta la función de cerrar sesión
+          if (isEnabled) {
+            await onLogout(); 
+          }
         }
       },
       itemBuilder: (BuildContext context) => [

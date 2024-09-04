@@ -10,7 +10,6 @@ import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
-
 class Settings extends StatefulWidget {
   @override
   _SettingsState createState() => _SettingsState();
@@ -20,6 +19,7 @@ class _SettingsState extends State<Settings> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   UserModel? _user;
   String? name;
+  bool _submitting = false;
 
   @override
   void initState() {
@@ -64,6 +64,9 @@ class _SettingsState extends State<Settings> {
     }
   }
   Future<void> _logout(BuildContext context) async {
+    setState(() {
+      _submitting = true;
+    });
     final userCommandLogout = UserCommandLogout(UserLogout());
 
     try {
@@ -107,6 +110,12 @@ class _SettingsState extends State<Settings> {
           message: e.toString(),
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _submitting = false;
+        });
+      }
     }
   }
 
@@ -239,7 +248,7 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.errorRed,
                 ),
               ),
-              onTap: () async{
+              onTap: _submitting ? null : () async {
                 await _logout(context);
               },
             ),

@@ -183,7 +183,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
                 ),
               ),
               const Text(
-                'Cambiar Contraseña',
+                'Cambiar contraseña',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.inputDark,

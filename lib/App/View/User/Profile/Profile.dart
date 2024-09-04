@@ -29,8 +29,12 @@ class _UpdateState extends State<Profile> {
   int? followers;
   int? following;
   DateTime? createdAt;
+  bool _submitting = false;
 
   Future<void> _logout(BuildContext context) async {
+    setState(() {
+      _submitting = true;
+    });
     final userCommandLogout = UserCommandLogout(UserLogout());
 
     try {
@@ -74,6 +78,12 @@ class _UpdateState extends State<Profile> {
           message: e.toString(),
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _submitting = false;
+        });
+      }
     }
   }
 
@@ -183,8 +193,11 @@ class _UpdateState extends State<Profile> {
               reloadView();
             },
             onLogout: () async {
-              await _logout(context);
+              if (!_submitting) {
+                await _logout(context);
+              }
             },
+            isEnabled: !_submitting, // Pasar el estado
           ),
         ]
       ),

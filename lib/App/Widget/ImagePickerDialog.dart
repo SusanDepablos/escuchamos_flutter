@@ -37,7 +37,7 @@ class ImagePickerDialog extends StatelessWidget {
             icon: MaterialIcons.camera,
             onPressed: () => _pickImage(context, ImageSource.camera),
             style: TextStyle(
-                color: AppColors.inputDark, // Color rojo para el texto
+                color: AppColors.black, // Color rojo para el texto
                 fontSize: 16, // Tamaño de texto
               ),
           ),
@@ -46,7 +46,7 @@ class ImagePickerDialog extends StatelessWidget {
             icon: MaterialIcons.image,
             onPressed: () => _pickImage(context, ImageSource.gallery),
             style: TextStyle(
-                color: AppColors.inputDark, // Color rojo para el texto
+                color: AppColors.black, // Color rojo para el texto
                 fontSize: 16, // Tamaño de texto
               ),
           ),
