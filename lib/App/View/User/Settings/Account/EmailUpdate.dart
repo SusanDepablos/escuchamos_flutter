@@ -299,7 +299,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                   ),
                   SizedBox(height: 1.0),
                   Text(
-                    'Correo Actual: @${user_email ?? '...'}',
+                    'Correo actual: ${user_email ?? '...'}',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 12,

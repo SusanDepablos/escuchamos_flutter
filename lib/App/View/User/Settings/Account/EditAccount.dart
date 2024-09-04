@@ -206,7 +206,7 @@ class _UpdateState extends State<EditAccount> {
                 if (!widget.textChanged)
                   SizedBox(height: 1.0),
                   Text(
-                    'Usuario Actual: @${username ?? '...'}',
+                    'Usuario actual: @${username ?? '...'}',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 12,
