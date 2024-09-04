@@ -5,9 +5,10 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:io';
 
+final FlutterSecureStorage _storage = FlutterSecureStorage();
+
 class UserShow {
   Future<ServiceResponse> showUser(int id) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     final url = Uri.parse('${ApiUrl.baseUrl}user/$id/');
     final token = await _storage.read(key: 'token') ?? '';
 
@@ -31,7 +32,6 @@ class UserShow {
 
 class ProfileUpdate {
   Future<ServiceResponse> updateProfile(String name, String biography, String birthdate) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}user/update/');
     final token = await _storage.read(key: 'token') ?? '';
@@ -65,7 +65,6 @@ class ProfileUpdate {
 
 class AccountUpdate {
   Future<ServiceResponse> updateAccount(String body) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
 
     final url = Uri.parse('${ApiUrl.baseUrl}user/update/');
     final token = await _storage.read(key: 'token') ?? '';
@@ -94,7 +93,6 @@ class AccountUpdate {
 }
 class UploadPhoto {
   Future<ServiceResponse> photoUpload(File file, String type) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
 
     final url = Uri.parse('${ApiUrl.baseUrl}user/upload/photo/');
     final token = await _storage.read(key: 'token') ?? '';
@@ -125,7 +123,6 @@ class UploadPhoto {
 
 class DeletePhoto {
   Future<ServiceResponse> photoDelete(String type) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}user/upload/photo/');
     final token = await _storage.read(key: 'token') ?? '';
@@ -157,7 +154,6 @@ class DeletePhoto {
 class VerifyPasswords {
   Future<ServiceResponse> verifyPassword(
       String password) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     final url = Uri.parse('${ApiUrl.baseUrl}user/verify/password/');
     final token = await _storage.read(key: 'token') ?? '';
 
@@ -186,7 +182,6 @@ class VerifyPasswords {
 class ChangePassword {
   Future<ServiceResponse> changePassword(
       String old_password, new_password) async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     final url = Uri.parse('${ApiUrl.baseUrl}user/change/password/');
     final token = await _storage.read(key: 'token') ?? '';
 

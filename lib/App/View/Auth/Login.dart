@@ -124,6 +124,7 @@ class _LoginState extends State<Login> {
               Logo(size: 150.0),
               SizedBox(height: 20.0),
               GenericInput(
+                maxLength: 30,
                 text: 'Usuario',
                 input: _inputControllers['username']!,
                 border: _borderColors['username']!,

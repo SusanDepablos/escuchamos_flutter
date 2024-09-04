@@ -218,6 +218,7 @@ class _UpdateState extends State<EditAccount> {
             ),
             SizedBox(height: 10.0),
             GenericInput(
+              maxLength: 30,
               text: widget.text,
               input: input['fieldUpdate']!,
               border: _borderColors['fieldUpdate']!,

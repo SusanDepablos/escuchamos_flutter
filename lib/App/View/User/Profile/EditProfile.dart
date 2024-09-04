@@ -40,13 +40,11 @@ class _UpdateState extends State<EditProfile> {
 
   final _borderColors = {
     'name': AppColors.inputBasic,
-    'biography': AppColors.inputBasic,
     'birthdate': AppColors.inputBasic
   };
 
   final Map<String, String?> _errorMessages = {
     'name': null,
-    'biography': null,
     'birthdate': null, 
   };
 
@@ -64,7 +62,10 @@ class _UpdateState extends State<EditProfile> {
             _user = response;
             input['name']!.text = _user!.data.attributes.name;
             input['biography']!.text = _user!.data.attributes.biography ?? '';
-            input['birthdate']!.text = _user!.data.attributes.birthdate.toString().substring(0, 10);
+            String? birthdateStr = _user?.data.attributes.birthdate?.toString();
+            input['birthdate']!.text = (birthdateStr != null && birthdateStr.length >= 10) 
+                ? birthdateStr.substring(0, 10) 
+                : '';
             username = _user!.data.attributes.username;
             // Buscar la URL para el avatar y la portada basándose en el tipo de archivo
             _profileAvatarUrl = _getFileUrlByType('profile');
@@ -413,17 +414,17 @@ class _UpdateState extends State<EditProfile> {
               ),
               SizedBox(height: 60.0),
               GenericInput(
+                maxLength: 35,
                 text: 'Nombre y Apellido',
                 input: input['name']!,
                 border: _borderColors['name']!,
                 error: _errorMessages['name'],
               ),
               SizedBox(height: 20.0),
-              GenericInput(
+              BasicTextArea(
                 text: 'Biografía',
                 input: input['biography']!,
-                border: _borderColors['biography']!,
-                error: _errorMessages['biography'],
+                maxLength: 70,
               ),
               SizedBox(height: 20.0),
               DateInput(

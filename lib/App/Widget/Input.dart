@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-
+import 'package:escuchamos_flutter/App/Widget/CustomDatePickerDialog.dart';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///"INPUT DE ENTRADA BASICA QUE TIENE LA OPCION DE OCULTAR EL TEXTO, BASE PARA INPUTS"
@@ -211,12 +211,15 @@ class __SecureInputState extends __BasicInputState {
 //"INPUT QUE LIMPIA EL TEXTO PRESIONANDO LA X, HEREDA BASIC INPUT"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class GenericInput extends BasicInput {
+  final int maxLength;
+
   GenericInput({
     String? text,
     required TextEditingController input,
     Color border = AppColors.inputBasic,
     String? error,
     bool obscureText = false,
+    this.maxLength = 50, // Límite de caracteres por defecto
   }) : super(
           text: text,
           input: input,
@@ -264,6 +267,10 @@ class __GenericInputState extends __BasicInputState {
         TextField(
           controller: widget.input,
           obscureText: _obscureText,
+          maxLength: (widget as GenericInput).maxLength, // Limitar el número de caracteres
+          inputFormatters: [
+            LengthLimitingTextInputFormatter((widget as GenericInput).maxLength),
+          ],
           decoration: InputDecoration(
             labelText: widget.text, // Cambiado de hintText a labelText
             labelStyle: TextStyle(color: widget.border), // Estilo para el label
@@ -292,9 +299,10 @@ class __GenericInputState extends __BasicInputState {
                         onPressed: _clearText,
                       )
                     : null,
+            counterText: '', // Ocultar el contador de caracteres
           ),
         ),
-        if (widget.error != null)
+        if (widget.error != null && widget.error!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
@@ -306,6 +314,90 @@ class __GenericInputState extends __BasicInputState {
     );
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//"INPUT QUE PERMITE AMPLIARSE Y LIMPIA EL TEXTO PRESIONANDO LA X, HEREDA BASIC INPUT"
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class BasicTextArea extends BasicInput {
+  final int maxLines;
+  final int minLines;
+  final int maxLength;
+
+  BasicTextArea({
+    String? text,
+    required TextEditingController input,
+    Color border = AppColors.inputBasic,
+    String? error,
+    bool obscureText = false,
+    this.maxLines = 5,
+    this.minLines = 1,
+    this.maxLength = 50, // Límite de caracteres por defecto
+  }) : super(
+          text: text,
+          input: input,
+          border: border,
+          error: error,
+          obscureText: obscureText,
+        );
+
+  @override
+  _BasicTextAreaState createState() => _BasicTextAreaState();
+}
+
+class _BasicTextAreaState extends __BasicInputState {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: widget.input,
+          obscureText: widget.obscureText,
+          maxLines: (widget as BasicTextArea).maxLines,
+          minLines: (widget as BasicTextArea).minLines,
+          maxLength: (widget as BasicTextArea).maxLength, // Limita el número de caracteres
+          inputFormatters: [
+            LengthLimitingTextInputFormatter((widget as BasicTextArea).maxLength),
+          ],
+          decoration: InputDecoration(
+            labelText: widget.text,
+            labelStyle: TextStyle(color: widget.border),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            suffixIcon: widget.obscureText
+                ? IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
+                : null,
+          ),
+        ),
+        if (widget.error != null && widget.error!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///"INPUT DE FECHA, HEREDA BASIC INPUT"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,30 +451,14 @@ class __DateInputState extends __BasicInputState {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
+    DateTime? pickedDate = await showDialog<DateTime>(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-      locale:
-          const Locale('es', ''), // Idioma español para el selector de fechas
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor:
-                AppColors.primaryBlue, // Color de la barra superior (AppBar)
-            colorScheme: ColorScheme.light(
-              primary: AppColors.primaryBlue, // Color del día seleccionado
-              onPrimary: AppColors.whiteapp, // Color del texto en el día seleccionado
-              onSurface:
-                  AppColors.black, // Color del texto en los días no seleccionados
-            ),
-            buttonTheme: ButtonThemeData(
-              textTheme: ButtonTextTheme
-                  .primary, // Color del texto de los botones (OK/CANCEL)
-            ),
-          ),
-          child: child!,
+      builder: (BuildContext context) {
+        return CustomDatePickerDialog(
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+          locale: const Locale('es', ''),
         );
       },
     );
@@ -399,29 +475,31 @@ class __DateInputState extends __BasicInputState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: widget.input,
-          focusNode: _focusNode,
-          readOnly:
-              true, // El campo de texto solo se puede editar a través del selector de fecha
-          onTap: () => _selectDate(context),
-          decoration: InputDecoration(
-            labelText: widget.text, // Cambiado de hintText a labelText
-            labelStyle: TextStyle(color: widget.border), // Estilo para el label
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
+        SizedBox(
+          width: double.infinity,
+          child: TextField(
+            controller: widget.input,
+            focusNode: _focusNode,
+            readOnly: true, // El campo de texto solo se puede editar a través del selector de fecha
+            onTap: () => _selectDate(context),
+            decoration: InputDecoration(
+              labelText: widget.text, // Cambiado de hintText a labelText
+              labelStyle: TextStyle(color: widget.border), // Estilo para el label
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              suffixIcon: _showClearIcon
+                  ? IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: _clearText,
+                    )
+                  : Icon(Icons.calendar_today),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
-            ),
-            suffixIcon: _showClearIcon
-                ? IconButton(
-                    icon: Icon(Icons.clear),
-                    onPressed: _clearText,
-                  )
-                : Icon(Icons.calendar_today),
           ),
         ),
         if (widget.error != null)
@@ -436,9 +514,6 @@ class __DateInputState extends __BasicInputState {
     );
   }
 }
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///"INPUT DE BUSQUEDA"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

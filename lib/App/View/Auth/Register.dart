@@ -206,6 +206,7 @@ Widget build(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GenericInput(
+              maxLength: 35,
               text: 'Nombre y Apellido',
               input: _inputControllers['name']!,
               border: _borderColors['name']!,
@@ -213,6 +214,7 @@ Widget build(BuildContext context) {
             ),
             SizedBox(height: 16.0),
             GenericInput(
+              maxLength: 30,
               text: 'Usuario',
               input: _inputControllers['username']!,
               border: _borderColors['username']!,

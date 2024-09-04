@@ -199,16 +199,18 @@ class _UserChangePasswordState extends State<UserChangePassword> {
         child: ListView(
           children: [
             SizedBox(height: 20.0),
-            GenericInput(
+            BasicInput(
               text: 'Contraseña actual',
               input: _input['old_password']!,
+              obscureText: true,
               border: _borderColors['old_password']!,
               error: _errorMessages['old_password'],
             ),
             SizedBox(height: 20.0),
-            GenericInput(
+            BasicInput(
               text: 'Contraseña nueva',
               input: _input['new_password']!,
+              obscureText: true,
               border: _borderColors['new_password']!,
               error: _errorMessages['new_password'],
             ),

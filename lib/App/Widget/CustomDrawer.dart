@@ -75,6 +75,7 @@ class CustomDrawer extends StatelessWidget {
 
   Widget _buildHeader() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           color: AppColors.whiteapp,
@@ -85,80 +86,80 @@ class CustomDrawer extends StatelessWidget {
             0.0,
           ),
           height: 200,
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Foto de perfil
+              ProfileAvatar(
+                avatarSize: 50.0,
+                iconSize: 30.0,
+                imageProvider: imageProvider,
+                showBorder: false,
+                onPressed: onProfileTap,
+              ),
+              const SizedBox(height: 10),
+              // Texto
+              Text(
+                name ?? '...',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.black,
+                ),
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                '@${username ?? '...'}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.black,
+                  fontStyle: FontStyle.italic,
+                ),
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 10),
+              // Información de seguidores y siguiendo
+              Row(
                 children: [
-                  ProfileAvatar(
-                    avatarSize: 50.0,
-                    iconSize: 30.0,
-                    imageProvider: imageProvider,
-                    showBorder: false,
-                    onPressed: onProfileTap,
-                  ),
-                  const SizedBox(height: 10),
                   Text(
-                    name ?? '...',
+                    '${following ?? '0'}',
                     style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.black,
-                    ),
-                  ),
-                  Text(
-                    '@${username ?? '...'}',
-                    style:  const  TextStyle(
                       fontSize: 14,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.black,
-                      fontStyle: FontStyle.italic,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                        Text(
-                        '${following ?? '0'}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.black,
-                        ),
-                      ),
-                      LabelAction(
-                        text: 'Siguiendo',
-                        onPressed: (){},
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.inputDark,
-                        ),
-                        padding: EdgeInsets.zero,
-                      ),
-                      const SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
-                      // Número de "Seguidores"
-                      Text(
-                        '${followers?? '0'}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.black,
-                        ),
-                      ),
-                      // Etiqueta "Seguidores"
-                      LabelAction(
-                        text: 'Seguidores',
-                        onPressed: (){},
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.inputDark,
-                        ),
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
+                  LabelAction(
+                    text: 'Siguiendo',
+                    onPressed: () {},
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.inputDark,
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  const SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
+                  Text(
+                    '${followers ?? '0'}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  LabelAction(
+                    text: 'Seguidores',
+                    onPressed: () {},
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.inputDark,
+                    ),
+                    padding: EdgeInsets.zero,
                   ),
                 ],
               ),
-              const SizedBox(width: 16),
             ],
           ),
         ),

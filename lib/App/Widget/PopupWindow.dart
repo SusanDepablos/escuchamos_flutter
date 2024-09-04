@@ -63,7 +63,7 @@ class PopupWindow extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Relleno del botón
           ),
           child: Text(
-            'ACEPTAR',
+            'Aceptar',
             style: TextStyle(
               fontSize: 16, // Tamaño de la fuente del texto del botón
               fontWeight: FontWeight.bold, // Negrita para mayor énfasis
