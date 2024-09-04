@@ -256,7 +256,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Ingresa contraseña actual para cambiar tu correo electrónico',
+                    'Ingresa tu contraseña actual para cambiar el correo electrónico',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 18,
