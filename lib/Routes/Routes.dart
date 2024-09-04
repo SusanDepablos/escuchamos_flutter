@@ -16,7 +16,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/DeactivateAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
-import 'package:escuchamos_flutter/app/View/User/Account/PhoneUpdate.dart';
+import 'package:escuchamos_flutter/app/View/User/Settings/Account/PhoneUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 
