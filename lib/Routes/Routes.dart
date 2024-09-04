@@ -18,15 +18,15 @@ import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dar
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
 import 'package:escuchamos_flutter/app/View/User/Account/PhoneUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 
 class AppRoutes {
   static final routes = {
-
     'login': (context) => Login(),
 
     'base': (context) => BaseNavigator(),
 
-    'home': (context) => Home(), 
+    'home': (context) => Home(),
 
     'about': (context) => AboutScreen(),
 
@@ -36,13 +36,15 @@ class AppRoutes {
 
     'settings': (context) => Settings(),
 
-    'deactivate': (context) => DeactivateAccount(),
+    'deactivate-account': (context) => DeactivateAccount(),
 
-    'account-information': (context) => AccountInformation(),  
+    'account-information': (context) => AccountInformation(),
 
-    'phone-update': (context) => PhoneUpdate(),   
+    'phone-update': (context) => PhoneUpdate(),
 
-    'verify-password': (context) => VerifyPassword(), 
+    'verify-password': (context) => VerifyPassword(),
+
+    'deactivate': (context) => Deactivate(), 
 
     'edit-account': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;

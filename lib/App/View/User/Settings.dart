@@ -222,7 +222,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, 'deactivate');
+                Navigator.pushNamed(context, 'deactivate-account');
               },
             ),
             ListTile(

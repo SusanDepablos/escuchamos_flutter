@@ -81,7 +81,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Desactivar cuenta',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
@@ -101,7 +101,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Título de la sección
-              Text(
+              const Text(
                 'Esta acción desactivará tu cuenta',
                 style: TextStyle(
                   fontSize: 18.0,
@@ -112,16 +112,16 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
               SizedBox(height: 16.0), // Espacio entre el título y el contenido
 
               // Contenido informativo
-              Text(
+              const Text(
                 'Estás por iniciar el proceso de desactivación de tu cuenta. Tu nombre visible, tu nombre de usuario y tu perfil ya no se podrán ver en EscuChamos.',
                 style: TextStyle(fontSize: 16.0, color: AppColors.black),
                 textAlign: TextAlign.justify,
               ),
-              SizedBox(
+              const SizedBox(
                   height: 24.0), // Espacio antes del siguiente bloque de texto
 
               // Más información
-              Text(
+              const Text(
                 'Qué más debes saber',
                 style: TextStyle(
                   fontSize: 18.0,
@@ -129,24 +129,24 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
                   color: AppColors.black, // Cambia al color de tu preferencia
                 ),
               ),
-              SizedBox(height: 8.0), // Espacio entre el título y el contenido
+              const SizedBox(height: 8.0), // Espacio entre el título y el contenido
 
-              Text(
+              const Text(
                 'Si tu cuenta de Escuchamos se desactivó por error o accidentalmente, tienes un plazo de 30 días para restaurarla después de su desactivación.\n\n'
                 'Si solo quieres cambiar tu nombre de usuario, no es necesario que desactives tu cuenta; modifícala en tu configuración.\n\n'
                 'Para usar tu nombre de usuario o tu dirección de correo electrónico con otra cuenta de EscuChamos, cámbialos antes de desactivar esta cuenta.',
                 style: TextStyle(fontSize: 16.0, color: AppColors.black),
                 textAlign: TextAlign.justify,
               ),
-              SizedBox(height: 54.0), // Espacio antes del botón
+              const SizedBox(height: 54.0), // Espacio antes del botón
 
-              Divider(color: AppColors.inputLigth, height: 40.0),
+              const Divider(color: AppColors.inputLigth, height: 40.0),
               GenericButton(
                 label: 'Desactivar',
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
-                    'base', // Nombre de la ruta definida en el archivo de rutas
+                    'deactivate', // Nombre de la ruta definida en el archivo de rutas
                   );
                 },
                 isLoading:
