@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
@@ -10,7 +11,9 @@ import 'package:escuchamos_flutter/App/Widget/CoverPhoto.dart';
 import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/App/Widget/Label.dart';
 import 'package:escuchamos_flutter/App/Widget/SettingsMenu.dart';
-import 'package:intl/intl.dart';
+import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -26,6 +29,53 @@ class _UpdateState extends State<Profile> {
   int? followers;
   int? following;
   DateTime? createdAt;
+
+  Future<void> _logout(BuildContext context) async {
+    final userCommandLogout = UserCommandLogout(UserLogout());
+
+    try {
+      // Ejecutar el comando de cierre de sesión
+      final response = await userCommandLogout.execute();
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Correcto',
+            message: response.message,
+          ),
+        );
+        // Elimina el token y otros datos del almacenamiento seguro
+        await _storage.delete(key: 'token');
+        await _storage.delete(key: 'session_key');
+        await _storage.delete(key: 'user');
+        await _storage.delete(key: 'groups');
+
+        // Redirige al usuario a la pantalla de login
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'login',
+          (route) => false,
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
   Future<void> _callUser() async {
     final user = await _storage.read(key: 'user') ?? '0';
@@ -129,9 +179,11 @@ class _UpdateState extends State<Profile> {
         actions: [
           SettingsMenu(
             onEditProfile: () async {
-              Navigator.pushNamed(context, 'edit-profile');
+              await Navigator.pushNamed(context, 'edit-profile');
+              reloadView();
             },
             onLogout: () async {
+              await _logout(context);
             },
           ),
         ]
@@ -154,7 +206,7 @@ class _UpdateState extends State<Profile> {
                         : null,
                   ),
                   Positioned(
-                    bottom: -35,
+                    bottom: -30,
                     child: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,

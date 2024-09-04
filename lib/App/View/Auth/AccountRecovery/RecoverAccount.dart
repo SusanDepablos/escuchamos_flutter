@@ -59,7 +59,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
         } else if (response is SuccessResponse) {
           Navigator.pushReplacementNamed(
             context,
-            'account-Verification',
+            'account-verification',
             arguments: _inputControllers['email']!.text,
           );
         } else {

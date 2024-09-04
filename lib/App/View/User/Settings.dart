@@ -6,6 +6,9 @@ import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Icons.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
 
 class Settings extends StatefulWidget {
@@ -58,6 +61,52 @@ class _SettingsState extends State<Settings> {
           ),
         );
       }
+    }
+  }
+  Future<void> _logout(BuildContext context) async {
+    final userCommandLogout = UserCommandLogout(UserLogout());
+
+    try {
+      // Ejecutar el comando de cierre de sesión
+      final response = await userCommandLogout.execute();
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Correcto',
+            message: response.message,
+          ),
+        );
+        // Elimina el token y otros datos del almacenamiento seguro
+        await _storage.delete(key: 'token');
+        await _storage.delete(key: 'session_key');
+        await _storage.delete(key: 'user');
+        await _storage.delete(key: 'groups');
+
+        // Redirige al usuario a la pantalla de login
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'login',
+          (route) => false,
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -190,8 +239,8 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.errorRed,
                 ),
               ),
-              onTap: () {
-                Navigator.pushNamed(context, 'deactivate');
+              onTap: () async{
+                await _logout(context);
               },
             ),
           ],

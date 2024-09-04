@@ -12,7 +12,7 @@ import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/Profile.dart';
-import 'package:escuchamos_flutter/App/View/Settings.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/DeactivateAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
@@ -53,12 +53,12 @@ class AppRoutes {
       return EditAccount(text: text, label: label, textChanged: textChanged, field: field);
     },
 
-    'account-Verification': (context) {
+    'account-verification': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return RecoverAccountVerification(email: args);
     }, // Pantalla para verificar el código
 
-    'change-Password': (context) {
+    'change-password': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return RecoverAccountChangePassword(email: args);
     }, // Pantalla para cambiar contraseña
