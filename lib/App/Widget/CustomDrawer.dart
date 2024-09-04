@@ -188,7 +188,7 @@ class CustomDrawer extends StatelessWidget {
         leading: Icon(icon, color: AppColors.black, size: 24.0),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: AppColors.black),
         ),
         onTap: () async {
           if (onTap != null) {
@@ -237,10 +237,10 @@ class CustomDrawer extends StatelessWidget {
           height: 60,
           child: ListTile(
             leading:
-               const Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
+              const Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
             title: const Text(
               'Configuración y privacidad',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: AppColors.black),
             ),
             onTap: () async {
               if (onSettingsTap != null) {
