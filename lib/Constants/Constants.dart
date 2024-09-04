@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
 
 class ApiUrl{
   // ---------------------------URL base de la API ---------------------------//
@@ -41,4 +43,64 @@ class AppFond {
 }
 
 
+  // -------------------------------------------------------------------------//
+
+  // -------------------------------------------------------------------------//
+
+class UserSession {
+  static final FlutterSecureStorage _storage = FlutterSecureStorage();
+
+  static String? _token;
+  static String? _session_key;
+  static String? _user;
+  static List<dynamic>? _groups;
+
+  static Future<void> _initialize() async {
+    if (_token == null) {
+      final token = await _storage.read(key: 'token') ?? '';
+      final session_key = await _storage.read(key: 'session_key') ?? '';
+      final user = await _storage.read(key: 'user') ?? '';
+      final groupsString = await _storage.read(key: 'groups') ?? '[]';
+      final groups = (groupsString.isNotEmpty)
+          ? List<dynamic>.from(json.decode(groupsString))
+          : [];
+
+      _token = token;
+      _session_key = session_key;
+      _user = user;
+      _groups = groups;
+    }
+  }
+
+  static String get token {
+    _initializeSync();
+    return _token ?? '';
+  }
+
+  static String get session_key {
+    _initializeSync();
+    return _session_key ?? '';
+  }
+
+  static String get user {
+    _initializeSync();
+    return _user ?? '';
+  }
+
+  static List<dynamic> get groups {
+    _initializeSync();
+    return _groups ?? [];
+  }
+
+  static void _initializeSync() {
+    if (_token == null) {
+      _initialize();
+    }
+  }
+}
+
+//    print(UserSession.token);
+//    print(UserSession.session_key);
+//    print(UserSession.user);
+//    print(UserSession.groups);
   // -------------------------------------------------------------------------//
