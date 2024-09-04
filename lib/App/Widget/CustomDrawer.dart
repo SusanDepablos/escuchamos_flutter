@@ -107,7 +107,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '@$username',
+                    '@${username ?? '...'}',
                     style:  const  TextStyle(
                       fontSize: 14,
                       color: AppColors.black,
