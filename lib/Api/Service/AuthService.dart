@@ -4,6 +4,7 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
+final FlutterSecureStorage _storage = FlutterSecureStorage();
 class UserLogin {
   Future<ServiceResponse> loginUser(String username, String password) async {
     // Define el URL al que se enviará la solicitud POST
@@ -38,7 +39,6 @@ class UserLogin {
 
 class UserLogout {
   Future<ServiceResponse> logoutUser() async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}logout/');
     final token = await _storage.read(key: 'token') ?? '';

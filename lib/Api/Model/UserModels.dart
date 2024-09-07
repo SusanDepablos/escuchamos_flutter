@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///MODELO DE USUARIOS PARA SHOW
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 
 String userModelToJson(UserModel data) => json.encode(data.toJson());
@@ -17,6 +21,130 @@ class UserModel {
 
     Map<String, dynamic> toJson() => {
         "data": data.toJson(),
+    };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///MODELO DE USUARIOS PARA INDEX
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+UsersModel usersModelFromJson(String str) => UsersModel.fromJson(json.decode(str));
+
+String usersModelToJson(UsersModel data) => json.encode(data.toJson());
+
+class UsersModel {
+    int count;
+    String next;
+    dynamic previous;
+    Results results;
+
+    UsersModel({
+        required this.count,
+        required this.next,
+        required this.previous,
+        required this.results,
+    });
+
+    factory UsersModel.fromJson(Map<String, dynamic> json) => UsersModel(
+        count: json["count"],
+        next: json["next"],
+        previous: json["previous"],
+        results: Results.fromJson(json["results"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "count": count,
+        "next": next,
+        "previous": previous,
+        "results": results.toJson(),
+    };
+}
+
+class Results {
+    List<Datum> data;
+
+    Results({
+        required this.data,
+    });
+
+    factory Results.fromJson(Map<String, dynamic> json) => Results(
+        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    };
+}
+
+class Datum {
+    int id;
+    DatumAttributes attributes;
+    Relationships relationships;
+
+    Datum({
+        required this.id,
+        required this.attributes,
+        required this.relationships,
+    });
+
+    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+        id: json["id"],
+        attributes: DatumAttributes.fromJson(json["attributes"]),
+        relationships: Relationships.fromJson(json["relationships"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "attributes": attributes.toJson(),
+        "relationships": relationships.toJson(),
+    };
+}
+
+class DatumAttributes {
+    String username;
+    String name;
+    String email;
+    String? biography;
+    String? phoneNumber;
+    DateTime birthdate;
+    dynamic countryId;
+    DateTime createdAt;
+    DateTime updatedAt;
+
+    DatumAttributes({
+        required this.username,
+        required this.name,
+        required this.email,
+        required this.biography,
+        required this.phoneNumber,
+        required this.birthdate,
+        required this.countryId,
+        required this.createdAt,
+        required this.updatedAt,
+    });
+
+    factory DatumAttributes.fromJson(Map<String, dynamic> json) => DatumAttributes(
+        username: json["username"],
+        name: json["name"],
+        email: json["email"],
+        biography: json["biography"],
+        phoneNumber: json["phone_number"],
+        birthdate: DateTime.parse(json["birthdate"]),
+        countryId: json["country_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "username": username,
+        "name": name,
+        "email": email,
+        "biography": biography,
+        "phone_number": phoneNumber,
+        "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+        "country_id": countryId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
     };
 }
 
@@ -91,6 +219,10 @@ class DataAttributes {
         "updated_at": updatedAt.toIso8601String(),
     };
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///CLASES EN COMÚN
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class Relationships {
     Country? country;
@@ -283,3 +415,5 @@ class GroupAttributes {
         "name": name,
     };
 }
+
+

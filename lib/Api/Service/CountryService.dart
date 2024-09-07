@@ -4,9 +4,10 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+final FlutterSecureStorage _storage = FlutterSecureStorage();
+
 class CountryIndex {
   Future<ServiceResponse> fetchData() async {
-    final FlutterSecureStorage _storage = FlutterSecureStorage();
     final token = await _storage.read(key: 'token') ?? '';
 
     var uri = Uri.parse('${ApiUrl.baseUrl}country/');
