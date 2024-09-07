@@ -1,8 +1,8 @@
-import 'package:escuchamos_flutter/App/Widget/Icons.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart';
-import 'package:escuchamos_flutter/App/Widget/Label.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String? name;

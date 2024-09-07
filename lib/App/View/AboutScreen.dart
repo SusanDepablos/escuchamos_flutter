@@ -1,8 +1,8 @@
-import 'package:escuchamos_flutter/App/Widget/Label.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de importar tus constantes de colores
-import 'package:escuchamos_flutter/App/Widget/Logo.dart'; // Asegúrate de tener un widget para el logo
-import 'package:escuchamos_flutter/App/Widget/Icons.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart'; // Asegúrate de tener un widget para el logo
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatefulWidget {

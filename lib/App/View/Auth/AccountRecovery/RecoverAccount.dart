@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/Label.dart'; 
-import 'package:escuchamos_flutter/App/Widget/Logo.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/App/Widget/Button.dart';
-import 'package:escuchamos_flutter/App/Widget/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class RecoverAccount extends StatefulWidget {

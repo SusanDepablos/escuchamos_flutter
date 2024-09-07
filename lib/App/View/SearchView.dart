@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class SearchView extends StatefulWidget {

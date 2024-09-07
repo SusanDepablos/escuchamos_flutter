@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/Icons.dart';
-import 'package:escuchamos_flutter/App/Widget/Label.dart'; // Asegúrate de importar el archivo de LabelAction
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; // Asegúrate de importar el archivo de LabelAction
 
 class ImagePickerDialog extends StatelessWidget {
   final Function(File) onImagePicked;

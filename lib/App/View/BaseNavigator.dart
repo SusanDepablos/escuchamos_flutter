@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
-import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
 import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/Logo.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomDrawer.dart'; // Importar el widget Drawer
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart'; // Importar el widget Drawer
 import 'dart:convert';
-import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
 
 class BaseNavigator extends material.StatefulWidget {
   @override

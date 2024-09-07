@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/CustomDatePickerDialog.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDatePickerDialog.dart';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///"INPUT DE ENTRADA BASICA QUE TIENE LA OPCION DE OCULTAR EL TEXTO, BASE PARA INPUTS"

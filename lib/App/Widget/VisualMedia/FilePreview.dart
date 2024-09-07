@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:escuchamos_flutter/App/Widget/Label.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class ImagePreview extends StatelessWidget {
@@ -49,7 +49,7 @@ class ImagePreview extends StatelessWidget {
                   minScale: PhotoViewComputedScale.covered,
                   maxScale: PhotoViewComputedScale.covered * 4,
                   backgroundDecoration: BoxDecoration(
-                    color: AppColors.black,
+                    color: AppColors.dark,
                   ),
                   enableRotation: false,
                   enablePanAlways: true,
@@ -89,7 +89,7 @@ class ImagePreview extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: AppColors.black,
+        color: AppColors.dark,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -16,7 +16,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings/DeactivateAccount.dart
 import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/PhoneUpdate.dart';
-//import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
@@ -65,7 +65,7 @@ class AppRoutes {
     },
     'phone-update': (context) => PhoneUpdate(),
     'country-update': (context) => CountryUpdate(),
-    //'email-update': (context) => EmailUpdate(),
+    'email-update': (context) => EmailUpdate(),
 
     // Pantallas de desactivación
     'deactivate': (context) => Deactivate(),

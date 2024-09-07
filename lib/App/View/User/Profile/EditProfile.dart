@@ -6,15 +6,15 @@ import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/App/Widget/PopupWindow.dart';
-import 'package:escuchamos_flutter/App/Widget/Input.dart';
-import 'package:escuchamos_flutter/App/Widget/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/CoverPhoto.dart'; // Importa el nuevo widget
-import 'package:escuchamos_flutter/App/Widget/ProfileAvatar.dart'; 
-import 'package:escuchamos_flutter/App/Widget/ImagePickerDialog.dart'; 
-import 'package:escuchamos_flutter/App/Widget/FilePreview.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/CoverPhoto.dart'; // Importa el nuevo widget
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerDialog.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/FilePreview.dart'; 
 
 class EditProfile extends StatefulWidget {
   @override
