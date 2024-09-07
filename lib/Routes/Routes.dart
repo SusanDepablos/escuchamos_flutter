@@ -11,7 +11,7 @@ import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/Profile.dart';
-import 'package:escuchamos_flutter/App/View/User/Settings.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Settings.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/DeactivateAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
