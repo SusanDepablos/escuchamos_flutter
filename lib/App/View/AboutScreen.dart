@@ -14,11 +14,13 @@ class _AboutScreenState extends State<AboutScreen> {
   void _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      await launchUrl(uri, mode: LaunchMode.platformDefault);
     } else {
       throw 'No se pudo abrir el enlace: $url';
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     LabelAction(
                       icon: MaterialIcons.web,
                       onPressed: () {
-                        _launchURL(ApiUrl.WebSite); // Reemplaza con tu URL
+                        _launchURL(ApiUrl.WebSite); // Lanza la URL del sitio web
                       },
                     ),
                     SizedBox(width: 24.0), // Espacio entre íconos
@@ -110,7 +112,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       icon: MaterialIcons.email,
                       onPressed: () {
                         _launchURL(ApiUrl
-                            .Facebook); // Reemplaza con tu correo electrónico
+                            .Correo); // Reemplaza con tu correo electrónico
                       },
                     ),
                   ],

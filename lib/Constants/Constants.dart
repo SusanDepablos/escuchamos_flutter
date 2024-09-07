@@ -13,7 +13,7 @@ class ApiUrl{
   //paginas:
   static const String WebSite = 'https://escuchamos-mcu6.onrender.com/';
   static const String Facebook= 'https://www.facebook.com/ProyectosEscuChamos';
-  static const String Correo = '';
+  static const String Correo = 'escuchamos2024@gmail.com';
 
 
 

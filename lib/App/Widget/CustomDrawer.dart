@@ -41,7 +41,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           border: Border(
             right: BorderSide(
-              width: 1.5, // Ancho del borde con gradiente
+              width: 2, // Ancho del borde con gradiente
               color: Colors.transparent, // Usamos color transparente aquí
             ),
           ),
