@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Ui/DigitBox.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/CountTimer.dart'; 
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 

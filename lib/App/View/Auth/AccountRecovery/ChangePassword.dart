@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; 
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
