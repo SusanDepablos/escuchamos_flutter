@@ -52,7 +52,7 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
             _borderColors['new_password'] = AppColors.inputDark;
             _errorMessages['new_password'] = response.message('new_password');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['new_password'] = AppColors.inputBasic;
               _errorMessages['new_password'] = null;
@@ -113,19 +113,19 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Text(
+              const Text(
                 'Actualizar tu Contraseña',
                 style: TextStyle(
                   fontSize: 19.0,
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-              SizedBox(height: 4.0),
-              Text(
+              const SizedBox(height: 4.0),
+              const Text(
                 style: TextStyle(fontSize: 13.0),
                 'Las contraseñas fuertes incluyen números, letras y signos de puntuación. Mínimo 8 dígitos.',
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               BasicInput(
                 text: 'Introduce tu contraseña nueva',
                 input: _inputControllers['new_password']!,
@@ -133,7 +133,7 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
                 border: _borderColors['new_password']!,
                 error: _errorMessages['new_password'],
               ),
-              SizedBox(height: 28.0),
+              const SizedBox(height: 28.0),
               GenericButton(
                 label: 'Enviar',
                 onPressed: _call,

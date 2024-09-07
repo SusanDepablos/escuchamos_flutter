@@ -155,7 +155,7 @@ class _SettingsState extends State<Settings> {
       body: Center(
         child: ListView(
           children: [
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ListTile(
               leading: const Icon(
                 MaterialIcons.person, 

@@ -144,29 +144,29 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Verifica tu correo electrónico',
               style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-            SizedBox(height: 4.0), 
-            Text(
+            const SizedBox(height: 4.0), 
+            const Text(
               'Escribe el código de 6 dígitos que enviamos a:',
               style: TextStyle(fontSize: 13.0),
             ),
             Text(
               widget.email,
-              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 26.0), 
+            const SizedBox(height: 26.0), 
             DigitBox(
               input: _codeController, 
               border: Colors.blue, 
             ),
-            SizedBox(height: 16.0), 
-            Text(
+            const SizedBox(height: 16.0), 
+            const Text(
               'Puedes solicitar un nuevo código en:',
               style: TextStyle(fontSize: 14.0, color: Colors.black),
             ),
@@ -176,14 +176,14 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                 onTimerEnd: _enableButton,
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             if (_isButtonEnabled)
               LabelAction(
                 text: "Reenviar código",
                 onPressed: _isLoading ? () {} : _onResendCode,
                 isLoading: _isLoading,
               ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
             GenericButton(
               label: "Confirmar correo",
               onPressed: _isConfirmLoading ? () {} : _onConfirmCode,

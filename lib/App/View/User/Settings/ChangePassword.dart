@@ -197,7 +197,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             BasicInput(
               text: 'Contraseña actual',
               input: _input['old_password']!,
@@ -205,7 +205,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
               border: _borderColors['old_password']!,
               error: _errorMessages['old_password'],
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             BasicInput(
               text: 'Contraseña nueva',
               input: _input['new_password']!,
@@ -213,7 +213,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
               border: _borderColors['new_password']!,
               error: _errorMessages['new_password'],
             ),
-            SizedBox(height: 28.0),
+            const SizedBox(height: 28.0),
             GenericButton(
               label: 'Actualizar',
               onPressed: () {

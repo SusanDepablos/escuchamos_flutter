@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
             _borderColors['name'] = AppColors.inputDark;
             _errorMessages['name'] = response.message('name');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['name'] = AppColors.inputBasic;
               _errorMessages['name'] = null;
@@ -82,7 +82,7 @@ class _RegisterState extends State<Register> {
             _borderColors['username'] = AppColors.inputDark;
             _errorMessages['username'] = response.message('username');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['username'] = AppColors.inputBasic;
               _errorMessages['username'] = null;
@@ -95,7 +95,7 @@ class _RegisterState extends State<Register> {
             _borderColors['password'] = AppColors.inputDark;
             _errorMessages['password'] = response.message('password');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['password'] = AppColors.inputBasic;
               _errorMessages['password'] = null;
@@ -108,7 +108,7 @@ class _RegisterState extends State<Register> {
             _borderColors['email'] = AppColors.inputDark;
             _errorMessages['email'] = response.message('email');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['email'] = AppColors.inputBasic;
               _errorMessages['email'] = null;
@@ -121,7 +121,7 @@ class _RegisterState extends State<Register> {
             _borderColors['birthdate'] = AppColors.inputDark;
             _errorMessages['birthdate'] = response.message('birthdate');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['birthdate'] = AppColors.inputBasic;
               _errorMessages['birthdate'] = null;
@@ -133,7 +133,7 @@ class _RegisterState extends State<Register> {
           setState(() {
             _errorMessages['checkbox'] = response.message('checkbox');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _errorMessages['checkbox'] = null;
             });
@@ -190,8 +190,8 @@ Widget build(BuildContext context) {
     appBar: AppBar(
       backgroundColor: AppColors.whiteapp,
       elevation: 0,
-      iconTheme: IconThemeData(color: AppColors.black),
-      titleTextStyle: TextStyle(
+      iconTheme: const IconThemeData(color: AppColors.black),
+      titleTextStyle: const TextStyle(
         color: AppColors.black,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
@@ -212,7 +212,7 @@ Widget build(BuildContext context) {
               border: _borderColors['name']!,
               error: _errorMessages['name'],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             GenericInput(
               maxLength: 30,
               text: 'Usuario',
@@ -220,7 +220,7 @@ Widget build(BuildContext context) {
               border: _borderColors['username']!,
               error: _errorMessages['username'],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             BasicInput(
               text: 'Contraseña',
               input: _inputControllers['password']!,
@@ -228,21 +228,21 @@ Widget build(BuildContext context) {
               border: _borderColors['password']!,
               error: _errorMessages['password'],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             GenericInput(
               text: 'Correo electrónico',
               input: _inputControllers['email']!,
               border: _borderColors['email']!,
               error: _errorMessages['email'],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             DateInput(
               text: 'Fecha de Nacimiento',
               input: _inputControllers['birthdate']!,
               border: _borderColors['birthdate']!,
               error: _errorMessages['birthdate'],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
               SimpleCheckbox(
                 label: 'Acepto los términos y condiciones',
                 labelColor: AppColors.inputDark,
@@ -261,13 +261,13 @@ Widget build(BuildContext context) {
                 },
                 error: _errorMessages['checkbox'],
               ),
-            SizedBox(height: 28.0),
+            const SizedBox(height: 28.0),
             GenericButton(
               label: 'Registrarse',
               onPressed: _call,
               isLoading: _submitting,
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Center(
               child:  BasicLabel(
                   name: 'Iniciar sesión',
@@ -281,10 +281,10 @@ Widget build(BuildContext context) {
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
-                        transitionDuration: Duration(milliseconds: 400), // Duración de la animación
+                        transitionDuration: const Duration(milliseconds: 400), // Duración de la animación
                         pageBuilder: (context, animation, secondaryAnimation) => AppRoutes.routes[routeName]!(context),
                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          var begin = Offset(-1.0, 0.0); // Empieza fuera de la pantalla a la izquierda
+                          var begin = const Offset(-1.0, 0.0); // Empieza fuera de la pantalla a la izquierda
                           var end = Offset.zero; // Termina en el centro de la pantalla
                           var curve = Curves.easeInOut;
 
@@ -308,10 +308,7 @@ Widget build(BuildContext context) {
                     //print('Ruta no encontrada: $routeName');
                   }
                 },
-
-
-                
-                ),
+              ),
             ),
           ],
         ),

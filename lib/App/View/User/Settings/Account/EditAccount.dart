@@ -116,7 +116,7 @@ class _UpdateState extends State<EditAccount> {
             _borderColors['fieldUpdate'] = AppColors.inputDark;
             _errorMessages['fieldUpdate'] = response.message(widget.field);
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['fieldUpdate'] = AppColors.inputBasic;
               _errorMessages['fieldUpdate'] = null;
@@ -176,7 +176,7 @@ class _UpdateState extends State<EditAccount> {
               ),
               Text(
                 widget.head ?? 'Configuración',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
@@ -196,7 +196,7 @@ class _UpdateState extends State<EditAccount> {
                 Text(
                   widget.label,
                   textAlign: TextAlign.left, // Alinea el texto a la izquierda
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: AppColors.black,
@@ -204,11 +204,11 @@ class _UpdateState extends State<EditAccount> {
                 ),
                 // El segundo texto se oculta si _textChanged; es true
                 if (!widget.textChanged)
-                  SizedBox(height: 1.0),
+                  const SizedBox(height: 1.0),
                   Text(
                     'Usuario actual: @${username ?? '...'}',
                     textAlign: TextAlign.left,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.black,
                       fontStyle: FontStyle.italic,
@@ -216,7 +216,7 @@ class _UpdateState extends State<EditAccount> {
                   )
               ],
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             GenericInput(
               maxLength: 30,
               text: widget.text,
@@ -224,7 +224,7 @@ class _UpdateState extends State<EditAccount> {
               border: _borderColors['fieldUpdate']!,
               error: _errorMessages['fieldUpdate'],
             ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
             GenericButton(
               label: 'Actualizar',
               onPressed: () {

@@ -48,7 +48,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
             _borderColors['email'] = Colors.red;
             _errorMessages['email'] = response.message('email');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['email'] = Colors.grey;
               _errorMessages['email'] = null;
@@ -101,7 +101,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
               left: 0,
               top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: AppColors.black),
+                icon: const Icon(Icons.arrow_back, color: AppColors.black),
                 onPressed: () {
                   Navigator.pop(context); // Esto regresa a la pantalla anterior
                 },
@@ -121,26 +121,26 @@ class _RecoverAccountState extends State<RecoverAccount> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Text(
+              const Text(
                 'Recupera tu cuenta',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-              SizedBox(height: 4.0), 
-              Text(
+              const SizedBox(height: 4.0), 
+              const Text(
                 'Introduce tu dirección de correo electrónico',
                 style: TextStyle(fontSize: 16.0),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               GenericInput(
                 text: 'Correo electrónico',
                 input: _inputControllers['email']!,
                 border: _borderColors['email']!,
                 error: _errorMessages['email'],
               ),
-              SizedBox(height: 28.0),
+              const SizedBox(height: 28.0),
               GenericButton(
                 label: 'Enviar',
                 onPressed: _call,

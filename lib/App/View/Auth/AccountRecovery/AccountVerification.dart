@@ -147,29 +147,29 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Text(
+            const Text(
                 'Verifica tu Correo Electrónico',
                 style: TextStyle(
                   fontSize: 19.0,
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-              SizedBox(height: 8.0), 
-            Text(
+            const SizedBox(height: 8.0), 
+            const Text(
               'Escribe el código de 8 dígitos que enviamos a:',
               style: TextStyle(fontSize: 13.0),
             ),
             Text(
               widget.email,
-              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 26.0), 
+            const SizedBox(height: 26.0), 
             SecureInput(
               text: 'Ingrese código',
               input: _codeController,
             ),
-            SizedBox(height: 16.0), 
-            Text(
+            const SizedBox(height: 16.0), 
+            const Text(
               'Puedes solicitar un nuevo código en:',
               style: TextStyle(fontSize: 14.0, color: Colors.black),
             ),
@@ -179,8 +179,7 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
                 onTimerEnd: _enableButton,
               ),
             ),
-
-            SizedBox(height: 2.0),
+            const SizedBox(height: 2.0),
             if (_isButtonEnabled)
               Center(
               child: LabelAction(
@@ -189,7 +188,7 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
                 isLoading: _isLoading,
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             GenericButton(
               label: "Verificar",
               onPressed: _isConfirmLoading ? () {} : _onConfirmCode,

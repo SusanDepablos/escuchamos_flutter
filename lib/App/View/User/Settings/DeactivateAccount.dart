@@ -108,8 +108,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
                   color: AppColors.black, // Cambia al color de tu preferencia
                 ),
               ),
-              SizedBox(height: 16.0), // Espacio entre el título y el contenido
-
+              const SizedBox(height: 16.0), // Espacio entre el título y el contenido
               // Contenido informativo
               const Text(
                 'Estás por iniciar el proceso de desactivación de tu cuenta. Tu nombre visible, tu nombre de usuario y tu perfil ya no se podrán ver en EscuChamos.',

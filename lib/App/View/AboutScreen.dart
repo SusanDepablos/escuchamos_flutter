@@ -78,7 +78,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               LogoIcon(size: 150.0),
               // Enlaces de redes sociales o sitio web
-              Center(
+              const Center(
                 child: Text(
                   'Conéctate con nosotros:',
                   style: TextStyle(
@@ -88,7 +88,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         _launchURL(ApiUrl.WebSite); // Lanza la URL del sitio web
                       },
                     ),
-                    SizedBox(width: 24.0), // Espacio entre íconos
+                    const SizedBox(width: 24.0), // Espacio entre íconos
                     LabelAction(
                       icon: MaterialIcons.facebook,
                       onPressed: () {
@@ -107,7 +107,7 @@ class _AboutScreenState extends State<AboutScreen> {
                             .Facebook); // Reemplaza con tu enlace de Facebook
                       },
                     ),
-                    SizedBox(width: 24.0), // Espacio entre íconos
+                    const SizedBox(width: 24.0), // Espacio entre íconos
                     LabelAction(
                       icon: MaterialIcons.email,
                       onPressed: () {
@@ -118,9 +118,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   ],
                 ),
               ),
-              Divider(color: AppColors.inputLigth, height: 40.0),
+              const Divider(color: AppColors.inputLigth, height: 40.0),
               // Información de versión
-              Center(
+              const Center(
                 child: Text(
                   'Versión 1.0.0',
                   style: TextStyle(fontSize: 14.0, color: AppColors.inputDark),
@@ -139,7 +139,7 @@ class _AboutScreenState extends State<AboutScreen> {
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.w600,
           color: AppColors.black,
@@ -154,7 +154,7 @@ class _AboutScreenState extends State<AboutScreen> {
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Text(
         content,
-        style: TextStyle(fontSize: 16.0, color: AppColors.black),
+        style: const TextStyle(fontSize: 16.0, color: AppColors.black),
         textAlign: TextAlign.justify,
       ),
     );

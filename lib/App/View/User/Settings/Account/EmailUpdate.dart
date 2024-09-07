@@ -112,7 +112,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
             _errorMessages['password'] =
             response.message('password');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             if (mounted) {
               setState(() {
                 _borderColors['password'] = AppColors.inputBasic;
@@ -176,7 +176,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
             _borderColors['email'] = AppColors.inputDark;
             _errorMessages['email'] = response.message('email');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['email'] = AppColors.inputBasic;
               _errorMessages['email'] = null;
@@ -264,7 +264,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   BasicInput(
                     text: 'Contraseña actual',
                     input: _input['password']!,
@@ -272,7 +272,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                     border: _borderColors['password']!,
                     error: _errorMessages['password'],
                   ),
-                  SizedBox(height: 29.0),
+                  const SizedBox(height: 29.0),
                   GenericButton(
                     label: 'Verificar',
                     onPressed: () {
@@ -297,24 +297,24 @@ class _EmailUpdateState extends State<EmailUpdate> {
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(height: 1.0),
+                  const SizedBox(height: 1.0),
                   Text(
                     'Correo actual: ${user_email ?? '...'}',
                     textAlign: TextAlign.left,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   GenericInput(
                     text: 'Introduce tu nuevo correo',
                     input: _input['email']!,
                     border: _borderColors['email']!,
                     error: _errorMessages['email'],
                   ),
-                  SizedBox(height: 29.0),
+                  const SizedBox(height: 29.0),
                   GenericButton(
                     label: 'Actualizar',
                     onPressed: () {

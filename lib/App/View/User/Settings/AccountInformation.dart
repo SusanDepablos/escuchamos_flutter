@@ -100,7 +100,7 @@ class _AccountInformationState extends State<AccountInformation> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Información de la cuenta',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
@@ -115,9 +115,9 @@ class _AccountInformationState extends State<AccountInformation> {
       body: Center(
         child: ListView(
           children: [
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ListTile(
-              title: Text(
+              title: const Text(
                 'Nombre de usuario',
                 style: TextStyle(
                   fontSize: 18,
@@ -127,7 +127,7 @@ class _AccountInformationState extends State<AccountInformation> {
               ),
               subtitle: Text(
                 username ?? "...", 
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
@@ -150,7 +150,7 @@ class _AccountInformationState extends State<AccountInformation> {
               },
             ),
             ListTile(
-              title: Text(
+              title: const Text(
                 'Teléfono',
                 style: TextStyle(
                   fontSize: 18,
@@ -160,7 +160,7 @@ class _AccountInformationState extends State<AccountInformation> {
               ),
               subtitle: Text(
                 isLoading ? "..." : (phoneNumber ?? "Añadir"),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
@@ -176,7 +176,7 @@ class _AccountInformationState extends State<AccountInformation> {
               },
             ),
             ListTile(
-              title: Text(
+              title: const Text(
                 'Correo electrónico',
                 style: TextStyle(
                   fontSize: 18,
@@ -186,7 +186,7 @@ class _AccountInformationState extends State<AccountInformation> {
               ),
               subtitle: Text(
                 email ?? "...",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
@@ -202,7 +202,7 @@ class _AccountInformationState extends State<AccountInformation> {
               },
             ),
             ListTile(
-              title: Text(
+              title: const Text(
                 'País',
                 style: TextStyle(
                   fontSize: 18,
@@ -212,7 +212,7 @@ class _AccountInformationState extends State<AccountInformation> {
               ),
               subtitle: Text(
                 isLoading ? "..." : (country ?? "Añadir"),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,

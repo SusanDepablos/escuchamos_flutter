@@ -48,9 +48,9 @@ class _SearchViewState extends State<SearchView> {
                 // Aquí puedes añadir la lógica para restablecer los resultados de búsqueda
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Mostrar historial de búsqueda
-            Text(
+            const Text(
               'Historial de búsqueda:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -59,10 +59,10 @@ class _SearchViewState extends State<SearchView> {
                 itemCount: _searchHistory.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    leading: Icon(Icons.history, color: AppColors.primaryBlue),
+                    leading: const Icon(Icons.history, color: AppColors.primaryBlue),
                     title: Text(
                       _searchHistory[index],
-                      style: TextStyle(color: AppColors.black),
+                      style: const TextStyle(color: AppColors.black),
                     ),
                     onTap: () {
                       _searchController.text = _searchHistory[index];

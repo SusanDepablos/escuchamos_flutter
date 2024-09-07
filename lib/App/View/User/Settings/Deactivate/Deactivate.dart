@@ -108,7 +108,7 @@ class _DeactivateState extends State<Deactivate> {
             _borderColors['password'] = AppColors.inputDark;
             _errorMessages['password'] = response.message('password');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed( const Duration(seconds: 2), () {
             if (mounted) {
               setState(() {
                 _borderColors['password'] = AppColors.inputBasic;
@@ -257,7 +257,7 @@ class _DeactivateState extends State<Deactivate> {
                       color: AppColors.black,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   BasicInput(
                     text: 'Contraseña actual',
                     input: _input['password']!,
@@ -265,7 +265,7 @@ class _DeactivateState extends State<Deactivate> {
                     border: _borderColors['password']!,
                     error: _errorMessages['password'],
                   ),
-                  SizedBox(height: 29.0),
+                  const SizedBox(height: 29.0),
                   GenericButton(
                     color: AppColors.errorRed,
                     label: 'Desactivar',

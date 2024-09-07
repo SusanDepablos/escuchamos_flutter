@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
             _borderColors['username'] = AppColors.inputDark;
             _errorMessages['username'] = response.message('username');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['username'] = AppColors.inputBasic;
               _errorMessages['username'] = null;
@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
             _borderColors['password'] = AppColors.inputDark;
             _errorMessages['password'] = response.message('password');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['password'] = AppColors.inputBasic;
               _errorMessages['password'] = null;
@@ -121,7 +121,7 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Logo(size: 150.0),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               GenericInput(
                 maxLength: 30,
                 text: 'Usuario',
@@ -129,7 +129,7 @@ class _LoginState extends State<Login> {
                 border: _borderColors['username']!,
                 error: _errorMessages['username'],
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               BasicInput(
                 text: 'Contraseña',
                 input: _inputControllers['password']!,
@@ -137,7 +137,7 @@ class _LoginState extends State<Login> {
                 border: _borderColors['password']!,
                 error: _errorMessages['password'],
               ),
-              SizedBox(height: 28.0),
+              const SizedBox(height: 28.0),
               GenericButton(
                 label: 'Iniciar Sesión',
                 onPressed: _call,
@@ -167,10 +167,10 @@ class _LoginState extends State<Login> {
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
-                        transitionDuration: Duration(milliseconds: 400), // Duración de la animación
+                        transitionDuration: const Duration(milliseconds: 400), // Duración de la animación
                         pageBuilder: (context, animation, secondaryAnimation) => AppRoutes.routes[routeName]!(context),
                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          var begin = Offset(1.0, 0.0); // Empieza fuera de la pantalla a la derecha
+                          var begin = const Offset(1.0, 0.0); // Empieza fuera de la pantalla a la derecha
                           var end = Offset.zero; // Termina en el centro de la pantalla
                           var curve = Curves.easeInOut;
 

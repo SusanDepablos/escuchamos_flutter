@@ -235,7 +235,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                   color: AppColors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Configuración',
                 style: TextStyle(
                   fontSize: AppFond.subtitle,
@@ -254,7 +254,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Cambiar número telefónico',
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -263,12 +263,12 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     color: AppColors.black,
                   ),
                 ),                  
-                SizedBox(height: 1.0),
+                const SizedBox(height: 1.0),
                 if (phone != null && phone!.isNotEmpty) 
                 Text(
                   'Número actual: $phone',
                   textAlign: TextAlign.left,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.black,
                     fontStyle: FontStyle.italic,
@@ -276,7 +276,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               children: [
                 SizedBox(
@@ -285,7 +285,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     selectedValue: _selected,
                     itemsMap: countryData,
                     hintText: '+0',
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       color: AppColors.black,
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -300,7 +300,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     },
                   ),
                 ),
-                SizedBox(width: 15.0),
+                const SizedBox(width: 15.0),
                 Expanded(
                   child: NumericInput(
                     text: 'Número telefónico',
@@ -316,7 +316,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                 ),
               ],
             ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
             LockableButton(
               label: 'Guardar',
               isLoading: _submitting,

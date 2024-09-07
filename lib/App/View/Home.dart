@@ -27,7 +27,7 @@ class Home extends StatelessWidget {
       future: _getData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
+          return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
@@ -52,13 +52,13 @@ class Home extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Token: $token', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text('Session: $session_key', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text('User: $user', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
               ],
             ),
           ),

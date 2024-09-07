@@ -113,7 +113,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
   final List<material.Widget> _views = [
     Home(), // Vista 0
     SearchView(),
-    Center(child: Text('Profile View')),
+    const Center(child: Text('Profile View')),
   ];
 
 
@@ -183,7 +183,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         children: [
           material.Positioned.fill(
             child: _id.isEmpty && _groups.isEmpty
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : _views[_currentIndex],
           ),
 
@@ -195,13 +195,13 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.whiteapp,
-                borderRadius: BorderRadius.all(Radius.circular(50)),
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.black.withOpacity(0.1),
                     spreadRadius: 1,
                     blurRadius: 10,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -237,7 +237,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
                 elevation: 0,
                 iconSize: 28,
                 selectedLabelStyle:
-                    TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
           ),
