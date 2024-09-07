@@ -46,14 +46,13 @@ class AppRoutes {
     'about': (context) => AboutScreen(),
     'search': (context) => SearchView(),
 
-    // Pantallas de perfil de usuario
+    // Pantallas de perfil y configuración de usuario
     'edit-profile': (context) => EditProfile(),
     'profile': (context) => Profile(),
     'user-change-password': (context) => UserChangePassword(),
-
-    // Pantallas de configuración de usuario
     'settings': (context) => Settings(),
     'deactivate-account': (context) => DeactivateAccount(),
+    'deactivate': (context) => Deactivate(),
     'account-information': (context) => AccountInformation(),
     'edit-account': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -67,7 +66,5 @@ class AppRoutes {
     'country-update': (context) => CountryUpdate(),
     'email-update': (context) => EmailUpdate(),
 
-    // Pantallas de desactivación
-    'deactivate': (context) => Deactivate(),
   };
 }
