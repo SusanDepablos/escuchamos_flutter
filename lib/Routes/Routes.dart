@@ -20,6 +20,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.da
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
+import 'package:escuchamos_flutter/App/View/User/Index/Index.dart';
 
 class AppRoutes {
   static final routes = {
@@ -39,6 +40,8 @@ class AppRoutes {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return RecoverAccountChangePassword(email: args);
     },
+
+    'index': (context) => Index(), 
 
     // Pantallas principales
     'base': (context) => BaseNavigator(),

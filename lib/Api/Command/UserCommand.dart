@@ -223,4 +223,28 @@ class ChangePasswordCommand {
   }
 }
 
+class UserCommandIndex {
+  final UserIndex _userData; // Cambié a UserIndex
+  final Map<String, String?>? filters;
+
+  UserCommandIndex(this._userData, [this.filters]);
+
+  Future<dynamic> execute() async {
+    try {
+      var response =
+          await _userData.fetchData(filters ?? {}); // Cambié a _userData
+
+      if (response.statusCode == 200) {
+        return UsersModel.fromJson(response.body); // Cambié a UsersModel
+      } else {
+        return InternalServerError.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
 

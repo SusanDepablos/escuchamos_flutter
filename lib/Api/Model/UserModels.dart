@@ -34,7 +34,7 @@ String usersModelToJson(UsersModel data) => json.encode(data.toJson());
 
 class UsersModel {
     int count;
-    String next;
+    dynamic next;
     dynamic previous;
     Results results;
 
@@ -106,7 +106,7 @@ class DatumAttributes {
     String email;
     String? biography;
     String? phoneNumber;
-    DateTime birthdate;
+    DateTime? birthdate;
     dynamic countryId;
     DateTime createdAt;
     DateTime updatedAt;
@@ -115,9 +115,9 @@ class DatumAttributes {
         required this.username,
         required this.name,
         required this.email,
-        required this.biography,
-        required this.phoneNumber,
-        required this.birthdate,
+        this.biography,
+        this.phoneNumber,
+        this.birthdate,
         required this.countryId,
         required this.createdAt,
         required this.updatedAt,
@@ -127,9 +127,9 @@ class DatumAttributes {
         username: json["username"],
         name: json["name"],
         email: json["email"],
-        biography: json["biography"],
-        phoneNumber: json["phone_number"],
-        birthdate: DateTime.parse(json["birthdate"]),
+        biography: json["biography"] as String?,
+        phoneNumber: json["phone_number"] as String?,
+        birthdate: json["birthdate"] != null ? DateTime.parse(json["birthdate"]) : null,
         countryId: json["country_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -141,7 +141,7 @@ class DatumAttributes {
         "email": email,
         "biography": biography,
         "phone_number": phoneNumber,
-        "birthdate": "${birthdate.year.toString().padLeft(4, '0')}-${birthdate.month.toString().padLeft(2, '0')}-${birthdate.day.toString().padLeft(2, '0')}",
+        "birthdate": birthdate != null ? "${birthdate!.year.toString().padLeft(4, '0')}-${birthdate!.month.toString().padLeft(2, '0')}-${birthdate!.day.toString().padLeft(2, '0')}" : null,
         "country_id": countryId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
