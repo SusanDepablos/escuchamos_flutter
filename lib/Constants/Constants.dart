@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:convert';
 
 class ApiUrl{
   // ---------------------------URL base de la API ---------------------------//
@@ -34,6 +32,7 @@ class AppColors {
   static const Color inputBasic = Color.fromRGBO(82, 82, 82, 0.773);
   static const Color inputDark = Color.fromRGBO(79, 79, 79, 1);
   static const Color inputLigth = Color.fromRGBO(192, 192, 192, 0.827);
+  static const Color greyLigth = Color.fromARGB(200, 235, 235, 235);
 }
   // -------------------------------------------------------------------------//
 

@@ -5,7 +5,7 @@ import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
-import 'package:escuchamos_flutter/App/Widget/User/UserListView.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart';
 
 class Index extends StatefulWidget {
   String? name_;
