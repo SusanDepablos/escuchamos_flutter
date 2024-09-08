@@ -9,7 +9,7 @@ void main() async {
   final storage = FlutterSecureStorage();
   final token = await storage.read(key: 'token');
 
-  runApp(MyApp(initialRoute: token != null && token.isNotEmpty ? 'base' : 'login'));
+  runApp(MyApp(initialRoute: token != null && token.isNotEmpty ? 'index' : 'login'));
 }
 
 

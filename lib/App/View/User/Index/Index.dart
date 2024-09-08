@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
-import 'package:escuchamos_flutter/Api/Model/UserModels.dart'; // Cambié a UserModels
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
-import 'package:escuchamos_flutter/Api/Command/UserCommand.dart'; // Cambié a UserCommand
-import 'package:escuchamos_flutter/Api/Service/UserService.dart'; // Cambié a UserService
-import 'package:escuchamos_flutter/App/Widget/Users/UserListView.dart';
+import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/UserService.dart';
+import 'package:escuchamos_flutter/App/Widget/User/UserListView.dart';
 
 class Index extends StatefulWidget {
   String? name_;
@@ -25,7 +25,7 @@ class _IndexState extends State<Index> {
     'name': null,
   };
 
-  List<Datum> users = []; // Cambié a Datum
+  List<Datum> users = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
@@ -39,8 +39,7 @@ class _IndexState extends State<Index> {
       filters['name'] = widget.name_;
     }
 
-    filters['page'] =
-        widget.page.toString(); // Asegúrate de que esto no sea null
+    filters['page'] = widget.page.toString();
 
     final userCommand = UserCommandIndex(UserIndex(), filters);
 
@@ -52,6 +51,7 @@ class _IndexState extends State<Index> {
           setState(() {
             users.addAll(response.results.data);
             _hasMorePages = response.next != null && response.next!.isNotEmpty;
+            // Asignar URLs de archivos si es necesario
           });
         } else {
           showDialog(
@@ -88,10 +88,10 @@ class _IndexState extends State<Index> {
   void reloadView() {
     setState(() {
       widget.page = 1;
-      users.clear(); // Cambié a users
+      users.clear();
       _hasMorePages = true;
     });
-    fetchUsers(); // Cambié a fetchUsers
+    fetchUsers();
   }
 
   @override
@@ -102,15 +102,14 @@ class _IndexState extends State<Index> {
         if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent) {
           if (_hasMorePages) {
-            // Solo cargar más si hay más páginas
             setState(() {
               widget.page++;
-              fetchUsers(); // Cambié a fetchUsers
+              fetchUsers();
             });
           }
         }
       });
-    fetchUsers(); // Cambié a fetchUsers
+    fetchUsers();
   }
 
   @override
@@ -118,6 +117,13 @@ class _IndexState extends State<Index> {
     _scrollController.dispose();
     super.dispose();
   }
+
+  FileElement? getProfileFile(List<FileElement> files) {
+    return files.where((file) => file.attributes.type == 'profile').isNotEmpty
+        ? files.firstWhere((file) => file.attributes.type == 'profile')
+        : null;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +136,24 @@ class _IndexState extends State<Index> {
             SizedBox(height: 20),
             GenericButton(label: 'Recargar Vista', onPressed: reloadView),
             SizedBox(height: 20),
-            UserListView(
-                users: users,
-                scrollController: _scrollController), // Cambié a users
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  final profileFile = getProfileFile(user.relationships.files);
+
+                  return UserListView(
+                    name: user.attributes.name ?? 'Nombre no disponible',
+                    email: user.attributes.email ?? 'Email no disponible',
+                    phoneNumber: user.attributes.phoneNumber ?? 'Número no disponible',
+                    url: profileFile?.attributes.url ?? '',
+                  );
+                },
+              ),
+
+            ),
           ],
         ),
       ),
