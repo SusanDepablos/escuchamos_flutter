@@ -170,8 +170,16 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         following: following ?? 0,
         imageProvider: imageProvider,
         onProfileTap: () async {
-          await Navigator.pushNamed(context, 'profile');
-          reloadView();
+          if (_id.isNotEmpty) {
+            final userId = int.parse(_id); // Convierte el ID a int si es necesario
+            await Navigator.pushNamed(
+              context, 
+              'profile', 
+              arguments: userId, // Pasa el ID como argumento
+            );
+
+            reloadView();
+          }
         },
         onContentModerationTap: () async {
           if (_isGroupOne) {

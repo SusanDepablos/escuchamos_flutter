@@ -51,7 +51,11 @@ class AppRoutes {
 
     // Pantallas de perfil y configuración de usuario
     'edit-profile': (context) => EditProfile(),
-    'profile': (context) => Profile(),
+    'profile': (context) {
+      final userId = ModalRoute.of(context)!.settings.arguments as int; // Extrae el ID
+      return Profile(userId: userId); // Pásalo a la vista
+    },
+
     'user-change-password': (context) => UserChangePassword(),
     'settings': (context) => Settings(),
     'deactivate-account': (context) => DeactivateAccount(),

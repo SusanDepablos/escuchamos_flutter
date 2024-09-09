@@ -9,6 +9,7 @@ class PostWidget extends StatelessWidget {
   final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
+  final VoidCallback? onProfileTap;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -23,6 +24,7 @@ class PostWidget extends StatelessWidget {
     required this.nameUser,
     required this.usernameUser,
     this.profilePhotoUser,
+    this.onProfileTap,
     required this.createdAt,
     this.reactionsCount = '120',
     this.commentsCount = '45',
@@ -57,9 +59,13 @@ class PostWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ProfileAvatar(
-                  imageProvider: NetworkImage(profilePhotoUser ?? ''),
+                  imageProvider:  profilePhotoUser != null &&
+                      profilePhotoUser!.isNotEmpty
+                  ? NetworkImage(profilePhotoUser!)
+                  : null,
                   avatarSize: 40.0,
                   showBorder: true,
+                  onPressed: onProfileTap,
                 ),
                 const SizedBox(width: 12.0),
                 Expanded(

@@ -3,11 +3,11 @@ import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
 import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/PostService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostList.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/CustomRefreshIndicator.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefreshIndicator.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/LoadingScreen.dart'; // Importa el widget de pantalla de carga
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart'; // Importa el widget de pantalla de carga
 
 class Home extends StatefulWidget {
   @override
@@ -127,7 +127,15 @@ class _HomeState extends State<Home> {
                           return PostWidget(
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,
-                            profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
+                            profilePhotoUser: post.relationships.user.profilePhotoUrl,
+                            onProfileTap: () async {
+                              final userId = post.relationships.user.id; // Convierte el ID a int si es necesario
+                              await Navigator.pushNamed(
+                                  context, 
+                                  'profile', 
+                                  arguments: userId, // Pasa el ID como argumento
+                                );
+                              },
                             body: post.attributes.body,
                             mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
                             createdAt: post.attributes.createdAt,

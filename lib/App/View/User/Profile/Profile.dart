@@ -19,9 +19,12 @@ import 'package:escuchamos_flutter/Api/Model/PostModels.dart' as PostModels;
 import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/PostService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostList.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/CustomRefreshIndicator.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefreshIndicator.dart';
 
 class Profile extends StatefulWidget {
+  final int userId;
+  Profile({required this.userId});
+
   @override
   _UpdateState createState() => _UpdateState();
 }
@@ -41,12 +44,11 @@ class _UpdateState extends State<Profile> {
   bool _isLoading = false;
   bool _hasMorePages = true;
   int page = 1;
-  int? userId;
 
   final filters = {
     'pag': '10',
     'page': null,
-    'user_id': ''
+    'user_id': null
   };
 
   Future<void> _logout(BuildContext context) async {
@@ -117,7 +119,6 @@ class _UpdateState extends State<Profile> {
         if (response is  UserModels.UserModel) {
           setState(() {
             _user = response;
-            userId = _user!.data.id; // Guardar el ID del usuario
             name = _user!.data.attributes.name;
             username = _user!.data.attributes.username;
             biography = _user!.data.attributes.biography;
@@ -127,7 +128,6 @@ class _UpdateState extends State<Profile> {
             _profileAvatarUrl = _getFileUrlByType('profile');
             _coverPhotoUrl = _getFileUrlByType('cover');
 
-            filters['user_id'] = userId.toString();
           });
         } else {
           showDialog(
@@ -171,6 +171,7 @@ class _UpdateState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    filters['user_id'] = widget.userId.toString();
     _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
@@ -179,7 +180,8 @@ class _UpdateState extends State<Profile> {
           }
         }
       });
-    _callUser().then((_) => fetchPosts());
+    _callUser();
+    fetchPosts();
   }
 
   Future<void> fetchPosts() async {
