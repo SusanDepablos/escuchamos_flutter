@@ -108,9 +108,9 @@ class _UpdateState extends State<Profile> {
   }
 
   Future<void> _callUser() async {
-    final user = await _storage.read(key: 'user') ?? '0';
-    final id = int.parse(user);
-    final userCommand = UserCommandShow(UserShow(), id);
+    // final user = await _storage.read(key: 'user') ?? '0';
+    // final id = int.parse(user);
+    final userCommand = UserCommandShow(UserShow(), widget.userId);
 
     try {
       final response = await userCommand.execute();
