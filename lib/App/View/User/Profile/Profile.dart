@@ -173,13 +173,9 @@ class _UpdateState extends State<Profile> {
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          if (_hasMorePages) {
-            setState(() {
-              page++;
-              fetchPosts();
-            });
+        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+          if (_hasMorePages && !_isLoading) {
+            fetchPosts();
           }
         }
       });
@@ -190,7 +186,9 @@ class _UpdateState extends State<Profile> {
   Future<void> fetchPosts() async {
     if (_isLoading || !_hasMorePages) return;
 
-    _isLoading = true;
+    setState(() {
+      _isLoading = true;
+    });
     filters['page'] = page.toString();
 
     final postCommand = PostCommandIndex(PostIndex(), filters);
@@ -202,6 +200,7 @@ class _UpdateState extends State<Profile> {
         setState(() {
           posts.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
+          page++;
         });
       } else {
         showDialog(

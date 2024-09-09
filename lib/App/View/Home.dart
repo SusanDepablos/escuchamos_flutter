@@ -30,13 +30,9 @@ class _HomeState extends State<Home> {
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() {
-        if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-          if (_hasMorePages) {
-            setState(() {
-            page++;
+        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+          if (_hasMorePages && !_isLoading) {
             fetchPosts();
-          });
           }
         }
       });
@@ -46,7 +42,10 @@ class _HomeState extends State<Home> {
   Future<void> fetchPosts() async {
     if (_isLoading || !_hasMorePages) return;
 
-    _isLoading = true;
+    setState(() {
+      _isLoading = true;
+    });
+
     filters['page'] = page.toString();
 
     final postCommand = PostCommandIndex(PostIndex(), filters);
@@ -58,6 +57,7 @@ class _HomeState extends State<Home> {
         setState(() {
           posts.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
+          page++; // Incrementar la página solo si la respuesta es exitosa
         });
       } else {
         showDialog(
@@ -87,11 +87,11 @@ class _HomeState extends State<Home> {
 
   Future<void> _reloadPosts() async {
     setState(() {
-      page = 1;  // Reiniciar la página
-      posts.clear();  // Limpiar la lista de publicaciones
-      _hasMorePages = true;  // Permitir más páginas
+      page = 1;
+      posts.clear();
+      _hasMorePages = true;
     });
-    await fetchPosts();  // Recargar los datos
+    await fetchPosts();
   }
 
   @override
@@ -110,7 +110,7 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             Expanded(
               child: CustomRefreshIndicator(
-                onRefresh: _reloadPosts,  // Función para recargar publicaciones
+                onRefresh: _reloadPosts,
                 child: ListView.builder(
                   controller: _scrollController,
                   itemCount: posts.length,
