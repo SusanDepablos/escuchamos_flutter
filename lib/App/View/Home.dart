@@ -1,130 +1,136 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:escuchamos_flutter/Constants/Constants.dart'; 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
+import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/PostService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostList.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/CustomRefreshIndicator.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
+import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
-class Home extends StatelessWidget {
-  // Lista de usuarios de ejemplo
-  final List<Map<String, dynamic>> users = [
-    // Ejemplos de usuarios
-    {
-      'name': 'John Doe',
-      'username': 'johndoe',
-      'profile_photo_url': 'https://escuchamos-mcu6.onrender.com/media/photos_user/a9fe91dd-c81a-46d8-acb4-92f3a7702b2c.jpg',
-      'body': 'Buenos dias como estas',
-      'media_url': 'https://escuchamos-mcu6.onrender.com/media/photos_user/a9fe91dd-c81a-46d8-acb4-92f3a7702b2c.jpg', // Ejemplo de URL de video
-      'reactions_count': '5',
-      'comments_count': '5',
-      'shares_count': '5',
-    },
-    {
-      'name': 'Jane Smith',
-      'username': 'janesmith',
-      'profile_photo_url': 'https://escuchamos-mcu6.onrender.com/media/photos_user/a9fe91dd-c81a-46d8-acb4-92f3a7702b2c.jpg',
-      'body': null,
-      'media_url': 'https://escuchamos-mcu6.onrender.com/media/photos_user/a9fe91dd-c81a-46d8-acb4-92f3a7702b2c.jpg', // Ejemplo de URL de imagen
-      'reactions_count': '5',
-      'comments_count': '5',
-      'shares_count': '5',
-    },
-    {
-      'name': 'Jane Smith',
-      'username': 'janesmith',
-      'profile_photo_url': 'https://escuchamos-mcu6.onrender.com/media/photos_user/a9fe91dd-c81a-46d8-acb4-92f3a7702b2c.jpg',
-      'body': 'buenasssssssssssss',
-      'media_url': null, // Ejemplo de URL de imagen
-      'reactions_count': '5',
-      'comments_count': '5',
-      'shares_count': '5',
-    },
-    {
-      'name': 'Jane Smith',
-      'username': 'janesmith',
-      'profile_photo_url': 'https://escuchamos-mcu6.onrender.com/media/photos_user/a9fe91dd-c81a-46d8-acb4-92f3a7702b2c.jpg',
-      'body': 'buenasssssssssssss',
-      'media_url': 'https://escuchamos-mcu6.onrender.com/media/posts/554eb0a1-3a97-405d-a066-f0c0f1f8e85f.mp4', 
-      'reactions_count': '5',
-      'comments_count': '5',
-      'shares_count': '5',
-    },
-    // Más usuarios...
-  ];
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
 
-  final FlutterSecureStorage _storage = FlutterSecureStorage();
+class _HomeState extends State<Home> {
+  List<Datum> posts = [];
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _hasMorePages = true;
+  int page = 1;
 
-  Future<Map<String, dynamic>> _getData() async {
-    final token = await _storage.read(key: 'token') ?? '';
-    final session_key = await _storage.read(key: 'session_key') ?? '';
-    final groupsString = await _storage.read(key: 'groups') ?? '[]';
-    final groups = (groupsString.isNotEmpty) ? List<dynamic>.from(json.decode(groupsString)) : [];
+  final filters = {
+    'pag': '10',
+    'page': '1',
+  };
 
-    return {
-      'token': token,
-      'session_key': session_key,
-      'groups': groups,
-    };
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasMorePages) {
+          setState(() {
+            page++;
+            fetchPosts();
+          });
+        }
+      });
+    fetchPosts();
+  }
+
+  Future<void> fetchPosts() async {
+    if (_isLoading || !_hasMorePages) return;
+
+    _isLoading = true;
+    filters['page'] = page.toString();
+
+    final postCommand = PostCommandIndex(PostIndex(), filters);
+
+    try {
+      var response = await postCommand.execute();
+
+      if (response is PostsModel) {
+        setState(() {
+          posts.addAll(response.results.data);
+          _hasMorePages = response.next != null && response.next!.isNotEmpty;
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response is InternalServerError ? 'Error de servidor' : 'Error de conexión',
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _reloadPosts() async {
+    setState(() {
+      page = 1;  // Reiniciar la página
+      posts.clear();  // Limpiar la lista de publicaciones
+      _hasMorePages = true;  // Permitir más páginas
+    });
+    await fetchPosts();  // Recargar los datos
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: _getData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
-          );
-        }
-
-        final data = snapshot.data!;
-        final token = data['token'] as String;
-        final session_key = data['session_key'] as String;
-        final groups = data['groups'] as List<dynamic>;
-
-        return Scaffold(
-          backgroundColor: AppColors.whiteapp,
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Token: $token', style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 16),
-                Text('Session: $session_key', style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 16),
-                Text('Groups: ${groups.join(', ')}', style: TextStyle(fontSize: 16)),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      final user = users[index];
-                      return PostWidget(
-                        nameUser: user['name']!,
-                        usernameUser: user['username']!,
-                        profilePhotoUser: user['profile_photo_url']!,
-                        body: user['body'] as String?, // Permitir null aquí
-                        mediaUrl: user['media_url'] as String?, // URL de media opcional
-                        createdAt: DateTime.now(),
-                        reactionsCount: user['reactions_count']!,
-                        commentsCount: user['comments_count']!,
-                        sharesCount: user['shares_count']!,
-                      );
-                    },
-                  ),
+    return Scaffold(
+      backgroundColor: AppColors.whiteapp,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: CustomRefreshIndicator(
+                onRefresh: _reloadPosts,  // Función para recargar publicaciones
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return PostWidget(
+                      nameUser: post.relationships.user.name,
+                      usernameUser: post.relationships.user.username,
+                      profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
+                      body: post.attributes.body,
+                      mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
+                      createdAt: post.attributes.createdAt,
+                      reactionsCount: post.relationships.reactionsCount.toString(),
+                      commentsCount: post.relationships.commentsCount.toString(),
+                      sharesCount: post.relationships.sharesCount.toString(),
+                    );
+                  },
                 ),
-              ],
+              ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }

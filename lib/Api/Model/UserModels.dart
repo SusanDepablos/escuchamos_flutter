@@ -178,8 +178,8 @@ class DataAttributes {
     String email;
     String? biography;
     String? phoneNumber;
-    String? birthdate;
-    int? countryId;
+    DateTime? birthdate;
+    dynamic countryId;
     DateTime createdAt;
     DateTime updatedAt;
 
@@ -190,7 +190,7 @@ class DataAttributes {
         this.biography,
         this.phoneNumber,
         this.birthdate,
-        this.countryId,
+        required this.countryId,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -199,9 +199,9 @@ class DataAttributes {
         username: json["username"],
         name: json["name"],
         email: json["email"],
-        biography: json["biography"],
-        phoneNumber: json["phone_number"],
-        birthdate: json["birthdate"],
+        biography: json["biography"] as String?,
+        phoneNumber: json["phone_number"] as String?,
+        birthdate: json["birthdate"]!= null ? DateTime.parse(json["birthdate"]) : null,
         countryId: json["country_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -213,7 +213,7 @@ class DataAttributes {
         "email": email,
         "biography": biography,
         "phone_number": phoneNumber,
-        "birthdate": birthdate,
+        "birthdate": birthdate != null ? "${birthdate!.year.toString().padLeft(4, '0')}-${birthdate!.month.toString().padLeft(2, '0')}-${birthdate!.day.toString().padLeft(2, '0')}" : null,
         "country_id": countryId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),

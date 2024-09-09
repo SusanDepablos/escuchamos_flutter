@@ -1,6 +1,5 @@
 //Flutter native support
 import 'package:flutter/material.dart';
-import 'dart:convert';
 //Api support
 import 'dart:io';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';

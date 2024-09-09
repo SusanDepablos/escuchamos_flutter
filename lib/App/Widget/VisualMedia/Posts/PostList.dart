@@ -3,6 +3,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/VideoPlayer.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
 
 class PostWidget extends StatelessWidget {
   final String nameUser;
@@ -32,6 +33,10 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Definir tamaño fijo para la imagen y el video
+    const double mediaHeight = 250.0;
+    const double mediaWidth = double.infinity;
+
     return Container(
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -56,13 +61,18 @@ class PostWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Separar el nombre de usuario en un Container
                       Row(
                         children: [
-                          Text(
-                            nameUser,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 150), // Limitar el ancho del contenedor
+                            child: Text(
+                              nameUser,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              overflow: TextOverflow.ellipsis, // Agregar puntos suspensivos si es muy largo
                             ),
                           ),
                           const Spacer(),
@@ -96,9 +106,33 @@ class PostWidget extends StatelessWidget {
             if (mediaUrl != null) ...[
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: mediaUrl!.endsWith('.mp4')
-                    ? VideoPlayerWidget(videoUrl: mediaUrl!)
-                    : Image.network(mediaUrl!, fit: BoxFit.cover),
+                child: GestureDetector(
+                  onTap: () {
+                    if (!mediaUrl!.endsWith('.mp4')) {
+                      // Abre la imagen a pantalla completa usando FullScreenImage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenImage(imageUrl: mediaUrl!),
+                        ),
+                      );
+                    } 
+                    // Para los videos no hacemos nada aquí, ya que no se quiere fullscreen
+                  },
+                  child: SizedBox(
+                    height: mediaHeight,
+                    width: mediaWidth,
+                    child: mediaUrl!.endsWith('.mp4')
+                        ? AspectRatio(
+                            aspectRatio: 16 / 9, // Proporción adecuada para video
+                            child: VideoPlayerWidget(videoUrl: mediaUrl!),
+                          )
+                        : Image.network(
+                            mediaUrl!,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
               ),
               const SizedBox(height: 16.0),
             ],
