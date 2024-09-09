@@ -9,7 +9,7 @@ import 'package:escuchamos_flutter/App/View/Home.dart';
 import 'package:escuchamos_flutter/App/View/SearchView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart'; // Importar el widget Drawer
+import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';
 import 'dart:convert';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
 
@@ -31,6 +31,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
   int? followers;
   int? following;
   bool _isGroupOne = false;
+  bool _isBottomNavVisible = true; // Controlador para la visibilidad del BottomNavigationBar
 
   @override
   void initState() {
@@ -73,7 +74,6 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
             username = _user!.data.attributes.username;
             followers = _user!.data.relationships.followersCount;
             following = _user!.data.relationships.followingCount;
-
           });
         } else {
           showDialog(
@@ -98,7 +98,6 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     }
   }
 
-  // Método auxiliar para obtener la URL del archivo por tipo
   String? _getFileUrlByType(String type) {
     try {
       final file = _user?.data.relationships.files.firstWhere(
@@ -106,28 +105,43 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
       );
       return file?.attributes.url;
     } catch (e) {
-      return null; // Retorna null si no se encuentra el archivo
+      return null;
     }
   }
 
   final List<material.Widget> _views = [
-    Home(), // Vista 0
-    SearchView(),
-    const Center(child: Text('Profile View')),
+    Home(), 
+    SearchView(), 
+    const Center(child: Text('Nuevo post')),
+    const Center(child: Text('notificaciones')),
+    const Center(child: Text('post de escuchamos')),
   ];
 
+  void _onScroll(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification) {
+      if (notification.scrollDelta! > 0 && _isBottomNavVisible) {
+        setState(() {
+          _isBottomNavVisible = false;
+        });
+      } else if (notification.scrollDelta! < 0 && !_isBottomNavVisible) {
+        setState(() {
+          _isBottomNavVisible = true;
+        });
+      }
+    }
+  }
 
   @override
   material.Widget build(BuildContext context) {
-    // Obtén la URL del avatar si está disponible
     final String? profileAvatarUrl = _getFileUrlByType('profile');
     ImageProvider? imageProvider;
 
     if (profileAvatarUrl != null && profileAvatarUrl.isNotEmpty) {
       imageProvider = NetworkImage(profileAvatarUrl);
     }
+
     return material.Scaffold(
-      key: _scaffoldKey, // Asignar el GlobalKey al Scaffold
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         elevation: 0,
@@ -142,14 +156,13 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         title: Row(
           children: [
             Center(
-              child: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+              child: LogoBanner(),
             ),
           ],
         ),
-        centerTitle: true, // Asegúrate de que esta línea esté presente
-        toolbarHeight: kToolbarHeight, // Ajusta la altura del AppBar si es necesario
+        centerTitle: true,
+        toolbarHeight: kToolbarHeight,
       ),
-
       drawer: CustomDrawer(
         name: name,
         username: username,
@@ -158,93 +171,119 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         imageProvider: imageProvider,
         onProfileTap: () async {
           await Navigator.pushNamed(context, 'profile');
-
           reloadView();
         },
         onContentModerationTap: () async {
-          if (_isGroupOne) { // Verificar si el usuario está en el grupo 1 antes de navegar
+          if (_isGroupOne) {
             await Navigator.pushNamed(context, 'content-moderation');
           }
         },
         onSettingsTap: () async {
           final result = await Navigator.pushNamed(context, 'settings');
-    
           reloadView();
         },
         onAboutTap: () async {
           final result = await Navigator.pushNamed(context, 'about');
-          
           reloadView();
         },
         showContentModeration: _isGroupOne,
       ),
- // Usar el widget Drawer aquí
-      body: material.Stack(
-        children: [
-          material.Positioned.fill(
-            child: _id.isEmpty && _groups.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : _views[_currentIndex],
-          ),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          _onScroll(notification);
+          return true;
+        },
+        child: material.Stack(
+          children: [
+            material.Positioned.fill(
+              child: _id.isEmpty && _groups.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : _views[_currentIndex],
+            ),
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              left: 16,
+              right: 16,
+              bottom: _isBottomNavVisible ? 8 : -80, // Ajusta según el tamaño del BottomNavigationBar
+              child: AnimatedScale(
+                scale: _isBottomNavVisible ? 1.0 : 0.8, // Escala cuando está visible y cuando está oculto
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteapp,
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.black.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
 
-          // BottomNavigationBar flotante
-          material.Positioned(
-            left: 16,
-            right: 16,
-            bottom: 8,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.whiteapp,
-                borderRadius: const BorderRadius.all(Radius.circular(50)),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                  
+                  child: material.BottomNavigationBar(
+                    currentIndex: _currentIndex,
+                    onTap: (int index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    items: [
+                      material.BottomNavigationBarItem(
+                        icon: Icon(Icons.home_outlined, size: 28),
+                        activeIcon: Icon(Icons.home, size: 28),
+                        label: '',
+                      ),
+                      material.BottomNavigationBarItem(
+                        icon: Icon(Icons.search_outlined, size: 28),
+                        activeIcon: Icon(Icons.search, size: 28),
+                        label: '',
+                      ),
+                      material.BottomNavigationBarItem(
+                        icon: Icon(Icons.add_circle_outline, size: 34),
+                        activeIcon: Icon(Icons.add_circle, size: 39),
+                        label: '',
+                      ),
+                      material.BottomNavigationBarItem(
+                        icon: Icon(Icons.notifications_outlined, size: 28),
+                        activeIcon: Icon(Icons.notifications, size: 28),
+                        label: '',
+                      ),
+                      material.BottomNavigationBarItem(
+                        icon: Image.asset(
+                          'assets/settings_inactive.png',
+                          width: 32,
+                          height: 32,
+                        ),
+                        activeIcon: Image.asset(
+                          'assets/settings_active.png',
+                          width: 34,
+                          height: 34,
+                        ),
+                        label: '',
+                      ),
+                    ],
+                    backgroundColor: Colors.transparent,
+                    selectedItemColor: AppColors.primaryBlue,
+                    unselectedItemColor: AppColors.inputDark,
+                    showUnselectedLabels: false,
+                    type: material.BottomNavigationBarType.fixed,
+                    elevation: 0,
+                    iconSize: 28,
+                    selectedLabelStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ],
-              ),
-              child: material.BottomNavigationBar(
-                currentIndex: _currentIndex,
-                onTap: (int index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                items: [
-                  material.BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined, size: 28),
-                    activeIcon: Icon(Icons.home, size: 28),
-                    label: '',
-                  ),
-                  material.BottomNavigationBarItem(
-                    icon: Icon(Icons.search_outlined, size: 28),
-                    activeIcon: Icon(Icons.search, size: 28),
-                    label: '',
-                  ),
-                  material.BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline, size: 28),
-                    activeIcon: Icon(Icons.person, size: 28),
-                    label: '',
-                  ),
-                ],
-                backgroundColor: Colors.transparent,
-                selectedItemColor: AppColors.primaryBlue,
-                unselectedItemColor: AppColors.inputDark,
-                showUnselectedLabels: false,
-                type: material.BottomNavigationBarType.fixed,
-                elevation: 0,
-                iconSize: 28,
-                selectedLabelStyle:
-                  const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
-
-

@@ -7,6 +7,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/CustomRefreshIndicator
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/LoadingScreen.dart'; // Importa el widget de pantalla de carga
 
 class Home extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _HomeState extends State<Home> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
+  bool _initialLoading = true; // Variable para el estado de carga inicial
   int page = 1;
 
   final filters = {
@@ -80,6 +82,7 @@ class _HomeState extends State<Home> {
       if (mounted) {
         setState(() {
           _isLoading = false;
+          _initialLoading = false; // Después de la primera carga, ya no mostrar la pantalla de carga
         });
       }
     }
@@ -104,36 +107,41 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: CustomRefreshIndicator(
-                onRefresh: _reloadPosts,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    final post = posts[index];
-                    return PostWidget(
-                      nameUser: post.relationships.user.name,
-                      usernameUser: post.relationships.user.username,
-                      profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
-                      body: post.attributes.body,
-                      mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
-                      createdAt: post.attributes.createdAt,
-                      reactionsCount: post.relationships.reactionsCount.toString(),
-                      commentsCount: post.relationships.commentsCount.toString(),
-                      sharesCount: post.relationships.sharesCount.toString(),
-                    );
-                  },
-                ),
+      body: _initialLoading
+          ? LoadingScreen(
+              animationPath: 'assets/animation.json',
+              verticalOffset: -0.3, // Mueve la animación hacia arriba
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: CustomRefreshIndicator(
+                      onRefresh: _reloadPosts,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return PostWidget(
+                            nameUser: post.relationships.user.name,
+                            usernameUser: post.relationships.user.username,
+                            profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
+                            body: post.attributes.body,
+                            mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
+                            createdAt: post.attributes.createdAt,
+                            reactionsCount: post.relationships.reactionsCount.toString(),
+                            commentsCount: post.relationships.commentsCount.toString(),
+                            sharesCount: post.relationships.sharesCount.toString(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
