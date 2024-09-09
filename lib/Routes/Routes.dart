@@ -7,7 +7,7 @@ import 'package:escuchamos_flutter/App/View/Auth/AccountRecovery/AccountVerifica
 import 'package:escuchamos_flutter/App/View/Auth/AccountRecovery/ChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
 import 'package:escuchamos_flutter/App/View/AboutScreen.dart';
-import 'package:escuchamos_flutter/App/View/SearchView.dart';
+import 'package:escuchamos_flutter/App/View/SearchUser.dart';
 import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/Profile.dart';
@@ -20,7 +20,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.da
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
-import 'package:escuchamos_flutter/App/View/User/Index/Index.dart';
+import 'package:escuchamos_flutter/App/View/User/IndexUser/IndexUser.dart';
 
 class AppRoutes {
   static final routes = {
@@ -41,7 +41,7 @@ class AppRoutes {
       return RecoverAccountChangePassword(email: args);
     },
 
-    'index': (context) => Index(), 
+    'index-user': (context) => IndexUser(), 
 
     // Pantallas principales
     'base': (context) => BaseNavigator(),

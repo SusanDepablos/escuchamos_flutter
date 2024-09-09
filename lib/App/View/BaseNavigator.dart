@@ -6,7 +6,7 @@ import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
-import 'package:escuchamos_flutter/App/View/SearchView.dart';
+import 'package:escuchamos_flutter/App/View/SearchUser.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';

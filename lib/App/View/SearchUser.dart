@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que esta ruta sea correcta
-import 'package:escuchamos_flutter/App/View/User/Index/Index.dart';
+import 'package:escuchamos_flutter/App/View/User/IndexUser/IndexUser.dart';
 
 class SearchView extends StatefulWidget {
   @override
@@ -78,7 +78,7 @@ class _SearchViewState extends State<SearchView> {
     if (_searchText.isEmpty) {
       return Center(child: Text(''));
     }
-    return Index(
+    return IndexUser(
       search_: _searchText,
     );
   }
