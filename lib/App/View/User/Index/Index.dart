@@ -31,10 +31,8 @@ class _IndexState extends State<Index> {
   bool _hasMorePages = true;
 
   Future<void> fetchUsers() async {
-    // Si ya hay una solicitud en curso o no hay más páginas, no continuar
     if (_isLoading || !_hasMorePages) return;
 
-    // Marcar como cargando
     setState(() {
       _isLoading = true;
     });
@@ -132,14 +130,13 @@ _scrollController = ScrollController()
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Index')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20),
-            GenericButton(label: 'Recargar Vista', onPressed: reloadView),
-            SizedBox(height: 20),
+            // SizedBox(height: 20),
+            // GenericButton(label: 'Recargar Vista', onPressed: reloadView),
+            // SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
@@ -149,10 +146,9 @@ _scrollController = ScrollController()
                   final profileFile = getProfileFile(user.relationships.files);
 
                   return UserListView(
-                    name: user.attributes.name ?? 'Nombre no disponible',
-                    email: user.attributes.email ?? 'Email no disponible',
-                    phoneNumber: user.attributes.phoneNumber ?? 'Número no disponible',
-                    url: profileFile?.attributes.url ?? '',
+                    nameUser: user.attributes.name ?? 'Nombre no disponible',
+                    usernameUser: user.attributes.username ?? 'Email no disponible',
+                    profilePhotoUser: profileFile?.attributes.url ?? '',
                   );
                 },
               ),
