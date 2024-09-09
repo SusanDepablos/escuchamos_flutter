@@ -179,8 +179,7 @@ class _UpdateState extends State<Profile> {
           }
         }
       });
-    _callUser();
-    fetchPosts();
+    _callUser().then((_) => fetchPosts());
   }
 
   Future<void> fetchPosts() async {
