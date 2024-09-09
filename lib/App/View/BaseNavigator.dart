@@ -177,7 +177,6 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
               'profile', 
               arguments: userId, // Pasa el ID como argumento
             );
-
             reloadView();
           }
         },

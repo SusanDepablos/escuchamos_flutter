@@ -44,12 +44,21 @@ class _UpdateState extends State<Profile> {
   bool _isLoading = false;
   bool _hasMorePages = true;
   int page = 1;
+  int? _storedUserId;
 
   final filters = {
     'pag': '10',
     'page': null,
     'user_id': null
   };
+
+  // Obtener el userId desde el almacenamiento seguro
+  Future<void> _getStoredUserId() async {
+    final user = await _storage.read(key: 'user') ?? '0';
+    setState(() {
+      _storedUserId = int.parse(user); // Asignar el valor del userId almacenado
+    });
+  }
 
   Future<void> _logout(BuildContext context) async {
     setState(() {
@@ -108,8 +117,6 @@ class _UpdateState extends State<Profile> {
   }
 
   Future<void> _callUser() async {
-    // final user = await _storage.read(key: 'user') ?? '0';
-    // final id = int.parse(user);
     final userCommand = UserCommandShow(UserShow(), widget.userId);
 
     try {
@@ -181,6 +188,7 @@ class _UpdateState extends State<Profile> {
         }
       });
     _callUser();
+    _getStoredUserId();
     fetchPosts();
   }
 
@@ -277,18 +285,19 @@ class _UpdateState extends State<Profile> {
           ),
         ),
         actions: [
-          SettingsMenu(
-            onEditProfile: () async {
-              await Navigator.pushNamed(context, 'edit-profile');
-              reloadView();
-            },
-            onLogout: () async {
-              if (!_submitting) {
-                await _logout(context);
-              }
-            },
-            isEnabled: !_submitting, // Pasar el estado
-          ),
+          if (_storedUserId != null && _storedUserId == widget.userId) // Validación del userId
+            SettingsMenu(
+              onEditProfile: () async {
+                await Navigator.pushNamed(context, 'edit-profile');
+                reloadView();
+              },
+              onLogout: () async {
+                if (!_submitting) {
+                  await _logout(context);
+                }
+              },
+              isEnabled: !_submitting, // Pasar el estado
+            ),
         ],
       ),
       body: CustomRefreshIndicator(

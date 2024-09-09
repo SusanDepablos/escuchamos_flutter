@@ -93,8 +93,12 @@ class _HomeState extends State<Home> {
       page = 1;
       posts.clear();
       _hasMorePages = true;
+      _initialLoading = true; // Vuelve a activar el estado de carga inicial
     });
-    await fetchPosts();
+    await fetchPosts(); // Llama a fetchPosts para recargar los datos
+    setState(() {
+      _initialLoading = false; // Desactiva el estado de carga después de recargar los posts
+    });
   }
 
   @override
@@ -128,14 +132,20 @@ class _HomeState extends State<Home> {
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,
                             profilePhotoUser: post.relationships.user.profilePhotoUrl,
-                            onProfileTap: () async {
-                              final userId = post.relationships.user.id; // Convierte el ID a int si es necesario
-                              await Navigator.pushNamed(
-                                  context, 
-                                  'profile', 
-                                  arguments: userId, // Pasa el ID como argumento
-                                );
-                              },
+                            onProfileTap: () {
+                              final userId = post.relationships.user.id; // Obtén el ID del usuario
+                              Navigator.pushNamed(
+                                context,
+                                'profile',
+                                arguments: userId, // Pasa el ID como argumento
+                              ).then((_) {
+                                // Esto se ejecuta cuando regresas de la pantalla de perfil
+                                setState(() {
+                                  _initialLoading = true; // Activa el estado de carga inicial
+                                });
+                                _reloadPosts(); // Recarga los posts después de volver del perfil
+                              });
+                            },
                             body: post.attributes.body,
                             mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
                             createdAt: post.attributes.createdAt,
