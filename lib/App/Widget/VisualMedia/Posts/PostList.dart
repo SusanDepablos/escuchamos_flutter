@@ -38,7 +38,12 @@ class PostWidget extends StatelessWidget {
     const double mediaWidth = double.infinity;
 
     return Container(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        top: 8.0,
+        bottom: 8.0,
+      ),
       decoration: BoxDecoration(
         color: AppColors.greyLigth,
         borderRadius: BorderRadius.circular(25),
