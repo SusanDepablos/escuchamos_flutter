@@ -31,9 +31,13 @@ class _IndexState extends State<Index> {
   bool _hasMorePages = true;
 
   Future<void> fetchUsers() async {
+    // Si ya hay una solicitud en curso o no hay más páginas, no continuar
     if (_isLoading || !_hasMorePages) return;
 
-    _isLoading = true;
+    // Marcar como cargando
+    setState(() {
+      _isLoading = true;
+    });
 
     if (widget.name_?.isNotEmpty ?? false) {
       filters['name'] = widget.name_;
@@ -51,7 +55,6 @@ class _IndexState extends State<Index> {
           setState(() {
             users.addAll(response.results.data);
             _hasMorePages = response.next != null && response.next!.isNotEmpty;
-            // Asignar URLs de archivos si es necesario
           });
         } else {
           showDialog(
@@ -78,6 +81,7 @@ class _IndexState extends State<Index> {
       }
     } finally {
       if (mounted) {
+        // Desbloquear solicitudes después de completar la carga
         setState(() {
           _isLoading = false;
         });
@@ -97,11 +101,11 @@ class _IndexState extends State<Index> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()
+_scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent) {
-          if (_hasMorePages) {
+          if (!_isLoading && _hasMorePages) {
             setState(() {
               widget.page++;
               fetchUsers();
