@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
 
   final filters = {
     'pag': '10',
-    'page': '1',
+    'page': null,
   };
 
   @override
@@ -30,11 +30,14 @@ class _HomeState extends State<Home> {
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() {
-        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasMorePages) {
-          setState(() {
+        if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+          if (_hasMorePages) {
+            setState(() {
             page++;
             fetchPosts();
           });
+          }
         }
       });
     fetchPosts();

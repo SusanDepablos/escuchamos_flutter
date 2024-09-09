@@ -45,7 +45,7 @@ class _UpdateState extends State<Profile> {
 
   final filters = {
     'pag': '10',
-    'page': '1',
+    'page': null,
     'user_id': ''
   };
 
@@ -173,11 +173,14 @@ class _UpdateState extends State<Profile> {
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() {
-        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasMorePages) {
-          setState(() {
-            page++;
-            fetchPosts();
-          });
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          if (_hasMorePages) {
+            setState(() {
+              page++;
+              fetchPosts();
+            });
+          }
         }
       });
     _callUser();
