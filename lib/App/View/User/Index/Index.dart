@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
+// import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Index extends StatefulWidget {
-  String? name_;
+  String? search_;
   int page = 1;
   VoidCallback? onFetchUsers;
 
-  Index({this.name_, this.onFetchUsers});
+  Index({this.search_, this.onFetchUsers});
 
   @override
   _IndexState createState() => _IndexState();
@@ -22,7 +23,7 @@ class _IndexState extends State<Index> {
   final filters = {
     'pag': '10',
     'page': null,
-    'name': null,
+    'search': null,
   };
 
   List<Datum> users = [];
@@ -37,8 +38,8 @@ class _IndexState extends State<Index> {
       _isLoading = true;
     });
 
-    if (widget.name_?.isNotEmpty ?? false) {
-      filters['name'] = widget.name_;
+    if (widget.search_?.isNotEmpty ?? false) {
+      filters['search'] = widget.search_;
     }
 
     filters['page'] = widget.page.toString();
@@ -130,6 +131,7 @@ _scrollController = ScrollController()
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.whiteapp, // Estilo de fondo
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
