@@ -20,7 +20,8 @@ import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.da
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
-import 'package:escuchamos_flutter/App/View/User/IndexUser/IndexUser.dart';
+import 'package:escuchamos_flutter/App/View/User/Index.dart';
+import 'package:escuchamos_flutter/App/View/Follows/SearchFollow.dart';
 
 class AppRoutes {
   static final routes = {
@@ -41,7 +42,16 @@ class AppRoutes {
       return RecoverAccountChangePassword(email: args);
     },
 
-    'index-user': (context) => IndexUser(), 
+    'index-user': (context) => IndexUser(),
+
+    'search-follow': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final followedUserId = args['followedUserId'] as  String;
+      return SearchFollow(
+        followedUserId: followedUserId,
+      );
+    },
 
     // Pantallas principales
     'base': (context) => BaseNavigator(),

@@ -197,6 +197,18 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           final result = await Navigator.pushNamed(context, 'about');
           reloadView();
         },
+
+      onFollowsTap: () async {
+        final result = await Navigator.pushNamed(
+          context,
+          'search-follow',
+          arguments: {
+            'followedUserId': _id, // Reemplaza con el ID del usuario seguido
+          },
+        );
+        reloadView();
+      },
+
         showContentModeration: _isGroupOne,
       ),
       body: NotificationListener<ScrollNotification>(

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que esta ruta sea correcta
-import 'package:escuchamos_flutter/App/View/User/Index.dart';
+import 'package:escuchamos_flutter/App/View/Follows/IndexFollows.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
-class SearchView extends StatefulWidget {
+class SearchFollow extends StatefulWidget {
+  String followedUserId;
+
+  SearchFollow(
+    {required this.followedUserId});
+
   @override
-  _SearchViewState createState() => _SearchViewState();
+  _SearchFollowState createState() => _SearchFollowState();
 }
 
-class _SearchViewState extends State<SearchView> {
+class _SearchFollowState extends State<SearchFollow> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
 
@@ -56,16 +61,15 @@ class _SearchViewState extends State<SearchView> {
             child: FutureBuilder<Widget>(
               future: _fetchUsers(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                   return CustomLoadingIndicator(color: AppColors.primaryBlue); // Usa tu color personalizado
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData) {
-                  return Center(child: Text('No data available'));
-                } else {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.hasData) {
                   return snapshot.data!;
+                } else {
+                  return const SizedBox
+                    .shrink(); // Muestra un widget vacío mientras no haya datos.
                 }
               },
+
             ),
           ),
         ],
@@ -74,11 +78,9 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Future<Widget> _fetchUsers() async {
-    if (_searchText.isEmpty) {
-      return Center(child: Text(''));
-    }
-    return IndexUser(
-      search_: _searchText,
+    return IndexFollows(
+      searchFollowing_: _searchText,
+      followedUserId: widget.followedUserId,
     );
   }
 

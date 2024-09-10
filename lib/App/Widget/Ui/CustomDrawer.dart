@@ -14,6 +14,7 @@ class CustomDrawer extends StatelessWidget {
   final Future<void> Function()? onContentModerationTap;
   final Future<void> Function()? onSettingsTap;
   final Future<void> Function()? onAboutTap;
+  final Future<void> Function()? onFollowsTap;
   final bool showContentModeration; 
   CustomDrawer({
     this.name,
@@ -25,6 +26,7 @@ class CustomDrawer extends StatelessWidget {
     this.onContentModerationTap,
     this.onSettingsTap,
     this.onAboutTap,
+    this.onFollowsTap,
     this.showContentModeration = false,
   });
 
@@ -151,7 +153,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   LabelAction(
                     text: 'Seguidores',
-                    onPressed: () {},
+                    onPressed: onFollowsTap,
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.inputDark,
