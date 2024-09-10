@@ -56,14 +56,12 @@ class _SearchViewState extends State<SearchView> {
             child: FutureBuilder<Widget>(
               future: _fetchUsers(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                   return CustomLoadingIndicator(color: AppColors.primaryBlue); // Usa tu color personalizado
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData) {
-                  return Center(child: Text('No data available'));
-                } else {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.hasData) {
                   return snapshot.data!;
+                } else {
+                  return const SizedBox
+                    .shrink(); // Muestra un widget vacío mientras no haya datos.
                 }
               },
             ),

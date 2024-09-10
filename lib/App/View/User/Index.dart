@@ -7,6 +7,7 @@ import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
 class IndexUser extends StatefulWidget {
   String? search_;
@@ -100,7 +101,7 @@ class _IndexUserState extends State<IndexUser> {
   @override
   void initState() {
     super.initState();
-_scrollController = ScrollController()
+    _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent) {
@@ -127,43 +128,53 @@ _scrollController = ScrollController()
         : null;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteapp, // Estilo de fondo
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // SizedBox(height: 20),
-            // GenericButton(label: 'Recargar Vista', onPressed: reloadView),
-            // SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final user = users[index];
-                  final profileFile = getProfileFile(user.relationships.files);
-                  return UserListView(
-                    nameUser: user.attributes.name,
-                    usernameUser: user.attributes.username,
-                    profilePhotoUser: profileFile?.attributes.url ?? '',
-                    onProfileTap: () {
-                      final userId = user.id; // Obtén el ID del usuario
-                      Navigator.pushNamed(
-                        context,
-                        'profile',
-                        arguments: userId, // Pasa el ID como argumento
-                    );
-                  },
-                  );
-                },
+      body: Stack(
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: _isLoading
+                  ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
+                  : users.isEmpty
+                    ? const Center(
+                      child: Text(
+                        'No existen usuarios con ese nombre.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      controller: _scrollController,
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        final user = users[index];
+                        final profileFile = getProfileFile(user.relationships.files);
+                        return UserListView(
+                          nameUser: user.attributes.name,
+                          usernameUser: user.attributes.username,
+                          profilePhotoUser: profileFile?.attributes.url ?? '',
+                          onProfileTap: () {
+                            final userId = user.id; // Obtén el ID del usuario
+                            Navigator.pushNamed(
+                              context,
+                              'profile',
+                              arguments: userId, // Pasa el ID como argumento
+                            );
+                          },
+                        );
+                      },
+                    ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }

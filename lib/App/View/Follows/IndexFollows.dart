@@ -8,6 +8,7 @@ import 'package:escuchamos_flutter/Api/Command/FollowsCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/FollowsService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
 class IndexFollows extends StatefulWidget {
   String? searchFollowing_;
@@ -134,46 +135,44 @@ class _IndexFollowsState extends State<IndexFollows> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: follows.isEmpty && !_isLoading
+              child: _isLoading
+                ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
+                : follows.isEmpty
                   ? const Center(
-                      child: Text(
-                        'No existen usuarios con ese nombre',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color:
-                              AppColors.black, // Ajusta el color si es necesario
-                        ),
+                    child: Text(
+                      'No existen usuarios con ese nombre.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.black,
                       ),
-                    )
-                  : ListView.builder(
-                      controller: _scrollController,
-                      itemCount: follows.length,
-                      itemBuilder: (context, index) {
-                        final list = follows[index];
-                        final followingUser = list.attributes.followingUser;
-
-                        return UserListView(
-                          nameUser:
-                              followingUser.name ?? 'Nombre no disponible',
-                          usernameUser: followingUser.username ??
-                              'Username no disponible',
-                          profilePhotoUser: followingUser.profilePhotoUrl ?? '',
-                          onProfileTap: () {
-                            final userId = followingUser.id;
-                            Navigator.pushNamed(
-                              context,
-                              'profile',
-                              arguments: userId,
-                            );
-                          },
+                    ),
+                  )
+                : ListView.builder(
+                  controller: _scrollController,
+                  itemCount: follows.length,
+                  itemBuilder: (context, index) {
+                    final list = follows[index];
+                    final followingUser = list.attributes.followingUser;
+                    return UserListView(
+                      nameUser:
+                          followingUser.name,
+                      usernameUser: followingUser.username,
+                      profilePhotoUser: followingUser.profilePhotoUrl ?? '',
+                      onProfileTap: () {
+                        final userId = followingUser.id;
+                        Navigator.pushNamed(
+                          context,
+                          'profile',
+                          arguments: userId,
                         );
                       },
-                    ),
+                    );
+                  },
+                ),
             ),
           ],
         ),
       ),
     );
   }
-
 }
