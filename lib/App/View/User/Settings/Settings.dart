@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
+import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -45,19 +46,22 @@ class _SettingsState extends State<Settings> {
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title: 'Error de Conexión',
-              message: 'Error de conexión',
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
             ),
           );
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: 'Error: $e',
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }
@@ -103,13 +107,16 @@ class _SettingsState extends State<Settings> {
         );
       }
     } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {

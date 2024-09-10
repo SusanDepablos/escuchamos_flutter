@@ -5,6 +5,7 @@ import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 
 class AccountInformation extends StatefulWidget {
   @override
@@ -58,13 +59,16 @@ class _AccountInformationState extends State<AccountInformation> {
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title: 'Error de Conexión',
-              message: 'Error de conexión',
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
             ),
           );
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         setState(() {
           isLoading = false; // La carga ha finalizado en caso de excepción
@@ -72,8 +76,8 @@ class _AccountInformationState extends State<AccountInformation> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: 'Error: $e',
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }

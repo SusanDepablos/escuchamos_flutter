@@ -18,7 +18,7 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Model/PostModels.dart' as PostModels;
 import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/PostService.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostList.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostListView.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefreshIndicator.dart';
 
 class Profile extends StatefulWidget {
@@ -149,12 +149,13 @@ class _UpdateState extends State<Profile> {
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }

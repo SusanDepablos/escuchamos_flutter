@@ -68,19 +68,22 @@ class _UpdateState extends State<EditAccount> {
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title: 'Error de Conexión',
-              message: 'Error de conexión',
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
             ),
           );
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: 'Error: $e',
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }
@@ -134,13 +137,16 @@ class _UpdateState extends State<EditAccount> {
         );
       }
     } catch (e) {
-      await showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
     } finally {
       setState(() {
         _submitting = false;

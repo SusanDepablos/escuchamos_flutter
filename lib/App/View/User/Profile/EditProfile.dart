@@ -84,12 +84,13 @@ class _UpdateState extends State<EditProfile> {
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }

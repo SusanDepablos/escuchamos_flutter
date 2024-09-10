@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
 import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/PostService.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostList.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostListView.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefreshIndicator.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
@@ -71,14 +71,16 @@ class _HomeState extends State<Home> {
         );
       }
     } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
-    } finally {
+      print(e);
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -131,20 +133,14 @@ class _HomeState extends State<Home> {
                           return PostWidget(
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,
-                            profilePhotoUser: post.relationships.user.profilePhotoUrl,
+                            profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                             onProfileTap: () {
                               final userId = post.relationships.user.id; // Obtén el ID del usuario
                               Navigator.pushNamed(
                                 context,
                                 'profile',
                                 arguments: userId, // Pasa el ID como argumento
-                              ).then((_) {
-                                // Esto se ejecuta cuando regresas de la pantalla de perfil
-                                setState(() {
-                                  _initialLoading = true; // Activa el estado de carga inicial
-                                });
-                                _reloadPosts(); // Recarga los posts después de volver del perfil
-                              });
+                              );
                             },
                             body: post.attributes.body,
                             mediaUrl: post.relationships.files.firstOrNull?.attributes.url,

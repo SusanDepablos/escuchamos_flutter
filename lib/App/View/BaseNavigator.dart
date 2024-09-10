@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
@@ -10,8 +11,8 @@ import 'package:escuchamos_flutter/App/View/SearchUser.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';
-import 'dart:convert';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
+import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 
 class BaseNavigator extends material.StatefulWidget {
   @override
@@ -79,19 +80,22 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title: 'Error de Conexión',
-              message: 'Error de conexión',
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
             ),
           );
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: 'Error: $e',
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }

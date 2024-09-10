@@ -111,12 +111,12 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
       setState(() {
         _isConfirmLoading = false;
       });
-
+      print(e);
       showDialog(
         context: context,
         builder: (context) => PopupWindow(
-          title: 'Error',
-          message: 'Error: ${e.toString()}',
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
         ),
       );
     }

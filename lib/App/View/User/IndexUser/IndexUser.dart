@@ -73,8 +73,8 @@ class _IndexUserState extends State<IndexUser> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }
@@ -146,15 +146,21 @@ _scrollController = ScrollController()
                 itemBuilder: (context, index) {
                   final user = users[index];
                   final profileFile = getProfileFile(user.relationships.files);
-
                   return UserListView(
-                    nameUser: user.attributes.name ?? 'Nombre no disponible',
-                    usernameUser: user.attributes.username ?? 'Email no disponible',
+                    nameUser: user.attributes.name,
+                    usernameUser: user.attributes.username,
                     profilePhotoUser: profileFile?.attributes.url ?? '',
+                    onProfileTap: () {
+                      final userId = user.id; // Obtén el ID del usuario
+                      Navigator.pushNamed(
+                        context,
+                        'profile',
+                        arguments: userId, // Pasa el ID como argumento
+                    );
+                  },
                   );
                 },
               ),
-
             ),
           ],
         ),

@@ -47,19 +47,22 @@ class _CountryUpdateState extends State<CountryUpdate> {
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title: 'Error de Conexión',
-              message: 'Error de conexión',
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
             ),
           );
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: 'Error: $e',
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }
@@ -102,12 +105,13 @@ class _CountryUpdateState extends State<CountryUpdate> {
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }

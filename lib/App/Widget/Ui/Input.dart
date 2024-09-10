@@ -559,38 +559,41 @@ class _SearchInputState extends __BasicInputState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: _controller,
-          obscureText: _obscureText,
-          decoration: InputDecoration(
-            labelText: widget.text,
-            labelStyle: TextStyle(color: widget.border),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
-            ),
-            prefixIcon: IconButton(
-              icon: Icon(Icons.search),
-              onPressed: widget is SearchInput ? (widget as SearchInput).onSearch : null,
-            ),
-            suffixIcon: _hasText
-                ? IconButton(
-                    icon: Icon(Icons.clear),
-                    onPressed: () {
-                      _controller.clear();
-                      setState(() {
-                        _hasText = false; // Resetear el estado para esconder la "X"
-                      });
-                      if (widget is SearchInput) {
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Padding solo para el input
+          child: TextField(
+            controller: _controller,
+            obscureText: _obscureText,
+            decoration: InputDecoration(
+              labelText: widget.text,
+              labelStyle: TextStyle(color: widget.border),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              prefixIcon: IconButton(
+                icon: Icon(Icons.search),
+                onPressed: widget is SearchInput ? (widget as SearchInput).onSearch : null,
+              ),
+              suffixIcon: _hasText
+                  ? IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        _controller.clear();
+                        setState(() {
+                          _hasText = false; // Resetear el estado para esconder la "X"
+                        });
+                        if (widget is SearchInput) {
                         (widget as SearchInput).onClear?.call();
                       }
-                    },
-                  )
-                : null, // Solo muestra el ícono de la "X" si _hasText es true
+                      },
+                    )
+                  : null, // Solo muestra el ícono de la "X" si _hasText es true
+            ),
           ),
         ),
         if (widget.error != null && widget.error!.isNotEmpty)
@@ -605,6 +608,7 @@ class _SearchInputState extends __BasicInputState {
     );
   }
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class NumericInput extends StatefulWidget {

@@ -71,11 +71,12 @@ class _RecoverAccountState extends State<RecoverAccount> {
           );
         }
       } catch (e) {
+        print(e);
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
     } finally {

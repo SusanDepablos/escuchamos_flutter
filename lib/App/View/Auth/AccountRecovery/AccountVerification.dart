@@ -114,15 +114,15 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
       setState(() {
         _isConfirmLoading = false;
       });
-
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: 'Error: ${e.toString()}',
-        ),
-      );
-    }
+      print(e);
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
   }
 
   void _enableButton() {
