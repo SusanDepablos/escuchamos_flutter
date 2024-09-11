@@ -74,38 +74,16 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
 
           Navigator.pushReplacementNamed(context, 'login');
         });
-      } else if (response is SimpleErrorResponse) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error',
-            message: response.message,
-          ),
-        );
-      } else if (response is InternalServerError) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error interno del servidor',
-            message: response.message,
-          ),
-        );
-      } else if (response is ApiError) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de conexión',
-            message: 'No se pudo conectar con el servidor',
-          ),
-        );
       } else {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error desconocido',
-            message: 'Ocurrió un error desconocido',
-          ),
-        );
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
       }
     } catch (e) {
       setState(() {

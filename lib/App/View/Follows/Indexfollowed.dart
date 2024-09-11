@@ -11,12 +11,12 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
 class Indexfollowed extends StatefulWidget {
-  String? searchFollowing_;
+  String? searchfollowed_;
   int page = 1;
   String followedUserId;
   VoidCallback? onFetchFollowers;
 
-  Indexfollowed({this.searchFollowing_, this.onFetchFollowers, required this.followedUserId});
+  Indexfollowed({this.searchfollowed_, this.onFetchFollowers, required this.followedUserId});
 
   @override
   _IndexfollowedState createState() => _IndexfollowedState();
@@ -26,24 +26,24 @@ class _IndexfollowedState extends State<Indexfollowed> {
   final filters = {
     'pag': '10',
     'page': null,
-    'search_following': null,
+    'search_followed': null,
     'followed_user_id': null,
   };
 
-  List<Datum> follows = [];
+  List<Datum> followed = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
 
-  Future<void> fetchFollows() async {
+  Future<void> fetchfollowed() async {
     if (_isLoading || !_hasMorePages) return;
 
     setState(() {
       _isLoading = true;
     });
 
-    if (widget.searchFollowing_?.isNotEmpty ?? false) {
-      filters['search_following'] = widget.searchFollowing_;
+    if (widget.searchfollowed_?.isNotEmpty ?? false) {
+      filters['search_followed'] = widget.searchfollowed_;
     }
 
     filters['page'] = widget.page.toString();
@@ -57,7 +57,7 @@ class _IndexfollowedState extends State<Indexfollowed> {
       if (mounted) {
         if (response is FollowsModel) {
           setState(() {
-            follows.addAll(response.results.data);
+            followed.addAll(response.results.data);
             _hasMorePages = response.next != null && response.next!.isNotEmpty;
           });
         } else {
@@ -67,7 +67,7 @@ class _IndexfollowedState extends State<Indexfollowed> {
               title: response is InternalServerError
                   ? 'Error'
                   : 'Error de Conexión',
-              message: response.message ?? 'Ocurrió un error desconocido',
+              message: response.message,
             ),
           );
         }
@@ -78,8 +78,8 @@ class _IndexfollowedState extends State<Indexfollowed> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }
@@ -96,10 +96,10 @@ class _IndexfollowedState extends State<Indexfollowed> {
   void reloadView() {
     setState(() {
       widget.page = 1;
-      follows.clear();
+      followed.clear();
       _hasMorePages = true;
     });
-    fetchFollows();
+    fetchfollowed();
   }
 
   @override
@@ -112,12 +112,12 @@ class _IndexfollowedState extends State<Indexfollowed> {
           if (!_isLoading && _hasMorePages) {
             setState(() {
               widget.page++;
-              fetchFollows();
+              fetchfollowed();
             });
           }
         }
       });
-    fetchFollows();
+    fetchfollowed();
   }
 
   @override
@@ -137,7 +137,7 @@ class _IndexfollowedState extends State<Indexfollowed> {
             Expanded(
               child: _isLoading
                 ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
-                : follows.isEmpty
+                : followed.isEmpty
                   ? const Center(
                     child: Text(
                       'No existen usuarios con ese nombre.',
@@ -149,17 +149,17 @@ class _IndexfollowedState extends State<Indexfollowed> {
                   )
                 : ListView.builder(
                   controller: _scrollController,
-                  itemCount: follows.length,
+                  itemCount: followed.length,
                   itemBuilder: (context, index) {
-                    final list = follows[index];
-                    final followingUser = list.attributes.followingUser;
+                    final list = followed[index];
+                    final followedUser = list.attributes.followedUser;
                     return UserListView(
                       nameUser:
-                          followingUser.name,
-                      usernameUser: followingUser.username,
-                      profilePhotoUser: followingUser.profilePhotoUrl ?? '',
+                          followedUser.name,
+                      usernameUser: followedUser.username,
+                      profilePhotoUser: followedUser.profilePhotoUrl ?? '',
                       onProfileTap: () {
-                        final userId = followingUser.id;
+                        final userId = followedUser.id;
                         Navigator.pushNamed(
                           context,
                           'profile',

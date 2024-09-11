@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class CountTimer extends StatefulWidget {
-  final VoidCallback onTimerEnd; // Callback que se ejecutará cuando el tiempo termine
+  final VoidCallback
+      onTimerEnd; // Callback que se ejecutará cuando el tiempo termine
+  final int initialTime; // Tiempo inicial en segundos (opcional)
 
-  CountTimer({required this.onTimerEnd});
+  // El tiempo predeterminado es de 180 segundos (3 minutos)
+  CountTimer({required this.onTimerEnd, this.initialTime = 180});
 
   @override
   _CountTimerState createState() => _CountTimerState();
@@ -13,12 +16,24 @@ class CountTimer extends StatefulWidget {
 
 class _CountTimerState extends State<CountTimer> {
   late Timer _timer;
-  int _remainingTime = 180; // 3 minutos en segundos
+  late int _remainingTime;
+  bool _isVisible = true; // Controla la visibilidad del temporizador
 
   @override
   void initState() {
     super.initState();
+    _remainingTime = widget.initialTime;
     _startTimer();
+  }
+
+  @override
+  void didUpdateWidget(CountTimer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Si el tiempo inicial cambia, reinicia el temporizador
+    if (widget.initialTime != oldWidget.initialTime) {
+      _resetTimer(widget.initialTime);
+    }
   }
 
   @override
@@ -34,31 +49,46 @@ class _CountTimerState extends State<CountTimer> {
           _remainingTime--;
         } else {
           _timer.cancel(); // Detener el temporizador cuando llegue a cero
+          _isVisible = false; // Hacer que el temporizador sea invisible
           widget.onTimerEnd(); // Llamar al callback cuando el tiempo se agota
         }
       });
     });
   }
 
+  void _resetTimer(int newTime) {
+    // Cancelar el temporizador actual
+    _timer.cancel();
+    // Establecer el nuevo tiempo
+    setState(() {
+      _remainingTime = newTime;
+      _isVisible = true; // Hacer que el temporizador sea visible nuevamente
+    });
+    // Volver a iniciar el temporizador
+    _startTimer();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final minutes = (_remainingTime ~/ 60).toString().padLeft(2, '0');
-    final seconds = (_remainingTime % 60).toString().padLeft(2, '0');
+    final String minutes = (_remainingTime ~/ 60).toString().padLeft(2, '0');
+    final String seconds = (_remainingTime % 60).toString().padLeft(2, '0');
+    final Color textColor =
+        _remainingTime <= 20 ? AppColors.errorRed : AppColors.primaryBlue;
 
-    // Cambiar el color del texto basado en el tiempo restante
-    final textColor = _remainingTime <= 20 ? AppColors.errorRed : AppColors.primaryBlue;
-
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-      decoration: BoxDecoration(
-        color: AppColors.whiteapp,
-      ),
-      child: Text(
-        "$minutes:$seconds",
-        style: TextStyle(
-          fontSize: 16.0, // Tamaño de fuente más grande
-          fontWeight: FontWeight.bold,
-          color: textColor, // Color del texto basado en el tiempo restante
+    return Visibility(
+      visible: _isVisible,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        decoration: BoxDecoration(
+          color: AppColors.whiteapp,
+        ),
+        child: Text(
+          "$minutes:$seconds",
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
       ),
     );

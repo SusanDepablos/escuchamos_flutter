@@ -67,7 +67,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
               title: response is InternalServerError
                   ? 'Error'
                   : 'Error de Conexión',
-              message: response.message ?? 'Ocurrió un error desconocido',
+              message: response.message,
             ),
           );
         }
@@ -78,8 +78,8 @@ class _IndexFollowersState extends State<IndexFollowers> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: e.toString(),
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
       }
