@@ -165,7 +165,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
               input: _codeController, 
               border: Colors.blue, 
             ),
-            const SizedBox(height: 16.0), 
+            const SizedBox(height: 20.0), 
             const Text(
               'Puedes solicitar un nuevo código en:',
               style: TextStyle(fontSize: 14.0, color: Colors.black),
@@ -176,14 +176,13 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                 onTimerEnd: _enableButton,
               ),
             ),
-            const SizedBox(height: 16.0),
             if (_isButtonEnabled)
-              LabelAction(
+              LabelActionWithDisable(
                 text: "Reenviar código",
                 onPressed: _isLoading ? () {} : _onResendCode,
                 isLoading: _isLoading,
               ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 25.0),
             GenericButton(
               label: "Confirmar correo",
               onPressed: _isConfirmLoading ? () {} : _onConfirmCode,
