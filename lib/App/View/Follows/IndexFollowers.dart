@@ -10,19 +10,19 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
-class IndexFollows extends StatefulWidget {
+class IndexFollowers extends StatefulWidget {
   String? searchFollowing_;
   int page = 1;
   String followedUserId;
-  VoidCallback? onFetchFollows;
+  VoidCallback? onFetchFollowers;
 
-  IndexFollows({this.searchFollowing_, this.onFetchFollows, required this.followedUserId});
+  IndexFollowers({this.searchFollowing_, this.onFetchFollowers, required this.followedUserId});
 
   @override
-  _IndexFollowsState createState() => _IndexFollowsState();
+  _IndexFollowersState createState() => _IndexFollowersState();
 }
 
-class _IndexFollowsState extends State<IndexFollows> {
+class _IndexFollowersState extends State<IndexFollowers> {
   final filters = {
     'pag': '10',
     'page': null,

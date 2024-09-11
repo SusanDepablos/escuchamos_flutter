@@ -21,7 +21,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/User/Index.dart';
-import 'package:escuchamos_flutter/App/View/Follows/SearchFollow.dart';
+import 'package:escuchamos_flutter/App/View/Follows/SearchFollowers.dart';
 
 class AppRoutes {
   static final routes = {
@@ -48,7 +48,7 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final followedUserId = args['followedUserId'] as  String;
-      return SearchFollow(
+      return SearchFollowers(
         followedUserId: followedUserId,
       );
     },
