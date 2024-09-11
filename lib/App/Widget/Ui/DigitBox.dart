@@ -11,10 +11,10 @@ class DigitBox extends StatefulWidget {
 
   DigitBox({
     required this.input,
-    this.border = Colors.grey,
-    this.focusedBorderColor = AppColors.primaryBlue,
+    this.border = AppColors.inputBasic,
+    this.focusedBorderColor = AppColors.black,
     this.digitTextColor = Colors.black,
-    this.boxColor = Colors.white,
+    this.boxColor = AppColors.white,
     this.error,
   });
 
@@ -92,7 +92,7 @@ class _DigitBoxState extends State<DigitBox> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: Colors.red, fontSize: 12),
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],

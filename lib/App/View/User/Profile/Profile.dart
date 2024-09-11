@@ -421,6 +421,7 @@ class _UpdateState extends State<Profile> {
                                 color: AppColors.black,
                               ),
                             ),
+                            const SizedBox(width: 4),
                             LabelAction(
                               text: 'Siguiendo',
                               onPressed: () {},
@@ -439,6 +440,7 @@ class _UpdateState extends State<Profile> {
                                 color: AppColors.black,
                               ),
                             ),
+                            const SizedBox(width: 4),
                             LabelAction(
                               text: 'Seguidores',
                               onPressed: () {},

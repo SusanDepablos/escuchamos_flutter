@@ -146,11 +146,11 @@ class _RegisterState extends State<Register> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Success',
+            title: 'Éxito',
             message: response.message,
           ),
         ).then((_) {
-          Navigator.pushNamed(
+          Navigator.pushReplacementNamed(
             context,
             'verify-code',
             arguments: _inputControllers['email']!.text,
@@ -206,6 +206,7 @@ Widget build(BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20.0),
             GenericInput(
               maxLength: 35,
               text: 'Nombre y Apellido',
@@ -288,10 +289,8 @@ Widget build(BuildContext context) {
                           var begin = const Offset(-1.0, 0.0); // Empieza fuera de la pantalla a la izquierda
                           var end = Offset.zero; // Termina en el centro de la pantalla
                           var curve = Curves.easeInOut;
-
                           var slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
                           var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-
                           return SlideTransition(
                             position: animation.drive(slideTween),
                             child: FadeTransition(
