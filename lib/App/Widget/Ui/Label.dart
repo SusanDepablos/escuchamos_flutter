@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'dart:async'; // Necesario para el Timer.
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 class LabelAction extends StatefulWidget {
   final String? text;
@@ -46,8 +47,8 @@ class _LabelActionState extends State<LabelAction> {
               child: SizedBox(
                 width: 16, // Ancho del indicador de carga
                 height: 16, // Alto del indicador de carga
-                child: CircularProgressIndicator(
-                  strokeWidth: 2, // Grosor del indicador
+                child: CustomLoadingIndicator(
+                  color: AppColors.primaryBlue
                 ),
               ),
             ),
@@ -78,20 +79,19 @@ class _LabelActionState extends State<LabelAction> {
     );
   }
 }
-
 class LabelActionWithDisable extends StatefulWidget {
   final String? text;
   final VoidCallback? onPressed;
   final TextStyle? style;
   final bool isLoading;
-  final EdgeInsetsGeometry? padding; // Campo opcional para padding
+  final EdgeInsetsGeometry? padding;
 
   LabelActionWithDisable({
     this.text,
     this.onPressed,
     this.style,
     this.isLoading = false,
-    this.padding = const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Valor por defecto
+    this.padding = const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
   });
 
   @override
@@ -100,59 +100,89 @@ class LabelActionWithDisable extends StatefulWidget {
 
 class _LabelActionWithDisableState extends State<LabelActionWithDisable> {
   bool _isDisabled = false;
+  int _remainingTime = 30; // Temporizador inicial de 30 segundos.
+  Timer? _timer;
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancelar el temporizador cuando el widget se destruye.
+    super.dispose();
+  }
+
+  void _startTimer() {
+    // Cancelar el temporizador anterior si existe.
+    _timer?.cancel();
+
+    setState(() {
+      _remainingTime = 30; // Reiniciar a 30 segundos
+      _isDisabled = true;
+    });
+
+    // Iniciar el cronómetro que cuenta hacia atrás cada segundo.
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingTime > 0) {
+          _remainingTime--;
+        } else {
+          _isDisabled = false; // Habilitar el botón cuando llegue a 0.
+          _timer?.cancel(); // Detener el temporizador.
+        }
+      });
+    });
+  }
 
   void _handlePress() {
     if (!_isDisabled && !widget.isLoading) {
       widget.onPressed?.call();
-
-      // Deshabilitar el botón durante 30 segundos
-      setState(() {
-        _isDisabled = true;
-      });
-
-      // Rehabilitar el botón después de 30 segundos
-      Future.delayed(Duration(seconds: 30), () {
-        if (mounted) {
-          setState(() {
-            _isDisabled = false;
-          });
-        }
-      });
+      _startTimer(); // Iniciar el temporizador cuando se presiona el botón.
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final minutes = (_remainingTime ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_remainingTime % 60).toString().padLeft(2, '0');
+
     return GestureDetector(
       onTap: _isDisabled ? null : _handlePress,
       child: Container(
         padding: widget.padding,
-        child: Stack(
-          alignment: Alignment.centerLeft,
+        child: Row(
           children: [
-            // Indicador de carga visible cuando isLoading es true
-            Visibility(
-              visible: widget.isLoading,
-              child: SizedBox(
-                width: 16, // Ancho del indicador de carga
-                height: 16, // Alto del indicador de carga
+            // Mostrar indicador de carga si está cargando.
+            if (widget.isLoading)
+              SizedBox(
+                width: 16,
+                height: 16,
                 child: CustomLoadingIndicator(
                   color: AppColors.primaryBlue
                 ),
               ),
-            ),
-            // Texto visible cuando isLoading es false
-            Visibility(
-              visible: !widget.isLoading,
-              child: Text(
+
+            // Mostrar el texto si no está cargando.
+            if (!widget.isLoading)
+              Text(
                 widget.text!,
                 style: widget.style ??
                     TextStyle(
-                      color: _isDisabled ? AppColors.inputDark : AppColors.primaryBlue,
-                      fontSize: 16, // Tamaño de fuente por defecto
+                      color: _isDisabled ? AppColors.black : AppColors.primaryBlue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
               ),
-            ),
+            SizedBox(width: 10), // Espacio entre el texto y el temporizador.
+            // Mostrar el cronómetro solo si el botón está deshabilitado.
+            if (_isDisabled)
+              Text(
+                '$minutes:$seconds', // Formato cronómetro "MM:SS"
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: _remainingTime <= 10
+                      ? AppColors.errorRed // Cambiar a rojo si quedan 10 segundos o menos.
+                      : AppColors.primaryBlue,
+                ),
+              ),
           ],
         ),
       ),

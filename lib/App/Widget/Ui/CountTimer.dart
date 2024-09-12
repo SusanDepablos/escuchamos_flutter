@@ -78,7 +78,12 @@ class _CountTimerState extends State<CountTimer> {
     return Visibility(
       visible: _isVisible,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        margin: const EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        top: 10.0,
+        bottom: 10.0,
+        ),
         decoration: BoxDecoration(
           color: AppColors.whiteapp,
         ),

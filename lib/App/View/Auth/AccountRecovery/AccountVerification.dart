@@ -40,12 +40,20 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
     });
 
     if (response is SuccessResponse) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Código reenviado con éxito')),
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+            title: 'Éxito',
+            message: response.message,
+          ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al reenviar el código')),
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
       );
     }
   }
@@ -77,39 +85,17 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
                 arguments: widget.email,
               );
         });
-      } else if (response is SimpleErrorResponse) {
-            showDialog(
-              context: context,
-              builder: (context) => PopupWindow(
-                title: 'Error',
-                message: response.message,
-              ),
-            );
-      } else if (response is InternalServerError) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error interno del servidor',
-            message: response.message,
-          ),
-        );
-      } else if (response is ApiError) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de conexión',
-            message: 'No se pudo conectar con el servidor',
-          ),
-        );
       } else {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error desconocido',
-            message: 'Ocurrió un error desconocido',
-          ),
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Código Incorrecto',
+              message: response.message,
+            ),
         );
-      }
+    }
     } catch (e) {
       setState(() {
         _isConfirmLoading = false;
@@ -130,7 +116,6 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
       _isButtonEnabled = true;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +150,7 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
             ),
             const SizedBox(height: 26.0), 
             SecureInput(
-              text: 'Ingrese código',
+              text: 'Ingrese el código',
               input: _codeController,
             ),
             const SizedBox(height: 16.0), 
@@ -173,21 +158,19 @@ class _RecoverAccountVerificationState extends State<RecoverAccountVerification>
               'Puedes solicitar un nuevo código en:',
               style: TextStyle(fontSize: 14.0, color: Colors.black),
             ),
+            const SizedBox(height: 10.0),
             Align(
               alignment: Alignment.center, // Puedes ajustar esto para alinear en cualquier lugar
               child: CountTimer(
                 onTimerEnd: _enableButton,
               ),
             ),
-            const SizedBox(height: 2.0),
             if (_isButtonEnabled)
-              Center(
-              child: LabelAction(
+              LabelActionWithDisable(
                 text: "Reenviar código",
                 onPressed: _isLoading ? () {} : _onResendCode,
                 isLoading: _isLoading,
               ),
-            ),
             const SizedBox(height: 16.0),
             GenericButton(
               label: "Verificar",

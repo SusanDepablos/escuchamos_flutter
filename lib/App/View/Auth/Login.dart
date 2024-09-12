@@ -162,7 +162,6 @@ class _LoginState extends State<Login> {
                   onTap: () {
                   // Ruta que deseas usar, por ejemplo, 'register'
                   String routeName = 'register';
-
                   // Verifica si la ruta existe en AppRoutes
                   if (AppRoutes.routes.containsKey(routeName)) {
                     Navigator.pushReplacement(

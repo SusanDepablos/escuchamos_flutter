@@ -94,23 +94,10 @@ class _RecoverAccountState extends State<RecoverAccount> {
     backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        automaticallyImplyLeading: false,
-        title: Stack(
+        title: Row(
           children: [
-            // Este Positioned coloca el ícono de retroceso en el lado izquierdo
-            Positioned(
-              left: 0,
-              top: 9, // Ajusta este valor para controlar cuánto quieres bajar el ícono
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.black),
-                onPressed: () {
-                  Navigator.pop(context); // Esto regresa a la pantalla anterior
-                },
-              ),
-            ),
-            // Este Center centra el LogoBanner en el AppBar
             Center(
-              child: LogoBanner(), // Aquí se inserta el LogoBanner centrado
+              child: LogoBanner(),
             ),
           ],
         ),

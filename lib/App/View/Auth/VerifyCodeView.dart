@@ -80,7 +80,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             builder: (context) => PopupWindow(
               title: response is InternalServerError
                   ? 'Error'
-                  : 'Error de Conexión',
+                  : response is ApiError ? 'Error de Conexión' : 'Código Incorrecto',
               message: response.message,
             ),
           );
@@ -141,13 +141,14 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             const SizedBox(height: 26.0), 
             DigitBox(
               input: _codeController, 
-              border: Colors.blue, 
+              border: AppColors.primaryBlue, 
             ),
-            const SizedBox(height: 20.0), 
+            const SizedBox(height: 16.0), 
             const Text(
               'Puedes solicitar un nuevo código en:',
-              style: TextStyle(fontSize: 14.0, color: Colors.black),
+              style: TextStyle(fontSize: 14.0, color: AppColors.black),
             ),
+            const SizedBox(height: 10.0),
             Align(
               alignment: Alignment.center, // Puedes ajustar esto para alinear en cualquier lugar
               child: CountTimer(
@@ -160,7 +161,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                 onPressed: _isLoading ? () {} : _onResendCode,
                 isLoading: _isLoading,
               ),
-            const SizedBox(height: 25.0),
+            const SizedBox(height: 16.0),
             GenericButton(
               label: "Confirmar correo",
               onPressed: _isConfirmLoading ? () {} : _onConfirmCode,
