@@ -44,35 +44,7 @@ class AppRoutes {
       return RecoverAccountChangePassword(email: args);
     },
 
-    'index-user': (context) => IndexUser(),
-
-    'search-followers': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final followedUserId = args['followedUserId'] as  String;
-      return SearchFollowers(
-        followedUserId: followedUserId,
-      );
-    },
-
-    'search-followed': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final followingUserId = args['followingUserId'] as String;
-      return SearchFollowed(
-        followingUserId: followingUserId,
-      );
-    },
-
-    'my-navigator-view': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final initialTab = args['initialTab'] as String;
-      final userId = args['userId'] as String;
-      return NavigatorFollow(
-        initialTab: initialTab, userId: userId,
-      );
-    },
+    //Pantalla Base
 
     'base': (context) => BaseNavigator(),
 
@@ -104,6 +76,48 @@ class AppRoutes {
     'phone-update': (context) => PhoneUpdate(),
     'country-update': (context) => CountryUpdate(),
     'email-update': (context) => EmailUpdate(),
+
+    //Usuario
+    'index-user': (context) => IndexUser(),
+
+    // Pantallas de seguidores y seguidos
+    'search-followers': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final followedUserId = args['followedUserId'] as  String;
+      return SearchFollowers(
+        followedUserId: followedUserId,
+      );
+    },
+
+    'search-followed': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final followingUserId = args['followingUserId'] as String;
+      return SearchFollowed(
+        followingUserId: followingUserId,
+      );
+    },
+
+    'navigator-folllow': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final initialTab = args['initialTab'] as String;
+      final userId = args['userId'] as String;
+      return NavigatorFollow(
+        initialTab: initialTab, userId: userId,
+      );
+    },
+
+    'navigator-post': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final initialTab = args['initialTab'] as String;
+      final userId = args['userId'] as String;
+      return NavigatorFollow(
+        initialTab: initialTab, userId: userId,
+      );
+    },
 
   };
 }

@@ -223,7 +223,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         onFollowedTap: () async {
           final result = await Navigator.pushNamed(
             context,
-            'my-navigator-view',
+            'navigator-folllow',
               arguments: {
                 'userId': _id,
                 'initialTab': 'followed', // Reemplaza con el ID del usuario seguido
@@ -236,7 +236,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         onFollowersTap: () async {
           final result = await Navigator.pushNamed(
             context,
-            'my-navigator-view',
+            'navigator-folllow',
             arguments: {
               'userId': _id,
               'initialTab': 'follower', // Reemplaza con el ID del usuario seguido
@@ -282,7 +282,6 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
                       ),
                     ],
                   ),
-
                   
                   child: material.BottomNavigationBar(
                     currentIndex: _currentIndex,

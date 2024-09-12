@@ -15,11 +15,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
-import 'package:escuchamos_flutter/Api/Model/PostModels.dart' as PostModels;
-import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
-import 'package:escuchamos_flutter/Api/Service/PostService.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostListView.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefreshIndicator.dart';
+import 'package:escuchamos_flutter/App/View/User/Profile/NavigatorUser.dart';
 
 class Profile extends StatefulWidget {
   final int userId;
@@ -39,18 +35,7 @@ class _UpdateState extends State<Profile> {
   int? following;
   DateTime? createdAt;
   bool _submitting = false;
-  List<PostModels.Datum> posts = [];
-  late ScrollController _scrollController;
-  bool _isLoading = false;
-  bool _hasMorePages = true;
-  int page = 1;
   int? _storedUserId;
-
-  final filters = {
-    'pag': '10',
-    'page': null,
-    'user_id': null
-  };
 
   // Obtener el userId desde el almacenamiento seguro
   Future<void> _getStoredUserId() async {
@@ -118,7 +103,6 @@ class _UpdateState extends State<Profile> {
 
   Future<void> _callUser() async {
     final userCommand = UserCommandShow(UserShow(), widget.userId);
-
     try {
       final response = await userCommand.execute();
 
@@ -179,78 +163,8 @@ class _UpdateState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    filters['user_id'] = widget.userId.toString();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-          if (_hasMorePages && !_isLoading) {
-            fetchPosts();
-          }
-        }
-      });
     _callUser();
     _getStoredUserId();
-    fetchPosts();
-  }
-
-  Future<void> fetchPosts() async {
-    if (_isLoading || !_hasMorePages) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-    filters['page'] = page.toString();
-
-    final postCommand = PostCommandIndex(PostIndex(), filters);
-
-    try {
-      var response = await postCommand.execute();
-
-      if (response is  PostModels.PostsModel) {
-        setState(() {
-          posts.addAll(response.results.data);
-          _hasMorePages = response.next != null && response.next!.isNotEmpty;
-          page++;
-        });
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error',
-            message: response is InternalServerError ? 'Error de servidor' : 'Error de conexión',
-          ),
-        );
-      }
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _reloadPosts() async {
-    setState(() {
-      page = 1;  // Reiniciar la página
-      posts.clear();  // Limpiar la lista de publicaciones
-      _hasMorePages = true;  // Permitir más páginas
-    });
-    await fetchPosts();  // Recargar los datos
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   void reloadView() {
@@ -301,180 +215,189 @@ class _UpdateState extends State<Profile> {
             ),
         ],
       ),
-      body: CustomRefreshIndicator(
-        onRefresh: _reloadPosts,  // Función para recargar publicaciones
-        child: ListView.builder(
-          controller: _scrollController,  // Asignar el ScrollController
-          itemCount: posts.length + 1,  // +1 para incluir el encabezado del perfil
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              // Mostrar el encabezado del perfil
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body:  CustomScrollView(
+        slivers: [
+          // Sección de historias
+          SliverToBoxAdapter(
+            child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
                   children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.center,
-                      children: [
-                        CoverPhoto(
-                          height: 140.0,
-                          iconSize: 40.0,
-                          imageProvider: _coverPhotoUrl != null
-                              ? NetworkImage(_coverPhotoUrl!)
-                              : null,
-                          onPressed: () {
-                            if (_coverPhotoUrl != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FullScreenImage(
-                                    imageUrl: _coverPhotoUrl!,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        Positioned(
-                          bottom: -30,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: ClipOval(
-                              child: ProfileAvatar(
-                                avatarSize: 70.0,
-                                iconSize: 30.0,
-                                imageProvider: (_profileAvatarUrl != null
-                                    ? NetworkImage(_profileAvatarUrl!)
-                                    : null),
-                                onPressed: () {
-                                  if (_profileAvatarUrl != null) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FullScreenImage(
-                                          imageUrl: _profileAvatarUrl!,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
+                    CoverPhoto(
+                      height: 140.0,
+                      iconSize: 40.0,
+                      imageProvider: _coverPhotoUrl != null
+                          ? NetworkImage(_coverPhotoUrl!)
+                          : null,
+                      onPressed: () {
+                        if (_coverPhotoUrl != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FullScreenImage(
+                                imageUrl: _coverPhotoUrl!,
                               ),
                             ),
+                          );
+                        }
+                      },
+                    ),
+                    Positioned(
+                      bottom: -30,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
+                          child: ProfileAvatar(
+                            avatarSize: 70.0,
+                            iconSize: 30.0,
+                            imageProvider: (_profileAvatarUrl != null
+                                ? NetworkImage(_profileAvatarUrl!)
+                                : null),
+                            onPressed: () {
+                              if (_profileAvatarUrl != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FullScreenImage(
+                                      imageUrl: _profileAvatarUrl!,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                           ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '@${username ?? '...'}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Visibility(
+                      visible: biography?.isNotEmpty ?? false,
+                      child: Text(
+                        biography ?? '',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LabelAction(
+                          text: createdAt != null
+                              ? 'Se unió el ${_formatDate(createdAt!)}'
+                              : '...',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.black,
+                          ),
+                          icon: Icons.date_range,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 40),
-                    Column(
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '@${username ?? '...'}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.black,
-                            ),
+                        Text(
+                          '${followers ?? '0'}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.black,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Visibility(
-                          visible: biography?.isNotEmpty ?? false,
-                          child: Text(
-                            biography ?? '',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: AppColors.black,
-                            ),
+                        const SizedBox(width: 4),
+                        LabelAction(
+                          text: 'Seguidores',
+                          onPressed: () async {
+                            final result = await Navigator.pushNamed(
+                              context,
+                              'navigator-folllow',
+                              arguments: {
+                                'userId': widget.userId.toString(),
+                                'initialTab': 'follower', // Reemplaza con el ID del usuario seguido
+                              },
+                            );
+
+                            reloadView();
+                          },
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.inputDark,
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        const SizedBox(width: 20),
+                        Text(
+                          '${following ?? '0'}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.black,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            LabelAction(
-                              text: createdAt != null
-                                  ? 'Se unió el ${_formatDate(createdAt!)}'
-                                  : '...',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.black,
-                              ),
-                              icon: Icons.date_range,
-                            ),
-                          ],
+                        const SizedBox(width: 4),
+                        LabelAction(
+                          text: 'Seguidos',
+                          onPressed: () async {
+                            final result = await Navigator.pushNamed(
+                              context,
+                              'navigator-folllow',
+                                arguments: {
+                                  'userId': widget.userId.toString(),
+                                  'initialTab': 'followed', // Reemplaza con el ID del usuario seguido
+                                },
+                            );
+
+                            reloadView();
+                          },
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.inputDark,
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${followers ?? '0'}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            LabelAction(
-                              text: 'Seguidores',
-                              onPressed: () {},
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.inputDark,
-                              ),
-                              padding: EdgeInsets.zero,
-                            ),
-                            const SizedBox(width: 20),
-                            Text(
-                              '${following ?? '0'}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            LabelAction(
-                              text: 'Seguidos',
-                              onPressed: () {},
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.inputDark,
-                              ),
-                              padding: EdgeInsets.zero,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20), // Ajusta el espacio si es necesario
                       ],
                     ),
                   ],
                 ),
-              );
-            } else {
-              final post = posts[index - 1];  // Ajustar índice para los posts
-              return PostWidget(
-                nameUser: post.relationships.user.name,
-                usernameUser: post.relationships.user.username,
-                profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
-                body: post.attributes.body,
-                mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
-                createdAt: post.attributes.createdAt,
-                reactionsCount: post.relationships.reactionsCount.toString(),
-                commentsCount: post.relationships.commentsCount.toString(),
-                sharesCount: post.relationships.sharesCount.toString(),
-              );
-            }
-          },
+              ],
+            ),
+          ),
         ),
-      ),
+        SliverFillRemaining(
+            child: NavigatorUser(
+              initialTab: 'posts', // O 'shares', según la lógica que necesites
+              userId: widget.userId,
+            ),
+          ),
+        ],
+      )
     );
   }
 }

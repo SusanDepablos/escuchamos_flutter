@@ -133,7 +133,7 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
                         ),
                       ),
                       const SizedBox(width: 8.0),
-                       const Text('Seguidores'),      
+                      const Text('Seguidores'),      
                     ],
                   ),
                 ),

@@ -9,12 +9,14 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart'; // Importa el widget de pantalla de carga
 
-class Post extends StatefulWidget {
+class IndexPost extends StatefulWidget {
+  final int? userId;
+  IndexPost({this.userId});
   @override
-  _PostState createState() => _PostState();
+  _IndexPostState createState() => _IndexPostState();
 }
 
-class _PostState extends State<Post> {
+class _IndexPostState extends State<IndexPost> {
   List<Datum> posts = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
@@ -25,11 +27,13 @@ class _PostState extends State<Post> {
   final filters = {
     'pag': '10',
     'page': null,
+    'user_id': null
   };
 
   @override
   void initState() {
     super.initState();
+    filters['user_id'] = widget.userId?.toString();
     _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
