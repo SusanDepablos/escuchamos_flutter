@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/UserService.dart';
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
+import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 
 class NavigatorFollow extends StatefulWidget {
-  final String initialTab; // Solo el parámetro requerido
-  final String userId; // ID del usuario que se usará en la vista
+  final String initialTab;
+  final String userId;
 
   NavigatorFollow({required this.initialTab, required this.userId});
 
@@ -14,17 +20,63 @@ class NavigatorFollow extends StatefulWidget {
 
 class _NavigatorFollowState extends State<NavigatorFollow> {
   late int _initialIndex;
+  UserModel? _user;
+  String? name;
+  String? username;
+  int? followers;
+  int? following;
+
+  Future<void> _callUser() async {
+    final id = int.parse(widget.userId);
+    final userCommand = UserCommandShow(UserShow(), id);
+
+    try {
+      final response = await userCommand.execute();
+
+      if (mounted) {
+        if (response is UserModel) {
+          setState(() {
+            _user = response;
+            name = _user!.data.attributes.name;
+            followers = _user!.data.relationships.followersCount;
+            following = _user!.data.relationships.followingCount;
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    // Determina el índice inicial basado en el parámetro `initialTab`
+    _callUser();
     if (widget.initialTab == 'follower') {
       _initialIndex = 0;
     } else if (widget.initialTab == 'followed') {
       _initialIndex = 1;
     } else {
-      _initialIndex = 0; // Valor predeterminado si no coincide con ningún caso
+      _initialIndex = 0;
     }
   }
 
@@ -32,16 +84,75 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2, // Número de tabs
-      initialIndex: _initialIndex, // Establece el índice inicial
+      initialIndex: _initialIndex,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Navegador de Seguidores'), // Título del AppBar
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight), // Ajusta la altura del AppBar
-            child: TabBar(
+        appBar: PreferredSize(
+          preferredSize:
+              const Size.fromHeight(100.0),
+          child: AppBar(
+            backgroundColor: AppColors.whiteapp,
+            centerTitle: true,
+            title: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    name ?? "...",
+                    style: const TextStyle(
+                      fontSize: AppFond.title,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            bottom: TabBar(
+              isScrollable: false,
+              labelColor: AppColors.primaryBlue,
+              unselectedLabelColor: AppColors.black,
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  color: AppColors.primaryBlue,
+                      width: 3.0,
+                ),
+                insets: EdgeInsets.symmetric(
+                    horizontal: 16.0),
+              ),
               tabs: [
-                Tab(text: 'Seguidores'),
-                Tab(text: 'Seguidos'),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${followers ?? 0}',
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                       const Text('Seguidores'),      
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${following ?? 0}',
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      const Text('Seguidos'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
