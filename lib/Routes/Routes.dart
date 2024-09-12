@@ -21,9 +21,9 @@ import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.
 import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/User/Index.dart';
-import 'package:escuchamos_flutter/App/View/Follows/SearchFollowers.dart';
-import 'package:escuchamos_flutter/App/View/Follows/SearchFollowed.dart';
-import 'package:escuchamos_flutter/App/View/MyNavigatorView.dart';
+import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
+import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
+import 'package:escuchamos_flutter/App/View/Follow/MyNavigatorView.dart';
 
 class AppRoutes {
   static final routes = {

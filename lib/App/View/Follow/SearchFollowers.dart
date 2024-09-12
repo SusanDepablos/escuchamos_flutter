@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que esta ruta sea correcta
-import 'package:escuchamos_flutter/App/View/Follows/IndexFollowed.dart';
+import 'package:escuchamos_flutter/App/View/Follow/IndexFollowers.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
-class SearchFollowed extends StatefulWidget {
-  String followingUserId;
+class SearchFollowers extends StatefulWidget {
+  String followedUserId;
 
-  SearchFollowed(
-    {required this.followingUserId});
+  SearchFollowers(
+    {required this.followedUserId});
 
   @override
-  _SearchFollowedState createState() => _SearchFollowedState();
+  _SearchFollowersState createState() => _SearchFollowersState();
 }
 
-class _SearchFollowedState extends State<SearchFollowed> {
+class _SearchFollowersState extends State<SearchFollowers> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
 
@@ -77,9 +78,9 @@ class _SearchFollowedState extends State<SearchFollowed> {
   }
 
   Future<Widget> _fetchUsers() async {
-    return IndexFollowed(
-      searchfollowed_: _searchText,
-      followingUserId: widget.followingUserId,
+    return IndexFollowers(
+      searchFollowing_: _searchText,
+      followedUserId: widget.followedUserId,
     );
   }
 

@@ -414,25 +414,6 @@ class _UpdateState extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${following ?? '0'}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            LabelAction(
-                              text: 'Siguiendo',
-                              onPressed: () {},
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.inputDark,
-                              ),
-                              padding: EdgeInsets.zero,
-                            ),
-                            const SizedBox(width: 20),
-                            Text(
                               '${followers ?? '0'}',
                               style: const TextStyle(
                                 fontSize: 16,
@@ -443,6 +424,25 @@ class _UpdateState extends State<Profile> {
                             const SizedBox(width: 4),
                             LabelAction(
                               text: 'Seguidores',
+                              onPressed: () {},
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: AppColors.inputDark,
+                              ),
+                              padding: EdgeInsets.zero,
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              '${following ?? '0'}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.black,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            LabelAction(
+                              text: 'Seguidos',
                               onPressed: () {},
                               style: const TextStyle(
                                 fontSize: 16,
