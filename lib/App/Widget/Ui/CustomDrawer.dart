@@ -14,7 +14,8 @@ class CustomDrawer extends StatelessWidget {
   final Future<void> Function()? onContentModerationTap;
   final Future<void> Function()? onSettingsTap;
   final Future<void> Function()? onAboutTap;
-  final Future<void> Function()? onFollowsTap;
+  final Future<void> Function()? onFollowersTap;
+  final Future<void> Function()? onFollowedTap;
   final bool showContentModeration; 
   CustomDrawer({
     this.name,
@@ -26,7 +27,8 @@ class CustomDrawer extends StatelessWidget {
     this.onContentModerationTap,
     this.onSettingsTap,
     this.onAboutTap,
-    this.onFollowsTap,
+    this.onFollowersTap,
+    this.onFollowedTap,
     this.showContentModeration = false,
   });
 
@@ -126,16 +128,17 @@ class CustomDrawer extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '${following ?? '0'}',
+                    '${followers ?? '0'}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
                   ),
+                  const SizedBox(width: 4),
                   LabelAction(
-                    text: 'Siguiendo',
-                    onPressed: () {},
+                    text: 'Seguidores',
+                    onPressed: onFollowersTap,
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.inputDark,
@@ -144,16 +147,17 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   const SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
                   Text(
-                    '${followers ?? '0'}',
+                    '${following ?? '0'}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
                   ),
+                  const SizedBox(width: 4),
                   LabelAction(
-                    text: 'Seguidores',
-                    onPressed: onFollowsTap,
+                    text: 'Siguiendo',
+                    onPressed: onFollowedTap,
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.inputDark,

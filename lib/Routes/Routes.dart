@@ -22,6 +22,8 @@ import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/User/Index.dart';
 import 'package:escuchamos_flutter/App/View/Follows/SearchFollowers.dart';
+import 'package:escuchamos_flutter/App/View/Follows/SearchFollowed.dart';
+import 'package:escuchamos_flutter/App/View/MyNavigatorView.dart';
 
 class AppRoutes {
   static final routes = {
@@ -44,7 +46,7 @@ class AppRoutes {
 
     'index-user': (context) => IndexUser(),
 
-    'search-follow': (context) {
+    'search-followers': (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final followedUserId = args['followedUserId'] as  String;
@@ -53,8 +55,27 @@ class AppRoutes {
       );
     },
 
-    // Pantallas principales
+    'search-followed': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final followingUserId = args['followingUserId'] as String;
+      return SearchFollowed(
+        followingUserId: followingUserId,
+      );
+    },
+
+    'my-navigator-view': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final initialTab = args['initialTab'] as String;
+      return MyNavigatorView(
+        initialTab: initialTab,
+      );
+    },
+
     'base': (context) => BaseNavigator(),
+
+    // Pantallas principales
     'home': (context) => Home(),
     'about': (context) => AboutScreen(),
     'search': (context) => SearchView(),

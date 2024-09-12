@@ -198,16 +198,35 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           reloadView();
         },
 
-      onFollowsTap: () async {
+      onFollowersTap: () async {
         final result = await Navigator.pushNamed(
           context,
-          'search-follow',
+          'search-followers',
           arguments: {
             'followedUserId': _id, // Reemplaza con el ID del usuario seguido
           },
         );
         reloadView();
       },
+
+        // onFollowedTap: () async {
+        //   final result = await Navigator.pushNamed(
+        //     context,
+        //     'search-followed',
+        //     arguments: {
+        //       'followingUserId': _id, // Reemplaza con el ID del usuario seguido
+        //     },
+        //   );
+        //   reloadView();
+        // },
+
+        onFollowedTap: () async {
+          final result = await Navigator.pushNamed(
+            context,
+            'my-navigator-view',
+          );
+          reloadView();
+        },
 
         showContentModeration: _isGroupOne,
       ),

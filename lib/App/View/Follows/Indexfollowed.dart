@@ -10,24 +10,24 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
-class Indexfollowed extends StatefulWidget {
+class IndexFollowed extends StatefulWidget {
   String? searchfollowed_;
   int page = 1;
-  String followedUserId;
+  String followingUserId;
   VoidCallback? onFetchFollowers;
 
-  Indexfollowed({this.searchfollowed_, this.onFetchFollowers, required this.followedUserId});
+  IndexFollowed({this.searchfollowed_, this.onFetchFollowers, required this.followingUserId});
 
   @override
-  _IndexfollowedState createState() => _IndexfollowedState();
+  _IndexFollowedState createState() => _IndexFollowedState();
 }
 
-class _IndexfollowedState extends State<Indexfollowed> {
+class _IndexFollowedState extends State<IndexFollowed> {
   final filters = {
     'pag': '10',
     'page': null,
     'search_followed': null,
-    'followed_user_id': null,
+    'following_user_id': null,
   };
 
   List<Datum> followed = [];
@@ -47,7 +47,7 @@ class _IndexfollowedState extends State<Indexfollowed> {
     }
 
     filters['page'] = widget.page.toString();
-    filters['followed_user_id'] = widget.followedUserId.toString();
+    filters['following_user_id'] = widget.followingUserId.toString();
 
     final userCommand = FollowsCommandIndex(FollowsIndex(), filters);
 
