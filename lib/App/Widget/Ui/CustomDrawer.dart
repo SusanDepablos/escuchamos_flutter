@@ -156,7 +156,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   LabelAction(
-                    text: 'Siguiendo',
+                    text: 'Seguidos',
                     onPressed: onFollowedTap,
                     style: const TextStyle(
                       fontSize: 14,

@@ -23,7 +23,7 @@ import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/User/Index.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
-import 'package:escuchamos_flutter/App/View/Follow/MyNavigatorView.dart';
+import 'package:escuchamos_flutter/App/View/Follow/NavigatorFollow.dart';
 
 class AppRoutes {
   static final routes = {
@@ -68,8 +68,9 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final initialTab = args['initialTab'] as String;
-      return MyNavigatorView(
-        initialTab: initialTab,
+      final userId = args['userId'] as String;
+      return NavigatorFollow(
+        initialTab: initialTab, userId: userId,
       );
     },
 

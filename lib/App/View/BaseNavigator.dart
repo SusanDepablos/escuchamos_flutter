@@ -198,16 +198,16 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           reloadView();
         },
 
-      onFollowersTap: () async {
-        final result = await Navigator.pushNamed(
-          context,
-          'search-followers',
-          arguments: {
-            'followedUserId': _id, // Reemplaza con el ID del usuario seguido
-          },
-        );
-        reloadView();
-      },
+      // onFollowersTap: () async {
+      //   final result = await Navigator.pushNamed(
+      //     context,
+      //     'search-followers',
+      //     arguments: {
+      //       'followedUserId': _id, // Reemplaza con el ID del usuario seguido
+      //     },
+      //   );
+      //   reloadView();
+      // },
 
         // onFollowedTap: () async {
         //   final result = await Navigator.pushNamed(
@@ -224,7 +224,25 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           final result = await Navigator.pushNamed(
             context,
             'my-navigator-view',
+              arguments: {
+                'userId': _id,
+                'initialTab': 'followed', // Reemplaza con el ID del usuario seguido
+              },
           );
+
+          reloadView();
+        },
+
+        onFollowersTap: () async {
+          final result = await Navigator.pushNamed(
+            context,
+            'my-navigator-view',
+            arguments: {
+              'userId': _id,
+              'initialTab': 'follower', // Reemplaza con el ID del usuario seguido
+            },
+          );
+
           reloadView();
         },
 
