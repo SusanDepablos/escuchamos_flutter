@@ -4,12 +4,12 @@ class ApiUrl{
   // ---------------------------URL base de la API ---------------------------//
 
   //url para pruebas en el servidor:
-  static const String baseUrl = 'https://escuchamos-mcu6.onrender.com/api/';
+  static const String baseUrl = 'https://asociacioncivilescuchamos.onrender.com/api/';
 
   // -------------------------------------------------------------------------//
 
   //paginas:
-  static const String WebSite = 'https://escuchamos-mcu6.onrender.com/';
+  static const String WebSite = 'https://asociacioncivilescuchamos.onrender.com/';
   static const String Facebook= 'https://www.facebook.com/ProyectosEscuChamos';
   static const String Correo = 'escuchamos2024@gmail.com';
 
