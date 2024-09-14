@@ -140,7 +140,7 @@ class _IndexFollowedState extends State<IndexFollowed> {
                 : followed.isEmpty
                   ? const Center(
                     child: Text(
-                      'No existen usuarios con ese nombre.',
+                      'Sin resultados.',
                       style: TextStyle(
                         fontSize: 16,
                         color: AppColors.black,

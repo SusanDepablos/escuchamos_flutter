@@ -14,12 +14,11 @@ class _AboutScreenState extends State<AboutScreen> {
   void _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.platformDefault);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);  // Abrir en navegador externo
     } else {
       throw 'No se pudo abrir el enlace: $url';
     }
   }
-
 
 
   @override

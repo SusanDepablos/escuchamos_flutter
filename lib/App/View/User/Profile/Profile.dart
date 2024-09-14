@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -36,6 +37,7 @@ class _UpdateState extends State<Profile> {
   DateTime? createdAt;
   bool _submitting = false;
   int? _storedUserId;
+  bool isFollowing = false;
 
   // Obtener el userId desde el almacenamiento seguro
   Future<void> _getStoredUserId() async {
@@ -118,7 +120,16 @@ class _UpdateState extends State<Profile> {
             createdAt = _user!.data.attributes.createdAt;
             _profileAvatarUrl = _getFileUrlByType('profile');
             _coverPhotoUrl = _getFileUrlByType('cover');
+            print(_storedUserId);
+            print(widget.userId);
+            // Verificar si el usuario autenticado sigue al usuario cuyo perfil se está viendo
+            final followersList = _user!.data.relationships.followers;
+              isFollowing = followersList.any((follower) =>
+                follower.attributes.followingUser.id == _storedUserId);
 
+            print('User is following: $isFollowing'); // Imprime si el usuario sigue o no
+
+            // Puedes usar `isFollowing` para actualizar la UI si es necesario
           });
         } else {
           showDialog(
@@ -292,7 +303,19 @@ class _UpdateState extends State<Profile> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10), // Espaciado entre el username y el label
+                    if (_storedUserId != null && _storedUserId != widget.userId)
+                    Align(
+                      alignment: Alignment.center,
+                      child: GenericButton(
+                        label: isFollowing ? 'Siguiendo' : 'Seguir',
+                        onPressed: () {},
+                        isLoading: _submitting,
+                        width: 120, // Ancho personalizado para hacer el botón más pequeño
+                        height: 40, // Alto personalizado para hacer el botón más pequeño
+                        color: isFollowing ? AppColors.inputDark : AppColors.primaryBlue,
+                      )
+                    ),
                     Visibility(
                       visible: biography?.isNotEmpty ?? false,
                       child: Text(
@@ -303,7 +326,7 @@ class _UpdateState extends State<Profile> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8), // Espaciado entre el username y el label
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -373,7 +396,6 @@ class _UpdateState extends State<Profile> {
                                   'initialTab': 'followed', // Reemplaza con el ID del usuario seguido
                                 },
                             );
-
                             reloadView();
                           },
                           style: const TextStyle(

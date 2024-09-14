@@ -102,7 +102,7 @@ class _DigitBoxState extends State<DigitBox> {
   Widget _buildDigitBox(int index) {
     return Container(
       width: 35.0, // Tamaño reducido
-      height: 45.0, // Tamaño reducido
+      height: 50.0, // Tamaño reducido
       margin: EdgeInsets.symmetric(horizontal: 3.0), // Espaciado reducido
       decoration: BoxDecoration(
         color: widget.boxColor, // Color de fondo de cada caja

@@ -9,9 +9,9 @@ class ApiUrl{
   // -------------------------------------------------------------------------//
 
   //paginas:
-  static const String WebSite = 'https://asociacioncivilescuchamos.onrender.com/';
+  static const String WebSite = 'https://asociacioncivilescuchamos.onrender.com';
   static const String Facebook= 'https://www.facebook.com/ProyectosEscuChamos';
-  static const String Correo = 'escuchamos2024@gmail.com';
+  static const String Correo = 'mailto:escuchamos2024@gmail.com';
 
   // -------------------------------------------------------------------------//
 }

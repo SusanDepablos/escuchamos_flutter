@@ -76,7 +76,7 @@ class PostWidget extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            constraints: const BoxConstraints(maxWidth: 150), // Limitar el ancho del contenedor
+                            constraints: const BoxConstraints(maxWidth: 140), // Limitar el ancho del contenedor
                             child: Text(
                               nameUser,
                               style: const TextStyle(

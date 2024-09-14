@@ -5,13 +5,17 @@ class GenericButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isLoading;
-  final Color? color; // Nuevo parámetro para color
+  final Color? color; // Parámetro para color
+  final double? width; // Parámetro para el ancho
+  final double? height; // Parámetro para el alto
 
   GenericButton({
     required this.label,
     required this.onPressed,
     this.isLoading = false,
     this.color, // Inicialización del nuevo parámetro
+    this.width, // Inicialización del parámetro de ancho
+    this.height, // Inicialización del parámetro de alto
   });
 
   @override
@@ -25,7 +29,7 @@ class GenericButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
         ),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        minimumSize: Size(double.infinity, 50), // Tamaño mínimo constante
+        minimumSize: Size(width ?? double.infinity, height ?? 50), // Tamaño mínimo configurable
       ),
       child: Stack(
         alignment: Alignment.center,

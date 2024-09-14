@@ -230,6 +230,8 @@ class Relationships {
     List<FileElement> files;
     int followingCount;
     int followersCount;
+    List<Follow> following;
+    List<Follow> followers;
 
     Relationships({
         this.country,
@@ -237,6 +239,8 @@ class Relationships {
         required this.files,
         required this.followingCount,
         required this.followersCount,
+        required this.following,
+        required this.followers,
     });
 
     factory Relationships.fromJson(Map<String, dynamic> json) => Relationships(
@@ -245,6 +249,8 @@ class Relationships {
         files: List<FileElement>.from(json["files"].map((x) => FileElement.fromJson(x))),
         followingCount: json["following_count"],
         followersCount: json["followers_count"],
+        following: List<Follow>.from(json["following"].map((x) => Follow.fromJson(x))),
+        followers: List<Follow>.from(json["followers"].map((x) => Follow.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -253,6 +259,8 @@ class Relationships {
         "files": List<dynamic>.from(files.map((x) => x.toJson())),
         "following_count": followingCount,
         "followers_count": followersCount,
+        "following": List<dynamic>.from(following.map((x) => x.toJson())),
+        "followers": List<dynamic>.from(followers.map((x) => x.toJson())),
     };
 }
 
@@ -416,4 +424,78 @@ class GroupAttributes {
     };
 }
 
+class Follow {
+    int id;
+    FollowerAttributes attributes;
 
+    Follow({
+        required this.id,
+        required this.attributes,
+    });
+
+    factory Follow.fromJson(Map<String, dynamic> json) => Follow(
+        id: json["id"],
+        attributes: FollowerAttributes.fromJson(json["attributes"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "attributes": attributes.toJson(),
+    };
+}
+
+class FollowerAttributes {
+    FollowUser followingUser;
+    FollowUser followedUser;
+    DateTime createdAt;
+    DateTime updatedAt;
+
+    FollowerAttributes({
+        required this.followingUser,
+        required this.followedUser,
+        required this.createdAt,
+        required this.updatedAt,
+    });
+
+    factory FollowerAttributes.fromJson(Map<String, dynamic> json) => FollowerAttributes(
+        followingUser: FollowUser.fromJson(json["following_user"]),
+        followedUser: FollowUser.fromJson(json["followed_user"]),
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "following_user": followingUser.toJson(),
+        "followed_user": followedUser.toJson(),
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+    };
+}
+
+class FollowUser {
+    int id;
+    String username;
+    String name;
+    String? profilePhotoUrl;
+
+    FollowUser({
+        required this.id,
+        required this.username,
+        required this.name,
+        profilePhotoUrl
+    });
+
+    factory FollowUser.fromJson(Map<String, dynamic> json) => FollowUser(
+        id: json["id"],
+        username: json["username"],
+        name: json["name"],
+        profilePhotoUrl: json["profile_photo_url"] as String?,
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "username": username,
+        "name": name,
+        "profile_photo_url": profilePhotoUrl,
+    };
+}
