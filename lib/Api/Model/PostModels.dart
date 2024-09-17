@@ -214,6 +214,7 @@ class Relationships {
     Status status;
     Status typePost;
     List<FileElement> files;
+    List<Reaction> reactions;
     int reactionsCount;
     int commentsCount;
     int repostsCount;
@@ -227,6 +228,7 @@ class Relationships {
         required this.status,
         required this.typePost,
         required this.files,
+        required this.reactions,
         required this.reactionsCount,
         required this.commentsCount,
         required this.repostsCount,
@@ -241,6 +243,7 @@ class Relationships {
         status: Status.fromJson(json["status"]),
         typePost: Status.fromJson(json["type_post"]),
         files: List<FileElement>.from(json["files"].map((x) => FileElement.fromJson(x))),
+        reactions: List<Reaction>.from(json["reactions"].map((x) => Reaction.fromJson(x))),
         reactionsCount: json["reactions_count"],
         commentsCount: json["comments_count"],
         repostsCount: json["reposts_count"],
@@ -255,12 +258,90 @@ class Relationships {
         "status": status.toJson(),
         "type_post": typePost.toJson(),
         "files": List<dynamic>.from(files.map((x) => x.toJson())),
+        "reactions": List<dynamic>.from(reactions.map((x) => x.toJson())),
         "reactions_count": reactionsCount,
         "comments_count": commentsCount,
         "reposts_count": repostsCount,
         "shares_count": sharesCount,
         "total_shares_count": totalSharesCount,
         "reports_count": reportsCount,
+    };
+}
+
+
+class User {
+    int id;
+    String username;
+    String name;
+    String? profilePhotoUrl;
+
+    User({
+        required this.id,
+        required this.username,
+        required this.name,
+        this.profilePhotoUrl,
+    });
+
+    factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
+        username: json["username"],
+        name: json["name"],
+        profilePhotoUrl: json["profile_photo_url"] as String?,
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "username": username,
+        "name": name,
+        "profile_photo_url": profilePhotoUrl,
+    };
+}
+
+class Status {
+    int id;
+    StatusAttributes attributes;
+
+    Status({
+        required this.id,
+        required this.attributes,
+    });
+
+    factory Status.fromJson(Map<String, dynamic> json) => Status(
+        id: json["id"],
+        attributes: StatusAttributes.fromJson(json["attributes"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "attributes": attributes.toJson(),
+    };
+}
+
+class StatusAttributes {
+    String name;
+    String? description;
+    DateTime createdAt;
+    DateTime updatedAt;
+
+    StatusAttributes({
+        required this.name,
+        this.description,
+        required this.createdAt,
+        required this.updatedAt,
+    });
+
+    factory StatusAttributes.fromJson(Map<String, dynamic> json) => StatusAttributes(
+        name: json["name"],
+        description: json["description"] as String?,
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "name": name,
+        "description": description,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
     };
 }
 
@@ -332,78 +413,74 @@ class FileAttributes {
     };
 }
 
-class Status {
+class Reaction {
     int id;
-    StatusAttributes attributes;
+    ReactionAttributes attributes;
+    ReactionRelationships relationships;
 
-    Status({
+    Reaction({
         required this.id,
         required this.attributes,
+        required this.relationships,
     });
 
-    factory Status.fromJson(Map<String, dynamic> json) => Status(
+    factory Reaction.fromJson(Map<String, dynamic> json) => Reaction(
         id: json["id"],
-        attributes: StatusAttributes.fromJson(json["attributes"]),
+        attributes: ReactionAttributes.fromJson(json["attributes"]),
+        relationships: ReactionRelationships.fromJson(json["relationships"]),
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
         "attributes": attributes.toJson(),
+        "relationships": relationships.toJson(),
     };
 }
 
-class StatusAttributes {
-    String name;
-    String? description;
+class ReactionAttributes {
+    int contentType;
+    int objectId;
+    int userId;
     DateTime createdAt;
     DateTime updatedAt;
 
-    StatusAttributes({
-        required this.name,
-        this.description,
+    ReactionAttributes({
+        required this.contentType,
+        required this.objectId,
+        required this.userId,
         required this.createdAt,
         required this.updatedAt,
     });
 
-    factory StatusAttributes.fromJson(Map<String, dynamic> json) => StatusAttributes(
-        name: json["name"],
-        description: json["description"] as String?,
+    factory ReactionAttributes.fromJson(Map<String, dynamic> json) => ReactionAttributes(
+        contentType: json["content_type"],
+        objectId: json["object_id"],
+        userId: json["user_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "name": name,
-        "description": description,
+        "content_type": contentType,
+        "object_id": objectId,
+        "user_id": userId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
     };
 }
 
-class User {
-    int id;
-    String username;
-    String name;
-    String? profilePhotoUrl;
+class ReactionRelationships {
+    User user;
 
-    User({
-        required this.id,
-        required this.username,
-        required this.name,
-        this.profilePhotoUrl,
+    ReactionRelationships({
+        required this.user,
     });
 
-    factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        username: json["username"],
-        name: json["name"],
-        profilePhotoUrl: json["profile_photo_url"] as String?,
+    factory ReactionRelationships.fromJson(Map<String, dynamic> json) => ReactionRelationships(
+        user: User.fromJson(json["user"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "id": id,
-        "username": username,
-        "name": name,
-        "profile_photo_url": profilePhotoUrl,
+        "user": user.toJson(),
     };
 }
