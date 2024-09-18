@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/NavigatorUser.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Histories/HistoryListView.dart'; // Actualiza con la ruta correcta
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Story/StoryListView.dart'; // Actualiza con la ruta correcta
 
 class Home extends StatefulWidget {
   @override
@@ -23,15 +23,15 @@ class _HomeState extends State<Home> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  HistoryList(
+                  StoryList(
                     imageUrl: 'https://example.com/profile1.jpg',
                     userName: 'User1',
                   ),
-                  HistoryList(
+                  StoryList(
                     imageUrl: 'https://example.com/profile2.jpg',
                     userName: 'User2',
                   ),
-                  HistoryList(
+                  StoryList(
                     imageUrl: 'https://example.com/profile3.jpg',
                     userName: 'User3',
                   ),
