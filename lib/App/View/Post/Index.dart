@@ -7,8 +7,11 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefresh
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart'; // Importa el widget de pantalla de carga
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart'; 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
 
+final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexPost extends StatefulWidget {
   final int? userId;
   IndexPost({this.userId});
@@ -22,7 +25,10 @@ class _IndexPostState extends State<IndexPost> {
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _initialLoading = true; // Variable para el estado de carga inicial
+  bool? reaction;
   int page = 1;
+  int? _id;
+
 
   final filters = {
     'pag': '10',
@@ -33,7 +39,6 @@ class _IndexPostState extends State<IndexPost> {
   @override
   void initState() {
     super.initState();
-    filters['user_id'] = widget.userId?.toString();
     _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
@@ -42,7 +47,16 @@ class _IndexPostState extends State<IndexPost> {
           }
         }
       });
+    _getData();
     fetchPosts();
+  }
+
+  Future<void> _getData() async {
+    final id = await _storage.read(key: 'user') ?? '';
+
+    setState(() {
+      _id = int.parse(id);
+    });
   }
 
   Future<void> fetchPosts() async {
@@ -51,6 +65,10 @@ class _IndexPostState extends State<IndexPost> {
     setState(() {
       _isLoading = true;
     });
+
+    if (widget.userId != null) {
+      filters['user_id'] = widget.userId?.toString();
+    }
 
     filters['page'] = page.toString();
 
@@ -63,7 +81,7 @@ class _IndexPostState extends State<IndexPost> {
         setState(() {
           posts.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
-          page++; // Incrementar la página solo si la respuesta es exitosa
+          page++;
         });
       } else {
         showDialog(
@@ -118,7 +136,7 @@ class _IndexPostState extends State<IndexPost> {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
       body: _initialLoading
-          ? LoadingScreen(
+          ? const LoadingScreen(
               animationPath: 'assets/animation.json',
               verticalOffset: -0.3, // Mueve la animación hacia arriba
             )
@@ -127,7 +145,17 @@ class _IndexPostState extends State<IndexPost> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: CustomRefreshIndicator(
+                    child: posts.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'No hay publicaciones.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        )
+                      : CustomRefreshIndicator(
                       onRefresh: _reloadPosts,
                       child: ListView.builder(
                         controller: _scrollController,
@@ -135,6 +163,10 @@ class _IndexPostState extends State<IndexPost> {
                         itemBuilder: (context, index) {
                           final post = posts[index];
                           return PostWidget(
+                            reaction: post.relationships.reactions.any(
+                                (reaction) =>
+                                    reaction.attributes.userId == _id),
+
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,
                             profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',

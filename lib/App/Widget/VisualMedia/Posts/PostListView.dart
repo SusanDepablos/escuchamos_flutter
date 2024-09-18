@@ -10,8 +10,9 @@ class PostWidget extends StatelessWidget {
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
-  final VoidCallback? onlikeTap;
+  final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
+  final bool reaction;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -24,17 +25,19 @@ class PostWidget extends StatelessWidget {
   const PostWidget({
     Key? key,
     required this.nameUser,
+    required this.reaction,
     required this.usernameUser,
     required this.createdAt,
     this.profilePhotoUser,
     this.onIndexLikeTap,
-    this.onlikeTap,
+    this.onLikeTap,
     this.onProfileTap,
     this.reactionsCount = '120',
     this.commentsCount = '45',
     this.sharesCount = '30',
     this.body,
     this.mediaUrl,
+
   }) : super(key: key);
 
   @override
@@ -167,23 +170,24 @@ class PostWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
-                    GestureDetector(
-                      onTap: onlikeTap,
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
+                      GestureDetector(
+                        onTap: onLikeTap,
+                        child: Icon(
+                          Icons.favorite,
+                          color: reaction ? Colors.red : Colors.grey,
+                        ),
                       ),
-                    ),
                     const SizedBox(width: 15),
                     GestureDetector(
                         onTap: onIndexLikeTap,
                         child: Text(
                           reactionsCount,
-                          style: const TextStyle(
-                            color: Colors.red,
+                          style: TextStyle(
+                            color: reaction ? Colors.red : Colors.grey,
+                            fontSize: 18,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -201,6 +205,7 @@ class PostWidget extends StatelessWidget {
                         commentsCount,
                         style: const TextStyle(
                           color: Colors.grey,
+                          fontSize: 18,
                         ),
                       ),
                     ],
@@ -215,13 +220,15 @@ class PostWidget extends StatelessWidget {
                         Icons.repeat,
                         color: Colors.grey,
                       ),
-                      const SizedBox(width: 15),
+                      const SizedBox(width: 15),                     
                       Text(
                         sharesCount,
                         style: const TextStyle(
                           color: Colors.grey,
+                          fontSize:18, // Cambia el tamaño a 18 (o al tamaño que prefieras)
                         ),
                       ),
+
                     ],
                   ),
                 ),
