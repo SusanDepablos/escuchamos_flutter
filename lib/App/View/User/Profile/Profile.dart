@@ -5,6 +5,7 @@ import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as UserModels;
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -15,8 +16,11 @@ import 'package:escuchamos_flutter/App/Widget/Dialog/SettingsMenu.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
+import 'package:escuchamos_flutter/Api/Command/FollowCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/FollowService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/NavigatorUser.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
 
 class Profile extends StatefulWidget {
   final int userId;
@@ -38,6 +42,7 @@ class _UpdateState extends State<Profile> {
   bool _submitting = false;
   int? _storedUserId;
   bool isFollowing = false;
+  bool _loadingFollow = true; // Inicialmente cargando
 
   // Obtener el userId desde el almacenamiento seguro
   Future<void> _getStoredUserId() async {
@@ -109,7 +114,7 @@ class _UpdateState extends State<Profile> {
       final response = await userCommand.execute();
 
       if (mounted) {
-        if (response is  UserModels.UserModel) {
+        if (response is UserModels.UserModel) {
           setState(() {
             _user = response;
             name = _user!.data.attributes.name;
@@ -120,15 +125,11 @@ class _UpdateState extends State<Profile> {
             createdAt = _user!.data.attributes.createdAt;
             _profileAvatarUrl = _getFileUrlByType('profile');
             _coverPhotoUrl = _getFileUrlByType('cover');
-            print(_storedUserId);
-            print(widget.userId);
-            // Verificar si el usuario autenticado sigue al usuario cuyo perfil se está viendo
+
             final followersList = _user!.data.relationships.followers;
               isFollowing = followersList.any((follower) =>
                 follower.attributes.followingUser.id == _storedUserId);
-
-            print('User is following: $isFollowing'); // Imprime si el usuario sigue o no
-
+            _loadingFollow = false;
             // Puedes usar `isFollowing` para actualizar la UI si es necesario
           });
         } else {
@@ -185,6 +186,50 @@ class _UpdateState extends State<Profile> {
   String _formatDate(DateTime dateTime) {
     final DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'es_ES');
     return formatter.format(dateTime);
+  }
+
+  Future<void> _postFollow() async {
+    setState(() {
+      _submitting = true;
+    });
+
+    try {
+      var response = await FollowCommandPost(FollowPost()).execute( 
+        widget.userId,
+      );
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Éxito',
+            message: response.message,
+          ),
+        );
+        reloadView();
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } finally {
+      setState(() {
+        _submitting = false;
+      });
+    }
   }
 
   @override
@@ -303,19 +348,23 @@ class _UpdateState extends State<Profile> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10), // Espaciado entre el username y el label
+                    const SizedBox(height: 8), // Espaciado entre el username y el label
                     if (_storedUserId != null && _storedUserId != widget.userId)
                     Align(
                       alignment: Alignment.center,
-                      child: GenericButton(
-                        label: isFollowing ? 'Siguiendo' : 'Seguir',
-                        onPressed: () {},
-                        isLoading: _submitting,
-                        width: 120, // Ancho personalizado para hacer el botón más pequeño
-                        height: 40, // Alto personalizado para hacer el botón más pequeño
-                        color: isFollowing ? AppColors.inputDark : AppColors.primaryBlue,
-                      )
+                      child: _loadingFollow
+                          ? CustomLoadingIndicator(color: AppColors.primaryBlue, size: 20) // Muestra el indicador circular cuando está cargando
+                          : GenericButton(
+                              label: isFollowing ? 'Siguiendo' : 'Seguir',
+                              onPressed: _postFollow,
+                              isLoading: _submitting,
+                              width: 120, // Ancho personalizado
+                              height: 40, // Alto personalizado
+                              color: isFollowing ? AppColors.inputDark : AppColors.primaryBlue,
+                            ),
                     ),
+                    if (_storedUserId != null && _storedUserId != widget.userId)
+                    const SizedBox(height: 8),
                     Visibility(
                       visible: biography?.isNotEmpty ?? false,
                       child: Text(
@@ -326,7 +375,6 @@ class _UpdateState extends State<Profile> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8), // Espaciado entre el username y el label
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

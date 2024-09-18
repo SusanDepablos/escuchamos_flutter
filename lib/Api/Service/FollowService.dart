@@ -36,3 +36,32 @@ class FollowsIndex {
     );
   }
 }
+
+class FollowPost {
+  Future<ServiceResponse> postFollow(
+      int followed_user_id) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}follow/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'followed_user_id': followed_user_id,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+
