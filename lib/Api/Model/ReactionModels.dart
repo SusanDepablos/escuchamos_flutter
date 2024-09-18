@@ -1,17 +1,19 @@
-// To parse this JSON data, do
-//
-//     final reactionsModel = reactionsModelFromJson(jsonString);
+// models/reactions_model.dart
 
 import 'dart:convert';
 
+// Deserializa el JSON en un modelo de ReactionsModel
 ReactionsModel reactionsModelFromJson(String str) =>
     ReactionsModel.fromJson(json.decode(str));
 
+// Serializa el modelo ReactionsModel a JSON
 String reactionsModelToJson(ReactionsModel data) => json.encode(data.toJson());
+
+// Clases del modelo
 
 class ReactionsModel {
   final int count;
-  final String next;
+  final dynamic next;
   final dynamic previous;
   final Results results;
 

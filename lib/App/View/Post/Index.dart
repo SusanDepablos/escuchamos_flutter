@@ -139,13 +139,26 @@ class _IndexPostState extends State<IndexPost> {
                             usernameUser: post.relationships.user.username,
                             profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                             onProfileTap: () {
-                              final userId = post.relationships.user.id; // Obtén el ID del usuario
+                              final userId = post.relationships.user.id;
                               Navigator.pushNamed(
                                 context,
                                 'profile',
-                                arguments: userId, // Pasa el ID como argumento
+                                arguments: userId,
                               );
                             },
+                            onIndexLikeTap: () {
+                              String objectId = post.id.toString();
+                              Navigator.pushNamed(
+                                context,
+                                'index-reactions',
+                                arguments: {
+                                  'objectId': objectId,
+                                  'model': 'post',
+                                  'appBar': 'Reacciones'
+                                },
+                              );
+                            },
+
                             body: post.attributes.body,
                             mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
                             createdAt: post.attributes.createdAt,

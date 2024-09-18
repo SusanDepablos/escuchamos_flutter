@@ -10,6 +10,8 @@ class PostWidget extends StatelessWidget {
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
+  final VoidCallback? onlikeTap;
+  final VoidCallback? onIndexLikeTap;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -23,9 +25,11 @@ class PostWidget extends StatelessWidget {
     Key? key,
     required this.nameUser,
     required this.usernameUser,
-    this.profilePhotoUser,
-    this.onProfileTap,
     required this.createdAt,
+    this.profilePhotoUser,
+    this.onIndexLikeTap,
+    this.onlikeTap,
+    this.onProfileTap,
     this.reactionsCount = '120',
     this.commentsCount = '45',
     this.sharesCount = '30',
@@ -159,32 +163,71 @@ class PostWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                LabelAction(
-                  text: reactionsCount,
-                  icon: Icons.favorite,
-                  onPressed: () {},
-                  style: const TextStyle(
-                    color: Colors.red,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                    GestureDetector(
+                      onTap: onlikeTap,
+                      child: const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    GestureDetector(
+                        onTap: onIndexLikeTap,
+                        child: Text(
+                          reactionsCount,
+                          style: const TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                LabelAction(
-                  text: commentsCount,
-                  icon: Icons.chat_bubble,
-                  onPressed: () {},
-                  style: const TextStyle(
-                    color: Colors.grey,
+                // Comments Count
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.chat_bubble,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 15),
+                      Text(
+                        commentsCount,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                LabelAction(
-                  text: sharesCount,
-                  icon: Icons.repeat,
-                  onPressed: () {},
-                  style: const TextStyle(
-                    color: Colors.grey,
+                // Shares Count
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.repeat,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 15),
+                      Text(
+                        sharesCount,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
+            )
+
           ],
         ),
       ),

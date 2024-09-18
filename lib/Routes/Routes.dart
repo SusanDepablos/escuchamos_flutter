@@ -24,6 +24,7 @@ import 'package:escuchamos_flutter/App/View/User/Index.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
 import 'package:escuchamos_flutter/App/View/Follow/NavigatorFollow.dart';
+import 'package:escuchamos_flutter/App/View/Reaction/Index.dart';
 
 class AppRoutes {
   static final routes = {
@@ -82,8 +83,7 @@ class AppRoutes {
 
     // Pantallas de seguidores y seguidos
     'search-followers': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final followedUserId = args['followedUserId'] as  String;
       return SearchFollowers(
         followedUserId: followedUserId,
@@ -119,5 +119,15 @@ class AppRoutes {
       );
     },
 
+    // pantalla de reacciones
+    'index-reactions': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final model = args['model'] as String;
+      final objectId = args['objectId'] as String;
+      final appBar = args['appBar'] as String;
+      return IndexReactions(
+          model: model, objectId: objectId, appBar: appBar);
+    },
+    
   };
 }
