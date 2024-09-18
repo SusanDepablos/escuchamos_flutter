@@ -99,7 +99,7 @@ class AppRoutes {
       );
     },
 
-    'navigator-folllow': (context) {
+    'navigator-follow': (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final initialTab = args['initialTab'] as String;

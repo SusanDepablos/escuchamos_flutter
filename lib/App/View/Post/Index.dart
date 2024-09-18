@@ -162,6 +162,7 @@ class _IndexPostState extends State<IndexPost> {
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
                           final post = posts[index];
+                          final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
                           return PostWidget(
                             reaction: post.relationships.reactions.any(
                                 (reaction) =>
@@ -192,7 +193,7 @@ class _IndexPostState extends State<IndexPost> {
                             },
 
                             body: post.attributes.body,
-                            mediaUrl: post.relationships.files.firstOrNull?.attributes.url,
+                            mediaUrls: mediaUrls,
                             createdAt: post.attributes.createdAt,
                             reactionsCount: post.relationships.reactionsCount.toString(),
                             commentsCount: post.relationships.commentsCount.toString(),

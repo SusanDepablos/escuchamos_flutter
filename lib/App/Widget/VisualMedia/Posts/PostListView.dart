@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/VideoPlayer.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/MediaCarousel.dart';
 
 class PostWidget extends StatelessWidget {
   final String nameUser;
@@ -20,7 +18,7 @@ class PostWidget extends StatelessWidget {
   final String sharesCount;
 
   final String? body;
-  final String? mediaUrl;
+  final List<String>? mediaUrls;
 
   const PostWidget({
     Key? key,
@@ -36,7 +34,7 @@ class PostWidget extends StatelessWidget {
     this.commentsCount = '45',
     this.sharesCount = '30',
     this.body,
-    this.mediaUrl,
+    this.mediaUrls,
 
   }) : super(key: key);
 
@@ -121,39 +119,9 @@ class PostWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16.0),
-            if (mediaUrl != null) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: GestureDetector(
-                  onTap: () {
-                    if (!mediaUrl!.endsWith('.mp4')) {
-                      // Abre la imagen a pantalla completa usando FullScreenImage
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FullScreenImage(imageUrl: mediaUrl!),
-                        ),
-                      );
-                    } 
-                    // Para los videos no hacemos nada aquí, ya que no se quiere fullscreen
-                  },
-                  child: SizedBox(
-                    height: mediaHeight,
-                    width: mediaWidth,
-                    child: mediaUrl!.endsWith('.mp4')
-                        ? AspectRatio(
-                            aspectRatio: 16 / 9, // Proporción adecuada para video
-                            child: VideoPlayerWidget(videoUrl: mediaUrl!),
-                          )
-                        : Image.network(
-                            mediaUrl!,
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-              ),
+            if (mediaUrls != null && mediaUrls!.isNotEmpty)
+              MediaCarousel(mediaUrls: mediaUrls!), 
               const SizedBox(height: 16.0),
-            ],
             if (body != null) ...[
               Text(
                 body!,
