@@ -36,3 +36,33 @@ class ReactionsIndex {
     );
   }
 }
+
+class ReactionPost {
+  Future<ServiceResponse> postReaction(
+      String model, int object_id) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}reaction/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'model': model,
+      'object_id': object_id
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+

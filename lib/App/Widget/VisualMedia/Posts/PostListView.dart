@@ -10,7 +10,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onProfileTap;
   final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
-  final bool reaction;
+  final Color reaction;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -40,9 +40,6 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Definir tamaño fijo para la imagen y el video
-    const double mediaHeight = 250.0;
-    const double mediaWidth = double.infinity;
 
     return Container(
       margin: const EdgeInsets.only(
@@ -121,7 +118,7 @@ class PostWidget extends StatelessWidget {
             const SizedBox(height: 16.0),
             if (mediaUrls != null && mediaUrls!.isNotEmpty)
               MediaCarousel(mediaUrls: mediaUrls!), 
-              const SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             if (body != null) ...[
               Text(
                 body!,
@@ -142,7 +139,7 @@ class PostWidget extends StatelessWidget {
                         onTap: onLikeTap,
                         child: Icon(
                           Icons.favorite,
-                          color: reaction ? Colors.red : Colors.grey,
+                          color: reaction,
                         ),
                       ),
                     const SizedBox(width: 15),
@@ -151,7 +148,7 @@ class PostWidget extends StatelessWidget {
                         child: Text(
                           reactionsCount,
                           style: TextStyle(
-                            color: reaction ? Colors.red : Colors.grey,
+                            color: Colors.grey,
                             fontSize: 18,
                           ),
                         ),
