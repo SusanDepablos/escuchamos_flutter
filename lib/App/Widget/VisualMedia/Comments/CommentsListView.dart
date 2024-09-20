@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class CommentWidget extends StatelessWidget {
   final String nameUser;
@@ -9,7 +10,7 @@ class CommentWidget extends StatelessWidget {
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
   final VoidCallback? onLikeTap;
-  final Color reaction;
+  final bool reaction;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -18,8 +19,9 @@ class CommentWidget extends StatelessWidget {
 
   final String? body;
   final String? mediaUrl;
+  final AudioPlayer _audioPlayer = AudioPlayer();  // Crea el AudioPlayer
 
-  const CommentWidget({
+  CommentWidget({
     Key? key,
     required this.nameUser,
     required this.reaction,
@@ -35,20 +37,23 @@ class CommentWidget extends StatelessWidget {
     this.mediaUrl,
   }) : super(key: key);
 
+  Future<void> _playSound() async {
+    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+  }
+
   @override
   Widget build(BuildContext context) {
     const double mediaHeight = 250.0;
     const double mediaWidth = double.infinity;
+
     return Stack(
       children: [
-        // Contenedor blanco con toda la información del comentario
         Container(
           margin: const EdgeInsets.only(
               left: 56.0,
               right: 16.0,
               top: 8.0,
-              bottom:
-                  8.0), // Ajustar margen izquierdo para dejar espacio para el avatar
+              bottom: 8.0),
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -65,7 +70,6 @@ class CommentWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Nombre del usuario como título
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,7 +91,6 @@ class CommentWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   child: GestureDetector(
                     onTap: () {
-                      // Abre la imagen a pantalla completa usando FullScreenImage
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -119,11 +122,28 @@ class CommentWidget extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: onLikeTap,
-                    child: Icon(
-                      Icons.favorite,
-                      color: reaction,
-                      size: 20,
+                    onTap: () {
+                      // Solo reproducir el sonido si está cambiando de gris a rojo
+                      if (!reaction) {
+                        _playSound();  // Reproducir el sonido al cambiar a "like"
+                      }
+                      if (onLikeTap != null) {
+                        onLikeTap!(); // Ejecutar cualquier otra acción
+                      }
+                    },
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child: Icon(
+                        reaction
+                            ? Icons.favorite // Si reaccionado, icono lleno
+                            : Icons.favorite_border, // Si no, icono vacío
+                        key: ValueKey<bool>(reaction),
+                        color: reaction ? Colors.red : Colors.grey, // Rojo o gris
+                        size: 24, // Tamaño ligeramente más grande
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8.0),
@@ -150,13 +170,12 @@ class CommentWidget extends StatelessWidget {
             ],
           ),
         ),
-        // Contenedor invisible para el avatar con espacio adicional
         Positioned(
-          left: 8.0, // Ajustar posición horizontal del contenedor invisible
-          top: 8.0, // Ajustar posición vertical del contenedor invisible
+          left: 8.0,
+          top: 8.0,
           child: Container(
-            width: 40.0, // Ancho del contenedor para el avatar
-            height: 40.0, // Alto del contenedor para el avatar
+            width: 40.0,
+            height: 40.0,
             child: ProfileAvatar(
               imageProvider:
                   profilePhotoUser != null && profilePhotoUser!.isNotEmpty
@@ -171,6 +190,4 @@ class CommentWidget extends StatelessWidget {
       ],
     );
   }
-
-  // Eliminado el método _formatDate ya que la fecha ya no se usa
 }

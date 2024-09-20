@@ -243,7 +243,7 @@ class _IndexCommentState extends State<IndexComment> {
                           final comment = comments[index];
                           final bool hasReaction = reactionStates[index];
                           return CommentWidget(
-                            reaction: hasReaction ? Colors.red : Colors.grey,
+                            reaction: hasReaction,
                             onLikeTap: () => _postReaction(index, comment.id), // Pasa el índice y el ID del post,
                             nameUser: comment.relationships.user.name,
                             usernameUser: comment.relationships.user.username,

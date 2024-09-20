@@ -224,7 +224,7 @@ class _IndexPostState extends State<IndexPost> {
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
                           final bool hasReaction = reactionStates[index]; // Usa el estado de la lista
                           return PostWidget(
-                            reaction: hasReaction ? Colors.red : Colors.grey,
+                            reaction: hasReaction,
                             onLikeTap: () => _postReaction(index, post.id), // Pasa el índice y el ID del post,
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,

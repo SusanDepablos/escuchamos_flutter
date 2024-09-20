@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/MediaCarousel.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PostWidget extends StatelessWidget {
   final String nameUser;
@@ -11,7 +12,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
   final VoidCallback? onIndexCommentTap;
-  final Color reaction;
+  final bool reaction;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -20,8 +21,9 @@ class PostWidget extends StatelessWidget {
 
   final String? body;
   final List<String>? mediaUrls;
+  final AudioPlayer _audioPlayer = AudioPlayer();  // Crea el AudioPlayer
 
-  const PostWidget({
+  PostWidget({
     Key? key,
     required this.nameUser,
     required this.reaction,
@@ -39,6 +41,11 @@ class PostWidget extends StatelessWidget {
     this.mediaUrls,
 
   }) : super(key: key);
+
+  Future<void> _playSound() async {
+    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -137,13 +144,31 @@ class PostWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: onLikeTap,
+                    GestureDetector(
+                      onTap: () {
+                        // Solo reproducir el sonido si está cambiando de gris a rojo
+                        if (!reaction) {
+                          _playSound();  // Reproducir el sonido al cambiar a "like"
+                        }
+                        if (onLikeTap != null) {
+                          onLikeTap!(); // Ejecutar cualquier otra acción
+                        }
+                      },
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (Widget child, Animation<double> animation) {
+                          return ScaleTransition(scale: animation, child: child);
+                        },
                         child: Icon(
-                          Icons.favorite,
-                          color: reaction,
+                          reaction
+                              ? Icons.favorite // Si reaccionado, icono lleno
+                              : Icons.favorite_border, // Si no, icono vacío
+                          key: ValueKey<bool>(reaction),
+                          color: reaction ? Colors.red : Colors.grey, // Rojo o gris
+                          size: 24, // Tamaño ligeramente más grande
                         ),
                       ),
+                    ),
                     const SizedBox(width: 15),
                     GestureDetector(
                         onTap: onIndexLikeTap,
@@ -198,13 +223,11 @@ class PostWidget extends StatelessWidget {
                           fontSize:18, // Cambia el tamaño a 18 (o al tamaño que prefieras)
                         ),
                       ),
-
                     ],
                   ),
                 ),
               ],
             )
-
           ],
         ),
       ),
