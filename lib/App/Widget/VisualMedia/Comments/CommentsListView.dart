@@ -9,7 +9,7 @@ class CommentWidget extends StatelessWidget {
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
   final VoidCallback? onLikeTap;
-  final bool reaction;
+  final Color reaction;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -122,7 +122,7 @@ class CommentWidget extends StatelessWidget {
                     onTap: onLikeTap,
                     child: Icon(
                       Icons.favorite,
-                      color: reaction ? Colors.red : Colors.grey,
+                      color: reaction,
                       size: 20,
                     ),
                   ),
@@ -131,7 +131,7 @@ class CommentWidget extends StatelessWidget {
                     child: Text(
                       reactionsCount,
                       style: TextStyle(
-                        color: reaction ? Colors.red : Colors.grey,
+                        color: Colors.grey,
                         fontSize: 14,
                       ),
                     ),

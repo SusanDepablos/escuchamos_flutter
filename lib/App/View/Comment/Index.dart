@@ -9,7 +9,9 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:convert';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
+import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexComment extends StatefulWidget {
@@ -22,6 +24,7 @@ class IndexComment extends StatefulWidget {
 
 class _IndexCommentState extends State<IndexComment> {
   List<Datum> comments = [];
+  List<bool> reactionStates = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
@@ -82,12 +85,17 @@ class _IndexCommentState extends State<IndexComment> {
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
         });
+        reactionStates.addAll(
+          response.results.data.map((comment) => comment.relationships.reactions.any(
+            (reaction) => reaction.attributes.userId == _id,
+          )),
+        );
       } else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
             title: response is InternalServerError
-                  ? 'Error'
+            ? 'Error'
                   : 'Error de Conexión',
             message: response.message,
           ),
@@ -124,6 +132,55 @@ class _IndexCommentState extends State<IndexComment> {
     setState(() {
       _initialLoading = false; // Desactiva el estado de carga después de recargar los posts
     });
+  }
+
+  Future<void> _postReaction(int index, int id) async {
+    try {
+      var response = await ReactionCommandPost(ReactionPost()).execute( 
+        'comment', id
+      );
+
+      if (response is SuccessResponse) {
+        setState(() {
+          // Cambia el estado de la reacción en la lista
+          bool hasReaction = reactionStates[index];
+          reactionStates[index] = !hasReaction;
+
+          // Modifica el reactionsCount dependiendo del estado de la reacción
+          if (reactionStates[index]) {
+            // Si se coloca en rojo (se agrega reacción), sumarle 1
+            comments[index].relationships.reactionsCount += 1;
+          } else {
+            // Si se coloca en gris (se quita reacción), restarle 1
+            comments[index].relationships.reactionsCount -= 1;
+          }
+        });
+        // await showDialog(
+        //   context: context,
+        //   builder: (context) => PopupWindow(
+        //     title: 'Éxito',
+        //     message: response.message,
+        //   ),
+        // );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } 
   }
 
   @override
@@ -184,11 +241,10 @@ class _IndexCommentState extends State<IndexComment> {
                         itemCount: comments.length,
                         itemBuilder: (context, index) {
                           final comment = comments[index];
+                          final bool hasReaction = reactionStates[index];
                           return CommentWidget(
-                            reaction: comment.relationships.reactions.any(
-                                (reaction) =>
-                                    reaction.attributes.userId == _id),
-
+                            reaction: hasReaction ? Colors.red : Colors.grey,
+                            onLikeTap: () => _postReaction(index, comment.id), // Pasa el índice y el ID del post,
                             nameUser: comment.relationships.user.name,
                             usernameUser: comment.relationships.user.username,
                             profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',

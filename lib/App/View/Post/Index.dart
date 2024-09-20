@@ -12,7 +12,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
-import 'dart:convert';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexPost extends StatefulWidget {
@@ -24,6 +23,7 @@ class IndexPost extends StatefulWidget {
 
 class _IndexPostState extends State<IndexPost> {
   List<Datum> posts = [];
+  List<bool> reactionStates = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
@@ -85,6 +85,13 @@ class _IndexPostState extends State<IndexPost> {
           posts.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
+          
+          reactionStates.addAll(
+            response.results.data.map((post) => post.relationships.reactions.any(
+              (reaction) => reaction.attributes.userId == _id,
+            )),
+          );
+          
         });
       } else {
         showDialog(
@@ -128,20 +135,34 @@ class _IndexPostState extends State<IndexPost> {
     });
   }
 
-  Future<void> _postReaction(int id) async {
+  Future<void> _postReaction(int index, int id) async {
     try {
       var response = await ReactionCommandPost(ReactionPost()).execute( 
         'post', id
       );
 
       if (response is SuccessResponse) {
-        await showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Éxito',
-            message: response.message,
-          ),
-        );
+        setState(() {
+          // Cambia el estado de la reacción en la lista
+          bool hasReaction = reactionStates[index];
+          reactionStates[index] = !hasReaction;
+
+          // Modifica el reactionsCount dependiendo del estado de la reacción
+          if (reactionStates[index]) {
+            // Si se coloca en rojo (se agrega reacción), sumarle 1
+            posts[index].relationships.reactionsCount += 1;
+          } else {
+            // Si se coloca en gris (se quita reacción), restarle 1
+            posts[index].relationships.reactionsCount -= 1;
+          }
+        });
+        // await showDialog(
+        //   context: context,
+        //   builder: (context) => PopupWindow(
+        //     title: 'Éxito',
+        //     message: response.message,
+        //   ),
+        // );
       } else {
         await showDialog(
           context: context,
@@ -201,12 +222,10 @@ class _IndexPostState extends State<IndexPost> {
                         itemBuilder: (context, index) {
                           final post = posts[index];
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
-                          final bool hasReaction = post.relationships.reactions.any(
-                              (reaction) => reaction.attributes.userId == _id,
-                            );
+                          final bool hasReaction = reactionStates[index]; // Usa el estado de la lista
                           return PostWidget(
                             reaction: hasReaction ? Colors.red : Colors.grey,
-                            onLikeTap: () => _postReaction(post.id),
+                            onLikeTap: () => _postReaction(index, post.id), // Pasa el índice y el ID del post,
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,
                             profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
@@ -227,6 +246,17 @@ class _IndexPostState extends State<IndexPost> {
                                   'objectId': objectId,
                                   'model': 'post',
                                   'appBar': 'Reacciones'
+                                },
+                              );
+                            },
+                            onIndexCommentTap: () {
+                              String postId = post.id.toString();
+                              Navigator.pushNamed(
+                                context,
+                                'index-comments',
+                                arguments: {
+                                  'postId': postId,
+                                  'appBar': 'Comentarios',
                                 },
                               );
                             },
