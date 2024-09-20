@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -116,7 +117,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
   final List<material.Widget> _views = [
     Home(), 
     SearchView(), 
-    const Center(child: Text('Nuevo post')),
+    NewPost(),
     const Center(child: Text('notificaciones')),
     const Center(child: Text('post de escuchamos')),
   ];
@@ -198,32 +199,10 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           reloadView();
         },
 
-      // onFollowersTap: () async {
-      //   final result = await Navigator.pushNamed(
-      //     context,
-      //     'search-followers',
-      //     arguments: {
-      //       'followedUserId': _id, // Reemplaza con el ID del usuario seguido
-      //     },
-      //   );
-      //   reloadView();
-      // },
-
-        // onFollowedTap: () async {
-        //   final result = await Navigator.pushNamed(
-        //     context,
-        //     'search-followed',
-        //     arguments: {
-        //       'followingUserId': _id, // Reemplaza con el ID del usuario seguido
-        //     },
-        //   );
-        //   reloadView();
-        // },
-
         onFollowedTap: () async {
           final result = await Navigator.pushNamed(
             context,
-            'navigator-folllow',
+            'navigator-follow',
               arguments: {
                 'userId': _id,
                 'initialTab': 'followed', // Reemplaza con el ID del usuario seguido
@@ -236,7 +215,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         onFollowersTap: () async {
           final result = await Navigator.pushNamed(
             context,
-            'navigator-folllow',
+            'navigator-follow',
             arguments: {
               'userId': _id,
               'initialTab': 'follower', // Reemplaza con el ID del usuario seguido

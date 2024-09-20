@@ -1,42 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
-import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
-import 'package:escuchamos_flutter/Api/Service/PostService.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Posts/PostListView.dart';
+import 'package:escuchamos_flutter/Api/Model/CommentModels.dart';
+import 'package:escuchamos_flutter/Api/Command/CommentCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/CommentService.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comments/CommentsListView.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/CustomRefreshIndicator.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
-class IndexPost extends StatefulWidget {
-  final int? userId;
-  IndexPost({this.userId});
+class IndexComment extends StatefulWidget {
+  final String? postId;
+  final String appBar;
+  IndexComment({this.postId,required this.appBar});
   @override
-  _IndexPostState createState() => _IndexPostState();
+  _IndexCommentState createState() => _IndexCommentState();
 }
 
-class _IndexPostState extends State<IndexPost> {
-  List<Datum> posts = [];
+class _IndexCommentState extends State<IndexComment> {
+  List<Datum> comments = [];
   List<bool> reactionStates = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
-  bool _initialLoading = true; // Variable para el estado de carga inicial
+  bool _initialLoading = true;
   bool? reaction;
   int page = 1;
   int? _id;
 
-
+//modificar
   final filters = {
     'pag': '10',
     'page': null,
-    'user_id': null
+    'post_id': null
   };
 
   @override
@@ -46,12 +47,12 @@ class _IndexPostState extends State<IndexPost> {
       ..addListener(() {
         if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
           if (_hasMorePages && !_isLoading) {
-            fetchPosts();
+            fetchComments();
           }
         }
       });
     _getData();
-    fetchPosts();
+    fetchComments();
   }
 
   Future<void> _getData() async {
@@ -62,42 +63,40 @@ class _IndexPostState extends State<IndexPost> {
     });
   }
 
-  Future<void> fetchPosts() async {
+  Future<void> fetchComments() async {
     if (_isLoading || !_hasMorePages) return;
 
     setState(() {
       _isLoading = true;
     });
 
-    if (widget.userId != null) {
-      filters['user_id'] = widget.userId?.toString();
-    }
+    filters['post_id'] = widget.postId?.toString();
 
     filters['page'] = page.toString();
 
-    final postCommand = PostCommandIndex(PostIndex(), filters);
+    final commentCommand = CommentCommandIndex(CommentIndex(), filters);
 
     try {
-      var response = await postCommand.execute();
+      var response = await commentCommand.execute();
 
-      if (response is PostsModel) {
+      if (response is CommentsModel) {
         setState(() {
-          posts.addAll(response.results.data);
+          comments.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
-          
-          reactionStates.addAll(
-            response.results.data.map((post) => post.relationships.reactions.any(
-              (reaction) => reaction.attributes.userId == _id,
-            )),
-          );
-          
         });
+        reactionStates.addAll(
+          response.results.data.map((comment) => comment.relationships.reactions.any(
+            (reaction) => reaction.attributes.userId == _id,
+          )),
+        );
       } else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error de servidor' : 'Error de conexión',
+            title: response is InternalServerError
+            ? 'Error'
+                  : 'Error de Conexión',
             message: response.message,
           ),
         );
@@ -125,11 +124,11 @@ class _IndexPostState extends State<IndexPost> {
   Future<void> _reloadPosts() async {
     setState(() {
       page = 1;
-      posts.clear();
+      comments.clear();
       _hasMorePages = true;
       _initialLoading = true; // Vuelve a activar el estado de carga inicial
     });
-    await fetchPosts(); // Llama a fetchPosts para recargar los datos
+    await fetchComments(); // Llama a fetchPosts para recargar los datos
     setState(() {
       _initialLoading = false; // Desactiva el estado de carga después de recargar los posts
     });
@@ -138,7 +137,7 @@ class _IndexPostState extends State<IndexPost> {
   Future<void> _postReaction(int index, int id) async {
     try {
       var response = await ReactionCommandPost(ReactionPost()).execute( 
-        'post', id
+        'comment', id
       );
 
       if (response is SuccessResponse) {
@@ -150,10 +149,10 @@ class _IndexPostState extends State<IndexPost> {
           // Modifica el reactionsCount dependiendo del estado de la reacción
           if (reactionStates[index]) {
             // Si se coloca en rojo (se agrega reacción), sumarle 1
-            posts[index].relationships.reactionsCount += 1;
+            comments[index].relationships.reactionsCount += 1;
           } else {
             // Si se coloca en gris (se quita reacción), restarle 1
-            posts[index].relationships.reactionsCount -= 1;
+            comments[index].relationships.reactionsCount -= 1;
           }
         });
         // await showDialog(
@@ -194,6 +193,27 @@ class _IndexPostState extends State<IndexPost> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
+      appBar: AppBar(
+        // Aquí agregué la propiedad appBar sin cambiar estilos
+        backgroundColor: AppColors.whiteapp,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.appBar,
+                style: const TextStyle(
+                  fontSize: AppFond.title,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.black, // No se cambió el color
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: _initialLoading
           ? const LoadingScreen(
               animationPath: 'assets/animation.json',
@@ -204,10 +224,10 @@ class _IndexPostState extends State<IndexPost> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: posts.isEmpty
+                    child: comments.isEmpty
                       ? const Center(
                           child: Text(
-                            'No hay publicaciones.',
+                            'No hay comentarios.',
                             style: TextStyle(
                               fontSize: 16,
                               color: AppColors.black,
@@ -218,54 +238,28 @@ class _IndexPostState extends State<IndexPost> {
                       onRefresh: _reloadPosts,
                       child: ListView.builder(
                         controller: _scrollController,
-                        itemCount: posts.length,
+                        itemCount: comments.length,
                         itemBuilder: (context, index) {
-                          final post = posts[index];
-                          final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
-                          final bool hasReaction = reactionStates[index]; // Usa el estado de la lista
-                          return PostWidget(
+                          final comment = comments[index];
+                          final bool hasReaction = reactionStates[index];
+                          return CommentWidget(
                             reaction: hasReaction,
-                            onLikeTap: () => _postReaction(index, post.id), // Pasa el índice y el ID del post,
-                            nameUser: post.relationships.user.name,
-                            usernameUser: post.relationships.user.username,
-                            profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
+                            onLikeTap: () => _postReaction(index, comment.id), // Pasa el índice y el ID del post,
+                            nameUser: comment.relationships.user.name,
+                            usernameUser: comment.relationships.user.username,
+                            profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
                             onProfileTap: () {
-                              final userId = post.relationships.user.id;
+                              final userId = comment.relationships.user.id;
                               Navigator.pushNamed(
                                 context,
                                 'profile',
                                 arguments: userId,
                               );
                             },
-                            onIndexLikeTap: () {
-                              String objectId = post.id.toString();
-                              Navigator.pushNamed(
-                                context,
-                                'index-reactions',
-                                arguments: {
-                                  'objectId': objectId,
-                                  'model': 'post',
-                                  'appBar': 'Reacciones'
-                                },
-                              );
-                            },
-                            onIndexCommentTap: () {
-                              String postId = post.id.toString();
-                              Navigator.pushNamed(
-                                context,
-                                'index-comments',
-                                arguments: {
-                                  'postId': postId,
-                                  'appBar': 'Comentarios',
-                                },
-                              );
-                            },
-                            body: post.attributes.body,
-                            mediaUrls: mediaUrls,
-                            createdAt: post.attributes.createdAt,
-                            reactionsCount: post.relationships.reactionsCount.toString(),
-                            commentsCount: post.relationships.commentsCount.toString(),
-                            sharesCount: post.relationships.sharesCount.toString(),
+                            body: comment.attributes.body,
+                            mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
+                            createdAt: comment.attributes.createdAt,
+                            reactionsCount: comment.relationships.reactionsCount.toString(),
                           );
                         },
                       ),

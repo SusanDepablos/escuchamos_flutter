@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/VideoPlayer.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/MediaCarousel.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PostWidget extends StatelessWidget {
   final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
-  final VoidCallback? onlikeTap;
+  final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
+  final VoidCallback? onIndexCommentTap;
+  final bool reaction;
   final DateTime createdAt;
 
   final String reactionsCount;
@@ -19,29 +20,35 @@ class PostWidget extends StatelessWidget {
   final String sharesCount;
 
   final String? body;
-  final String? mediaUrl;
+  final List<String>? mediaUrls;
+  final AudioPlayer _audioPlayer = AudioPlayer();  // Crea el AudioPlayer
 
-  const PostWidget({
+  PostWidget({
     Key? key,
     required this.nameUser,
+    required this.reaction,
     required this.usernameUser,
     required this.createdAt,
+    this.onIndexCommentTap,
     this.profilePhotoUser,
     this.onIndexLikeTap,
-    this.onlikeTap,
+    this.onLikeTap,
     this.onProfileTap,
     this.reactionsCount = '120',
     this.commentsCount = '45',
     this.sharesCount = '30',
     this.body,
-    this.mediaUrl,
+    this.mediaUrls,
+
   }) : super(key: key);
+
+  Future<void> _playSound() async {
+    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    // Definir tamaño fijo para la imagen y el video
-    const double mediaHeight = 250.0;
-    const double mediaWidth = double.infinity;
 
     return Container(
       margin: const EdgeInsets.only(
@@ -118,39 +125,9 @@ class PostWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16.0),
-            if (mediaUrl != null) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: GestureDetector(
-                  onTap: () {
-                    if (!mediaUrl!.endsWith('.mp4')) {
-                      // Abre la imagen a pantalla completa usando FullScreenImage
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FullScreenImage(imageUrl: mediaUrl!),
-                        ),
-                      );
-                    } 
-                    // Para los videos no hacemos nada aquí, ya que no se quiere fullscreen
-                  },
-                  child: SizedBox(
-                    height: mediaHeight,
-                    width: mediaWidth,
-                    child: mediaUrl!.endsWith('.mp4')
-                        ? AspectRatio(
-                            aspectRatio: 16 / 9, // Proporción adecuada para video
-                            child: VideoPlayerWidget(videoUrl: mediaUrl!),
-                          )
-                        : Image.network(
-                            mediaUrl!,
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-            ],
+            if (mediaUrls != null && mediaUrls!.isNotEmpty)
+              MediaCarousel(mediaUrls: mediaUrls!), 
+            const SizedBox(height: 16.0),
             if (body != null) ...[
               Text(
                 body!,
@@ -168,10 +145,28 @@ class PostWidget extends StatelessWidget {
                   child: Row(
                     children: [
                     GestureDetector(
-                      onTap: onlikeTap,
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
+                      onTap: () {
+                        // Solo reproducir el sonido si está cambiando de gris a rojo
+                        if (!reaction) {
+                          _playSound();  // Reproducir el sonido al cambiar a "like"
+                        }
+                        if (onLikeTap != null) {
+                          onLikeTap!(); // Ejecutar cualquier otra acción
+                        }
+                      },
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (Widget child, Animation<double> animation) {
+                          return ScaleTransition(scale: animation, child: child);
+                        },
+                        child: Icon(
+                          reaction
+                              ? Icons.favorite // Si reaccionado, icono lleno
+                              : Icons.favorite_border, // Si no, icono vacío
+                          key: ValueKey<bool>(reaction),
+                          color: reaction ? Colors.red : Colors.grey, // Rojo o gris
+                          size: 24, // Tamaño ligeramente más grande
+                        ),
                       ),
                     ),
                     const SizedBox(width: 15),
@@ -179,11 +174,12 @@ class PostWidget extends StatelessWidget {
                         onTap: onIndexLikeTap,
                         child: Text(
                           reactionsCount,
-                          style: const TextStyle(
-                            color: Colors.red,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -192,15 +188,19 @@ class PostWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
-                      const Icon(
-                        Icons.chat_bubble,
-                        color: Colors.grey,
+                      GestureDetector(
+                        onTap: onIndexCommentTap,
+                        child: const Icon(
+                          Icons.comment,
+                          color: Colors.grey,
+                        ),
                       ),
                       const SizedBox(width: 15),
                       Text(
                         commentsCount,
                         style: const TextStyle(
                           color: Colors.grey,
+                          fontSize: 18,
                         ),
                       ),
                     ],
@@ -215,11 +215,12 @@ class PostWidget extends StatelessWidget {
                         Icons.repeat,
                         color: Colors.grey,
                       ),
-                      const SizedBox(width: 15),
+                      const SizedBox(width: 15),                     
                       Text(
                         sharesCount,
                         style: const TextStyle(
                           color: Colors.grey,
+                          fontSize:18, // Cambia el tamaño a 18 (o al tamaño que prefieras)
                         ),
                       ),
                     ],
@@ -227,7 +228,6 @@ class PostWidget extends StatelessWidget {
                 ),
               ],
             )
-
           ],
         ),
       ),

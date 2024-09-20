@@ -6,10 +6,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-class ReactionsIndex {
+class CommentIndex {
   Future<ServiceResponse> fetchData(Map<String, String?> filters) async {
 
-    var uri = Uri.parse('${ApiUrl.baseUrl}reaction/');
+    var uri = Uri.parse('${ApiUrl.baseUrl}comment/');
     final token = await _storage.read(key: 'token') ?? '';
 
     if (filters.isNotEmpty) {
@@ -23,11 +23,13 @@ class ReactionsIndex {
       }
     }
 
+    // Define los encabezados
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Token $token',
     };
 
+    // Realiza la solicitud con encabezados
     var response = await http.get(uri, headers: headers);
 
     return ServiceResponse.fromJsonString(

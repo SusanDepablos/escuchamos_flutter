@@ -25,6 +25,7 @@ import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
 import 'package:escuchamos_flutter/App/View/Follow/NavigatorFollow.dart';
 import 'package:escuchamos_flutter/App/View/Reaction/Index.dart';
+import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
 
 class AppRoutes {
   static final routes = {
@@ -99,7 +100,7 @@ class AppRoutes {
       );
     },
 
-    'navigator-folllow': (context) {
+    'navigator-follow': (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final initialTab = args['initialTab'] as String;
@@ -117,6 +118,15 @@ class AppRoutes {
       return NavigatorFollow(
         initialTab: initialTab, userId: userId,
       );
+    },
+
+    // pantalla de comentarios
+    'index-comments': (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final postId = args['postId'] as String;
+      final appBar = args['appBar'] as String;
+      return IndexComment(postId: postId,appBar: appBar);
     },
 
     // pantalla de reacciones

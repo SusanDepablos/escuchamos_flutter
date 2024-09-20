@@ -5,7 +5,6 @@ import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as UserModels;
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
-import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -199,13 +198,13 @@ class _UpdateState extends State<Profile> {
       );
 
       if (response is SuccessResponse) {
-        await showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Éxito',
-            message: response.message,
-          ),
-        );
+        // await showDialog(
+        //   context: context,
+        //   builder: (context) => PopupWindow(
+        //     title: 'Éxito',
+        //     message: response.message,
+        //   ),
+        // );
         reloadView();
       } else {
         await showDialog(

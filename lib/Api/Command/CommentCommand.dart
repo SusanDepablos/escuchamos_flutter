@@ -2,24 +2,23 @@
 import 'package:flutter/material.dart';
 //Api support
 import 'dart:io';
-import 'package:escuchamos_flutter/Api/Model/ReactionModels.dart';
+import 'package:escuchamos_flutter/Api/Service/CommentService.dart';
+import 'package:escuchamos_flutter/Api/Model/CommentModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/Api/Service/ReactionsService.dart';
 
-class ReactionsCommandIndex {
-  final ReactionsIndex _reactionsData;
+class CommentCommandIndex {
+  final CommentIndex _commentData;
   final Map<String, String?>? filters;
 
-  ReactionsCommandIndex(this._reactionsData, [this.filters]);
+  CommentCommandIndex(this._commentData, [this.filters]);
 
   Future<dynamic> execute() async {
     try {
-      var response =
-          await _reactionsData.fetchData(filters ?? {}); 
+      var response = await _commentData.fetchData(filters ?? {}); 
 
       if (response.statusCode == 200) {
-        return ReactionsModel.fromJson(response.body);
+        return CommentsModel.fromJson(response.body);
       } else {
         return InternalServerError.fromServiceResponse(response);
       }

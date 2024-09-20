@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class HistoryList extends StatelessWidget {
+class StoryList extends StatelessWidget {
   final String imageUrl;
   final String userName;
 
-  const HistoryList({
+  const StoryList({
     Key? key,
     required this.imageUrl,
     required this.userName,
