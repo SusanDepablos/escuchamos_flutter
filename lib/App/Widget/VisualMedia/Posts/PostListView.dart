@@ -10,6 +10,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onProfileTap;
   final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
+  final VoidCallback? onIndexCommentTap;
   final Color reaction;
   final DateTime createdAt;
 
@@ -26,6 +27,7 @@ class PostWidget extends StatelessWidget {
     required this.reaction,
     required this.usernameUser,
     required this.createdAt,
+    this.onIndexCommentTap,
     this.profilePhotoUser,
     this.onIndexLikeTap,
     this.onLikeTap,
@@ -161,9 +163,12 @@ class PostWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
-                      const Icon(
-                        Icons.chat_bubble,
-                        color: Colors.grey,
+                      GestureDetector(
+                        onTap: onIndexCommentTap,
+                        child: const Icon(
+                          Icons.comment,
+                          color: Colors.grey,
+                        ),
                       ),
                       const SizedBox(width: 15),
                       Text(
