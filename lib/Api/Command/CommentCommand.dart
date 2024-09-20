@@ -8,14 +8,14 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 
 class CommentCommandIndex {
-  final CommentIndex _commenttData;
+  final CommentIndex _commentData;
   final Map<String, String?>? filters;
 
-  CommentCommandIndex(this._commenttData, [this.filters]);
+  CommentCommandIndex(this._commentData, [this.filters]);
 
   Future<dynamic> execute() async {
     try {
-      var response = await _commenttData.fetchData(filters ?? {}); 
+      var response = await _commentData.fetchData(filters ?? {}); 
 
       if (response.statusCode == 200) {
         return CommentsModel.fromJson(response.body);

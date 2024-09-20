@@ -78,16 +78,16 @@ class Datum {
 }
 
 class DatumAttributes {
-  final String body;
+  final String? body;
   final int statusId;
   final int postId;
   final int userId;
-  final int? commentId;
+  final dynamic commentId;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   DatumAttributes({
-    required this.body,
+    this.body,
     required this.statusId,
     required this.postId,
     required this.userId,
@@ -98,7 +98,7 @@ class DatumAttributes {
 
   factory DatumAttributes.fromJson(Map<String, dynamic> json) =>
       DatumAttributes(
-        body: json["body"],
+        body: json["body"] as String?,
         statusId: json["status_id"],
         postId: json["post_id"],
         userId: json["user_id"],
@@ -180,15 +180,15 @@ class FileElement {
 }
 
 class FileAttributes {
-  final int contentType;
-  final int objectId;
-  final String path;
-  final String extension;
-  final String size;
-  final String type;
-  final String url;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  int contentType;
+  int objectId;
+  String path;
+  String extension;
+  String size;
+  String type;
+  String url;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   FileAttributes({
     required this.contentType,
