@@ -19,7 +19,7 @@ import 'package:escuchamos_flutter/Api/Command/FollowCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/FollowService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/NavigatorUser.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 class Profile extends StatefulWidget {
   final int userId;
@@ -407,7 +407,7 @@ class _UpdateState extends State<Profile> {
                           onPressed: () async {
                             final result = await Navigator.pushNamed(
                               context,
-                              'navigator-folllow',
+                              'navigator-follow',
                               arguments: {
                                 'userId': widget.userId.toString(),
                                 'initialTab': 'follower', // Reemplaza con el ID del usuario seguido
@@ -437,7 +437,7 @@ class _UpdateState extends State<Profile> {
                           onPressed: () async {
                             final result = await Navigator.pushNamed(
                               context,
-                              'navigator-folllow',
+                              'navigator-follow',
                                 arguments: {
                                   'userId': widget.userId.toString(),
                                   'initialTab': 'followed', // Reemplaza con el ID del usuario seguido

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:async'; // Necesario para el Timer.
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 class LabelAction extends StatefulWidget {
   final String? text;
   final VoidCallback? onPressed;

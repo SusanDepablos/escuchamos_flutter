@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que esta ruta sea correcta
 import 'package:escuchamos_flutter/App/View/Follow/IndexFollowers.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 class SearchFollowers extends StatefulWidget {
   String followedUserId;

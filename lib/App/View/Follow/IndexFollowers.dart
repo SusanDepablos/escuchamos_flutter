@@ -8,7 +8,7 @@ import 'package:escuchamos_flutter/Api/Command/FollowCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/FollowService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingBasic.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 class IndexFollowers extends StatefulWidget {
   String? searchFollowing_;
