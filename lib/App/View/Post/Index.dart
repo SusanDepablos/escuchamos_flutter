@@ -9,6 +9,9 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loadings/LoadingScreen.dart'; 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
+import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'dart:convert';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -87,8 +90,8 @@ class _IndexPostState extends State<IndexPost> {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error',
-            message: response is InternalServerError ? 'Error de servidor' : 'Error de conexión',
+            title: response is InternalServerError ? 'Error de servidor' : 'Error de conexión',
+            message: response.message,
           ),
         );
       }
@@ -123,6 +126,41 @@ class _IndexPostState extends State<IndexPost> {
     setState(() {
       _initialLoading = false; // Desactiva el estado de carga después de recargar los posts
     });
+  }
+
+  Future<void> _postReaction(int id) async {
+    try {
+      var response = await ReactionCommandPost(ReactionPost()).execute( 
+        'post', id
+      );
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Éxito',
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } 
   }
 
   @override
@@ -163,11 +201,12 @@ class _IndexPostState extends State<IndexPost> {
                         itemBuilder: (context, index) {
                           final post = posts[index];
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
+                          final bool hasReaction = post.relationships.reactions.any(
+                              (reaction) => reaction.attributes.userId == _id,
+                            );
                           return PostWidget(
-                            reaction: post.relationships.reactions.any(
-                                (reaction) =>
-                                    reaction.attributes.userId == _id),
-
+                            reaction: hasReaction ? Colors.red : Colors.grey,
+                            onLikeTap: () => _postReaction(post.id),
                             nameUser: post.relationships.user.name,
                             usernameUser: post.relationships.user.username,
                             profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
@@ -191,7 +230,6 @@ class _IndexPostState extends State<IndexPost> {
                                 },
                               );
                             },
-
                             body: post.attributes.body,
                             mediaUrls: mediaUrls,
                             createdAt: post.attributes.createdAt,
