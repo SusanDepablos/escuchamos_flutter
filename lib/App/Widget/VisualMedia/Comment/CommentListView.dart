@@ -56,16 +56,8 @@ class CommentWidget extends StatelessWidget {
               bottom: 8.0),
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: Offset(0, 1),
-              ),
-            ],
+            color: AppColors.greyLigth, // Mantén este color si es el deseado
+            borderRadius: BorderRadius.circular(25.0), // Ajuste a 25
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +77,7 @@ class CommentWidget extends StatelessWidget {
                   const SizedBox(width: 8.0),
                 ],
               ),
-              const SizedBox(height: 4.0),
+              const SizedBox(height: 10.0),
               if (mediaUrl != null) ...[
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -110,6 +102,8 @@ class CommentWidget extends StatelessWidget {
                   ),
                 ),
               ],
+              if (mediaUrl != null)
+                const SizedBox(height: 10.0),
               if (body != null) ...[
                 Text(
                   body!,
@@ -117,15 +111,14 @@ class CommentWidget extends StatelessWidget {
                     fontSize: 14,
                   ),
                 ),
-                const SizedBox(height: 8.0),
+                const SizedBox(height: 10),
               ],
               Row(
                 children: [
                   GestureDetector(
                     onTap: () {
-                      // Solo reproducir el sonido si está cambiando de gris a rojo
                       if (!reaction) {
-                        _playSound();  // Reproducir el sonido al cambiar a "like"
+                        _playSound();
                       }
                       if (onLikeTap != null) {
                         onLikeTap!(); // Ejecutar cualquier otra acción
@@ -138,11 +131,11 @@ class CommentWidget extends StatelessWidget {
                       },
                       child: Icon(
                         reaction
-                            ? Icons.favorite // Si reaccionado, icono lleno
-                            : Icons.favorite_border, // Si no, icono vacío
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                         key: ValueKey<bool>(reaction),
-                        color: reaction ? Colors.red : Colors.grey, // Rojo o gris
-                        size: 24, // Tamaño ligeramente más grande
+                        color: reaction ? Colors.red : Colors.grey,
+                        size: 24,
                       ),
                     ),
                   ),
@@ -177,10 +170,9 @@ class CommentWidget extends StatelessWidget {
             width: 40.0,
             height: 40.0,
             child: ProfileAvatar(
-              imageProvider:
-                  profilePhotoUser != null && profilePhotoUser!.isNotEmpty
-                      ? NetworkImage(profilePhotoUser!)
-                      : null,
+              imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
+                  ? NetworkImage(profilePhotoUser!)
+                  : null,
               avatarSize: 40.0,
               showBorder: true,
               onPressed: onProfileTap,
@@ -190,4 +182,5 @@ class CommentWidget extends StatelessWidget {
       ],
     );
   }
+
 }

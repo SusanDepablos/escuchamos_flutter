@@ -127,7 +127,8 @@ class PostWidget extends StatelessWidget {
             const SizedBox(height: 16.0),
             if (mediaUrls != null && mediaUrls!.isNotEmpty)
               MediaCarousel(mediaUrls: mediaUrls!), 
-            const SizedBox(height: 16.0),
+            if (mediaUrls != null && mediaUrls!.isNotEmpty)
+              const SizedBox(height: 16.0),
             if (body != null) ...[
               Text(
                 body!,

@@ -1,11 +1,9 @@
-import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Home.dart';
 import 'package:escuchamos_flutter/App/View/SearchUser.dart';
@@ -14,16 +12,17 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 
-class BaseNavigator extends material.StatefulWidget {
+class BaseNavigator extends StatefulWidget {
   @override
   _BaseNavigatorState createState() => _BaseNavigatorState();
 }
 
-class _BaseNavigatorState extends material.State<BaseNavigator> {
+class _BaseNavigatorState extends State<BaseNavigator> {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
-  final material.GlobalKey<material.ScaffoldState> _scaffoldKey =
-      material.GlobalKey<material.ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
   List<dynamic> _groups = [];
   UserModel? _user;
@@ -34,6 +33,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
   int? following;
   bool _isGroupOne = false;
   bool _isBottomNavVisible = true; // Controlador para la visibilidad del BottomNavigationBar
+  bool _isAppBarVisible = true; // Controlador para la visibilidad del AppBar
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     }
   }
 
-  final List<material.Widget> _views = [
+  final List<Widget> _views = [
     Home(), 
     SearchView(), 
     NewPost(),
@@ -136,8 +136,16 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
     }
   }
 
+  void _onBottomNavTap(int index) {
+    setState(() {
+      _currentIndex = index;
+      // Cambiar la visibilidad del AppBar según el índice seleccionado
+      _isAppBarVisible = index != 2 && index != 1; // Supongamos que 2 es el índice de NewPostView
+    });
+  }
+
   @override
-  material.Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final String? profileAvatarUrl = _getFileUrlByType('profile');
     ImageProvider? imageProvider;
 
@@ -145,9 +153,10 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
       imageProvider = NetworkImage(profileAvatarUrl);
     }
 
-    return material.Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
+      appBar: _isAppBarVisible
+          ? AppBar(
         backgroundColor: AppColors.whiteapp,
         elevation: 0,
         leading: ProfileAvatar(
@@ -167,7 +176,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
         ),
         centerTitle: true,
         toolbarHeight: kToolbarHeight,
-      ),
+      ): null,
       drawer: CustomDrawer(
         name: name,
         username: username,
@@ -232,9 +241,9 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
           _onScroll(notification);
           return true;
         },
-        child: material.Stack(
+        child: Stack(
           children: [
-            material.Positioned.fill(
+            Positioned.fill(
               child: _id.isEmpty && _groups.isEmpty
                   ? const Center(child: CircularProgressIndicator())
                   : _views[_currentIndex],
@@ -262,35 +271,33 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
                     ],
                   ),
                   
-                  child: material.BottomNavigationBar(
+                  child: BottomNavigationBar(
                     currentIndex: _currentIndex,
                     onTap: (int index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
+                      _onBottomNavTap(index); // Cambia aquí
                     },
                     items: [
-                      material.BottomNavigationBarItem(
+                      BottomNavigationBarItem(
                         icon: Icon(Icons.home_outlined, size: 28),
                         activeIcon: Icon(Icons.home, size: 28),
                         label: '',
                       ),
-                      material.BottomNavigationBarItem(
+                      BottomNavigationBarItem(
                         icon: Icon(Icons.search_outlined, size: 28),
                         activeIcon: Icon(Icons.search, size: 28),
                         label: '',
                       ),
-                      material.BottomNavigationBarItem(
+                      BottomNavigationBarItem(
                         icon: Icon(Icons.add_circle_outline, size: 34),
                         activeIcon: Icon(Icons.add_circle, size: 39),
                         label: '',
                       ),
-                      material.BottomNavigationBarItem(
+                      BottomNavigationBarItem(
                         icon: Icon(Icons.notifications_outlined, size: 28),
                         activeIcon: Icon(Icons.notifications, size: 28),
                         label: '',
                       ),
-                      material.BottomNavigationBarItem(
+                      BottomNavigationBarItem(
                         icon: Image.asset(
                           'assets/settings_inactive.png',
                           width: 32,
@@ -308,7 +315,7 @@ class _BaseNavigatorState extends material.State<BaseNavigator> {
                     selectedItemColor: AppColors.primaryBlue,
                     unselectedItemColor: AppColors.inputDark,
                     showUnselectedLabels: false,
-                    type: material.BottomNavigationBarType.fixed,
+                    type: BottomNavigationBarType.fixed,
                     elevation: 0,
                     iconSize: 28,
                     selectedLabelStyle: const TextStyle(

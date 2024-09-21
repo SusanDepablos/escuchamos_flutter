@@ -163,7 +163,7 @@ class _IndexReactionsState extends State<IndexReactions> {
                 : reactions.isEmpty
                   ? const Center(
                     child: Text(
-                      'Sin resultados.',
+                      'No hay reacciones.',
                       style: TextStyle(
                         fontSize: 16,
                         color: AppColors.black,

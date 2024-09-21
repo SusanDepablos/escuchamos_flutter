@@ -205,7 +205,15 @@ class _UpdateState extends State<Profile> {
         //     message: response.message,
         //   ),
         // );
-        reloadView();
+        // Actualizar el estado para reflejar los cambios en la interfaz
+        setState(() {
+          isFollowing = !isFollowing; // Alternar entre seguir y dejar de seguir
+          if (isFollowing) {
+            followers = (followers ?? 0) + 1; // Incrementar el número de seguidores
+          } else {
+            followers = (followers ?? 0) - 1; // Decrementar el número de seguidores
+          }
+      });
       } else {
         await showDialog(
           context: context,

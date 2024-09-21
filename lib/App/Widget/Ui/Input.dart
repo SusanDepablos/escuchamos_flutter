@@ -732,6 +732,90 @@ class _NumericInputFormatter extends TextInputFormatter {
   }
 }
 
+class TextArea extends StatefulWidget {
+  final TextEditingController input;
+  final Color border;
+  final Color fillColor; // Añadir parámetro para el color de fondo
+  final String? error;
+  final bool obscureText;
+  final int minLines; // Añadir parámetro para líneas mínimas
+  final int maxLines; // Añadir parámetro para líneas máximas
+
+  TextArea({
+    required this.input,
+    this.border = AppColors.inputLigth,
+    this.fillColor = AppColors.greyLigth, // Color de fondo predeterminado
+    this.error,
+    this.obscureText = false,
+    this.minLines = 8, // Valor predeterminado
+    this.maxLines = 8, // Valor predeterminado
+  });
+
+  @override
+  _TextAreaState createState() => _TextAreaState();
+}
+
+class _TextAreaState extends State<TextArea> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.input,
+          obscureText: _obscureText,
+          minLines: widget.minLines, // Establecer líneas mínimas
+          maxLines: widget.maxLines, // Establecer líneas máximas
+          decoration: InputDecoration(
+            hintText: 'Escribe aquí...', // Placeholder
+            hintStyle: TextStyle(color: Colors.grey),
+            filled: true, // Permitir color de fondo
+            fillColor: widget.fillColor, // Color de fondo
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            suffixIcon: widget.obscureText
+                ? IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
+                : null,
+          ),
+        ),
+        if (widget.error != null && widget.error!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+
+
 
 
 
