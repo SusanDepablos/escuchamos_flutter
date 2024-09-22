@@ -38,3 +38,32 @@ class PostIndex {
     );
   }
 }
+
+class PostCreate {
+  Future<ServiceResponse> createPost(String body) async {
+
+    final url = Uri.parse('${ApiUrl.baseUrl}post/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      return ServiceResponse.fromJsonString(
+        utf8.decode(response.bodyBytes),
+        response.statusCode,
+      );
+    } catch (e) {
+      // Manejo de errores de red o de HTTP
+      throw Exception('Error al actualizar la cuenta: $e');
+    }
+  }
+}

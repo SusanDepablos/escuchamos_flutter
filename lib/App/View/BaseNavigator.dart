@@ -140,7 +140,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
     setState(() {
       _currentIndex = index;
       // Cambiar la visibilidad del AppBar según el índice seleccionado
-      _isAppBarVisible = index != 2 && index != 1; // Supongamos que 2 es el índice de NewPostView
+      _isAppBarVisible = index != 2; // Supongamos que 2 es el índice de NewPostView
     });
   }
 

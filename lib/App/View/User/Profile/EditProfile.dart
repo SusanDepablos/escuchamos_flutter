@@ -15,6 +15,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/CoverPhoto.dart'; // I
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
 import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerDialog.dart'; 
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FilePreview.dart'; 
+import 'package:image/image.dart' as img;
 
 class EditProfile extends StatefulWidget {
   @override
@@ -122,6 +123,22 @@ class _UpdateState extends State<EditProfile> {
     _callUser();
   }
 
+  Future<File> _compressImage(File file) async {
+    final originalImage = img.decodeImage(await file.readAsBytes());
+
+    // Redimensionar la imagen
+    final resizedImage = img.copyResize(originalImage!, width: 800); // Ajusta según necesites
+
+    // Codificar la imagen redimensionada a bytes
+    final compressedBytes = img.encodeJpg(resizedImage, quality: 80); // Ajusta la calidad
+
+    // Crear un archivo temporal para la imagen comprimida
+    final tempFile = File('${file.parent.path}/temp_compressed.jpg');
+    await tempFile.writeAsBytes(compressedBytes);
+
+    return tempFile; // Devuelve el archivo comprimido
+  }
+
   void _openImagePicker(bool isCoverPhoto) async {
     final imageFile = await showDialog<File>(
       context: context,
@@ -141,7 +158,7 @@ class _UpdateState extends State<EditProfile> {
                 _profileAvatarUrl = null;
               }
             });
-          reloadView();
+            reloadView();
           },
           hasPhoto: isCoverPhoto
               ? _coverPhotoUrl != null
@@ -153,19 +170,26 @@ class _UpdateState extends State<EditProfile> {
     if (imageFile != null) {
       setState(() {
         _isCoverPhoto = isCoverPhoto;
-        _imageToPreview = imageFile;
-        _showImagePreview();
+        _imageToPreview = imageFile; // Guarda el archivo original
       });
+
+      // Muestra la previsualización sin comprimir
+      _showImagePreview(imageFile); // Muestra la imagen original
     }
   }
 
-  void _showImagePreview() {
+
+  void _showImagePreview(File originalImage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return ImagePreview(
-          image: _imageToPreview,
-          onConfirm: _confirmImageSelection,
+          image: originalImage, // Muestra la imagen original
+          onConfirm: () async {
+            // Comprimir solo al confirmar
+            final compressedImage = await _compressImage(originalImage);
+            _confirmImageSelection(compressedImage);
+          },
           onCancel: _cancelImageSelection,
           isCoverPhoto: _isCoverPhoto,
         );
@@ -173,12 +197,12 @@ class _UpdateState extends State<EditProfile> {
     );
   }
 
-  void _confirmImageSelection() async {
+  void _confirmImageSelection(File compressedImage) async {
     setState(() {
       if (_isCoverPhoto) {
-        _coverPhoto = _imageToPreview;
+        _coverPhoto = compressedImage;
       } else {
-        _profileAvatar = _imageToPreview;
+        _profileAvatar = compressedImage;
       }
       _imageToPreview = null;
       _showPreview = false;
@@ -187,11 +211,7 @@ class _UpdateState extends State<EditProfile> {
     Navigator.of(context).pop(); // Cierra el diálogo de previsualización
 
     // Subir la imagen después de que se confirme la selección
-    if (_coverPhoto != null && _isCoverPhoto) {
-      await _uploadPhoto(_coverPhoto!, 'cover');
-    } else if (_profileAvatar != null && !_isCoverPhoto) {
-      await _uploadPhoto(_profileAvatar!, 'profile');
-    }
+    await _uploadPhoto(compressedImage, _isCoverPhoto ? 'cover' : 'profile');
 
     reloadView();
   }
