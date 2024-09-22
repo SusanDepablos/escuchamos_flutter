@@ -14,7 +14,7 @@ class CommentWidget extends StatelessWidget {
   final DateTime createdAt;
 
   final String reactionsCount;
-  final String commentsCount;
+  final String repliesCount;
   final String sharesCount;
 
   final String? body;
@@ -31,7 +31,7 @@ class CommentWidget extends StatelessWidget {
     this.onLikeTap,
     this.onProfileTap,
     this.reactionsCount = '120',
-    this.commentsCount = '45',
+    this.repliesCount = '45',
     this.sharesCount = '30',
     this.body,
     this.mediaUrl,
@@ -151,7 +151,7 @@ class CommentWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 12.0),
                   Text(
-                    '$commentsCount Comments',
+                    '$repliesCount Respuestas',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
