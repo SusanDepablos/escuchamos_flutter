@@ -16,8 +16,9 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexComment extends StatefulWidget {
   final String? postId;
+  final String? commentId;
   final String appBar;
-  IndexComment({this.postId,required this.appBar});
+  IndexComment({this.postId, this.commentId,required this.appBar});
   @override
   _IndexCommentState createState() => _IndexCommentState();
 }
@@ -37,7 +38,8 @@ class _IndexCommentState extends State<IndexComment> {
   final filters = {
     'pag': '10',
     'page': null,
-    'post_id': null
+    'post_id': null,
+    'comment_id': null
   };
 
   @override
@@ -70,8 +72,11 @@ class _IndexCommentState extends State<IndexComment> {
       _isLoading = true;
     });
 
-    filters['post_id'] = widget.postId?.toString();
+    if (widget.commentId == null) {
+      filters['comment_id'] = widget.commentId;
+    }
 
+    filters['post_id'] = widget.postId?.toString();
     filters['page'] = page.toString();
 
     final commentCommand = CommentCommandIndex(CommentIndex(), filters);
@@ -81,41 +86,48 @@ class _IndexCommentState extends State<IndexComment> {
 
       if (response is CommentsModel) {
         setState(() {
-          comments.addAll(response.results.data);
+          if (widget.commentId == null) {
+            comments.addAll(response.results.data
+                .where((comment) => comment.attributes.commentId == null));
+          } else {
+            comments.addAll(response.results.data);
+          }
+
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
         });
+
         reactionStates.addAll(
-          response.results.data.map((comment) => comment.relationships.reactions.any(
-            (reaction) => reaction.attributes.userId == _id,
-          )),
+          response.results.data
+              .map((comment) => comment.relationships.reactions.any(
+                    (reaction) => reaction.attributes.userId == _id,
+                  )),
         );
       } else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is InternalServerError
-            ? 'Error'
-                  : 'Error de Conexión',
+            title:
+            response is InternalServerError ? 'Error' : 'Error de Conexión',
             message: response.message,
           ),
         );
       }
     } catch (e) {
       print(e);
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
-          ),
-        );
-      }
-    finally {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
+    } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _initialLoading = false; // Después de la primera carga, ya no mostrar la pantalla de carga
+          _initialLoading =
+              false; // Después de la primera carga, ya no mostrar la pantalla de carga
         });
       }
     }
@@ -193,27 +205,33 @@ class _IndexCommentState extends State<IndexComment> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
-      appBar: AppBar(
-        // Aquí agregué la propiedad appBar sin cambiar estilos
-        backgroundColor: AppColors.whiteapp,
-        centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.appBar,
-                style: const TextStyle(
-                  fontSize: AppFond.title,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black, // No se cambió el color
-                ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight), // Altura del AppBar
+        child: Visibility(
+          visible: widget.commentId == null,
+          child: AppBar(
+            backgroundColor: AppColors.whiteapp,
+            centerTitle: true,
+            title: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.appBar,
+                    style: const TextStyle(
+                      fontSize: AppFond.title,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.black,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
+
       body: _initialLoading
           ? const LoadingScreen(
               animationPath: 'assets/animation.json',
