@@ -1,4 +1,4 @@
-import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';

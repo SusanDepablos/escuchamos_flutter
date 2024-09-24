@@ -17,7 +17,6 @@ class CommentWidget extends StatelessWidget {
 
   final String reactionsCount;
   final String repliesCount;
-  final String sharesCount;
 
   final String? body;
   final String? mediaUrl;
@@ -34,9 +33,8 @@ class CommentWidget extends StatelessWidget {
     this.onNumberLikeTap,
     this.onResponseTap,
     this.onProfileTap,
-    this.reactionsCount = '120',
-    this.repliesCount = '45',
-    this.sharesCount = '30',
+    this.reactionsCount = '0',
+    this.repliesCount = '0',
     this.body,
     this.mediaUrl,
   }) : super(key: key);
@@ -162,7 +160,7 @@ class CommentWidget extends StatelessWidget {
                       'Responder',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 15,
+                        fontSize: 16,
                       ),
                     ),
                   ),
@@ -173,7 +171,7 @@ class CommentWidget extends StatelessWidget {
                       repliesCount,
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 15,
+                        fontSize: 16,
                       ),
                     ),
                   ),
