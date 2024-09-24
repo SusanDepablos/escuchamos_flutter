@@ -12,6 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
+import 'dart:math'; // Asegúrate de tener esto para el uso de max
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexPost extends StatefulWidget {
@@ -135,57 +136,50 @@ class _IndexPostState extends State<IndexPost> {
     });
   }
 
-Future<void> _postReaction(int index, int id) async {
-    if (index < 0 || index >= posts.length) return;
+  Future<void> _postReaction(int index, int id) async {
+      // Verifica que el índice sea válido
+      if (index < 0 || index >= posts.length) return;
 
-    bool hasReaction = reactionStates[index];
+      try {
+        var response =
+            await ReactionCommandPost(ReactionPost()).execute('post', id);
 
-    if (hasReaction) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Reacción ya registrada',
-          message: 'Ya has reaccionado a esta publicación.',
-        ),
-      );
-      return;
-    }
+        if (response is SuccessResponse) {
+          setState(() {
+            // Cambia el estado de la reacción en la lista
+            bool hasReaction = reactionStates[index];
+            reactionStates[index] = !hasReaction;
 
-    try {
-      var response =
-          await ReactionCommandPost(ReactionPost()).execute('post', id);
-
-      if (response is SuccessResponse) {
-        setState(() {
-          reactionStates[index] = !hasReaction;
-
-          if (reactionStates[index]) {
-            posts[index].relationships.reactionsCount += 1;
-          } else {
-            posts[index].relationships.reactionsCount -= 1;
-          }
-        });
-      } else {
-        await showDialog(
+            // Modifica el reactionsCount dependiendo del estado de la reacción
+            if (reactionStates[index]) {
+              // Si se coloca en rojo (se agrega reacción), sumarle 1
+              posts[index].relationships.reactionsCount += 1;
+            } else {
+              // Si se coloca en gris (se quita reacción), restarle 1
+              posts[index].relationships.reactionsCount =
+                  max(0, posts[index].relationships.reactionsCount - 1);
+            }
+          });
+        } else {
+          await showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title:
+                  response is InternalServerError ? 'Error' : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      } catch (e) {
+        showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
-            message: response.message,
+            title: 'Error',
+            message: e.toString(),
           ),
         );
       }
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
     }
-  }
-
 
   @override
   void dispose() {
