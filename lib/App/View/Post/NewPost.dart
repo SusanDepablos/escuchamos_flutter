@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de que los colores estén definidos en este archivo
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -8,6 +9,8 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que el BasicTextArea esté definido aquí
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/AddFile.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 
 class NewPost extends StatefulWidget {
   @override
@@ -23,6 +26,8 @@ class _NewPostState extends State<NewPost> {
   final input = {
     'body': TextEditingController(),
   };
+
+  List<File> _mediaFiles = []; // Lista para almacenar archivos multimedia
 
   @override
   void initState() {
@@ -93,12 +98,12 @@ class _NewPostState extends State<NewPost> {
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuir el espacio
             children: [
+              // Espaciador vacío para empujar "Crear Publicación" al centro
               Text(
                 'Crear Publicación',
                 style: const TextStyle(
@@ -107,63 +112,80 @@ class _NewPostState extends State<NewPost> {
                   color: AppColors.black,
                 ),
               ),
+              LabelAction(
+                text: 'Publicar',
+                onPressed: (){},
+                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+              )
             ],
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Divider(
-            thickness: 1,
-            color: AppColors.inputLigth,
-            indent: 16,
-            endIndent: 16,
-          ),
-          // Mostrar el ProfileAvatar, name y username
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                ProfileAvatar(
-                  avatarSize: 40.0,
-                  imageProvider: imageProvider,
-                  showBorder: true,
-                  onPressed: () {
-                    // Aquí puedes abrir el drawer o realizar otra acción
-                  },
-                ),
-                SizedBox(width: 8), // Espacio entre el avatar y el texto
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name ?? '...',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      '@${username ?? '...'}',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+
+      body: SingleChildScrollView( // Agregado para habilitar el scroll
+        child: Column(
+          children: [
+            Divider(
+              thickness: 1,
+              color: AppColors.inputLigth,
+              indent: 16,
+              endIndent: 16,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextArea(
-              input: input['body']!,
+            // Mostrar el ProfileAvatar, name y username
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  ProfileAvatar(
+                    avatarSize: 40.0,
+                    imageProvider: imageProvider,
+                    showBorder: true,
+                    onPressed: () {
+                      // Aquí puedes abrir el drawer o realizar otra acción
+                    },
+                  ),
+                  SizedBox(width: 8), // Espacio entre el avatar y el texto
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name ?? '...',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '@${username ?? '...'}',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Aquí puedes agregar más widgets para el contenido del body
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: TextArea(
+                input: input['body']!,
+                minLines: _mediaFiles.isNotEmpty ? 2 : 8,
+              ),
+            ),
+            // Aquí es donde agregas el ImagePickerWidget
+            SizedBox(height: 16), // Espacio entre el TextArea y el ImagePickerWidget
+            ImagePickerWidget(
+              onMediaChanged: (mediaFiles) {
+                setState(() {
+                  _mediaFiles = mediaFiles; // Actualiza la lista de archivos seleccionados
+                });
+              },
+            ),  // Agrega el widget de selección de imágenes
+          ],
+        ),
       ),
     );
   }
