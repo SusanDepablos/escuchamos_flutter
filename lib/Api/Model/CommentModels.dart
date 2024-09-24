@@ -54,7 +54,7 @@ class Data {
 }
 
 class DataAttributes {
-  final String body;
+  final String? body;
   final int statusId;
   final int postId;
   final int userId;
@@ -63,7 +63,7 @@ class DataAttributes {
   final DateTime updatedAt;
 
   DataAttributes({
-    required this.body,
+    this.body,
     required this.statusId,
     required this.postId,
     required this.userId,

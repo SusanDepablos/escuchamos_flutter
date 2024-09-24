@@ -71,7 +71,7 @@ class _IndexCommentState extends State<IndexComment> {
       _isLoading = true;
     });
 
-    if (widget.commentId == null) {
+    if (widget.commentId != null) {
       filters['comment_id'] = widget.commentId;
     }
 
@@ -273,10 +273,19 @@ class _IndexCommentState extends State<IndexComment> {
                                 arguments: userId,
                               );
                             },
+                            onResponseTap: () {
+                              final commentId = comment.id;
+                              Navigator.pushNamed(
+                                context,
+                                'nested-comments',
+                                arguments: commentId,
+                              );
+                            },
                             body: comment.attributes.body,
                             mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
                             createdAt: comment.attributes.createdAt,
                             reactionsCount: comment.relationships.reactionsCount.toString(),
+                            repliesCount: comment.relationships.repliesCount.toString(),
                           );
                         },
                       ),

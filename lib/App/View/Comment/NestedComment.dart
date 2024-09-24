@@ -11,10 +11,12 @@ import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
+
 FlutterSecureStorage _storage = FlutterSecureStorage();
 
 class NestedComments extends StatefulWidget {
-  int commentId;
+  final int commentId;
 
   NestedComments({required this.commentId});
 
@@ -30,7 +32,9 @@ class _NestedCommentsState extends State<NestedComments> {
   String? _body;
   String? _mediaUrl;
   String? _reactionsCount;
-  List<bool> reactionStates = [false]; 
+  String? _repliesCount;
+  String? postId;
+  List<bool> reactionStates = [false];
 
   Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), widget.commentId);
@@ -43,14 +47,12 @@ class _NestedCommentsState extends State<NestedComments> {
             _comment = response;
             _name = _comment!.data.relationships.user.name;
             _username = _comment!.data.relationships.user.username;
-            _profilePhotoUrl =
-                _comment?.data.relationships.user.profilePhotoUrl;
+            _profilePhotoUrl = _comment?.data.relationships.user.profilePhotoUrl;
             _body = _comment?.data.attributes.body;
-            _mediaUrl =
-                _comment?.data.relationships.file.firstOrNull?.attributes.url;
-            _reactionsCount =
-                _comment?.data.relationships.reactionsCount.toString();
-            // Obtener el ID del usuario de manera asíncrona
+            _mediaUrl = _comment?.data.relationships.file.firstOrNull?.attributes.url;
+            _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
+            _repliesCount = _comment!.data.relationships.repliesCount.toString();
+            postId = _comment!.data.attributes.postId.toString();
             _setReactionState();
           });
         } else {
@@ -66,8 +68,8 @@ class _NestedCommentsState extends State<NestedComments> {
         }
       }
     } catch (e) {
-      print(e);
       if (mounted) {
+        print(e);
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -94,16 +96,12 @@ class _NestedCommentsState extends State<NestedComments> {
 
       if (response is SuccessResponse) {
         setState(() {
-          // Cambia el estado de la reacción
           bool hasReaction = reactionStates[index];
           reactionStates[index] = !hasReaction;
 
-          // Modifica el reactionsCount dependiendo del estado de la reacción
           if (reactionStates[index]) {
-            // Si se agrega reacción, sumar 1
             _comment!.data.relationships.reactionsCount += 1;
           } else {
-            // Si se quita reacción, restar 1
             _comment!.data.relationships.reactionsCount -= 1;
           }
         });
@@ -137,50 +135,70 @@ class _NestedCommentsState extends State<NestedComments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 10.0),
-              child: Text(
-                'Comentarios',
-                style: TextStyle(
-                  fontSize: AppFond.title,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black,
-                ),
-              ),
-            ),
-            if (_comment != null) // Verifica si el comentario está disponible
-              Container(
-                height: 100, // Altura del contenedor para el comentario
-                child: CommentWidget(
-                  reaction: reactionStates[0],
-                  onLikeTap: () => _commentReaction(
-                      0, _comment!.data.id), // Usa el ID del comentario cargado
-                  nameUser: _name.toString(),
-                  usernameUser: _username.toString(),
-                  profilePhotoUser: _profilePhotoUrl ?? '',
-                  onProfileTap: () {
-                    final userId = _comment!.data.relationships.user.id;
-                    Navigator.pushNamed(context, 'profile', arguments: userId);
-                  },
-                  body: _body,
-                  mediaUrl: _mediaUrl,
-                  createdAt: _comment!.data.attributes.createdAt,
-                  reactionsCount: _reactionsCount.toString(),
-                ),
-              ),
-          ],
+        title: const Text(
+          'Respuestas',
+          style: TextStyle(
+            fontSize: AppFond.title,
+            fontWeight: FontWeight.w800,
+            color: AppColors.black,
+          ),
         ),
       ),
       body: _comment == null
           ? const LoadingScreen(
               animationPath: 'assets/animation.json', verticalOffset: -0.3)
-          : Container(), // Aquí puedes agregar más contenido si es necesario
+          : CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CommentWidget(
+                          reaction: reactionStates[0],
+                          onLikeTap: () => _commentReaction(0, _comment!.data.id),
+                          nameUser: _name.toString(),
+                          usernameUser: _username.toString(),
+                          profilePhotoUser: _profilePhotoUrl ?? '',
+                          onProfileTap: () {
+                            final userId = _comment!.data.relationships.user.id;
+                            Navigator.pushNamed(context, 'profile',
+                                arguments: userId);
+                          },
+                          body: _body,
+                          mediaUrl: _mediaUrl,
+                          createdAt: _comment!.data.attributes.createdAt,
+                          reactionsCount: _reactionsCount.toString(),
+                          repliesCount: _repliesCount.toString(),
+                        ),
+                      ],
+                    ),
+                  ),           
+                SliverFillRemaining(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 18.0), // Padding izquierdo
+                    child: Align(
+                      alignment: Alignment.centerRight, // Alineado a la derecha
+                      child: FractionallySizedBox(
+                        widthFactor:
+                            0.9, // Ajusta el ancho al 90% del espacio disponible
+                        child: IndexComment(
+                          commentId: widget.commentId.toString(),
+                          postId: postId,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+
+
+              ],
+            ),
     );
   }
 }

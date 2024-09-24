@@ -10,6 +10,7 @@ class CommentWidget extends StatelessWidget {
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
   final VoidCallback? onLikeTap;
+    final VoidCallback? onResponseTap;
   final bool reaction;
   final DateTime createdAt;
 
@@ -29,6 +30,7 @@ class CommentWidget extends StatelessWidget {
     required this.createdAt,
     this.profilePhotoUser,
     this.onLikeTap,
+    this.onResponseTap,
     this.onProfileTap,
     this.reactionsCount = '120',
     this.repliesCount = '45',
@@ -150,11 +152,14 @@ class CommentWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12.0),
-                  Text(
-                    '$repliesCount Respuestas',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
+                  GestureDetector(
+                    onTap: onResponseTap,
+                    child: Text(
+                      '$repliesCount Respuestas',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12.0),

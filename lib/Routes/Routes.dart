@@ -26,7 +26,7 @@ import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
 import 'package:escuchamos_flutter/App/View/Follow/NavigatorFollow.dart';
 import 'package:escuchamos_flutter/App/View/Reaction/Index.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
-import 'package:escuchamos_flutter/App/View/Comment/NestedComments.dart';
+import 'package:escuchamos_flutter/App/View/Comment/NestedComment.dart';
 
 class AppRoutes {
   static final routes = {
@@ -123,17 +123,14 @@ class AppRoutes {
 
     // pantalla de comentarios
     'index-comments': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final postId = args['postId'] as String;
       return IndexComment(postId: postId);
     },
   
     'nested-comments': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<int, dynamic>;
-      final commentId = args['commentId'] as int;
-      return NestedComments(commentId: commentId);
+        final commentId = ModalRoute.of(context)!.settings.arguments as int;
+        return NestedComments(commentId: commentId);
     },
 
     // pantalla de reacciones
