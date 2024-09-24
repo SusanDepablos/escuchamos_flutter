@@ -82,6 +82,7 @@ flutter:
     - assets/logo.png
     - assets/animation.json
     - assets/succes.json
+    - assets/fail.json
     - assets/LogoIcon.png
     - assets/banner.png
     - assets/settings_inactive.png
