@@ -146,16 +146,12 @@ class _IndexPostState extends State<IndexPost> {
 
         if (response is SuccessResponse) {
           setState(() {
-            // Cambia el estado de la reacción en la lista
             bool hasReaction = reactionStates[index];
             reactionStates[index] = !hasReaction;
 
-            // Modifica el reactionsCount dependiendo del estado de la reacción
             if (reactionStates[index]) {
-              // Si se coloca en rojo (se agrega reacción), sumarle 1
               posts[index].relationships.reactionsCount += 1;
             } else {
-              // Si se coloca en gris (se quita reacción), restarle 1
               posts[index].relationships.reactionsCount =
                   max(0, posts[index].relationships.reactionsCount - 1);
             }

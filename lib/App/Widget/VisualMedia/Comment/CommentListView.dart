@@ -10,7 +10,8 @@ class CommentWidget extends StatelessWidget {
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
   final VoidCallback? onLikeTap;
-    final VoidCallback? onResponseTap;
+  final VoidCallback? onNumberLikeTap;
+  final VoidCallback? onResponseTap;
   final bool reaction;
   final DateTime createdAt;
 
@@ -20,7 +21,7 @@ class CommentWidget extends StatelessWidget {
 
   final String? body;
   final String? mediaUrl;
-  final AudioPlayer _audioPlayer = AudioPlayer();  // Crea el AudioPlayer
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Crea el AudioPlayer
 
   CommentWidget({
     Key? key,
@@ -30,6 +31,7 @@ class CommentWidget extends StatelessWidget {
     required this.createdAt,
     this.profilePhotoUser,
     this.onLikeTap,
+    this.onNumberLikeTap,
     this.onResponseTap,
     this.onProfileTap,
     this.reactionsCount = '120',
@@ -40,7 +42,8 @@ class CommentWidget extends StatelessWidget {
   }) : super(key: key);
 
   Future<void> _playSound() async {
-    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+    await _audioPlayer
+        .play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
   }
 
   @override
@@ -52,10 +55,11 @@ class CommentWidget extends StatelessWidget {
       children: [
         Container(
           margin: const EdgeInsets.only(
-              left: 56.0,
-              right: 16.0,
-              top: 8.0,
-              bottom: 8.0),
+            left: 56.0,
+            right: 16.0,
+            top: 8.0,
+            bottom: 8.0,
+          ),
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           decoration: BoxDecoration(
             color: AppColors.greyLigth, // Mantén este color si es el deseado
@@ -104,8 +108,7 @@ class CommentWidget extends StatelessWidget {
                   ),
                 ),
               ],
-              if (mediaUrl != null)
-                const SizedBox(height: 10.0),
+              if (mediaUrl != null) const SizedBox(height: 10.0),
               if (body != null) ...[
                 Text(
                   body!,
@@ -128,41 +131,52 @@ class CommentWidget extends StatelessWidget {
                     },
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
                         return ScaleTransition(scale: animation, child: child);
                       },
                       child: Icon(
-                        reaction
-                            ? Icons.favorite
-                            : Icons.favorite_border,
+                        reaction ? Icons.favorite : Icons.favorite_border,
                         key: ValueKey<bool>(reaction),
                         color: reaction ? Colors.red : Colors.grey,
                         size: 24,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8.0),
+                  const SizedBox(width: 10.0),
+                  // Número de respuestas
                   GestureDetector(
+                    onTap: onNumberLikeTap,
                     child: Text(
                       reactionsCount,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 14,
+                        fontSize: 16,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12.0),
+                  const SizedBox(width: 30.0), // Espacio entre el número y la palabra
+                  // Texto "Responder"
+                  GestureDetector(
+                    child: const Text(
+                      'Responder',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
                   GestureDetector(
                     onTap: onResponseTap,
                     child: Text(
-                      '$repliesCount Respuestas',
+                      repliesCount,
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 12,
+                        fontSize: 15,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12.0),
                 ],
               ),
             ],
@@ -175,9 +189,10 @@ class CommentWidget extends StatelessWidget {
             width: 40.0,
             height: 40.0,
             child: ProfileAvatar(
-              imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
-                  ? NetworkImage(profilePhotoUser!)
-                  : null,
+              imageProvider:
+                  profilePhotoUser != null && profilePhotoUser!.isNotEmpty
+                      ? NetworkImage(profilePhotoUser!)
+                      : null,
               avatarSize: 40.0,
               showBorder: true,
               onPressed: onProfileTap,
@@ -187,5 +202,4 @@ class CommentWidget extends StatelessWidget {
       ],
     );
   }
-
 }

@@ -175,7 +175,7 @@ class PostWidget extends StatelessWidget {
                         onTap: onIndexLikeTap,
                         child: Text(
                           reactionsCount,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 18,
                           ),
@@ -197,13 +197,16 @@ class PostWidget extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 15),
-                      Text(
-                        commentsCount,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 18,
+                      GestureDetector(
+                        onTap: onIndexCommentTap,
+                        child: Text(
+                          commentsCount,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),

@@ -241,16 +241,13 @@ Future<void> fetchComments() async {
                               itemBuilder: (context, index) {
                                 final comment = comments[index];
                                 final bool hasReaction = reactionStates[index];
+                                
                                 return CommentWidget(
                                   reaction: hasReaction,
-                                  onLikeTap: () =>
-                                      _commentReaction(index, comment.id),
+                                  onLikeTap: () => _commentReaction(index, comment.id),
                                   nameUser: comment.relationships.user.name,
-                                  usernameUser:
-                                      comment.relationships.user.username,
-                                  profilePhotoUser: comment
-                                          .relationships.user.profilePhotoUrl ??
-                                      '',
+                                  usernameUser:comment.relationships.user.username,
+                                  profilePhotoUser: comment.relationships.user.profilePhotoUrl ??'',
                                   onProfileTap: () {
                                     final userId =
                                         comment.relationships.user.id;
@@ -259,20 +256,29 @@ Future<void> fetchComments() async {
                                   },
                                   onResponseTap: () {
                                     final commentId = comment.id;
+                                    if (comment.relationships.repliesCount != 0) {
                                     Navigator.pushNamed(
                                         context, 'nested-comments',
                                         arguments: commentId);
+                                    }
+                                  },
+                                  onNumberLikeTap: () {
+                                    String objectId = comment.id.toString();
+                                    Navigator.pushNamed(
+                                      context,
+                                      'index-reactions',
+                                      arguments: {
+                                        'objectId': objectId,
+                                        'model': 'comment',
+                                        'appBar': 'Reacciones'
+                                      },
+                                    );
                                   },
                                   body: comment.attributes.body,
-                                  mediaUrl: comment.relationships.file
-                                      .firstOrNull?.attributes.url,
+                                  mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
                                   createdAt: comment.attributes.createdAt,
-                                  reactionsCount: comment
-                                      .relationships.reactionsCount
-                                      .toString(),
-                                  repliesCount: comment
-                                      .relationships.repliesCount
-                                      .toString(),
+                                  reactionsCount: comment.relationships.reactionsCount.toString(),
+                                  repliesCount: comment.relationships.repliesCount.toString(),
                                 );
                               },
                             ),
