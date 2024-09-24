@@ -10,10 +10,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
 import 'dart:convert';
 
 class EmailUpdate extends StatefulWidget {
-
   @override
   _EmailUpdateState createState() => _EmailUpdateState();
 }
@@ -107,13 +107,11 @@ class _EmailUpdateState extends State<EmailUpdate> {
 
         password = false;
         email = true;
-
       } else if (response is ValidationResponse) {
         if (response.key['password'] != null) {
           setState(() {
             _borderColors['password'] = AppColors.inputDark;
-            _errorMessages['password'] =
-            response.message('password');
+            _errorMessages['password'] = response.message('password');
           });
           Future.delayed(const Duration(seconds: 2), () {
             if (mounted) {
@@ -165,12 +163,11 @@ class _EmailUpdateState extends State<EmailUpdate> {
       var response =
           await AccountCommandUpdate(AccountUpdate()).execute(body: body);
 
-
       if (response is SuccessResponse) {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );

@@ -9,10 +9,10 @@ import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 
 class UserChangePassword extends StatefulWidget {
-
   @override
   _UserChangePasswordState createState() => _UserChangePasswordState();
 }
@@ -92,22 +92,20 @@ class _UserChangePasswordState extends State<UserChangePassword> {
       );
 
       if (response is SuccessResponse) {
-
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
 
-      Navigator.pop(context);
+        Navigator.pop(context);
       } else if (response is ValidationResponse) {
         if (response.key['old_password'] != null) {
           setState(() {
             _borderColors['old_password'] = AppColors.inputDark;
-            _errorMessages['old_password'] =
-            response.message('old_password');
+            _errorMessages['old_password'] = response.message('old_password');
           });
           Future.delayed(Duration(seconds: 2), () {
             if (mounted) {
@@ -121,8 +119,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
         if (response.key['new_password'] != null) {
           setState(() {
             _borderColors['new_password'] = AppColors.inputDark;
-            _errorMessages['new_password'] =
-            response.message('new_password');
+            _errorMessages['new_password'] = response.message('new_password');
           });
           Future.delayed(Duration(seconds: 2), () {
             if (mounted) {
@@ -137,7 +134,11 @@ class _UserChangePasswordState extends State<UserChangePassword> {
         await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Contraseña incorrecta',
+            title: response is InternalServerError
+                ? 'Error'
+                : response is ApiError
+                    ? 'Error de Conexión'
+                    : 'Contraseña incorrecta',
             message: response.message,
           ),
         );
@@ -159,7 +160,6 @@ class _UserChangePasswordState extends State<UserChangePassword> {
       });
     }
   }
-
 
   @override
   void initState() {

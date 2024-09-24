@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
 import 'dart:convert';
 
 class EditAccount extends StatefulWidget {
@@ -106,8 +107,8 @@ class _UpdateState extends State<EditAccount> {
       if (response is SuccessResponse) {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -209,17 +210,16 @@ class _UpdateState extends State<EditAccount> {
                   ),
                 ),
                 // El segundo texto se oculta si _textChanged; es true
-                if (!widget.textChanged)
-                  const SizedBox(height: 1.0),
-                  Text(
-                    'Usuario actual: @${username ?? '...'}',
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.black,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  )
+                if (!widget.textChanged) const SizedBox(height: 1.0),
+                Text(
+                  'Usuario actual: @${username ?? '...'}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.black,
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
               ],
             ),
             const SizedBox(height: 10.0),

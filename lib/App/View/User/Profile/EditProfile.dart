@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -12,9 +13,9 @@ import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/CoverPhoto.dart'; // Importa el nuevo widget
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
-import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerDialog.dart'; 
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/FilePreview.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerDialog.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/FilePreview.dart';
 import 'package:image/image.dart' as img;
 
 class EditProfile extends StatefulWidget {
@@ -46,7 +47,7 @@ class _UpdateState extends State<EditProfile> {
 
   final Map<String, String?> _errorMessages = {
     'name': null,
-    'birthdate': null, 
+    'birthdate': null,
   };
 
   Future<void> _callUser() async {
@@ -64,14 +65,15 @@ class _UpdateState extends State<EditProfile> {
             input['name']!.text = _user!.data.attributes.name;
             input['biography']!.text = _user!.data.attributes.biography ?? '';
             String? birthdateStr = _user?.data.attributes.birthdate?.toString();
-            input['birthdate']!.text = (birthdateStr != null && birthdateStr.length >= 10) 
-                ? birthdateStr.substring(0, 10) 
-                : '';
+            input['birthdate']!.text =
+                (birthdateStr != null && birthdateStr.length >= 10)
+                    ? birthdateStr.substring(0, 10)
+                    : '';
             username = _user!.data.attributes.username;
             // Buscar la URL para el avatar y la portada basándose en el tipo de archivo
             _profileAvatarUrl = _getFileUrlByType('profile');
             _coverPhotoUrl = _getFileUrlByType('cover');
-            });
+          });
         } else {
           showDialog(
             context: context,
@@ -119,7 +121,7 @@ class _UpdateState extends State<EditProfile> {
     _callUser();
   }
 
-  void reloadView(){
+  void reloadView() {
     _callUser();
   }
 
@@ -127,10 +129,12 @@ class _UpdateState extends State<EditProfile> {
     final originalImage = img.decodeImage(await file.readAsBytes());
 
     // Redimensionar la imagen
-    final resizedImage = img.copyResize(originalImage!, width: 800); // Ajusta según necesites
+    final resizedImage =
+        img.copyResize(originalImage!, width: 800); // Ajusta según necesites
 
     // Codificar la imagen redimensionada a bytes
-    final compressedBytes = img.encodeJpg(resizedImage, quality: 80); // Ajusta la calidad
+    final compressedBytes =
+        img.encodeJpg(resizedImage, quality: 80); // Ajusta la calidad
 
     // Crear un archivo temporal para la imagen comprimida
     final tempFile = File('${file.parent.path}/temp_compressed.jpg');
@@ -160,9 +164,8 @@ class _UpdateState extends State<EditProfile> {
             });
             reloadView();
           },
-          hasPhoto: isCoverPhoto
-              ? _coverPhotoUrl != null
-              : _profileAvatarUrl != null,
+          hasPhoto:
+              isCoverPhoto ? _coverPhotoUrl != null : _profileAvatarUrl != null,
         );
       },
     );
@@ -177,7 +180,6 @@ class _UpdateState extends State<EditProfile> {
       _showImagePreview(imageFile); // Muestra la imagen original
     }
   }
-
 
   void _showImagePreview(File originalImage) {
     showDialog(
@@ -233,20 +235,23 @@ class _UpdateState extends State<EditProfile> {
 
       if (response is ValidationResponse) {
         // Manejo de validaciones, si es necesario
-      } else {
-        // Mostrar el diálogo con el mensaje de éxito o error
+      } else if (response is SuccessResponse) {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: response is SuccessResponse
-                ? 'Correcto'
-                : response is InternalServerError
-                    ? 'Error'
-                    : 'Error de Conexión',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
-      }
+      } else
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
     } catch (e) {
       showDialog(
         context: context,
@@ -265,13 +270,11 @@ class _UpdateState extends State<EditProfile> {
 
     try {
       var response = await ProfileCommandUpdate(ProfileUpdate()).execute(
-        input['name']!.text,
-        input['biography']!.text,
-        input['birthdate']!.text
-      );
+          input['name']!.text,
+          input['biography']!.text,
+          input['birthdate']!.text);
 
       if (response is ValidationResponse) {
-        
         if (response.key['name'] != null) {
           setState(() {
             _borderColors['name'] = AppColors.inputDark;
@@ -297,19 +300,23 @@ class _UpdateState extends State<EditProfile> {
             });
           });
         }
-      } else {
+      } else if (response is SuccessResponse) {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: response is SuccessResponse
-                ? 'Correcto'
-                : response is InternalServerError
-                    ? 'Error'
-                    : 'Error de Conexión',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
-      }
+      } else
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
     } catch (e) {
       showDialog(
         context: context,
@@ -324,6 +331,7 @@ class _UpdateState extends State<EditProfile> {
       });
     }
   }
+
   Future<void> _DeletePhoto(String type) async {
     try {
       var response = await DeleteCommandPhoto(DeletePhoto()).execute(
@@ -389,7 +397,8 @@ class _UpdateState extends State<EditProfile> {
           ),
         ),
       ),
-      body: SingleChildScrollView( // Aquí agregas el SingleChildScrollView
+      body: SingleChildScrollView(
+        // Aquí agregas el SingleChildScrollView
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

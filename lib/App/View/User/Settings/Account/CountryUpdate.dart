@@ -12,6 +12,7 @@ import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
 import 'dart:convert';
 
 class CountryUpdate extends StatefulWidget {
@@ -87,10 +88,10 @@ class _CountryUpdateState extends State<CountryUpdate> {
             }).toList();
 
             // Extraer solo los códigos ISO para el dropdown
-              if (_selected != null && !countryData.any((data) => data['id'] == _selected)) {
-                _selected = null;
-              }
-
+            if (_selected != null &&
+                !countryData.any((data) => data['id'] == _selected)) {
+              _selected = null;
+            }
           });
         } else {
           showDialog(
@@ -125,7 +126,8 @@ class _CountryUpdateState extends State<CountryUpdate> {
 
     try {
       final body = jsonEncode({
-        'country_id': _selected, // o cualquier otro campo que utilices para el ID del país
+        'country_id':
+            _selected, // o cualquier otro campo que utilices para el ID del país
       });
 
       var response =
@@ -134,8 +136,8 @@ class _CountryUpdateState extends State<CountryUpdate> {
       if (response is SuccessResponse) {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Actualización exitosa',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -164,7 +166,6 @@ class _CountryUpdateState extends State<CountryUpdate> {
       });
     }
   }
-
 
   @override
   void initState() {
@@ -222,35 +223,35 @@ class _CountryUpdateState extends State<CountryUpdate> {
                   ),
                 ),
                 const SizedBox(height: 1.0),
-                if (country != null && country!.isNotEmpty) 
-                Text(
-                  'País actual: ${country ?? '...'}',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.black,
-                    fontStyle: FontStyle.italic,
-                  ),
-                )
+                if (country != null && country!.isNotEmpty)
+                  Text(
+                    'País actual: ${country ?? '...'}',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.black,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )
               ],
             ),
             const SizedBox(height: 16.0),
             SelectCountryWithFlags(
-                selectedValue: _selected,
-                itemsMap: countryData,
-                hintText: 'Seleccione un país',
-                textStyle: const TextStyle(
-                  color: AppColors.black,
-                  fontSize: 16,
-                ),
-                dropdownColor: AppColors.whiteapp,
-                onChanged: (value) {
-                  setState(() {
-                    _selected = value;
-                    // Aquí puedes almacenar el ID o ISO seleccionado para la actualización
-                  });
-                },
+              selectedValue: _selected,
+              itemsMap: countryData,
+              hintText: 'Seleccione un país',
+              textStyle: const TextStyle(
+                color: AppColors.black,
+                fontSize: 16,
               ),
+              dropdownColor: AppColors.whiteapp,
+              onChanged: (value) {
+                setState(() {
+                  _selected = value;
+                  // Aquí puedes almacenar el ID o ISO seleccionado para la actualización
+                });
+              },
+            ),
             const SizedBox(height: 32.0),
             GenericButton(
               label: 'Actualizar',

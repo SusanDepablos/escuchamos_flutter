@@ -14,6 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/success_animation_widget.dart';
 import 'dart:convert';
 
 class PhoneUpdate extends StatefulWidget {
@@ -104,7 +105,8 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             }).toList();
 
             // Extraer solo los códigos ISO para el dropdown
-            if (_selected != null && !countryData.any((data) => data['isoCode'] == _selected)) {
+            if (_selected != null &&
+                !countryData.any((data) => data['isoCode'] == _selected)) {
               _selected = null;
             }
             _updateFieldState(); // Actualiza el estado del campo y del botón
@@ -167,8 +169,8 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
       if (response is SuccessResponse) {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -269,18 +271,18 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     fontWeight: FontWeight.w500,
                     color: AppColors.black,
                   ),
-                ),                  
-                const SizedBox(height: 1.0),
-                if (phone != null && phone!.isNotEmpty) 
-                Text(
-                  'Número actual: $phone',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.black,
-                    fontStyle: FontStyle.italic,
-                  ),
                 ),
+                const SizedBox(height: 1.0),
+                if (phone != null && phone!.isNotEmpty)
+                  Text(
+                    'Número actual: $phone',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.black,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
               ],
             ),
             const SizedBox(height: 8.0),
