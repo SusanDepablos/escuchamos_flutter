@@ -135,34 +135,36 @@ class _IndexPostState extends State<IndexPost> {
     });
   }
 
-  Future<void> _postReaction(int index, int id) async {
-    try {
-      var response = await ReactionCommandPost(ReactionPost()).execute( 
-        'post', id
+Future<void> _postReaction(int index, int id) async {
+    if (index < 0 || index >= posts.length) return;
+
+    bool hasReaction = reactionStates[index];
+
+    if (hasReaction) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Reacción ya registrada',
+          message: 'Ya has reaccionado a esta publicación.',
+        ),
       );
+      return;
+    }
+
+    try {
+      var response =
+          await ReactionCommandPost(ReactionPost()).execute('post', id);
 
       if (response is SuccessResponse) {
         setState(() {
-          // Cambia el estado de la reacción en la lista
-          bool hasReaction = reactionStates[index];
           reactionStates[index] = !hasReaction;
 
-          // Modifica el reactionsCount dependiendo del estado de la reacción
           if (reactionStates[index]) {
-            // Si se coloca en rojo (se agrega reacción), sumarle 1
             posts[index].relationships.reactionsCount += 1;
           } else {
-            // Si se coloca en gris (se quita reacción), restarle 1
             posts[index].relationships.reactionsCount -= 1;
           }
         });
-        // await showDialog(
-        //   context: context,
-        //   builder: (context) => PopupWindow(
-        //     title: 'Éxito',
-        //     message: response.message,
-        //   ),
-        // );
       } else {
         await showDialog(
           context: context,
@@ -181,8 +183,9 @@ class _IndexPostState extends State<IndexPost> {
           message: e.toString(),
         ),
       );
-    } 
+    }
   }
+
 
   @override
   void dispose() {
