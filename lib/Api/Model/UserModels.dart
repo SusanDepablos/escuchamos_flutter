@@ -24,6 +24,84 @@ class UserModel {
     };
 }
 
+
+class Data {
+  int id;
+  DataAttributes attributes;
+  Relationships relationships;
+
+  Data({
+    required this.id,
+    required this.attributes,
+    required this.relationships,
+  });
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        id: json["id"],
+        attributes: DataAttributes.fromJson(json["attributes"]),
+        relationships: Relationships.fromJson(json["relationships"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "attributes": attributes.toJson(),
+        "relationships": relationships.toJson(),
+      };
+}
+
+class DataAttributes {
+  String username;
+  String name;
+  String email;
+  String? biography;
+  String? phoneNumber;
+  DateTime? birthdate;
+  dynamic countryId;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  DataAttributes({
+    required this.username,
+    required this.name,
+    required this.email,
+    this.biography,
+    this.phoneNumber,
+    this.birthdate,
+    required this.countryId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory DataAttributes.fromJson(Map<String, dynamic> json) => DataAttributes(
+        username: json["username"],
+        name: json["name"],
+        email: json["email"],
+        biography: json["biography"] as String?,
+        phoneNumber: json["phone_number"] as String?,
+        birthdate: json["birthdate"] != null
+            ? DateTime.parse(json["birthdate"])
+            : null,
+        countryId: json["country_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "username": username,
+        "name": name,
+        "email": email,
+        "biography": biography,
+        "phone_number": phoneNumber,
+        "birthdate": birthdate != null
+            ? "${birthdate!.year.toString().padLeft(4, '0')}-${birthdate!.month.toString().padLeft(2, '0')}-${birthdate!.day.toString().padLeft(2, '0')}"
+            : null,
+        "country_id": countryId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///MODELO DE USUARIOS PARA INDEX
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,78 +208,6 @@ class DatumAttributes {
         biography: json["biography"] as String?,
         phoneNumber: json["phone_number"] as String?,
         birthdate: json["birthdate"] != null ? DateTime.parse(json["birthdate"]) : null,
-        countryId: json["country_id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "username": username,
-        "name": name,
-        "email": email,
-        "biography": biography,
-        "phone_number": phoneNumber,
-        "birthdate": birthdate != null ? "${birthdate!.year.toString().padLeft(4, '0')}-${birthdate!.month.toString().padLeft(2, '0')}-${birthdate!.day.toString().padLeft(2, '0')}" : null,
-        "country_id": countryId,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-    };
-}
-
-class Data {
-    int id;
-    DataAttributes attributes;
-    Relationships relationships;
-
-    Data({
-        required this.id,
-        required this.attributes,
-        required this.relationships,
-    });
-
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        attributes: DataAttributes.fromJson(json["attributes"]),
-        relationships: Relationships.fromJson(json["relationships"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "attributes": attributes.toJson(),
-        "relationships": relationships.toJson(),
-    };
-}
-
-class DataAttributes {
-    String username;
-    String name;
-    String email;
-    String? biography;
-    String? phoneNumber;
-    DateTime? birthdate;
-    dynamic countryId;
-    DateTime createdAt;
-    DateTime updatedAt;
-
-    DataAttributes({
-        required this.username,
-        required this.name,
-        required this.email,
-        this.biography,
-        this.phoneNumber,
-        this.birthdate,
-        required this.countryId,
-        required this.createdAt,
-        required this.updatedAt,
-    });
-
-    factory DataAttributes.fromJson(Map<String, dynamic> json) => DataAttributes(
-        username: json["username"],
-        name: json["name"],
-        email: json["email"],
-        biography: json["biography"] as String?,
-        phoneNumber: json["phone_number"] as String?,
-        birthdate: json["birthdate"]!= null ? DateTime.parse(json["birthdate"]) : null,
         countryId: json["country_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),

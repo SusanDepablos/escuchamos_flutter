@@ -38,3 +38,25 @@ class CommentIndex {
     );
   }
 }
+
+class CommentShow {
+  Future<ServiceResponse> showcomment(int id) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}comment/$id/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.get(
+      url,
+      headers: headers,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}

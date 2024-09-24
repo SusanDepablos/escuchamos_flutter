@@ -4,6 +4,100 @@
 
 import 'dart:convert';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///MODELO DE USUARIOS PARA SHOW
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CommentModel commentModelFromJson(String str) =>
+    CommentModel.fromJson(json.decode(str));
+
+String commentModelToJson(CommentModel data) => json.encode(data.toJson());
+
+class CommentModel {
+  final Data data;
+
+  CommentModel({
+    required this.data,
+  });
+
+  factory CommentModel.fromJson(Map<String, dynamic> json) => CommentModel(
+        data: Data.fromJson(json["data"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "data": data.toJson(),
+      };
+}
+
+class Data {
+  final int id;
+  final DataAttributes attributes;
+  final Relationships relationships;
+
+  Data({
+    required this.id,
+    required this.attributes,
+    required this.relationships,
+  });
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        id: json["id"],
+        attributes: DataAttributes.fromJson(json["attributes"]),
+        relationships: Relationships.fromJson(json["relationships"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "attributes": attributes.toJson(),
+        "relationships": relationships.toJson(),
+      };
+}
+
+class DataAttributes {
+  final String body;
+  final int statusId;
+  final int postId;
+  final int userId;
+  final dynamic commentId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  DataAttributes({
+    required this.body,
+    required this.statusId,
+    required this.postId,
+    required this.userId,
+    required this.commentId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory DataAttributes.fromJson(Map<String, dynamic> json) => DataAttributes(
+        body: json["body"],
+        statusId: json["status_id"],
+        postId: json["post_id"],
+        userId: json["user_id"],
+        commentId: json["comment_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "body": body,
+        "status_id": statusId,
+        "post_id": postId,
+        "user_id": userId,
+        "comment_id": commentId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///MODELO DE USUARIOS PARA INDEX
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 CommentsModel commentsModelFromJson(String str) =>
     CommentsModel.fromJson(json.decode(str));
 
@@ -117,6 +211,10 @@ class DatumAttributes {
         "updated_at": updatedAt.toIso8601String(),
       };
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///CLASES EN COMÚN
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class Relationships {
   User user;
@@ -377,5 +475,8 @@ class ReactionRelationships {
     };
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

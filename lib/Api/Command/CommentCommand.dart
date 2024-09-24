@@ -31,3 +31,29 @@ class CommentCommandIndex {
   }
 }
 
+class CommentCommandShow {
+  final CommentShow _commentShowService;
+  final int id;
+
+  CommentCommandShow(this._commentShowService, this.id);
+
+  Future<dynamic> execute() async {
+    try {
+      var response = await _commentShowService.showcomment(id);
+
+      if (response.statusCode == 200) {
+        return CommentModel.fromJson(response.body);
+      } else if (response.statusCode == 404) {
+        return SimpleErrorResponse.fromServiceResponse(response);
+      } else {
+        return InternalServerError.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+

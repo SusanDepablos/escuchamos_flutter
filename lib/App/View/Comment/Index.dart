@@ -17,8 +17,7 @@ final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexComment extends StatefulWidget {
   final String? postId;
   final String? commentId;
-  final String appBar;
-  IndexComment({this.postId, this.commentId,required this.appBar});
+  IndexComment({this.postId, this.commentId});
   @override
   _IndexCommentState createState() => _IndexCommentState();
 }
@@ -206,20 +205,20 @@ class _IndexCommentState extends State<IndexComment> {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight), // Altura del AppBar
+        preferredSize: Size.fromHeight(kToolbarHeight),
         child: Visibility(
           visible: widget.commentId == null,
           child: AppBar(
             backgroundColor: AppColors.whiteapp,
             centerTitle: true,
-            title: Padding(
-              padding: const EdgeInsets.only(top: 10.0),
+            title: const Padding(
+              padding: EdgeInsets.only(top: 10.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    widget.appBar,
-                    style: const TextStyle(
+                    'Comentarios',
+                    style: TextStyle(
                       fontSize: AppFond.title,
                       fontWeight: FontWeight.w800,
                       color: AppColors.black,

@@ -256,7 +256,6 @@ class _IndexPostState extends State<IndexPost> {
                                 'index-comments',
                                 arguments: {
                                   'postId': postId,
-                                  'appBar': 'Comentarios',
                                 },
                               );
                             },
