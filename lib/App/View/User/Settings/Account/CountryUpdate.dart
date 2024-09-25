@@ -146,8 +146,8 @@ class _CountryUpdateState extends State<CountryUpdate> {
       } else {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );

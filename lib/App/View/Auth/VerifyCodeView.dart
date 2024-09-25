@@ -1,10 +1,11 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/DigitBox.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/CountTimer.dart'; 
-import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
-import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Ui/CountTimer.dart';
+import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
@@ -23,7 +24,7 @@ class VerifyCodeView extends StatefulWidget {
 
 class _VerifyCodeViewState extends State<VerifyCodeView> {
   final TextEditingController _codeController = TextEditingController();
-  bool _isButtonEnabled = false; 
+  bool _isButtonEnabled = false;
   bool _isLoading = false;
   bool _isConfirmLoading = false;
 
@@ -66,24 +67,21 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
       if (response is SuccessResponse) {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Éxito',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         ).then((_) {
-
           Navigator.pushReplacementNamed(context, 'login');
         });
       } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError
-                  ? 'Error'
-                  : response is ApiError ? 'Error de Conexión' : 'Código Incorrecto',
-              message: response.message,
-            ),
-          );
+        showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
       }
     } catch (e) {
       setState(() {
@@ -106,15 +104,14 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteapp, 
+        backgroundColor: AppColors.whiteapp,
         automaticallyImplyLeading: false,
-      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+        title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
         centerTitle: true, // Para centrar el LogoBanner en el AppBar
       ),
       body: Padding(
@@ -125,32 +122,34 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             const Text(
               'Verifica tu correo electrónico',
               style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold, // Texto en negrita
-                ),
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold, // Texto en negrita
               ),
-            const SizedBox(height: 4.0), 
+            ),
+            const SizedBox(height: 4.0),
             const Text(
               'Escribe el código de 6 dígitos que enviamos a:',
               style: TextStyle(fontSize: 13.0),
             ),
             Text(
               widget.email,
-              style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 26.0), 
+            const SizedBox(height: 26.0),
             DigitBox(
-              input: _codeController, 
-              border: AppColors.primaryBlue, 
+              input: _codeController,
+              border: AppColors.primaryBlue,
             ),
-            const SizedBox(height: 16.0), 
+            const SizedBox(height: 16.0),
             const Text(
               'Puedes solicitar un nuevo código en:',
               style: TextStyle(fontSize: 14.0, color: AppColors.black),
             ),
             const SizedBox(height: 10.0),
             Align(
-              alignment: Alignment.center, // Puedes ajustar esto para alinear en cualquier lugar
+              alignment: Alignment
+                  .center, // Puedes ajustar esto para alinear en cualquier lugar
               child: CountTimer(
                 onTimerEnd: _enableButton,
               ),
@@ -173,4 +172,3 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
     );
   }
 }
-

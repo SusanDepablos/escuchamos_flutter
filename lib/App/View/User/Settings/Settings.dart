@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -67,6 +68,7 @@ class _SettingsState extends State<Settings> {
       }
     }
   }
+
   Future<void> _logout(BuildContext context) async {
     setState(() {
       _submitting = true;
@@ -80,8 +82,8 @@ class _SettingsState extends State<Settings> {
       if (response is SuccessResponse) {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const LogoutAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -142,8 +144,7 @@ class _SettingsState extends State<Settings> {
                 name ?? '...',
                 style: const TextStyle(
                   fontSize: AppFond.title,
-                  fontWeight:
-                      FontWeight.w800,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
               ),
@@ -165,7 +166,7 @@ class _SettingsState extends State<Settings> {
             const SizedBox(height: 16),
             ListTile(
               leading: const Icon(
-                MaterialIcons.person, 
+                MaterialIcons.person,
                 color: AppColors.black,
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
@@ -191,7 +192,7 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               leading: const Icon(
-                MaterialIcons.lock, 
+                MaterialIcons.lock,
                 color: AppColors.black,
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
@@ -217,7 +218,7 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               leading: const Icon(
-                MaterialIcons.cancel, 
+                MaterialIcons.cancel,
                 color: AppColors.black,
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
@@ -255,13 +256,14 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.errorRed,
                 ),
               ),
-              onTap: _submitting ? null : () async {
-                await _logout(context);
-              },
+              onTap: _submitting
+                  ? null
+                  : () async {
+                      await _logout(context);
+                    },
             ),
           ],
         ),
-
       ),
     );
   }

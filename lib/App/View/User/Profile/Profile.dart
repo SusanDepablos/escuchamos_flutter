@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
@@ -65,8 +66,8 @@ class _UpdateState extends State<Profile> {
       if (response is SuccessResponse) {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const LogoutAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -127,7 +128,7 @@ class _UpdateState extends State<Profile> {
             _coverPhotoUrl = _getFileUrlByType('cover');
 
             final followersList = _user!.data.relationships.followers;
-              isFollowing = followersList.any((follower) =>
+            isFollowing = followersList.any((follower) =>
                 follower.attributes.followingUser.id == _storedUserId);
             _loadingFollow = false;
             // Puedes usar `isFollowing` para actualizar la UI si es necesario
@@ -184,7 +185,8 @@ class _UpdateState extends State<Profile> {
   }
 
   String _formatDate(DateTime dateTime) {
-    final DateFormat formatter = DateFormat('d \'de\' MMMM \'de\' yyyy', 'es_ES');
+    final DateFormat formatter =
+        DateFormat('d \'de\' MMMM \'de\' yyyy', 'es_ES');
     return formatter.format(dateTime);
   }
 
@@ -194,7 +196,7 @@ class _UpdateState extends State<Profile> {
     });
 
     try {
-      var response = await FollowCommandPost(FollowPost()).execute( 
+      var response = await FollowCommandPost(FollowPost()).execute(
         widget.userId,
       );
 
@@ -210,11 +212,13 @@ class _UpdateState extends State<Profile> {
         setState(() {
           isFollowing = !isFollowing; // Alternar entre seguir y dejar de seguir
           if (isFollowing) {
-            followers = (followers ?? 0) + 1; // Incrementar el número de seguidores
+            followers =
+                (followers ?? 0) + 1; // Incrementar el número de seguidores
           } else {
-            followers = (followers ?? 0) - 1; // Decrementar el número de seguidores
+            followers =
+                (followers ?? 0) - 1; // Decrementar el número de seguidores
           }
-      });
+        });
       } else {
         await showDialog(
           context: context,
@@ -243,239 +247,251 @@ class _UpdateState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteapp,
-      appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                name ?? '...',
-                style: const TextStyle(
-                  fontSize: AppFond.title,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          if (_storedUserId != null && _storedUserId == widget.userId) // Validación del userId
-            SettingsMenu(
-              onEditProfile: () async {
-                await Navigator.pushNamed(context, 'edit-profile');
-                reloadView();
-              },
-              onLogout: () async {
-                if (!_submitting) {
-                  await _logout(context);
-                }
-              },
-              isEnabled: !_submitting, // Pasar el estado
-            ),
-        ],
-      ),
-      body:  CustomScrollView(
-        slivers: [
-          // Sección de historias
-          SliverToBoxAdapter(
-            child: Padding(
-            padding: const EdgeInsets.all(16.0),
+        appBar: AppBar(
+          backgroundColor: AppColors.whiteapp,
+          centerTitle: true,
+          title: Padding(
+            padding: const EdgeInsets.only(top: 10),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.center,
-                  children: [
-                    CoverPhoto(
-                      height: 140.0,
-                      iconSize: 40.0,
-                      imageProvider: _coverPhotoUrl != null
-                          ? NetworkImage(_coverPhotoUrl!)
-                          : null,
-                      onPressed: () {
-                        if (_coverPhotoUrl != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FullScreenImage(
-                                imageUrl: _coverPhotoUrl!,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    Positioned(
-                      bottom: -30,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: ClipOval(
-                          child: ProfileAvatar(
-                            avatarSize: 70.0,
-                            iconSize: 30.0,
-                            imageProvider: (_profileAvatarUrl != null
-                                ? NetworkImage(_profileAvatarUrl!)
-                                : null),
-                            onPressed: () {
-                              if (_profileAvatarUrl != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FullScreenImage(
-                                      imageUrl: _profileAvatarUrl!,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 40),
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '@${username ?? '...'}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.black,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8), // Espaciado entre el username y el label
-                    if (_storedUserId != null && _storedUserId != widget.userId)
-                    Align(
-                      alignment: Alignment.center,
-                      child: _loadingFollow
-                          ? CustomLoadingIndicator(color: AppColors.primaryBlue, size: 20) // Muestra el indicador circular cuando está cargando
-                          : GenericButton(
-                              label: isFollowing ? 'Siguiendo' : 'Seguir',
-                              onPressed: _postFollow,
-                              isLoading: _submitting,
-                              width: 120, // Ancho personalizado
-                              height: 40, // Alto personalizado
-                              color: isFollowing ? AppColors.inputDark : AppColors.primaryBlue,
-                            ),
-                    ),
-                    if (_storedUserId != null && _storedUserId != widget.userId)
-                    const SizedBox(height: 8),
-                    Visibility(
-                      visible: biography?.isNotEmpty ?? false,
-                      child: Text(
-                        biography ?? '',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: AppColors.black,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        LabelAction(
-                          text: createdAt != null
-                              ? 'Se unió el ${_formatDate(createdAt!)}'
-                              : '...',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.black,
-                          ),
-                          icon: MaterialIcons.date,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${followers ?? '0'}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.black,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        LabelAction(
-                          text: 'Seguidores',
-                          onPressed: () async {
-                            final result = await Navigator.pushNamed(
-                              context,
-                              'navigator-follow',
-                              arguments: {
-                                'userId': widget.userId.toString(),
-                                'initialTab': 'follower', // Reemplaza con el ID del usuario seguido
-                              },
-                            );
-
-                            reloadView();
-                          },
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.inputDark,
-                          ),
-                          padding: EdgeInsets.zero,
-                        ),
-                        const SizedBox(width: 20),
-                        Text(
-                          '${following ?? '0'}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.black,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        LabelAction(
-                          text: 'Seguidos',
-                          onPressed: () async {
-                            final result = await Navigator.pushNamed(
-                              context,
-                              'navigator-follow',
-                                arguments: {
-                                  'userId': widget.userId.toString(),
-                                  'initialTab': 'followed', // Reemplaza con el ID del usuario seguido
-                                },
-                            );
-                            reloadView();
-                          },
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.inputDark,
-                          ),
-                          padding: EdgeInsets.zero,
-                        ),
-                      ],
-                    ),
-                  ],
+                Text(
+                  name ?? '...',
+                  style: const TextStyle(
+                    fontSize: AppFond.title,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.black,
+                  ),
                 ),
               ],
             ),
           ),
+          actions: [
+            if (_storedUserId != null &&
+                _storedUserId == widget.userId) // Validación del userId
+              SettingsMenu(
+                onEditProfile: () async {
+                  await Navigator.pushNamed(context, 'edit-profile');
+                  reloadView();
+                },
+                onLogout: () async {
+                  if (!_submitting) {
+                    await _logout(context);
+                  }
+                },
+                isEnabled: !_submitting, // Pasar el estado
+              ),
+          ],
         ),
-        SliverFillRemaining(
-            child: NavigatorUser(
-              initialTab: 'posts', // O 'shares', según la lógica que necesites
-              userId: widget.userId,
+        body: CustomScrollView(
+          slivers: [
+            // Sección de historias
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        CoverPhoto(
+                          height: 140.0,
+                          iconSize: 40.0,
+                          imageProvider: _coverPhotoUrl != null
+                              ? NetworkImage(_coverPhotoUrl!)
+                              : null,
+                          onPressed: () {
+                            if (_coverPhotoUrl != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FullScreenImage(
+                                    imageUrl: _coverPhotoUrl!,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        Positioned(
+                          bottom: -30,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipOval(
+                              child: ProfileAvatar(
+                                avatarSize: 70.0,
+                                iconSize: 30.0,
+                                imageProvider: (_profileAvatarUrl != null
+                                    ? NetworkImage(_profileAvatarUrl!)
+                                    : null),
+                                onPressed: () {
+                                  if (_profileAvatarUrl != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FullScreenImage(
+                                          imageUrl: _profileAvatarUrl!,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+                    Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            '@${username ?? '...'}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                            height:
+                                8), // Espaciado entre el username y el label
+                        if (_storedUserId != null &&
+                            _storedUserId != widget.userId)
+                          Align(
+                            alignment: Alignment.center,
+                            child: _loadingFollow
+                                ? CustomLoadingIndicator(
+                                    color: AppColors.primaryBlue,
+                                    size:
+                                        20) // Muestra el indicador circular cuando está cargando
+                                : GenericButton(
+                                    label: isFollowing ? 'Siguiendo' : 'Seguir',
+                                    onPressed: _postFollow,
+                                    isLoading: _submitting,
+                                    width: 120, // Ancho personalizado
+                                    height: 40, // Alto personalizado
+                                    color: isFollowing
+                                        ? AppColors.inputDark
+                                        : AppColors.primaryBlue,
+                                  ),
+                          ),
+                        if (_storedUserId != null &&
+                            _storedUserId != widget.userId)
+                          const SizedBox(height: 8),
+                        Visibility(
+                          visible: biography?.isNotEmpty ?? false,
+                          child: Text(
+                            biography ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LabelAction(
+                              text: createdAt != null
+                                  ? 'Se unió el ${_formatDate(createdAt!)}'
+                                  : '...',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: AppColors.black,
+                              ),
+                              icon: MaterialIcons.date,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${followers ?? '0'}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.black,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            LabelAction(
+                              text: 'Seguidores',
+                              onPressed: () async {
+                                final result = await Navigator.pushNamed(
+                                  context,
+                                  'navigator-follow',
+                                  arguments: {
+                                    'userId': widget.userId.toString(),
+                                    'initialTab':
+                                        'follower', // Reemplaza con el ID del usuario seguido
+                                  },
+                                );
+
+                                reloadView();
+                              },
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: AppColors.inputDark,
+                              ),
+                              padding: EdgeInsets.zero,
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              '${following ?? '0'}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.black,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            LabelAction(
+                              text: 'Seguidos',
+                              onPressed: () async {
+                                final result = await Navigator.pushNamed(
+                                  context,
+                                  'navigator-follow',
+                                  arguments: {
+                                    'userId': widget.userId.toString(),
+                                    'initialTab':
+                                        'followed', // Reemplaza con el ID del usuario seguido
+                                  },
+                                );
+                                reloadView();
+                              },
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: AppColors.inputDark,
+                              ),
+                              padding: EdgeInsets.zero,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
-      )
-    );
+            SliverFillRemaining(
+              child: NavigatorUser(
+                initialTab:
+                    'posts', // O 'shares', según la lógica que necesites
+                userId: widget.userId,
+              ),
+            ),
+          ],
+        ));
   }
 }

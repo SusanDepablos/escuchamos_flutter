@@ -99,8 +99,8 @@ class _EmailUpdateState extends State<EmailUpdate> {
 
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -125,9 +125,8 @@ class _EmailUpdateState extends State<EmailUpdate> {
       } else {
         await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );

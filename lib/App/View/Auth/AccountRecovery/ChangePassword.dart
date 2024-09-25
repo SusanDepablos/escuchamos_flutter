@@ -1,13 +1,14 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
-import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
-import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
+import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class RecoverAccountChangePassword extends StatefulWidget {
@@ -16,10 +17,12 @@ class RecoverAccountChangePassword extends StatefulWidget {
   RecoverAccountChangePassword({required this.email});
 
   @override
-  _RecoverAccountChangePasswordState createState() => _RecoverAccountChangePasswordState();
+  _RecoverAccountChangePasswordState createState() =>
+      _RecoverAccountChangePasswordState();
 }
 
-class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassword> {
+class _RecoverAccountChangePasswordState
+    extends State<RecoverAccountChangePassword> {
   bool _submitting = false;
 
   final Map<String, TextEditingController> _inputControllers = {
@@ -40,13 +43,14 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
     });
 
     try {
-      var response = await UserCommandUserRecoverAccountChangePassword(UserRecoverAccountChangePassword()).execute(
+      var response = await UserCommandUserRecoverAccountChangePassword(
+              UserRecoverAccountChangePassword())
+          .execute(
         widget.email,
         _inputControllers['new_password']!.text,
       );
 
       if (response is ValidationResponse) {
-
         if (response.key['new_password'] != null) {
           setState(() {
             _borderColors['new_password'] = AppColors.inputDark;
@@ -59,36 +63,34 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
             });
           });
         }
-
-        } else if (response is SuccessResponse) {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: 'Éxito',
-              message: response.message,
-            ),
-          ).then((_) {
-
-            Navigator.pushReplacementNamed(context, 'login');
-          });
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Contraseña Inválida',
-              message: response.message,
-            ),
-          );
-        }
-      } catch (e) {
-        print(e);
+      } else if (response is SuccessResponse) {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        ).then((_) {
+          Navigator.pushReplacementNamed(context, 'login');
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
           ),
         );
+      }
+    } catch (e) {
+      print(e);
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -98,14 +100,14 @@ class _RecoverAccountChangePasswordState extends State<RecoverAccountChangePassw
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: AppColors.whiteapp,
-      appBar: AppBar(
       backgroundColor: AppColors.whiteapp,
+      appBar: AppBar(
+        backgroundColor: AppColors.whiteapp,
         automaticallyImplyLeading: false,
-      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+        title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
         centerTitle: true, // Para centrar el LogoBanner en el AppBar
       ),
       body: Padding(

@@ -43,7 +43,8 @@ class PopupWindow extends StatelessWidget {
         ),
       ),
       content: Padding(
-        padding: const EdgeInsets.only(top: 8.0), // Espacio entre el título y el mensaje
+        padding: const EdgeInsets.only(
+            top: 8.0), // Espacio entre el título y el mensaje
         child: Text(
           message,
           style: TextStyle(
@@ -56,11 +57,13 @@ class PopupWindow extends StatelessWidget {
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: AppColors.primaryBlue, // Color del texto blanco
-            backgroundColor: backgroundColor.withOpacity(0.1), // Fondo sutil del botón
+            backgroundColor:
+                backgroundColor.withOpacity(0.1), // Fondo sutil del botón
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8), // Esquinas redondeadas
             ),
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Relleno del botón
+            padding: EdgeInsets.symmetric(
+                vertical: 8, horizontal: 16), // Relleno del botón
           ),
           child: Text(
             'Aceptar',
@@ -76,13 +79,15 @@ class PopupWindow extends StatelessWidget {
       ],
       backgroundColor: backgroundColor, // Aplicar color de fondo al diálogo
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30), // Esquinas redondeadas del cuadro de diálogo
+        borderRadius: BorderRadius.circular(
+            30), // Esquinas redondeadas del cuadro de diálogo
       ),
       contentPadding: EdgeInsets.all(20), // Espacio interno del contenido
     );
   }
 }
 
+/////////////////////////////////////
 
 class AutoClosePopup extends StatelessWidget {
   final String? title; // Permitir que el título sea nulo
@@ -149,3 +154,68 @@ class AutoClosePopup extends StatelessWidget {
   }
 }
 
+////////////////////////////////////////////////////
+class AutoClosePopupFail extends StatelessWidget {
+  final String? title; // Permitir que el título sea nulo
+  final String message;
+  final Color titleColor;
+  final Color messageColor;
+  final Color backgroundColor;
+  final Widget? child; // Añadir el parámetro child opcional
+
+  AutoClosePopupFail({
+    this.title,
+    required this.message,
+    this.titleColor = Colors.black,
+    this.messageColor = Colors.black54,
+    this.backgroundColor = Colors.white,
+    this.child, // Inicializa el child
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Programar el cierre del diálogo después de 4 segundos
+    Future.delayed(Duration(milliseconds: 1850), () {
+      Navigator.of(context).pop(); // Cerrar el diálogo automáticamente
+    });
+
+    return AlertDialog(
+      title: (title != null &&
+              title!
+                  .isNotEmpty) // Verificar si el título no es nulo y no está vacío
+          ? Text(
+              title!,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: titleColor,
+              ),
+            )
+          : null, // Si es nulo o vacío, no se renderiza el título
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (child != null) ...[
+            const SizedBox(height: 20),
+            child!, // Mostrar el widget child si no es nulo
+          ],
+          SizedBox(height: 5.0),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 16,
+              color: messageColor,
+            ),
+            textAlign: TextAlign.center, // Centrar el texto del mensaje
+          ),
+          SizedBox(height: 37.0),
+        ],
+      ),
+      backgroundColor: backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      contentPadding: const EdgeInsets.all(20),
+    );
+  }
+}

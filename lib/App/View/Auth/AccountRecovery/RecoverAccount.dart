@@ -1,13 +1,14 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
-import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; 
-import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; 
+import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class RecoverAccount extends StatefulWidget {
@@ -36,13 +37,12 @@ class _RecoverAccountState extends State<RecoverAccount> {
     });
 
     try {
-      var response = await UserCommandRecoverAccount(Userrecoveraccount()).execute(
+      var response =
+          await UserCommandRecoverAccount(Userrecoveraccount()).execute(
         _inputControllers['email']!.text,
       );
 
-
       if (response is ValidationResponse) {
-
         if (response.key['email'] != null) {
           setState(() {
             _borderColors['email'] = Colors.red;
@@ -55,30 +55,30 @@ class _RecoverAccountState extends State<RecoverAccount> {
             });
           });
         }
-        } else if (response is SuccessResponse) {
-          Navigator.pushReplacementNamed(
-            context,
-            'account-verification',
-            arguments: _inputControllers['email']!.text,
-          );
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
-              message: response.message,
-            ),
-          );
-        }
-      } catch (e) {
-        print(e);
+      } else if (response is SuccessResponse) {
+        Navigator.pushReplacementNamed(
+          context,
+          'account-verification',
+          arguments: _inputControllers['email']!.text,
+        );
+      } else {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
           ),
         );
+      }
+    } catch (e) {
+      print(e);
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -91,7 +91,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: AppColors.whiteapp,
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         title: Row(
@@ -116,7 +116,7 @@ class _RecoverAccountState extends State<RecoverAccount> {
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-              const SizedBox(height: 4.0), 
+              const SizedBox(height: 4.0),
               const Text(
                 'Introduce tu dirección de correo electrónico',
                 style: TextStyle(fontSize: 16.0),
@@ -141,4 +141,3 @@ class _RecoverAccountState extends State<RecoverAccount> {
     );
   }
 }
-

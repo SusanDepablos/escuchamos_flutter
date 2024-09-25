@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/Routes/Routes.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; // Asegúrate de ajustar la ruta
@@ -9,8 +10,8 @@ import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/SimpleCheckbox.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; 
-import 'package:escuchamos_flutter/App/Widget/Dialog/TermsAndConditions.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/TermsAndConditions.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class Register extends StatefulWidget {
@@ -63,7 +64,6 @@ class _RegisterState extends State<Register> {
       );
 
       if (response is ValidationResponse) {
-
         if (response.key['name'] != null) {
           setState(() {
             _borderColors['name'] = AppColors.inputDark;
@@ -145,8 +145,8 @@ class _RegisterState extends State<Register> {
       } else if (response is SuccessResponse) {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: 'Éxito',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         ).then((_) {
@@ -155,26 +155,25 @@ class _RegisterState extends State<Register> {
             'verify-code',
             arguments: _inputControllers['email']!.text,
           );
-
         });
       } else {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: response is ApiError ? 'Error de Conexión' : 'Error',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
       }
-      } catch (e) {
-        print(e);
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
-          ),
-        );
+    } catch (e) {
+      print(e);
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -184,67 +183,67 @@ class _RegisterState extends State<Register> {
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: AppColors.whiteapp,
-    appBar: AppBar(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       backgroundColor: AppColors.whiteapp,
-      elevation: 0,
-      iconTheme: const IconThemeData(color: AppColors.black),
-      titleTextStyle: const TextStyle(
-        color: AppColors.black,
-        fontSize: 20.0,
-        fontWeight: FontWeight.bold,
-      ),
-      title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
+      appBar: AppBar(
+        backgroundColor: AppColors.whiteapp,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.black),
+        titleTextStyle: const TextStyle(
+          color: AppColors.black,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+        title: LogoBanner(), // Aquí se inserta el LogoBanner en el AppBar
         centerTitle: true, // Para centrar el LogoBanner en el AppBar
-    ),
-    body: Padding(
-      padding: const EdgeInsets.all(13.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20.0),
-            GenericInput(
-              maxLength: 35,
-              text: 'Nombre y Apellido',
-              input: _inputControllers['name']!,
-              border: _borderColors['name']!,
-              error: _errorMessages['name'],
-            ),
-            const SizedBox(height: 16.0),
-            GenericInput(
-              maxLength: 30,
-              text: 'Usuario',
-              input: _inputControllers['username']!,
-              border: _borderColors['username']!,
-              error: _errorMessages['username'],
-            ),
-            const SizedBox(height: 16.0),
-            BasicInput(
-              text: 'Contraseña',
-              input: _inputControllers['password']!,
-              obscureText: true,
-              border: _borderColors['password']!,
-              error: _errorMessages['password'],
-            ),
-            const SizedBox(height: 16.0),
-            GenericInput(
-              text: 'Correo electrónico',
-              input: _inputControllers['email']!,
-              border: _borderColors['email']!,
-              error: _errorMessages['email'],
-            ),
-            const SizedBox(height: 16.0),
-            DateInput(
-              text: 'Fecha de Nacimiento',
-              input: _inputControllers['birthdate']!,
-              border: _borderColors['birthdate']!,
-              error: _errorMessages['birthdate'],
-            ),
-            const SizedBox(height: 8.0),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(13.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20.0),
+              GenericInput(
+                maxLength: 35,
+                text: 'Nombre y Apellido',
+                input: _inputControllers['name']!,
+                border: _borderColors['name']!,
+                error: _errorMessages['name'],
+              ),
+              const SizedBox(height: 16.0),
+              GenericInput(
+                maxLength: 30,
+                text: 'Usuario',
+                input: _inputControllers['username']!,
+                border: _borderColors['username']!,
+                error: _errorMessages['username'],
+              ),
+              const SizedBox(height: 16.0),
+              BasicInput(
+                text: 'Contraseña',
+                input: _inputControllers['password']!,
+                obscureText: true,
+                border: _borderColors['password']!,
+                error: _errorMessages['password'],
+              ),
+              const SizedBox(height: 16.0),
+              GenericInput(
+                text: 'Correo electrónico',
+                input: _inputControllers['email']!,
+                border: _borderColors['email']!,
+                error: _errorMessages['email'],
+              ),
+              const SizedBox(height: 16.0),
+              DateInput(
+                text: 'Fecha de Nacimiento',
+                input: _inputControllers['birthdate']!,
+                border: _borderColors['birthdate']!,
+                error: _errorMessages['birthdate'],
+              ),
+              const SizedBox(height: 8.0),
               SimpleCheckbox(
                 label: 'Acepto los términos y condiciones',
                 labelColor: AppColors.inputDark,
@@ -263,57 +262,66 @@ Widget build(BuildContext context) {
                 },
                 error: _errorMessages['checkbox'],
               ),
-            const SizedBox(height: 28.0),
-            GenericButton(
-              label: 'Registrarse',
-              onPressed: _call,
-              isLoading: _submitting,
-            ),
-            const SizedBox(height: 8.0),
-            Center(
-              child:  BasicLabel(
+              const SizedBox(height: 28.0),
+              GenericButton(
+                label: 'Registrarse',
+                onPressed: _call,
+                isLoading: _submitting,
+              ),
+              const SizedBox(height: 8.0),
+              Center(
+                child: BasicLabel(
                   name: 'Iniciar sesión',
                   color: AppColors.primaryBlue,
                   onTap: () {
-                  // Ruta que deseas usar, por ejemplo, 'login'
-                  String routeName = 'login';
+                    // Ruta que deseas usar, por ejemplo, 'login'
+                    String routeName = 'login';
 
-                  // Verifica si la ruta existe en AppRoutes
-                  if (AppRoutes.routes.containsKey(routeName)) {
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 400), // Duración de la animación
-                        pageBuilder: (context, animation, secondaryAnimation) => AppRoutes.routes[routeName]!(context),
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          var begin = const Offset(-1.0, 0.0); // Empieza fuera de la pantalla a la izquierda
-                          var end = Offset.zero; // Termina en el centro de la pantalla
-                          var curve = Curves.easeInOut;
-                          var slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                          var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-                          return SlideTransition(
-                            position: animation.drive(slideTween),
-                            child: FadeTransition(
-                              opacity: animation.drive(fadeTween),
-                              child: ScaleTransition(
-                                scale: Tween<double>(begin: 0.95, end: 1.0).animate(animation),
-                                child: child,
+                    // Verifica si la ruta existe en AppRoutes
+                    if (AppRoutes.routes.containsKey(routeName)) {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(
+                              milliseconds: 400), // Duración de la animación
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  AppRoutes.routes[routeName]!(context),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(-1.0,
+                                0.0); // Empieza fuera de la pantalla a la izquierda
+                            var end = Offset
+                                .zero; // Termina en el centro de la pantalla
+                            var curve = Curves.easeInOut;
+                            var slideTween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var fadeTween = Tween(begin: 0.0, end: 1.0)
+                                .chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(slideTween),
+                              child: FadeTransition(
+                                opacity: animation.drive(fadeTween),
+                                child: ScaleTransition(
+                                  scale: Tween<double>(begin: 0.95, end: 1.0)
+                                      .animate(animation),
+                                  child: child,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  } else {
-                    //print('Ruta no encontrada: $routeName');
-                  }
-                },
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      //print('Ruta no encontrada: $routeName');
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

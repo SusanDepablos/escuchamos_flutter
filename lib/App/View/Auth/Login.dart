@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/Routes/Routes.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; // Asegúrate de ajustar la ruta
@@ -8,7 +9,7 @@ import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
@@ -74,7 +75,6 @@ class _LoginState extends State<Login> {
           });
         }
       } else if (response is SuccessResponse) {
-
         // Navegar a la pantalla Home con los datos
         Navigator.pushReplacementNamed(
           context,
@@ -83,21 +83,21 @@ class _LoginState extends State<Login> {
       } else {
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error' : response is ApiError ? 'Error de Conexión' : 'Credenciales incorrectas',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
       }
-      } catch (e) {
-        print(e);
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
-          ),
-        );
+    } catch (e) {
+      print(e);
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -107,17 +107,18 @@ class _LoginState extends State<Login> {
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: AppColors.whiteapp,
-      appBar: AppBar(
       backgroundColor: AppColors.whiteapp,
+      appBar: AppBar(
+        backgroundColor: AppColors.whiteapp,
         automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: SingleChildScrollView( // Permite el desplazamiento
+        child: SingleChildScrollView(
+          // Permite el desplazamiento
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -145,62 +146,69 @@ class _LoginState extends State<Login> {
                 isLoading: _submitting,
               ),
               Center(
-              child:  BasicLabel(
+                child: BasicLabel(
                   name: 'Recuperar tú cuenta',
                   color: AppColors.black,
                   onTap: () {
-                    Navigator.pushNamed(
-                        context, 'recover-account');
+                    Navigator.pushNamed(context, 'recover-account');
                   },
                 ),
-            ),
-            SizedBox(height: 8.0),
-            Center(
-              child:  BasicLabel(
+              ),
+              SizedBox(height: 8.0),
+              Center(
+                child: BasicLabel(
                   name: 'Crear cuenta nueva',
                   color: AppColors.primaryBlue,
                   onTap: () {
-                  // Ruta que deseas usar, por ejemplo, 'register'
-                  String routeName = 'register';
-                  // Verifica si la ruta existe en AppRoutes
-                  if (AppRoutes.routes.containsKey(routeName)) {
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 400), // Duración de la animación
-                        pageBuilder: (context, animation, secondaryAnimation) => AppRoutes.routes[routeName]!(context),
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          var begin = const Offset(1.0, 0.0); // Empieza fuera de la pantalla a la derecha
-                          var end = Offset.zero; // Termina en el centro de la pantalla
-                          var curve = Curves.easeInOut;
+                    // Ruta que deseas usar, por ejemplo, 'register'
+                    String routeName = 'register';
+                    // Verifica si la ruta existe en AppRoutes
+                    if (AppRoutes.routes.containsKey(routeName)) {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(
+                              milliseconds: 400), // Duración de la animación
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  AppRoutes.routes[routeName]!(context),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(1.0,
+                                0.0); // Empieza fuera de la pantalla a la derecha
+                            var end = Offset
+                                .zero; // Termina en el centro de la pantalla
+                            var curve = Curves.easeInOut;
 
-                          var slideTween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                          var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
+                            var slideTween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var fadeTween = Tween(begin: 0.0, end: 1.0)
+                                .chain(CurveTween(curve: curve));
 
-                          return SlideTransition(
-                            position: animation.drive(slideTween),
-                            child: FadeTransition(
-                              opacity: animation.drive(fadeTween),
-                              child: ScaleTransition(
-                                scale: Tween<double>(begin: 0.95, end: 1.0).animate(animation),
-                                child: child,
+                            return SlideTransition(
+                              position: animation.drive(slideTween),
+                              child: FadeTransition(
+                                opacity: animation.drive(fadeTween),
+                                child: ScaleTransition(
+                                  scale: Tween<double>(begin: 0.95, end: 1.0)
+                                      .animate(animation),
+                                  child: child,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  } else {
-                    //print('Ruta no encontrada: $routeName');
-                  }
-                },
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      //print('Ruta no encontrada: $routeName');
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
-}
-
