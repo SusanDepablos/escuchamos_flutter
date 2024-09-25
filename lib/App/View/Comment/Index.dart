@@ -15,6 +15,9 @@ import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
+String? reactionsNumber_;
+String? commentId_;
+bool? likeState;
 
 class IndexComment extends StatefulWidget {
   final String? postId;
@@ -59,6 +62,34 @@ class _IndexCommentState extends State<IndexComment> {
     fetchComments();
   }
 
+  Future<void> pr1() async {
+    // Verificar que commentId_ no sea nulo
+    if (commentId_ != null) {
+      setState(() {
+        // Convertir commentId_ a int
+        int commentIdInt = int.tryParse(commentId_!) ?? -1;
+
+        // Validar que el índice esté dentro del rango
+        int commentIndex =
+            comments.indexWhere((comment) => comment.id == commentIdInt);
+        if (commentIndex >= 0 && commentIndex < comments.length) {
+          // Actualizar el reactionsCount con reactionsNumber_
+          final newReactionCount = int.tryParse(reactionsNumber_ ?? '');
+          if (newReactionCount != null) {
+            comments[commentIndex].relationships.reactionsCount =
+                newReactionCount;
+          }
+
+          // Actualizar el estado de la reacción con likeState
+          if (likeState != null) {
+            reactionStates[commentIndex] = likeState!;
+          }
+        }
+      });
+    }
+  }
+
+
   Future<void> _getData() async {
     final id = await _storage.read(key: 'user') ?? '';
     setState(() {
@@ -66,65 +97,65 @@ class _IndexCommentState extends State<IndexComment> {
     });
   }
 
-Future<void> fetchComments() async {
-    if (_isLoading || !_hasMorePages) return;
+  Future<void> fetchComments() async {
+      if (_isLoading || !_hasMorePages) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+      setState(() {
+        _isLoading = true;
+      });
 
-    if (widget.commentId != null) {
-      filters['comment_id'] = widget.commentId;
-    }
+      if (widget.commentId != null) {
+        filters['comment_id'] = widget.commentId;
+      }
 
-    filters['post_id'] = widget.postId?.toString();
-    filters['page'] = page.toString();
+      filters['post_id'] = widget.postId?.toString();
+      filters['page'] = page.toString();
 
-    final commentCommand = CommentCommandIndex(CommentIndex(), filters);
+      final commentCommand = CommentCommandIndex(CommentIndex(), filters);
 
-    try {
-      var response = await commentCommand.execute();
+      try {
+        var response = await commentCommand.execute();
 
-      if (response is CommentsModel) {
-        setState(() {
-          comments.addAll(response.results.data);
-          _hasMorePages = response.next != null && response.next!.isNotEmpty;
-          page++;
+        if (response is CommentsModel) {
+          setState(() {
+            comments.addAll(response.results.data);
+            _hasMorePages = response.next != null && response.next!.isNotEmpty;
+            page++;
 
-          reactionStates = List.generate(comments.length, (index) {
-            return comments[index].relationships.reactions.any(
-                  (reaction) => reaction.attributes.userId == _id,
-                );
+            reactionStates = List.generate(comments.length, (index) {
+              return comments[index].relationships.reactions.any(
+                    (reaction) => reaction.attributes.userId == _id,
+                  );
+            });
           });
-        });
-      } else {
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title:
+                  response is InternalServerError ? 'Error' : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      } catch (e) {
+        print(e);
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
-            message: response.message,
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
           ),
         );
-      }
-    } catch (e) {
-      print(e);
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error de Flutter',
-          message: 'Espera un poco, pronto lo solucionaremos.',
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _initialLoading = false;
-        });
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _initialLoading = false;
+          });
+        }
       }
     }
-  }
 
   Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
@@ -256,12 +287,16 @@ Future<void> fetchComments() async {
                                   },
                                   onResponseTap: () {
                                     final commentId = comment.id;
-                                    if (comment.relationships.repliesCount != 0) {
-                                    Navigator.pushNamed(
-                                        context, 'nested-comments',
-                                        arguments: commentId);
+                                    if (comment.relationships.repliesCount !=0) {
+                                      Navigator.pushNamed(
+                                              context, 'nested-comments',
+                                              arguments: commentId)
+                                          .then((_) {
+                                        pr1(); // Llama a la función pr1 después de regresar
+                                      });
                                     }
                                   },
+
                                   onNumberLikeTap: () {
                                     String objectId = comment.id.toString();
                                     Navigator.pushNamed(

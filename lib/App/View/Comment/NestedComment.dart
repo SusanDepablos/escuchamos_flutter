@@ -12,6 +12,7 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
+import 'dart:math'; // As
 
 FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -36,7 +37,7 @@ class _NestedCommentsState extends State<NestedComments> {
   String? postId;
   List<bool> reactionStates = [false];
 
-  Future<void> _callComment() async {
+    Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), widget.commentId);
     try {
       final response = await commentCommand.execute();
@@ -53,6 +54,9 @@ class _NestedCommentsState extends State<NestedComments> {
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
             _repliesCount = _comment!.data.relationships.repliesCount.toString();
             postId = _comment!.data.attributes.postId.toString();
+            reactionsNumber_ = null;
+            commentId_ = null;
+            likeState = null;
             _setReactionState();
           });
         } else {
@@ -90,6 +94,8 @@ class _NestedCommentsState extends State<NestedComments> {
   }
 
   Future<void> _commentReaction(int index, int id) async {
+    if (index < 0 || index >= reactionStates.length) return;
+
     try {
       var response =
           await ReactionCommandPost(ReactionPost()).execute('comment', id);
@@ -99,10 +105,17 @@ class _NestedCommentsState extends State<NestedComments> {
           bool hasReaction = reactionStates[index];
           reactionStates[index] = !hasReaction;
 
-          if (reactionStates[index]) {
-            _comment!.data.relationships.reactionsCount += 1;
-          } else {
-            _comment!.data.relationships.reactionsCount -= 1;
+          if (_comment != null) {
+            if (reactionStates[index]) {
+              _comment!.data.relationships.reactionsCount++;
+            } else {
+              _comment!.data.relationships.reactionsCount =
+                  max(0, _comment!.data.relationships.reactionsCount - 1);
+            }
+            _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
+            reactionsNumber_ = _reactionsCount;
+            commentId_ = id.toString();
+            likeState = !hasReaction;
           }
         });
       } else {
