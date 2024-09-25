@@ -12,7 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
-import 'dart:math'; // Asegúrate de tener esto para el uso de max
+import 'dart:math';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexPost extends StatefulWidget {
@@ -190,7 +190,7 @@ class _IndexPostState extends State<IndexPost> {
       body: _initialLoading
           ? const LoadingScreen(
               animationPath: 'assets/animation.json',
-              verticalOffset: -0.3, // Mueve la animación hacia arriba
+              verticalOffset: -0.3,
             )
           : Center(
               child: Column(
@@ -208,60 +208,61 @@ class _IndexPostState extends State<IndexPost> {
                           ),
                         )
                       : CustomRefreshIndicator(
-                      onRefresh: _reloadPosts,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final post = posts[index];
-                          final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
-                          final bool hasReaction = reactionStates[index]; // Usa el estado de la lista
-                          return PostWidget(
-                            reaction: hasReaction,
-                            onLikeTap: () => _postReaction(index, post.id), // Pasa el índice y el ID del post,
-                            nameUser: post.relationships.user.name,
-                            usernameUser: post.relationships.user.username,
-                            profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
-                            onProfileTap: () {
-                              final userId = post.relationships.user.id;
-                              Navigator.pushNamed(
-                                context,
-                                'profile',
-                                arguments: userId,
-                              );
-                            },
-                            onIndexLikeTap: () {
-                              String objectId = post.id.toString();
-                              Navigator.pushNamed(
-                                context,
-                                'index-reactions',
-                                arguments: {
-                                  'objectId': objectId,
-                                  'model': 'post',
-                                  'appBar': 'Reacciones'
+                          onRefresh: _reloadPosts,
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: posts.length,
+                            itemBuilder: (context, index) {
+                              final post = posts[index];
+                              final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
+                              final bool hasReaction = reactionStates[index]; // Usa el estado de la lista
+                              return PostWidget(
+                                reaction: hasReaction,
+                                onLikeTap: () => _postReaction(index, post.id), // Pasa el índice y el ID del post,
+                                nameUser: post.relationships.user.name,
+                                usernameUser: post.relationships.user.username,
+                                profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
+                                onProfileTap: () {
+                                  final userId = post.relationships.user.id;
+                                  Navigator.pushNamed(
+                                    context,
+                                    'profile',
+                                    arguments: userId,
+                                  );
                                 },
-                              );
-                            },
-                            onIndexCommentTap: () {
-                              String postId = post.id.toString();
-                              Navigator.pushNamed(
-                                context,
-                                'index-comments',
-                                arguments: {
-                                  'postId': postId,
+                                onIndexLikeTap: () {
+                                  String objectId = post.id.toString();
+                                  Navigator.pushNamed(
+                                    context,
+                                    'index-reactions',
+                                    arguments: {
+                                      'objectId': objectId,
+                                      'model': 'post',
+                                      'appBar': 'Reacciones'
+                                    },
+                                  );
                                 },
+                                onIndexCommentTap: () {
+                                  String postId = post.id.toString();
+                                  Navigator.pushNamed(
+                                    context,
+                                    'index-comments',
+                                    arguments: {
+                                      'postId': postId,
+                                    },
+                                  );
+                                },
+                                onCommentTap: () {},
+                                body: post.attributes.body,
+                                mediaUrls: mediaUrls,
+                                createdAt: post.attributes.createdAt,
+                                reactionsCount: post.relationships.reactionsCount.toString(),
+                                commentsCount: post.relationships.commentsCount.toString(),
+                                sharesCount: post.relationships.sharesCount.toString(),
                               );
                             },
-                            body: post.attributes.body,
-                            mediaUrls: mediaUrls,
-                            createdAt: post.attributes.createdAt,
-                            reactionsCount: post.relationships.reactionsCount.toString(),
-                            commentsCount: post.relationships.commentsCount.toString(),
-                            sharesCount: post.relationships.sharesCount.toString(),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
+                        ),
                   ),
                 ],
               ),
