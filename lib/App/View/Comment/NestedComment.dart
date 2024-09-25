@@ -12,7 +12,7 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
-import 'dart:math'; // As
+import 'dart:math';
 
 FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -54,8 +54,7 @@ class _NestedCommentsState extends State<NestedComments> {
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
             _repliesCount = _comment!.data.relationships.repliesCount.toString();
             postId = _comment!.data.attributes.postId.toString();
-            reactionsNumber_ = null;
-            commentId_ = null;
+            commentId_ = widget.commentId;
             likeState = null;
             _setReactionState();
           });
@@ -97,12 +96,12 @@ class _NestedCommentsState extends State<NestedComments> {
     if (index < 0 || index >= reactionStates.length) return;
 
     try {
-      var response =
-          await ReactionCommandPost(ReactionPost()).execute('comment', id);
+      var response = await ReactionCommandPost(ReactionPost()).execute('comment', id);
 
       if (response is SuccessResponse) {
         setState(() {
           bool hasReaction = reactionStates[index];
+          likeState = !hasReaction;
           reactionStates[index] = !hasReaction;
 
           if (_comment != null) {
@@ -113,9 +112,6 @@ class _NestedCommentsState extends State<NestedComments> {
                   max(0, _comment!.data.relationships.reactionsCount - 1);
             }
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
-            reactionsNumber_ = _reactionsCount;
-            commentId_ = id.toString();
-            likeState = !hasReaction;
           }
         });
       } else {
@@ -142,7 +138,7 @@ class _NestedCommentsState extends State<NestedComments> {
   @override
   void initState() {
     super.initState();
-    _callComment(); // Cargar el comentario al iniciar
+    _callComment();
   }
 
   @override
@@ -181,6 +177,19 @@ class _NestedCommentsState extends State<NestedComments> {
                             Navigator.pushNamed(context, 'profile',
                                 arguments: userId);
                           },
+                          
+                          onNumberLikeTap: () {
+                          String objectId = _comment!.data.id.toString();
+                          Navigator.pushNamed(
+                            context,
+                            'index-reactions',
+                            arguments: {
+                              'objectId': objectId,
+                              'model': 'comment',
+                              'appBar': 'Reacciones'
+                            },
+                          );
+                        },
                           body: _body,
                           mediaUrl: _mediaUrl,
                           createdAt: _comment!.data.attributes.createdAt,
@@ -189,16 +198,16 @@ class _NestedCommentsState extends State<NestedComments> {
                         ),
                       ],
                     ),
-                  ),           
-                SliverFillRemaining(
+                  ),
+                  SliverFillRemaining(
                   child: Padding(
                     padding:
-                        const EdgeInsets.only(left: 18.0), // Padding izquierdo
+                        const EdgeInsets.only(left: 18.0),
                     child: Align(
-                      alignment: Alignment.centerRight, // Alineado a la derecha
+                      alignment: Alignment.centerRight,
                       child: FractionallySizedBox(
                         widthFactor:
-                            0.9, // Ajusta el ancho al 90% del espacio disponible
+                            0.9,
                         child: IndexComment(
                           commentId: widget.commentId.toString(),
                           postId: postId,

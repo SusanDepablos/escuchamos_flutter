@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math'; // Asegúrate de tener esto para el uso de max
+import 'dart:math';
 import 'package:escuchamos_flutter/Api/Model/CommentModels.dart';
 import 'package:escuchamos_flutter/Api/Command/CommentCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/CommentService.dart';
@@ -16,9 +16,8 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 String? reactionsNumber_;
-String? commentId_;
+int commentId_ = 0;
 bool? likeState;
-
 class IndexComment extends StatefulWidget {
   final String? postId;
   final String? commentId;
@@ -33,6 +32,7 @@ class _IndexCommentState extends State<IndexComment> {
   List<Datum> comments = [];
   List<bool> reactionStates = [];
   late ScrollController _scrollController;
+  CommentModel? _comment;
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _initialLoading = true;
@@ -61,34 +61,6 @@ class _IndexCommentState extends State<IndexComment> {
     _getData();
     fetchComments();
   }
-
-  Future<void> pr1() async {
-    // Verificar que commentId_ no sea nulo
-    if (commentId_ != null) {
-      setState(() {
-        // Convertir commentId_ a int
-        int commentIdInt = int.tryParse(commentId_!) ?? -1;
-
-        // Validar que el índice esté dentro del rango
-        int commentIndex =
-            comments.indexWhere((comment) => comment.id == commentIdInt);
-        if (commentIndex >= 0 && commentIndex < comments.length) {
-          // Actualizar el reactionsCount con reactionsNumber_
-          final newReactionCount = int.tryParse(reactionsNumber_ ?? '');
-          if (newReactionCount != null) {
-            comments[commentIndex].relationships.reactionsCount =
-                newReactionCount;
-          }
-
-          // Actualizar el estado de la reacción con likeState
-          if (likeState != null) {
-            reactionStates[commentIndex] = likeState!;
-          }
-        }
-      });
-    }
-  }
-
 
   Future<void> _getData() async {
     final id = await _storage.read(key: 'user') ?? '';
@@ -132,8 +104,7 @@ class _IndexCommentState extends State<IndexComment> {
           showDialog(
             context: context,
             builder: (context) => PopupWindow(
-              title:
-                  response is InternalServerError ? 'Error' : 'Error de Conexión',
+              title: response is InternalServerError ? 'Error' : 'Error de Conexión',
               message: response.message,
             ),
           );
@@ -161,8 +132,7 @@ class _IndexCommentState extends State<IndexComment> {
     if (index < 0 || index >= comments.length) return;
 
     try {
-      var response =
-          await ReactionCommandPost(ReactionPost()).execute('comment', id);
+      var response = await ReactionCommandPost(ReactionPost()).execute('comment', id);
 
       if (response is SuccessResponse) {
         setState(() {
@@ -197,6 +167,57 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
+    Future<void> _callComment() async {
+    final commentCommand = CommentCommandShow(CommentShow(), commentId_);
+
+    try {
+      final response = await commentCommand.execute();
+
+      if (mounted) {
+        if (response is CommentModel) {
+          if (commentId_ != 0) {
+            setState(() {
+              _comment = response;
+
+              int commentIndex = comments.indexWhere((comment) => comment.id == commentId_);
+              if (commentIndex >= 0 && commentIndex < comments.length) {
+
+                comments[commentIndex].relationships.reactionsCount =
+                _comment!.data.relationships.reactionsCount;
+
+                comments[commentIndex].relationships.repliesCount =
+                _comment!.data.relationships.repliesCount;
+                if (likeState != null) {
+                  reactionStates[commentIndex] = likeState!;
+                }
+              }
+            });
+          }
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        print(e);
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _reloadComment() async {
     setState(() {
@@ -292,7 +313,7 @@ class _IndexCommentState extends State<IndexComment> {
                                               context, 'nested-comments',
                                               arguments: commentId)
                                           .then((_) {
-                                        pr1(); // Llama a la función pr1 después de regresar
+                                        _callComment(); // Llama a la función pr1 después de regresar
                                       });
                                     }
                                   },
