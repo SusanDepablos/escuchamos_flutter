@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -19,22 +20,22 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   // Método para seleccionar múltiples imágenes y videos
   Future<void> _pickMedia() async {
     // Mostrar un diálogo de selección para elegir entre imagen o video
-    final XFile? mediaFile = await showModalBottomSheet<XFile?>(
+    await showModalBottomSheet<XFile?>(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
-          decoration: BoxDecoration(
-            color: AppColors.whiteapp, // Cambia este color por el que prefieras
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)), // Opcional: redondear la parte superior
+          decoration: const BoxDecoration(
+            color: AppColors.whiteapp,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
           ),
           padding: EdgeInsets.zero,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.image),
-                title: Text('Imagen'),
+                leading: const Icon(MaterialIcons.image),
+                title: const Text('Imagen'),
                 onTap: () async {
                   Navigator.pop(context); // Cerrar el modal
                   final List<XFile>? selectedFiles = await _picker.pickMultiImage();
@@ -44,8 +45,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.videocam),
-                title: Text('Video'),
+                leading: const Icon(MaterialIcons.video),
+                title: const Text('Video'),
                 onTap: () async {
                   Navigator.pop(context); // Cerrar el modal
                   final XFile? videoFile = await _picker.pickVideo(source: ImageSource.gallery);
@@ -61,17 +62,15 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     );
   }
 
-
   // Método para agregar archivos a la lista
   void _addMediaFiles(List<XFile> selectedFiles) {
     setState(() {
       for (var mediaFile in selectedFiles) {
-        // Comprobar que no se exceda el límite
         if (_mediaFiles.length < 9) {
           _mediaFiles.add(File(mediaFile.path));
         }
       }
-      widget.onMediaChanged(_mediaFiles); // Notificamos al padre
+      widget.onMediaChanged(_mediaFiles);
     });
   }
 
@@ -79,7 +78,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   void _removeMedia(int index) {
     setState(() {
       _mediaFiles.removeAt(index);
-      widget.onMediaChanged(_mediaFiles); // Notificamos al padre
+      widget.onMediaChanged(_mediaFiles);
     });
   }
 
@@ -92,7 +91,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         borderRadius: BorderRadius.circular(10),
         color: AppColors.black,
       ),
-      child: Icon(
+      child: const Icon(
         Icons.videocam,
         color: AppColors.whiteapp,
       ),
@@ -130,8 +129,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     right: 4,
                     child: GestureDetector(
                       onTap: () => _removeMedia(index),
-                      child: Icon(
-                        Icons.remove_circle,
+                      child: const Icon(
+                        MaterialIcons.remove,
                         color: AppColors.errorRed,
                       ),
                     ),
@@ -139,59 +138,80 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 ],
               );
             }).toList(),
-
-            // Label de seleccionar archivo que ocupe todo el ancho con padding alrededor del texto
             if (_mediaFiles.isEmpty)
-              GestureDetector(
-                onTap: _pickMedia, // Selección de archivo
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      'Foto/Video',
-                      style: TextStyle(fontSize: 14),
-                      textAlign: TextAlign.center,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start, // Alinear a la izquierda
+                children: [
+                  GestureDetector(
+                    onTap: _pickMedia,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Seleccionar Archivos',
+                              style: TextStyle(fontSize: 14, color: AppColors.black),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8), // Espacio entre el texto y el contador
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end, // Alinear a la derecha
+                    children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 30), // Padding del lado derecho
+                      child: Text(
+                        '${_mediaFiles.length}/9',
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.black),
+                      ),
+                    ),
+                    ],
+                  ),
+                ],
               ),
-
             // Botón para agregar más archivos solo si hay menos de 9 archivos y al menos uno seleccionado
             if (_mediaFiles.isNotEmpty && _mediaFiles.length < 9)
               GestureDetector(
                 onTap: _pickMedia,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.add, // Icono de "+"
-                      size: 30,
-                      color: Colors.black,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.add, // Icono de "+"
+                          size: 30,
+                          color: AppColors.black,
+                        ),
+                      ),
                     ),
-                  ),
+                    // Contador de archivos seleccionados debajo del ícono
+                    const SizedBox(height: 8), // Espacio entre el ícono y el contador
+                    Text(
+                      '${_mediaFiles.length}/9',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.black),
+                    ),
+                  ],
                 ),
               ),
           ],
         ),
-
-        // Contador de archivos seleccionados
-        SizedBox(height: 15), // Espacio entre el Wrap y el contador
-        Text(
-          '${_mediaFiles.length}/9',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 15), 
+        const SizedBox(height: 15), // Espacio adicional al final
       ],
     );
   }

@@ -3,6 +3,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 
 class CommentWidget extends StatelessWidget {
   final String nameUser;
@@ -134,9 +135,9 @@ class CommentWidget extends StatelessWidget {
                         return ScaleTransition(scale: animation, child: child);
                       },
                       child: Icon(
-                        reaction ? Icons.favorite : Icons.favorite_border,
+                        reaction ? MaterialIcons.favorite : MaterialIcons.favoriteBorder,
                         key: ValueKey<bool>(reaction),
-                        color: reaction ? Colors.red : Colors.grey,
+                        color: reaction ? AppColors.errorRed : AppColors.grey,
                         size: 24,
                       ),
                     ),
@@ -148,7 +149,7 @@ class CommentWidget extends StatelessWidget {
                     child: Text(
                       reactionsCount,
                       style: const TextStyle(
-                        color: Colors.grey,
+                        color: AppColors.grey,
                         fontSize: 16,
                       ),
                     ),
@@ -159,7 +160,7 @@ class CommentWidget extends StatelessWidget {
                     child: const Text(
                       'Responder',
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: AppColors.grey,
                         fontSize: 16,
                       ),
                     ),
@@ -170,7 +171,7 @@ class CommentWidget extends StatelessWidget {
                     child: Text(
                       repliesCount,
                       style: const TextStyle(
-                        color: Colors.grey,
+                        color: AppColors.grey,
                         fontSize: 16,
                       ),
                     ),

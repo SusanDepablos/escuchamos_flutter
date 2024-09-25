@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -101,21 +102,21 @@ class PostWidget extends StatelessWidget {
                           Text(
                             _formatDate(createdAt),
                             style: const TextStyle(
-                              color: Colors.grey,
+                              color: AppColors.grey,
                               fontSize: 14,
                             ),
                           ),
                           const SizedBox(width: 8.0),
                           const Icon(
-                            Icons.more_vert,
-                            color: Colors.grey,
+                            MaterialIcons.more,
+                            color: AppColors.grey,
                           ),
                         ],
                       ),
                       Text(
                         '@$usernameUser',
                         style: const TextStyle(
-                          color: Colors.grey,
+                          color: AppColors.grey,
                           fontSize: 14,
                         ),
                       ),
@@ -162,10 +163,10 @@ class PostWidget extends StatelessWidget {
                         },
                         child: Icon(
                           reaction
-                              ? Icons.favorite // Si reaccionado, icono lleno
-                              : Icons.favorite_border, // Si no, icono vacío
+                              ? MaterialIcons.favorite // Si reaccionado, icono lleno
+                              : MaterialIcons.favoriteBorder, // Si no, icono vacío
                           key: ValueKey<bool>(reaction),
-                          color: reaction ? Colors.red : Colors.grey, // Rojo o gris
+                          color: reaction ? AppColors.errorRed : AppColors.grey, // Rojo o gris
                           size: 24, // Tamaño ligeramente más grande
                         ),
                       ),
@@ -176,7 +177,7 @@ class PostWidget extends StatelessWidget {
                         child: Text(
                           reactionsCount,
                           style: const TextStyle(
-                            color: Colors.grey,
+                            color: AppColors.grey,
                             fontSize: 18,
                           ),
                         ),
@@ -192,8 +193,8 @@ class PostWidget extends StatelessWidget {
                       GestureDetector(
                         onTap: onIndexCommentTap,
                         child: const Icon(
-                          Icons.comment,
-                          color: Colors.grey,
+                          MaterialIcons.comment,
+                          color: AppColors.grey,
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -202,7 +203,7 @@ class PostWidget extends StatelessWidget {
                         child: Text(
                           commentsCount,
                           style: const TextStyle(
-                            color: Colors.grey,
+                            color: AppColors.grey,
                             fontSize: 18,
                           ),
                         ),
@@ -216,14 +217,14 @@ class PostWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.repeat,
-                        color: Colors.grey,
+                        MaterialIcons.repeat,
+                        color: AppColors.grey,
                       ),
                       const SizedBox(width: 15),                     
                       Text(
                         sharesCount,
                         style: const TextStyle(
-                          color: Colors.grey,
+                          color: AppColors.grey,
                           fontSize:18, // Cambia el tamaño a 18 (o al tamaño que prefieras)
                         ),
                       ),

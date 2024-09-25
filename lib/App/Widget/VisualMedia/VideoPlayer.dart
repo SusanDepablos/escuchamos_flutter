@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -74,7 +75,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.dark,
       body: GestureDetector(
         onTap: _toggleControls,
         child: Stack(
@@ -110,7 +111,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 Text(
                   '${_formatDuration(_controller.value.position)} / ${_formatDuration(_controller.value.duration)}',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.whiteapp,
                     fontSize: 14.0,
                   ),
                 ),
@@ -145,10 +146,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               _controller,
               allowScrubbing: true,
               padding: const EdgeInsets.all(0.0),
-              colors: VideoProgressColors(
-                playedColor: Colors.blue,
-                bufferedColor: Colors.grey,
-                backgroundColor: Colors.white30,
+              colors: const VideoProgressColors(
+                playedColor: AppColors.primaryBlue,
+                bufferedColor: AppColors.greyLigth,
+                backgroundColor: AppColors.whiteapp,
               ),
             ),
           ],

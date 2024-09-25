@@ -119,7 +119,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             LabelAction(
               text: buttonText,
               onPressed: isUploading ? null : handleConfirm, // Desactivar botón cuando se está subiendo
-              style: TextStyle(color: AppColors.whiteapp),
+              style: const TextStyle(color: AppColors.whiteapp),
             ),
           ],
         ),

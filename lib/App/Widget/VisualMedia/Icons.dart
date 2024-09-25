@@ -28,8 +28,15 @@ class MaterialIcons {
   static const IconData edit = Icons.edit; // Ícono de editar
   static const IconData logout = Icons.logout; // Ícono de cerrar sesión
   static const IconData back = Icons.arrow_back; // Ícono de cerrar sesión
+  static const IconData remove = Icons.remove_circle;
+  static const IconData video = Icons.videocam;
 
-
+  //POST//
+  static const IconData more = Icons.more_vert;
+  static const IconData favorite = Icons.favorite;
+  static const IconData favoriteBorder = Icons.favorite_border;
+  static const IconData comment = Icons.comment;
+  static const IconData repeat = Icons.repeat;
   
   // Añadir los íconos para redes sociales y comunicación
   static const IconData web = Icons.language; // Ícono para página web

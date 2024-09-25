@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
@@ -71,15 +72,15 @@ class _MediaCarouselState extends State<MediaCarousel> {
             top: 10,
             right: 10,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
+                color: AppColors.black.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 '${_currentIndex + 1}/${widget.mediaUrls.length}',
-                style: TextStyle(
-                  color: Colors.white,
+                style: const TextStyle(
+                  color: AppColors.white,
                   fontSize: 12,
                 ),
               ),

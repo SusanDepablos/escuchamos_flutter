@@ -33,6 +33,7 @@ class AppColors {
   static const Color inputDark = Color.fromRGBO(79, 79, 79, 1);
   static const Color inputLigth = Color.fromRGBO(192, 192, 192, 0.827);
   static const Color greyLigth = Color.fromARGB(200, 235, 235, 235);
+  static const Color grey = Colors.grey;
 }
   // -------------------------------------------------------------------------//
 
