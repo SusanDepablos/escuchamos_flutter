@@ -200,6 +200,7 @@ class _NewPostState extends State<NewPost> {
                 width: 90,
                 height: 20,
                 isLoading: submitting,
+                borderRadius: 24
               ),
             ],
           ),

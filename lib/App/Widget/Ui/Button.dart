@@ -8,6 +8,7 @@ class GenericButton extends StatelessWidget {
   final Color? color; // Parámetro para color
   final double? width; // Parámetro para el ancho
   final double? height; // Parámetro para el alto
+  final double? borderRadius; // Nuevo parámetro para el radio de los bordes
 
   GenericButton({
     required this.label,
@@ -16,6 +17,7 @@ class GenericButton extends StatelessWidget {
     this.color, // Inicialización del nuevo parámetro
     this.width, // Inicialización del parámetro de ancho
     this.height, // Inicialización del parámetro de alto
+    this.borderRadius, // Inicialización del nuevo parámetro de radio
   });
 
   @override
@@ -26,7 +28,7 @@ class GenericButton extends StatelessWidget {
         backgroundColor: color ?? AppColors.primaryBlue, // Usa el color proporcionado o el predeterminado
         foregroundColor: Colors.white, // Color del texto blanco
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
+          borderRadius: BorderRadius.circular(borderRadius ?? 15.0), // Bordes redondeados
         ),
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         minimumSize: Size(width ?? double.infinity, height ?? 50), // Tamaño mínimo configurable
