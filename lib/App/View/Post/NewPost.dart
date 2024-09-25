@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de que los colores estén definidos en este archivo
@@ -10,7 +11,6 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que el BasicTextArea esté definido aquí
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/AddFile.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
@@ -30,6 +30,14 @@ class _NewPostState extends State<NewPost> {
 
   final input = {
     'body': TextEditingController(),
+  };
+
+  final _borderColors = {
+    'body': AppColors.inputLigth,
+  };
+
+  final Map<String, String?> _errorMessages = {
+    'body': null,
   };
 
   List<File> _mediaFiles = []; // Lista para almacenar archivos multimedia
@@ -106,7 +114,18 @@ class _NewPostState extends State<NewPost> {
       );
 
       if (response is ValidationResponse) {
-        // Manejo de validaciones, si es necesario
+        if (response.key['body'] != null) {
+          setState(() {
+            _borderColors['body'] = AppColors.inputLigth;
+            _errorMessages['body'] = response.message('body');
+          });
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              _borderColors['body'] = AppColors.inputLigth;
+              _errorMessages['body'] = null;
+            });
+          });
+        }
       } else if (response is SuccessResponse) {
         showDialog(
           context: context,
@@ -173,17 +192,14 @@ class _NewPostState extends State<NewPost> {
                   color: AppColors.black,
                 ),
               ),
-              ElevatedButton(
-                onPressed: submitting ? null : () {
+              GenericButton(
+                label: 'Publicar',
+                onPressed: () {
                   _postCreate(); // Llama a la función cuando se presiona
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryBlue,
-                ),
-                child: const Text(
-                  'Publicar',
-                  style: TextStyle(color: AppColors.whiteapp),
-                ),
+                width: 90,
+                height: 20,
+                isLoading: submitting,
               ),
             ],
           ),
@@ -240,6 +256,8 @@ class _NewPostState extends State<NewPost> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextArea(
                 input: input['body']!,
+                border: _borderColors['body']!,
+                error: _errorMessages['body'],
                 minLines: _mediaFiles.isNotEmpty ? 2 : 6,
               ),
             ),
