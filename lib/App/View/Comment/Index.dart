@@ -13,9 +13,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/FloatingCircle.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
-String? reactionsNumber_;
 int commentId_ = 0;
 bool? likeState;
 class IndexComment extends StatefulWidget {
@@ -187,6 +187,9 @@ class _IndexCommentState extends State<IndexComment> {
 
                 comments[commentIndex].relationships.repliesCount =
                 _comment!.data.relationships.repliesCount;
+
+                comments[commentIndex].relationships.repliesCount =
+                _comment!.data.relationships.repliesCount;
                 if (likeState != null) {
                   reactionStates[commentIndex] = likeState!;
                 }
@@ -265,17 +268,19 @@ class _IndexCommentState extends State<IndexComment> {
           ),
         ),
       ),
-      body: _initialLoading
-          ? const LoadingScreen(
-              animationPath: 'assets/animation.json',
-              verticalOffset: -0.3,
-            )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: comments.isEmpty
+      body: Stack(
+        children: [
+          _initialLoading
+            ? const LoadingScreen(
+                animationPath: 'assets/animation.json',
+                verticalOffset: -0.3,
+              )
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: comments.isEmpty
                         ? const Center(
                             child: Text(
                               'No hay comentarios.',
@@ -298,26 +303,21 @@ class _IndexCommentState extends State<IndexComment> {
                                   reaction: hasReaction,
                                   onLikeTap: () => _commentReaction(index, comment.id),
                                   nameUser: comment.relationships.user.name,
-                                  usernameUser:comment.relationships.user.username,
-                                  profilePhotoUser: comment.relationships.user.profilePhotoUrl ??'',
+                                  usernameUser: comment.relationships.user.username,
+                                  profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
                                   onProfileTap: () {
-                                    final userId =
-                                        comment.relationships.user.id;
-                                    Navigator.pushNamed(context, 'profile',
-                                        arguments: userId);
+                                    final userId = comment.relationships.user.id;
+                                    Navigator.pushNamed(context, 'profile', arguments: userId);
                                   },
                                   onResponseTap: () {
                                     final commentId = comment.id;
-                                    if (comment.relationships.repliesCount !=0) {
-                                      Navigator.pushNamed(
-                                              context, 'nested-comments',
-                                              arguments: commentId)
-                                          .then((_) {
-                                        _callComment(); // Llama a la función pr1 después de regresar
-                                      });
+                                    if (comment.relationships.repliesCount != 0) {
+                                      Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
+                                        .then((_) {
+                                          _callComment(); // Llama a la función pr1 después de regresar
+                                        });
                                     }
                                   },
-
                                   onNumberLikeTap: () {
                                     String objectId = comment.id.toString();
                                     Navigator.pushNamed(
@@ -339,10 +339,18 @@ class _IndexCommentState extends State<IndexComment> {
                               },
                             ),
                           ),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
+          FloatingAddButton(
+            onTap: () {
+              // Aquí añades la acción que quieres que ocurra al tocar el círculo
+              print('Botón flotante tocado');
+            },
+          ),
+        ],
+      ),
     );
   }
 }

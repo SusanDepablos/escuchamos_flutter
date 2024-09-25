@@ -13,7 +13,6 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
   final VoidCallback? onIndexCommentTap;
-    final VoidCallback? onCommentTap;
   final bool reaction;
   final DateTime createdAt;
 
@@ -32,7 +31,6 @@ class PostWidget extends StatelessWidget {
     required this.usernameUser,
     required this.createdAt,
     this.onIndexCommentTap,
-    this.onCommentTap,
     this.profilePhotoUser,
     this.onIndexLikeTap,
     this.onLikeTap,
@@ -193,7 +191,7 @@ class PostWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: onCommentTap,
+                        onTap: onIndexCommentTap,
                         child: const Icon(
                           MaterialIcons.comment,
                           color: AppColors.grey,

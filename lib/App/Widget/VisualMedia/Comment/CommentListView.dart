@@ -15,7 +15,6 @@ class CommentWidget extends StatelessWidget {
   final VoidCallback? onResponseTap;
   final bool reaction;
   final DateTime createdAt;
-
   final String reactionsCount;
   final String repliesCount;
 
@@ -157,6 +156,7 @@ class CommentWidget extends StatelessWidget {
                   const SizedBox(width: 30.0), // Espacio entre el número y la palabra
                   // Texto "Responder"
                   GestureDetector(
+                    onTap: onResponseTap,
                     child: const Text(
                       'Responder',
                       style: TextStyle(
