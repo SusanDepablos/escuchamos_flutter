@@ -92,7 +92,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         color: AppColors.black,
       ),
       child: const Icon(
-        Icons.videocam,
+        MaterialIcons.video,
         color: AppColors.whiteapp,
       ),
     );
@@ -194,7 +194,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                       ),
                       child: const Center(
                         child: Icon(
-                          Icons.add, // Icono de "+"
+                          MaterialIcons.add, // Icono de "+"
                           size: 30,
                           color: AppColors.black,
                         ),

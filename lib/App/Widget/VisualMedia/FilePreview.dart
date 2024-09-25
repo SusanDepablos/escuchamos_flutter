@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
@@ -54,7 +55,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         backgroundColor: AppColors.dark,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: AppColors.whiteapp),
+          icon: Icon(MaterialIcons.close, color: AppColors.whiteapp),
           onPressed: widget.onCancel,
         ),
       ),

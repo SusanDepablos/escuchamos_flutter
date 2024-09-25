@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -64,7 +65,7 @@ class __BasicInputState extends State<BasicInput> {
             suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      _obscureText ? MaterialIcons.visibility : MaterialIcons.visibilityOff,
                     ),
                     onPressed: () {
                       setState(() {
@@ -82,7 +83,7 @@ class __BasicInputState extends State<BasicInput> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -177,7 +178,7 @@ class __SecureInputState extends __BasicInputState {
             suffixIcon: _obscureText
                 ? IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -187,7 +188,7 @@ class __SecureInputState extends __BasicInputState {
                   )
                 : _showClearIcon
                     ? IconButton(
-                        icon: Icon(Icons.clear),
+                        icon: Icon(MaterialIcons.clear),
                         onPressed: _clearText,
                       )
                     : null,
@@ -199,7 +200,7 @@ class __SecureInputState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -285,7 +286,7 @@ class __GenericInputState extends __BasicInputState {
             suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -295,7 +296,7 @@ class __GenericInputState extends __BasicInputState {
                   )
                 : _showClearIcon
                     ? IconButton(
-                        icon: Icon(Icons.clear),
+                        icon: const Icon(MaterialIcons.clear),
                         onPressed: _clearText,
                       )
                     : null,
@@ -307,7 +308,7 @@ class __GenericInputState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -374,7 +375,7 @@ class _BasicTextAreaState extends __BasicInputState {
             suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -390,7 +391,7 @@ class _BasicTextAreaState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -495,10 +496,10 @@ class __DateInputState extends __BasicInputState {
               ),
               suffixIcon: _showClearIcon
                   ? IconButton(
-                      icon: Icon(Icons.clear),
+                      icon: const Icon(MaterialIcons.clear),
                       onPressed: _clearText,
                     )
-                  : Icon(Icons.calendar_today),
+                  : const Icon(MaterialIcons.calendar),
             ),
           ),
         ),
@@ -507,7 +508,7 @@ class __DateInputState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -576,12 +577,12 @@ class _SearchInputState extends __BasicInputState {
                 borderSide: BorderSide(color: widget.border),
               ),
               prefixIcon: IconButton(
-                icon: Icon(Icons.search),
+                icon: const Icon(MaterialIcons.search),
                 onPressed: widget is SearchInput ? (widget as SearchInput).onSearch : null,
               ),
               suffixIcon: _hasText
                   ? IconButton(
-                      icon: Icon(Icons.clear),
+                      icon: const Icon(MaterialIcons.clear),
                       onPressed: () {
                         _controller.clear();
                         setState(() {
@@ -601,7 +602,7 @@ class _SearchInputState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -655,21 +656,21 @@ class _NumericInputState extends State<NumericInput> {
           decoration: InputDecoration(
             labelText: widget.text,
             labelStyle: TextStyle(
-                color: widget.isDisabled ? Colors.grey : widget.border),
+                color: widget.isDisabled ? AppColors.grey : widget.border),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(
-                  color: widget.isDisabled ? Colors.grey : widget.border),
+                  color: widget.isDisabled ? AppColors.grey : widget.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(
-                  color: widget.isDisabled ? Colors.grey : widget.border),
+                  color: widget.isDisabled ? AppColors.grey : widget.border),
             ),
             suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -681,7 +682,7 @@ class _NumericInputState extends State<NumericInput> {
                     ? null
                     : _showClearIcon
                         ? IconButton(
-                            icon: Icon(Icons.clear),
+                            icon: const Icon(MaterialIcons.clear),
                             onPressed: () {
                               widget.input.clear();
                               setState(() {
@@ -706,7 +707,7 @@ class _NumericInputState extends State<NumericInput> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: Colors.red, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],
@@ -776,7 +777,7 @@ class _TextAreaState extends State<TextArea> {
           maxLines: widget.maxLines, // Establecer líneas máximas
           decoration: InputDecoration(
             hintText: 'Escribe aquí...', // Placeholder
-            hintStyle: TextStyle(color: Colors.grey),
+            hintStyle: const TextStyle(color: AppColors.grey),
             filled: true, // Permitir color de fondo
             fillColor: widget.fillColor, // Color de fondo
             enabledBorder: OutlineInputBorder(
@@ -790,7 +791,7 @@ class _TextAreaState extends State<TextArea> {
             suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -806,7 +807,7 @@ class _TextAreaState extends State<TextArea> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
             ),
           ),
       ],

@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 
 class StoryList extends StatelessWidget {
@@ -42,8 +43,8 @@ class StoryList extends StatelessWidget {
                     color: Colors.green,
                     border: Border.all(color: Colors.white, width: 2.0),
                   ),
-                  child: Icon(
-                    Icons.add,
+                  child: const Icon(
+                    MaterialIcons.add,
                     size: 16,
                     color: Colors.white,
                   ),

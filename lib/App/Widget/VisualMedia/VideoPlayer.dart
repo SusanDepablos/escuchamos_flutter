@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -118,10 +119,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 IconButton(
                   icon: Icon(
                     _isVideoEnded
-                        ? Icons.play_arrow
+                        ? MaterialIcons.play
                         : (_controller.value.isPlaying
-                            ? Icons.pause
-                            : Icons.play_arrow),
+                            ? MaterialIcons.pause
+                            : MaterialIcons.play),
                     color: Colors.white,
                     size: 30.0,
                   ),

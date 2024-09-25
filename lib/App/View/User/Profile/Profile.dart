@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -393,7 +394,7 @@ class _UpdateState extends State<Profile> {
                             fontSize: 16,
                             color: AppColors.black,
                           ),
-                          icon: Icons.date_range,
+                          icon: MaterialIcons.date,
                         ),
                       ],
                     ),

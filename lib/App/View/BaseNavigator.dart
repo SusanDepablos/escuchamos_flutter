@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -277,24 +278,24 @@ class _BaseNavigatorState extends State<BaseNavigator> {
                       _onBottomNavTap(index); // Cambia aquí
                     },
                     items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.home_outlined, size: 28),
-                        activeIcon: Icon(Icons.home, size: 28),
+                      const BottomNavigationBarItem(
+                        icon: Icon(MaterialIcons.homeOutlined, size: 28),
+                        activeIcon: Icon(MaterialIcons.home, size: 28),
                         label: '',
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.search_outlined, size: 28),
-                        activeIcon: Icon(Icons.search, size: 28),
+                      const BottomNavigationBarItem(
+                        icon: Icon(MaterialIcons.searchOutlined, size: 28),
+                        activeIcon: Icon(MaterialIcons.search, size: 28),
                         label: '',
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.add_circle_outline, size: 34),
-                        activeIcon: Icon(Icons.add_circle, size: 39),
+                      const BottomNavigationBarItem(
+                        icon: Icon(MaterialIcons.addCircleOutline, size: 34),
+                        activeIcon: Icon(MaterialIcons.addCircle, size: 39),
                         label: '',
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.notifications_outlined, size: 28),
-                        activeIcon: Icon(Icons.notifications, size: 28),
+                      const BottomNavigationBarItem(
+                        icon: Icon(MaterialIcons.notificationsOutlined, size: 28),
+                        activeIcon: Icon(MaterialIcons.notifications, size: 28),
                         label: '',
                       ),
                       BottomNavigationBarItem(

@@ -30,18 +30,38 @@ class MaterialIcons {
   static const IconData back = Icons.arrow_back; // Ícono de cerrar sesión
   static const IconData remove = Icons.remove_circle;
   static const IconData video = Icons.videocam;
+  static const IconData close = Icons.close;
+  static const IconData play = Icons.play_arrow;
+  static const IconData pause = Icons.pause;
 
-  //POST//
   static const IconData more = Icons.more_vert;
   static const IconData favorite = Icons.favorite;
   static const IconData favoriteBorder = Icons.favorite_border;
   static const IconData comment = Icons.comment;
   static const IconData repeat = Icons.repeat;
+  static const IconData add= Icons.add;
+  
+  static const IconData visibility = Icons.visibility;
+  static const IconData visibilityOff = Icons.visibility_off;
+  static const IconData clear = Icons.clear;
+  static const IconData calendar = Icons.calendar_today;
+  static const IconData search = Icons.search;
   
   // Añadir los íconos para redes sociales y comunicación
   static const IconData web = Icons.language; // Ícono para página web
   static const IconData facebook = Icons.facebook; // Ícono para Facebook
   static const IconData email = Icons.email; // Ícono para correo electrónico
+
+  //Base Navigator//
+  static const IconData homeOutlined = Icons.home_outlined; 
+  static const IconData home = Icons.home; 
+  static const IconData searchOutlined = Icons.search_outlined; 
+  static const IconData addCircleOutline = Icons.add_circle_outline; 
+  static const IconData addCircle = Icons.add_circle; 
+  static const IconData notificationsOutlined = Icons.notifications_outlined; 
+  static const IconData notifications = Icons.notifications; 
+
 }
+
 
 
