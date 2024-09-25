@@ -15,8 +15,8 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'dart:math';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
-int postId_ = 0;
-bool? likeState;
+// int postId_ = 0 ;
+// bool? likeState;
 class IndexPost extends StatefulWidget {
   final int? userId;
   IndexPost({this.userId});
@@ -178,7 +178,7 @@ class _IndexPostState extends State<IndexPost> {
       }
     }
 
-  // Future<void> _callComment() async {
+  // Future<void> _callPost() async {
   //   final postCommand = PostCommandShow(PostShow(), postId_);
 
   //   try {
@@ -307,6 +307,7 @@ class _IndexPostState extends State<IndexPost> {
                                       'postId': postId,
                                     },
                                   );
+                                  // _callPost();
                                 },
                                 body: post.attributes.body,
                                 mediaUrls: mediaUrls,
