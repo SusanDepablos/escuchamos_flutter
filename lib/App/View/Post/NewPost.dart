@@ -11,6 +11,11 @@ import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que el BasicTextArea esté definido aquí
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/AddFile.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
+import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/PostService.dart';
 
 class NewPost extends StatefulWidget {
   @override
@@ -28,6 +33,7 @@ class _NewPostState extends State<NewPost> {
   };
 
   List<File> _mediaFiles = []; // Lista para almacenar archivos multimedia
+  bool submitting = false;
 
   @override
   void initState() {
@@ -85,6 +91,61 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
+  Future<void> _postCreate() async {
+    setState(() {
+      submitting = true; // Activa el indicador de carga
+    });
+    try {
+      int typePost = _mediaFiles.isNotEmpty ? 2 : 1; // 2 si hay archivos, 1 si no hay
+
+      var response = await PostCommandCreate(PostCreate()).execute(
+        body: input['body']!.text,
+        files: _mediaFiles, // Pasa el archivo seleccionado
+        typePost: typePost, // Pasa el tipo: 'profile' o 'cover'
+
+      );
+
+      if (response is ValidationResponse) {
+        // Manejo de validaciones, si es necesario
+      } else if (response is SuccessResponse) {
+        showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            'base', // Nombre de la ruta que se desea cargar
+            (Route<dynamic> route) => false, // Elimina todas las rutas anteriores
+          );
+        }); // Navega al home
+      } else
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    } finally {
+      // Asegúrate de restablecer el estado de submitting
+      setState(() {
+        submitting = false; // Desactiva el indicador de carga
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final String? profileAvatarUrl = _getFileUrlByType('profile');
@@ -112,11 +173,18 @@ class _NewPostState extends State<NewPost> {
                   color: AppColors.black,
                 ),
               ),
-              LabelAction(
-                text: 'Publicar',
-                onPressed: (){},
-                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-              )
+              ElevatedButton(
+                onPressed: submitting ? null : () {
+                  _postCreate(); // Llama a la función cuando se presiona
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryBlue,
+                ),
+                child: const Text(
+                  'Publicar',
+                  style: TextStyle(color: AppColors.whiteapp),
+                ),
+              ),
             ],
           ),
         ),
@@ -144,7 +212,7 @@ class _NewPostState extends State<NewPost> {
                       // Aquí puedes abrir el drawer o realizar otra acción
                     },
                   ),
-                  SizedBox(width: 8), // Espacio entre el avatar y el texto
+                  const SizedBox(width: 8), // Espacio entre el avatar y el texto
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -172,11 +240,11 @@ class _NewPostState extends State<NewPost> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextArea(
                 input: input['body']!,
-                minLines: _mediaFiles.isNotEmpty ? 2 : 8,
+                minLines: _mediaFiles.isNotEmpty ? 2 : 6,
               ),
             ),
             // Aquí es donde agregas el ImagePickerWidget
-            SizedBox(height: 16), // Espacio entre el TextArea y el ImagePickerWidget
+            const SizedBox(height: 16), // Espacio entre el TextArea y el ImagePickerWidget
             ImagePickerWidget(
               onMediaChanged: (mediaFiles) {
                 setState(() {

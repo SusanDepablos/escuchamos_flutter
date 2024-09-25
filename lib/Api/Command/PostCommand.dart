@@ -38,11 +38,17 @@ class PostCommandCreate {
 
   PostCommandCreate(this._postCreateService);
 
-  Future<dynamic> execute({required String body}) async {
+  Future<dynamic> execute({
+    String? body, 
+    int? typePost, 
+    List<File>? files}) async {
     try {
-      var response = await _postCreateService.createPost(body);
+      var response = await _postCreateService.createPost(
+        body: body ?? '',
+        typePost: typePost ?? 0,    
+        files: files ?? [], );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return SuccessResponse.fromServiceResponse(response);
       } else if (response.statusCode == 500) {
         return InternalServerError.fromServiceResponse(response);

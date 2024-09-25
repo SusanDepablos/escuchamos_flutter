@@ -211,7 +211,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
               ),
           ],
         ),
-        const SizedBox(height: 15), // Espacio adicional al final
+        const SizedBox(height: 30), // Espacio adicional al final
       ],
     );
   }

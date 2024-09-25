@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:escuchamos_flutter/Api/Response/ServiceResponse.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -40,30 +41,39 @@ class PostIndex {
 }
 
 class PostCreate {
-  Future<ServiceResponse> createPost(String body) async {
+  Future<ServiceResponse> createPost({
+    String? body,
+    int? typePost,
+    List<File>? files,
+    }) async {
 
     final url = Uri.parse('${ApiUrl.baseUrl}post/');
     final token = await _storage.read(key: 'token') ?? '';
 
     final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Token $token',
-    };
+        'Authorization': 'Token $token',
+      };
 
-    try {
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: body,
-      );
+      // Crear una solicitud multipart
+      var request = http.MultipartRequest('POST', url);
+      request.headers.addAll(headers);
 
-      return ServiceResponse.fromJsonString(
-        utf8.decode(response.bodyBytes),
-        response.statusCode,
-      );
-    } catch (e) {
-      // Manejo de errores de red o de HTTP
-      throw Exception('Error al actualizar la cuenta: $e');
-    }
+      // Adjuntar múltiples archivos al cuerpo del formulario bajo el mismo campo 'file'
+      for (var file in files!) {
+        request.files.add(await http.MultipartFile.fromPath('file', file.path));
+      }
+
+      // Agregar otros campos
+      request.fields['body'] = body!;
+      request.fields['type_post_id'] = typePost.toString(); 
+
+    final streamedResponse = await request.send();
+    print(body);
+
+    final response = await http.Response.fromStream(streamedResponse);
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
   }
 }
