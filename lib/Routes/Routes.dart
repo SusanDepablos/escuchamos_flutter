@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
@@ -142,6 +143,8 @@ class AppRoutes {
       return IndexReactions(
           model: model, objectId: objectId, appBar: appBar);
     },
+
+    'new-post': (context) => NewPost(),
     
   };
 }

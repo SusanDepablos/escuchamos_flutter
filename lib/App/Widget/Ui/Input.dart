@@ -777,7 +777,7 @@ class _TextAreaState extends State<TextArea> {
           maxLines: widget.maxLines, // Establecer líneas máximas
           decoration: InputDecoration(
             hintText: 'Escribe aquí...', // Placeholder
-            hintStyle: const TextStyle(color: AppColors.grey),
+            hintStyle: const TextStyle(fontSize: 14, color: AppColors.grey),
             filled: true, // Permitir color de fondo
             fillColor: widget.fillColor, // Color de fondo
             enabledBorder: OutlineInputBorder(

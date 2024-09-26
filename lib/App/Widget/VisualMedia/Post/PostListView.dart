@@ -22,6 +22,8 @@ class PostWidget extends StatelessWidget {
 
   final String? body;
   final List<String>? mediaUrls;
+  final int authorId;
+  final int currentUserId; 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   PostWidget({
@@ -40,10 +42,39 @@ class PostWidget extends StatelessWidget {
     this.sharesCount = '30',
     this.body,
     this.mediaUrls,
+    required this.authorId,
+    required this.currentUserId,
   }) : super(key: key);
 
   Future<void> _playSound() async {
     await _audioPlayer.play(AssetSource('sounds/click.mp3'));
+  }
+
+  String _formatDate(DateTime createdAt) {
+    final now = DateTime.now();
+    final difference = now.difference(createdAt);
+
+    if (difference.inSeconds < 60) {
+      return difference.inSeconds == 1 ? "1 s" : "${difference.inSeconds} s";
+    } else if (difference.inMinutes < 60) {
+      return difference.inMinutes == 1 ? "1 min" : "${difference.inMinutes} min";
+    } else if (difference.inHours < 24) {
+      return difference.inHours == 1 ? "1 h" : "${difference.inHours} h";
+    } else if (difference.inDays < 7) {
+      return difference.inDays == 1 ? "1 d" : "${difference.inDays} d";
+    } else if (difference.inDays < 30) {
+      return "${createdAt.day} ${_getAbbreviatedMonthName(createdAt.month)}";
+    } else {
+      return "${createdAt.day} ${_getAbbreviatedMonthName(createdAt.month)} de ${createdAt.year}";
+    }
+  }
+
+  String _getAbbreviatedMonthName(int month) {
+    const monthNames = [
+      "ene", "feb", "mar", "abr", "may", "jun",
+      "jul", "ago", "sep", "oct", "nov", "dic"
+    ];
+    return monthNames[month - 1];
   }
 
   void _showOptionsModal(BuildContext context) {
@@ -59,27 +90,66 @@ class PostWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (currentUserId == authorId) ...[
+                ListTile(
+                  leading: const Icon(MaterialIcons.edit),
+                  title: const Text('Editar'),
+                  onTap: () {
+                    // Lógica para editar la publicación
+                    Navigator.pop(context); // Cerrar el modal
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
+                  title: const Text('Eliminar', style: TextStyle(color: AppColors.errorRed)),
+                  onTap: () {
+                    // Lógica para eliminar la publicación
+                    Navigator.pop(context); // Cerrar el modal
+                  },
+                ),
+              ] else ...[
+                ListTile(
+                  leading: const Icon(MaterialIcons.report, color: AppColors.errorRed),
+                  title: const Text('Reportar', style: TextStyle(color: AppColors.errorRed)),
+                  onTap: () {
+                    // Lógica para reportar la publicación
+                    Navigator.pop(context); // Cerrar el modal
+                  },
+                ),
+              ],
+            ]
+          ),
+        );
+      },
+    );
+  }
+
+  void _showShareModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: AppColors.whiteapp,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          padding: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               ListTile(
-                leading: const Icon(MaterialIcons.edit),
-                title: const Text('Editar'),
+                leading: const Icon(MaterialIcons.repeat),
+                title: const Text('Compartir'),
                 onTap: () {
-                  // Lógica para editar la publicación
+                  // Lógica para repostear
                   Navigator.pop(context); // Cerrar el modal
                 },
               ),
               ListTile(
-                leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
-                title: const Text('Eliminar', style: TextStyle(color: AppColors.errorRed)),
+                leading: const Icon(MaterialIcons.editNote),
+                title: const Text('Repostear'),
                 onTap: () {
-                  // Lógica para eliminar la publicación
-                  Navigator.pop(context); // Cerrar el modal
-                },
-              ),
-              ListTile(
-                leading: const Icon(MaterialIcons.report),
-                title: const Text('Reportar',),
-                onTap: () {
-                  // Lógica para reportar la publicación
+                  // Lógica para compartir
                   Navigator.pop(context); // Cerrar el modal
                 },
               ),
@@ -248,9 +318,12 @@ class PostWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Row(
                       children: [
-                        const Icon(
-                          MaterialIcons.repeat,
-                          color: AppColors.grey,
+                        GestureDetector(
+                          onTap: () => _showShareModal(context), // Mostrar modal de compartir
+                          child: const Icon(
+                            MaterialIcons.repeat,
+                            color: AppColors.grey,
+                          ),
                         ),
                         const SizedBox(width: 15),
                         Text(
@@ -270,9 +343,5 @@ class PostWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime createdAt) {
-    return "${createdAt.day}-${createdAt.month}-${createdAt.year}";
   }
 }

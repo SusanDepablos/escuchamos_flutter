@@ -40,8 +40,25 @@ class CommentWidget extends StatelessWidget {
   }) : super(key: key);
 
   Future<void> _playSound() async {
-    await _audioPlayer
-        .play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds} s'; // Segundos
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} min'; // Minutos
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} h'; // Horas
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} d'; // Días (1 d, 2 d, ..., 7 d)
+    } else {
+      final weeks = (difference.inDays / 7).floor();
+      return '$weeks sem'; // Semanas
+    }
   }
 
   @override
@@ -60,8 +77,8 @@ class CommentWidget extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           decoration: BoxDecoration(
-            color: AppColors.greyLigth, // Mantén este color si es el deseado
-            borderRadius: BorderRadius.circular(25.0), // Ajuste a 25
+            color: AppColors.greyLigth,
+            borderRadius: BorderRadius.circular(25.0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,6 +96,14 @@ class CommentWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8.0),
+                  // Aquí añadimos la fecha formateada
+                  Text(
+                    _formatDate(createdAt),
+                    style: const TextStyle(
+                      color: AppColors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 10.0),
@@ -142,7 +167,7 @@ class CommentWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10.0),
-                  // Número de respuestas
+                  // Número de reacciones
                   GestureDetector(
                     onTap: onNumberLikeTap,
                     child: Text(
@@ -153,7 +178,7 @@ class CommentWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 30.0), // Espacio entre el número y la palabra
+                  const SizedBox(width: 30.0),
                   // Texto "Responder"
                   GestureDetector(
                     onTap: onResponseTap,

@@ -1,5 +1,6 @@
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/FloatingCircle.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -246,6 +247,15 @@ class _UpdateState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    Widget? floatingButton;
+    if (_storedUserId != null && _storedUserId == widget.userId) {
+      floatingButton = FloatingAddButton(
+        onTap: () {
+          // Navegar a la vista usando el nombre de la ruta
+          Navigator.pushNamed(context, 'new-post'); // Reemplaza 'home' con el nombre de tu ruta
+        },
+      );
+    }
     return Scaffold(
         backgroundColor: AppColors.whiteapp,
         appBar: AppBar(
@@ -268,8 +278,7 @@ class _UpdateState extends State<Profile> {
             ),
           ),
           actions: [
-            if (_storedUserId != null &&
-                _storedUserId == widget.userId) // Validación del userId
+            if (_storedUserId != null && _storedUserId == widget.userId) // Validación del userId
               SettingsMenu(
                 onEditProfile: () async {
                   await Navigator.pushNamed(context, 'edit-profile');
@@ -492,6 +501,8 @@ class _UpdateState extends State<Profile> {
               ),
             ),
           ],
-        ));
+        ),
+      floatingActionButton: floatingButton, // Asigna el botón aquí
+    );     
   }
 }

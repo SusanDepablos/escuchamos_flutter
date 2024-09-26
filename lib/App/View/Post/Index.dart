@@ -324,6 +324,8 @@ class _IndexPostState extends State<IndexPost> {
                                 reactionsCount: post.relationships.reactionsCount.toString(),
                                 commentsCount: post.relationships.commentsCount.toString(),
                                 sharesCount: post.relationships.sharesCount.toString(),
+                                authorId: post.relationships.user.id, 
+                                currentUserId: _id!,
                               );
                             },
                           ),

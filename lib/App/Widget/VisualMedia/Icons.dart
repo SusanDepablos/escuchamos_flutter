@@ -39,6 +39,7 @@ class MaterialIcons {
   static const IconData favoriteBorder = Icons.favorite_border;
   static const IconData comment = Icons.comment;
   static const IconData repeat = Icons.repeat;
+  static const IconData editNote = Icons.edit_note;
   static const IconData add= Icons.add;
   
   static const IconData visibility = Icons.visibility;

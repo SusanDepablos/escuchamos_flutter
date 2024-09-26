@@ -12,7 +12,7 @@ class FloatingAddButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 30.0, // Espacio desde la parte inferior
+      bottom: 15.0, // Espacio desde la parte inferior
       right: 16.0, // Espacio desde la derecha
       child: MouseRegion(
         cursor: SystemMouseCursors.click, // Cambia el cursor al pasar el ratón
