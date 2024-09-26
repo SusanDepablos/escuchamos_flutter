@@ -15,8 +15,8 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'dart:math';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
-// int postId_ = 0 ;
-// bool? likeState;
+int postId_ = 0 ;
+bool? likeState;
 class IndexPost extends StatefulWidget {
   final int? userId;
   IndexPost({this.userId});
@@ -120,7 +120,7 @@ class _IndexPostState extends State<IndexPost> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _initialLoading = false; // Después de la primera carga, ya no mostrar la pantalla de carga
+          _initialLoading = false;
         });
       }
     }
@@ -131,11 +131,11 @@ class _IndexPostState extends State<IndexPost> {
       page = 1;
       posts.clear();
       _hasMorePages = true;
-      _initialLoading = true; // Vuelve a activar el estado de carga inicial
+      _initialLoading = true;
     });
-    await fetchPosts(); // Llama a fetchPosts para recargar los datos
+    await fetchPosts();
     setState(() {
-      _initialLoading = false; // Desactiva el estado de carga después de recargar los posts
+      _initialLoading = false;
     });
   }
 
@@ -178,60 +178,66 @@ class _IndexPostState extends State<IndexPost> {
       }
     }
 
-  // Future<void> _callPost() async {
-  //   final postCommand = PostCommandShow(PostShow(), postId_);
+  Future<void> _callPost() async {
+    try {
+      final postCommand = PostCommandShow(PostShow(), postId_);
+      
+      final response = await postCommand.execute();
 
-  //   try {
-  //     final response = await postCommand.execute();
+      if (mounted) {
+        if (response is PostModel) {
+          if (postId_ != 0) {
+            setState(() {
+              _post = response;
 
-  //     if (mounted) {
-  //       if (response is PostModel) {
-  //         if (postId_ != 0) {
-  //           setState(() {
-  //             _post = response;
+              int postIndex = posts.indexWhere((post) => post.id == postId_);
+              if (postIndex >= 0 && postIndex < posts.length) {
+                posts[postIndex].relationships.reactionsCount =
+                    _post!.data.relationships.reactionsCount;
 
-  //             int postIndex = posts.indexWhere((post) => post.id == postId_);
-  //             if (postIndex >= 0 && postIndex < posts.length) {
-  //               posts[postIndex].relationships.reactionsCount =
-  //                   _post!.data.relationships.reactionsCount;
+                posts[postIndex].relationships.commentsCount =
+                    _post!.data.relationships.commentsCount;
 
-  //               posts[postIndex].relationships.commentsCount =
-  //                   _post!.data.relationships.commentsCount;
+                posts[postIndex].relationships.commentsCount =
+                    _post!.data.relationships.commentsCount;
 
-  //               posts[postIndex].relationships.commentsCount =
-  //                   _post!.data.relationships.commentsCount;
-
-  //               if (likeState != null) {
-  //                 reactionStates[postIndex] = likeState!;
-  //               }
-  //             }
-  //           });
-  //         }
-  //       } else {
-  //         showDialog(
-  //           context: context,
-  //           builder: (context) => PopupWindow(
-  //             title: response is InternalServerError
-  //                 ? 'Error'
-  //                 : 'Error de Conexión',
-  //             message: response.message,
-  //           ),
-  //         );
-  //       }
-  //     }
-  //   } catch (e) {
-  //     if (mounted) {
-  //       print(e);
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) => PopupWindow(
-  //           title: 'Error de Flutter',
-  //           message: 'Espera un poco, pronto lo solucionaremos.',
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
+                if (likeState != null) {
+                  reactionStates[postIndex] = likeState!;
+                }
+              }
+            });
+          }
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        print(e);
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          postId_ = 0;
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -298,17 +304,20 @@ class _IndexPostState extends State<IndexPost> {
                                     },
                                   );
                                 },
-                                onIndexCommentTap: () {
-                                  String postId = post.id.toString();
-                                  Navigator.pushNamed(
-                                    context,
-                                    'index-comments',
-                                    arguments: {
-                                      'postId': postId,
-                                    },
-                                  );
-                                  // _callPost();
-                                },
+                                  onIndexCommentTap: () {
+                                    String postId = post.id.toString();
+                                    Navigator.pushNamed(
+                                      context,
+                                      'index-comments',
+                                      arguments: {
+                                        'postId': postId,
+                                      },
+                                    ).then((_) {
+                                      // Esto se ejecuta cuando regresas de 'index-comments'
+                                      _callPost();
+                                    });
+                                  },
+
                                 body: post.attributes.body,
                                 mediaUrls: mediaUrls,
                                 createdAt: post.attributes.createdAt,

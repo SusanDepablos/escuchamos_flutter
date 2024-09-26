@@ -54,7 +54,6 @@ class _NestedCommentsState extends State<NestedComments> {
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
             _repliesCount = _comment!.data.relationships.repliesCount.toString();
             postId = _comment!.data.attributes.postId.toString();
-            commentId_ = widget.commentId;
             likeState = null;
             _setReactionState();
           });
@@ -138,6 +137,7 @@ class _NestedCommentsState extends State<NestedComments> {
   @override
   void initState() {
     super.initState();
+    commentId_ = widget.commentId;
     _callComment();
   }
 

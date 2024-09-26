@@ -14,6 +14,7 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FloatingCircle.dart';
+import 'package:escuchamos_flutter/App/View/Post/Index.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int commentId_ = 0;
@@ -48,6 +49,7 @@ class _IndexCommentState extends State<IndexComment> {
 
   @override
   void initState() {
+    postId_ = int.parse(widget.postId!);
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() {
@@ -219,6 +221,12 @@ class _IndexCommentState extends State<IndexComment> {
           ),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() {
+          commentId_ = 0;
+        });
+      }
     }
   }
 
@@ -310,13 +318,11 @@ class _IndexCommentState extends State<IndexComment> {
                                     Navigator.pushNamed(context, 'profile', arguments: userId);
                                   },
                                   onResponseTap: () {
-                                    final commentId = comment.id;
-                                    if (comment.relationships.repliesCount != 0) {
-                                      Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
-                                        .then((_) {
-                                          _callComment(); // Llama a la función pr1 después de regresar
-                                        });
-                                    }
+                                  final commentId = comment.id;
+                                    Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
+                                      .then((_) {
+                                        _callComment(); // Llama a la función pr1 después de regresar
+                                      });
                                   },
                                   onNumberLikeTap: () {
                                     String objectId = comment.id.toString();
