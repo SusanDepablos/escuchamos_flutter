@@ -21,7 +21,6 @@ class CommentWidget extends StatelessWidget {
   final String? body;
   final String? mediaUrl;
   final AudioPlayer _audioPlayer = AudioPlayer(); // Crea el AudioPlayer
-  final VoidCallback? onReactionChanged; // Nuevo callback
 
   CommentWidget({
     Key? key,
@@ -38,11 +37,11 @@ class CommentWidget extends StatelessWidget {
     this.repliesCount = '0',
     this.body,
     this.mediaUrl,
-    this.onReactionChanged, // Inicialización del nuevo callback
   }) : super(key: key);
 
   Future<void> _playSound() async {
-    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+    await _audioPlayer
+        .play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
   }
 
   String _formatDate(DateTime date) {
@@ -150,8 +149,9 @@ class CommentWidget extends StatelessWidget {
                       if (!reaction) {
                         _playSound();
                       }
-                      onLikeTap?.call(); // Llamar al callback original
-                      onReactionChanged?.call(); // Llamar al nuevo callback
+                      if (onLikeTap != null) {
+                        onLikeTap!(); // Ejecutar cualquier otra acción
+                      }
                     },
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),

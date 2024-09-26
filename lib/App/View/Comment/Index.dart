@@ -19,6 +19,7 @@ import 'package:escuchamos_flutter/App/View/Post/Index.dart';
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int commentId_ = 0;
 bool? likeState;
+
 class IndexComment extends StatefulWidget {
   final String? postId;
   final String? commentId;
@@ -96,12 +97,13 @@ class _IndexCommentState extends State<IndexComment> {
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
 
-          // Asegúrate de que reactionStates mantenga los estados anteriores
-          reactionStates.addAll(response.results.data.map((comment) {
-            return comment.relationships.reactions.any(
-              (reaction) => reaction.attributes.userId == _id,
-            );
-          }));
+          // Recalcular el estado de reacción a partir de los comentarios
+          reactionStates = List.generate(comments.length, (index) {
+            // Verifica si el usuario ya ha reaccionado a este comentario
+            return comments[index].relationships.reactions.any(
+                  (reaction) => reaction.attributes.userId == _id,
+                );
+          });
         });
       } else {
         showDialog(
@@ -129,21 +131,24 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-    Future<void> _commentReaction(int index, int id) async {
+  Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
-    commentId_ = id;
+
     try {
-      var response = await ReactionCommandPost(ReactionPost()).execute('comment', id);
+      var response =
+          await ReactionCommandPost(ReactionPost()).execute('comment', id);
 
       if (response is SuccessResponse) {
         setState(() {
-          // Aquí asumimos que el backend ha cambiado el estado
+          // Asegúrate de cambiar el estado de la reacción según el backend
           bool hasReaction = reactionStates[index];
-          reactionStates[index] = !hasReaction; // Cambia el estado del like
+          reactionStates[index] = !hasReaction;
 
           if (reactionStates[index]) {
+            // Si ahora tiene like, incrementamos el contador
             comments[index].relationships.reactionsCount++;
           } else {
+            // Si quitamos el like, decrementamos el contador, pero no puede ser menor a 0
             comments[index].relationships.reactionsCount =
                 max(0, comments[index].relationships.reactionsCount - 1);
           }
@@ -152,7 +157,8 @@ class _IndexCommentState extends State<IndexComment> {
         await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error' : 'Error de Conexión',
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
             message: response.message,
           ),
         );
@@ -168,8 +174,7 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-
-    Future<void> _callComment() async {
+  Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
 
     try {
@@ -177,30 +182,31 @@ class _IndexCommentState extends State<IndexComment> {
 
       if (mounted) {
         if (response is CommentModel) {
-            setState(() {
-              _comment = response;
+          setState(() {
+            _comment = response;
 
-              int commentIndex = comments.indexWhere((comment) => comment.id == commentId_);
-              if (commentIndex >= 0 && commentIndex < comments.length) {
-                // Actualizamos las reacciones y respuestas con los valores recibidos desde el servidor
-                comments[commentIndex].relationships.reactionsCount =
-                    _comment!.data.relationships.reactionsCount;
+            int commentIndex =
+                comments.indexWhere((comment) => comment.id == commentId_);
+            if (commentIndex >= 0 && commentIndex < comments.length) {
+              // Actualizamos las reacciones y respuestas con los valores recibidos desde el servidor
+              comments[commentIndex].relationships.reactionsCount =
+                  _comment!.data.relationships.reactionsCount;
 
-                comments[commentIndex].relationships.repliesCount =
-                    _comment!.data.relationships.repliesCount;
+              comments[commentIndex].relationships.repliesCount =
+                  _comment!.data.relationships.repliesCount;
 
-                // Asegurar que la reacción del usuario esté sincronizada con el backend
-                final bool userLikedComment = _comment!
-                    .data.relationships.reactions
-                    .any((reaction) => reaction.attributes.userId == _id);
+              // Asegurar que la reacción del usuario esté sincronizada con el backend
+              final bool userLikedComment = _comment!
+                  .data.relationships.reactions
+                  .any((reaction) => reaction.attributes.userId == _id);
 
-                reactionStates[commentIndex] = userLikedComment;
+              reactionStates[commentIndex] = userLikedComment;
 
-                if (likeState != null) {
-                  reactionStates[commentIndex] = likeState!;
-                }
+              if (likeState != null) {
+                reactionStates[commentIndex] = likeState!;
               }
-            });
+            }
+          });
         } else {
           showDialog(
             context: context,
@@ -232,19 +238,15 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-
   Future<void> _reloadComment() async {
-      setState(() {
-        page = 1; // Reiniciar la página
-        comments.clear(); // Limpiar los comentarios existentes
-        reactionStates.clear(); // Limpiar los estados de reacción
-        _hasMorePages = true; // Indicar que hay más páginas
-        _initialLoading = true; // Indicar que está cargando inicialmente
-      });
-
-      await fetchComments(); // Llamar a la función que obtiene los comentarios
-    }
-
+    setState(() {
+      page = 1;
+      comments.clear();
+      _hasMorePages = true;
+      _initialLoading = true;
+    });
+    await fetchComments();
+  }
 
   @override
   void dispose() {
@@ -285,77 +287,90 @@ class _IndexCommentState extends State<IndexComment> {
       body: Stack(
         children: [
           _initialLoading
-            ? const LoadingScreen(
-                animationPath: 'assets/animation.json',
-                verticalOffset: -0.3,
-              )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: comments.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No hay comentarios.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.black,
-                              ),
-                            ),
-                          )
-                        : CustomRefreshIndicator(
-                            onRefresh: _reloadComment,
-                            child: ListView.builder(
-                              controller: _scrollController,
-                              itemCount: comments.length,
-                              itemBuilder: (context, index) {
-                                final comment = comments[index];
-                                final bool hasReaction = reactionStates[index];
-                                
-                                return CommentWidget(
-                                  reaction: hasReaction,
-                                  onLikeTap: () => _commentReaction(index, comment.id),
-                                  onReactionChanged: () => _callComment(), // Nuevo callback
-                                  nameUser: comment.relationships.user.name,
-                                  usernameUser: comment.relationships.user.username,
-                                  profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
-                                  onProfileTap: () {
-                                    final userId = comment.relationships.user.id;
-                                    Navigator.pushNamed(context, 'profile', arguments: userId);
-                                  },
-                                  onResponseTap: () {
-                                    final commentId = comment.id;
-                                    Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
-                                      .then((_) {
-                                        _callComment(); // Llama a la función pr1 después de regresar
-                                      });
-                                  },
-                                  onNumberLikeTap: () {
-                                    String objectId = comment.id.toString();
-                                    Navigator.pushNamed(
-                                      context,
-                                      'index-reactions',
-                                      arguments: {
-                                        'objectId': objectId,
-                                        'model': 'comment',
-                                        'appBar': 'Reacciones'
+              ? const LoadingScreen(
+                  animationPath: 'assets/animation.json',
+                  verticalOffset: -0.3,
+                )
+              : Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: comments.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  'No hay comentarios.',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                              )
+                            : CustomRefreshIndicator(
+                                onRefresh: _reloadComment,
+                                child: ListView.builder(
+                                  controller: _scrollController,
+                                  itemCount: comments.length,
+                                  itemBuilder: (context, index) {
+                                    final comment = comments[index];
+                                    final bool hasReaction =
+                                        reactionStates[index];
+
+                                    return CommentWidget(
+                                      reaction: hasReaction,
+                                      onLikeTap: () =>
+                                          _commentReaction(index, comment.id),
+                                      nameUser: comment.relationships.user.name,
+                                      usernameUser:
+                                          comment.relationships.user.username,
+                                      profilePhotoUser: comment.relationships
+                                              .user.profilePhotoUrl ??
+                                          '',
+                                      onProfileTap: () {
+                                        final userId =
+                                            comment.relationships.user.id;
+                                        Navigator.pushNamed(context, 'profile',
+                                            arguments: userId);
                                       },
+                                      onResponseTap: () {
+                                        final commentId = comment.id;
+                                        Navigator.pushNamed(
+                                                context, 'nested-comments',
+                                                arguments: commentId)
+                                            .then((_) {
+                                          _callComment(); // Llama a la función pr1 después de regresar
+                                        });
+                                      },
+                                      onNumberLikeTap: () {
+                                        String objectId = comment.id.toString();
+                                        Navigator.pushNamed(
+                                          context,
+                                          'index-reactions',
+                                          arguments: {
+                                            'objectId': objectId,
+                                            'model': 'comment',
+                                            'appBar': 'Reacciones'
+                                          },
+                                        );
+                                      },
+                                      body: comment.attributes.body,
+                                      mediaUrl: comment.relationships.file
+                                          .firstOrNull?.attributes.url,
+                                      createdAt: comment.attributes.createdAt,
+                                      reactionsCount: comment
+                                          .relationships.reactionsCount
+                                          .toString(),
+                                      repliesCount: comment
+                                          .relationships.repliesCount
+                                          .toString(),
                                     );
                                   },
-                                  body: comment.attributes.body,
-                                  mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
-                                  createdAt: comment.attributes.createdAt,
-                                  reactionsCount: comment.relationships.reactionsCount.toString(),
-                                  repliesCount: comment.relationships.repliesCount.toString(),
-                                );
-                              },
-                            ),
-                          ),
-                    ),
-                  ],
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
           FloatingAddButton(
             onTap: () {
               // Aquí añades la acción que quieres que ocurra al tocar el círculo
