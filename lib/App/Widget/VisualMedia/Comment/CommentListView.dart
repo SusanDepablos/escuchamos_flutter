@@ -21,6 +21,7 @@ class CommentWidget extends StatelessWidget {
   final String? body;
   final String? mediaUrl;
   final AudioPlayer _audioPlayer = AudioPlayer(); // Crea el AudioPlayer
+  final VoidCallback? onReactionChanged; // Nuevo callback
 
   CommentWidget({
     Key? key,
@@ -37,6 +38,7 @@ class CommentWidget extends StatelessWidget {
     this.repliesCount = '0',
     this.body,
     this.mediaUrl,
+    this.onReactionChanged, // Inicialización del nuevo callback
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -148,9 +150,8 @@ class CommentWidget extends StatelessWidget {
                       if (!reaction) {
                         _playSound();
                       }
-                      if (onLikeTap != null) {
-                        onLikeTap!(); // Ejecutar cualquier otra acción
-                      }
+                      onLikeTap?.call(); // Llamar al callback original
+                      onReactionChanged?.call(); // Llamar al nuevo callback
                     },
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
@@ -159,7 +160,9 @@ class CommentWidget extends StatelessWidget {
                         return ScaleTransition(scale: animation, child: child);
                       },
                       child: Icon(
-                        reaction ? MaterialIcons.favorite : MaterialIcons.favoriteBorder,
+                        reaction
+                            ? MaterialIcons.favorite
+                            : MaterialIcons.favoriteBorder,
                         key: ValueKey<bool>(reaction),
                         color: reaction ? AppColors.errorRed : AppColors.grey,
                         size: 24,

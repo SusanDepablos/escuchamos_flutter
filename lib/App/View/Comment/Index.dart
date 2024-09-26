@@ -96,13 +96,12 @@ class _IndexCommentState extends State<IndexComment> {
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
 
-          // Recalcular el estado de reacción a partir de los comentarios
-          reactionStates = List.generate(comments.length, (index) {
-            // Verifica si el usuario ya ha reaccionado a este comentario
-            return comments[index].relationships.reactions.any(
-                  (reaction) => reaction.attributes.userId == _id,
-                );
-          });
+          // Asegúrate de que reactionStates mantenga los estados anteriores
+          reactionStates.addAll(response.results.data.map((comment) {
+            return comment.relationships.reactions.any(
+              (reaction) => reaction.attributes.userId == _id,
+            );
+          }));
         });
       } else {
         showDialog(
@@ -130,25 +129,21 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-
-  Future<void> _commentReaction(int index, int id) async {
+    Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
-
+    commentId_ = id;
     try {
-      var response =
-          await ReactionCommandPost(ReactionPost()).execute('comment', id);
+      var response = await ReactionCommandPost(ReactionPost()).execute('comment', id);
 
       if (response is SuccessResponse) {
         setState(() {
-          // Asegúrate de cambiar el estado de la reacción según el backend
+          // Aquí asumimos que el backend ha cambiado el estado
           bool hasReaction = reactionStates[index];
-          reactionStates[index] = !hasReaction;
+          reactionStates[index] = !hasReaction; // Cambia el estado del like
 
           if (reactionStates[index]) {
-            // Si ahora tiene like, incrementamos el contador
             comments[index].relationships.reactionsCount++;
           } else {
-            // Si quitamos el like, decrementamos el contador, pero no puede ser menor a 0
             comments[index].relationships.reactionsCount =
                 max(0, comments[index].relationships.reactionsCount - 1);
           }
@@ -157,8 +152,7 @@ class _IndexCommentState extends State<IndexComment> {
         await showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            title: response is InternalServerError ? 'Error' : 'Error de Conexión',
             message: response.message,
           ),
         );
@@ -174,7 +168,8 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-Future<void> _callComment() async {
+
+    Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
 
     try {
@@ -239,14 +234,17 @@ Future<void> _callComment() async {
 
 
   Future<void> _reloadComment() async {
-    setState(() {
-      page = 1;
-      comments.clear();
-      _hasMorePages = true;
-      _initialLoading = true;
-    });
-    await fetchComments();
-  }
+      setState(() {
+        page = 1; // Reiniciar la página
+        comments.clear(); // Limpiar los comentarios existentes
+        reactionStates.clear(); // Limpiar los estados de reacción
+        _hasMorePages = true; // Indicar que hay más páginas
+        _initialLoading = true; // Indicar que está cargando inicialmente
+      });
+
+      await fetchComments(); // Llamar a la función que obtiene los comentarios
+    }
+
 
   @override
   void dispose() {
@@ -318,6 +316,7 @@ Future<void> _callComment() async {
                                 return CommentWidget(
                                   reaction: hasReaction,
                                   onLikeTap: () => _commentReaction(index, comment.id),
+                                  onReactionChanged: () => _callComment(), // Nuevo callback
                                   nameUser: comment.relationships.user.name,
                                   usernameUser: comment.relationships.user.username,
                                   profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
@@ -326,7 +325,7 @@ Future<void> _callComment() async {
                                     Navigator.pushNamed(context, 'profile', arguments: userId);
                                   },
                                   onResponseTap: () {
-                                  final commentId = comment.id;
+                                    final commentId = comment.id;
                                     Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
                                       .then((_) {
                                         _callComment(); // Llama a la función pr1 después de regresar
