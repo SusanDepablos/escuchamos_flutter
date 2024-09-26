@@ -59,16 +59,19 @@ class PostCreate {
       request.headers.addAll(headers);
 
       // Adjuntar múltiples archivos al cuerpo del formulario bajo el mismo campo 'file'
-      for (var file in files!) {
-        request.files.add(await http.MultipartFile.fromPath('file', file.path));
+      if (files != null) {
+        for (var file in files) {
+          request.files.add(await http.MultipartFile.fromPath('file', file.path));
+        }
       }
 
-      // Agregar otros campos
-      request.fields['body'] = body!;
+      // Agregar otros campos solo si no son nulos
+      if (body != null && body.isNotEmpty) {
+        request.fields['body'] = body;
+      }
       request.fields['type_post_id'] = typePost.toString(); 
 
     final streamedResponse = await request.send();
-    print(body);
 
     final response = await http.Response.fromStream(streamedResponse);
     return ServiceResponse.fromJsonString(

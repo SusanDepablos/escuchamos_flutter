@@ -3,6 +3,8 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final Function(List<File>) onMediaChanged;
@@ -63,16 +65,41 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   }
 
   // Método para agregar archivos a la lista
-  void _addMediaFiles(List<XFile> selectedFiles) {
-    setState(() {
-      for (var mediaFile in selectedFiles) {
-        if (_mediaFiles.length < 9) {
-          _mediaFiles.add(File(mediaFile.path));
-        }
+  void _addMediaFiles(List<XFile> selectedFiles) async {
+    for (var mediaFile in selectedFiles) {
+      File file = File(mediaFile.path);
+      
+      // Comprimir solo si es una imagen (ignorar videos)
+      if (file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png')) {
+        file = await _compressImage(file); // Comprimir la imagen
       }
-      widget.onMediaChanged(_mediaFiles);
-    });
+
+      if (_mediaFiles.length < 9) {
+        setState(() {
+          _mediaFiles.add(file);
+        });
+      }
+    }
+    widget.onMediaChanged(_mediaFiles);
   }
+
+  Future<File> _compressImage(File file) async {
+    final originalImage = img.decodeImage(await file.readAsBytes());
+
+    // Redimensionar la imagen
+    final resizedImage = img.copyResize(originalImage!, width: 800); // Ajusta según necesites
+
+    // Codificar la imagen redimensionada a bytes
+    final compressedBytes = img.encodeJpg(resizedImage, quality: 80); // Ajusta la calidad
+
+    // Crear un archivo temporal para la imagen comprimida
+    final tempDir = await getTemporaryDirectory();
+    final tempFile = File('${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}_compressed.jpg');
+    
+    await tempFile.writeAsBytes(compressedBytes);
+    return tempFile;
+  }
+
 
   // Método para eliminar un archivo seleccionado
   void _removeMedia(int index) {

@@ -44,9 +44,10 @@ class PostCommandCreate {
     List<File>? files}) async {
     try {
       var response = await _postCreateService.createPost(
-        body: body ?? '',
-        typePost: typePost ?? 0,    
-        files: files ?? [], );
+        body: body,  
+        typePost: typePost,
+        files: files,
+      );
 
       if (response.statusCode == 201) {
         return SuccessResponse.fromServiceResponse(response);

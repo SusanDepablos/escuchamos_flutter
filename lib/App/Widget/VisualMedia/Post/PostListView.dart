@@ -22,7 +22,7 @@ class PostWidget extends StatelessWidget {
 
   final String? body;
   final List<String>? mediaUrls;
-  final AudioPlayer _audioPlayer = AudioPlayer();  // Crea el AudioPlayer
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   PostWidget({
     Key? key,
@@ -40,200 +40,233 @@ class PostWidget extends StatelessWidget {
     this.sharesCount = '30',
     this.body,
     this.mediaUrls,
-
   }) : super(key: key);
 
   Future<void> _playSound() async {
-    await _audioPlayer.play(AssetSource('sounds/click.mp3')); // Ruta del archivo de sonido
+    await _audioPlayer.play(AssetSource('sounds/click.mp3'));
   }
 
+  void _showOptionsModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: AppColors.whiteapp,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          padding: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(MaterialIcons.edit),
+                title: const Text('Editar'),
+                onTap: () {
+                  // Lógica para editar la publicación
+                  Navigator.pop(context); // Cerrar el modal
+                },
+              ),
+              ListTile(
+                leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
+                title: const Text('Eliminar', style: TextStyle(color: AppColors.errorRed)),
+                onTap: () {
+                  // Lógica para eliminar la publicación
+                  Navigator.pop(context); // Cerrar el modal
+                },
+              ),
+              ListTile(
+                leading: const Icon(MaterialIcons.report),
+                title: const Text('Reportar',),
+                onTap: () {
+                  // Lógica para reportar la publicación
+                  Navigator.pop(context); // Cerrar el modal
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    return Container(
-      margin: const EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        top: 8.0,
-        bottom: 8.0,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.greyLigth,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ProfileAvatar(
-                  imageProvider:  profilePhotoUser != null &&
-                      profilePhotoUser!.isNotEmpty
-                  ? NetworkImage(profilePhotoUser!)
-                  : null,
-                  avatarSize: 40.0,
-                  showBorder: true,
-                  onPressed: onProfileTap,
-                ),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Separar el nombre de usuario en un Container
-                      Row(
-                        children: [
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 140), // Limitar el ancho del contenedor
-                            child: Text(
-                              nameUser,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.ellipsis, // Agregar puntos suspensivos si es muy largo
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            _formatDate(createdAt),
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          const Icon(
-                            MaterialIcons.more,
-                            color: AppColors.grey,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        '@$usernameUser',
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+    return GestureDetector(
+      onLongPress: () => _showOptionsModal(context), // Mostrar modal al mantener presionado
+      child: Container(
+        margin: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 8.0,
+          bottom: 8.0,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.greyLigth,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ProfileAvatar(
+                    imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
+                        ? NetworkImage(profilePhotoUser!)
+                        : null,
+                    avatarSize: 40.0,
+                    showBorder: true,
+                    onPressed: onProfileTap,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            if (mediaUrls != null && mediaUrls!.isNotEmpty)
-              MediaCarousel(mediaUrls: mediaUrls!), 
-            if (mediaUrls != null && mediaUrls!.isNotEmpty)
-              const SizedBox(height: 16.0),
-            if (body != null) ...[
-              Text(
-                body!,
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              constraints: const BoxConstraints(maxWidth: 140),
+                              child: Text(
+                                nameUser,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              _formatDate(createdAt),
+                              style: const TextStyle(
+                                color: AppColors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '@$usernameUser',
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16.0),
-            ],
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Solo reproducir el sonido si está cambiando de gris a rojo
-                        if (!reaction) {
-                          _playSound();  // Reproducir el sonido al cambiar a "like"
-                        }
-                        if (onLikeTap != null) {
-                          onLikeTap!(); // Ejecutar cualquier otra acción
-                        }
-                      },
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(scale: animation, child: child);
-                        },
-                        child: Icon(
-                          reaction
-                              ? MaterialIcons.favorite // Si reaccionado, icono lleno
-                              : MaterialIcons.favoriteBorder, // Si no, icono vacío
-                          key: ValueKey<bool>(reaction),
-                          color: reaction ? AppColors.errorRed : AppColors.grey, // Rojo o gris
-                          size: 24, // Tamaño ligeramente más grande
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    GestureDetector(
-                        onTap: onIndexLikeTap,
-                        child: Text(
-                          reactionsCount,
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ],
+              if (mediaUrls != null && mediaUrls!.isNotEmpty)
+                MediaCarousel(mediaUrls: mediaUrls!),
+              if (mediaUrls != null && mediaUrls!.isNotEmpty)
+                const SizedBox(height: 16.0),
+              if (body != null) ...[
+                Text(
+                  body!,
+                  style: const TextStyle(
+                    fontSize: 16,
                   ),
                 ),
-                // Comments Count
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: onIndexCommentTap,
-                        child: const Icon(
-                          MaterialIcons.comment,
-                          color: AppColors.grey,
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      GestureDetector(
-                        onTap: onIndexCommentTap,
-                        child: Text(
-                          commentsCount,
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 18,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                // Shares Count
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        MaterialIcons.repeat,
-                        color: AppColors.grey,
-                      ),
-                      const SizedBox(width: 15),                     
-                      Text(
-                        sharesCount,
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize:18, // Cambia el tamaño a 18 (o al tamaño que prefieras)
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                const SizedBox(height: 16.0),
               ],
-            )
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (!reaction) {
+                              _playSound();
+                            }
+                            if (onLikeTap != null) {
+                              onLikeTap!();
+                            }
+                          },
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            transitionBuilder: (Widget child, Animation<double> animation) {
+                              return ScaleTransition(scale: animation, child: child);
+                            },
+                            child: Icon(
+                              reaction ? MaterialIcons.favorite // Si reaccionado, icono lleno
+                              : MaterialIcons.favoriteBorder,
+                              key: ValueKey<bool>(reaction),
+                              color: reaction ? AppColors.errorRed : AppColors.grey,
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        GestureDetector(
+                          onTap: onIndexLikeTap,
+                          child: Text(
+                            reactionsCount,
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: onIndexCommentTap,
+                          child: const Icon(
+                            MaterialIcons.comment,
+                            color: AppColors.grey,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        GestureDetector(
+                          onTap: onIndexCommentTap,
+                          child: Text(
+                            commentsCount,
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          MaterialIcons.repeat,
+                          color: AppColors.grey,
+                        ),
+                        const SizedBox(width: 15),
+                        Text(
+                          sharesCount,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

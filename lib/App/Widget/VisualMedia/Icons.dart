@@ -46,6 +46,9 @@ class MaterialIcons {
   static const IconData clear = Icons.clear;
   static const IconData calendar = Icons.calendar_today;
   static const IconData search = Icons.search;
+  static const IconData report = Icons.report;
+
+
   
   // Añadir los íconos para redes sociales y comunicación
   static const IconData web = Icons.language; // Ícono para página web
