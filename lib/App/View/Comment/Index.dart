@@ -72,78 +72,83 @@ class _IndexCommentState extends State<IndexComment> {
   }
 
   Future<void> fetchComments() async {
-      if (_isLoading || !_hasMorePages) return;
+    if (_isLoading || !_hasMorePages) return;
 
-      setState(() {
-        _isLoading = true;
-      });
+    setState(() {
+      _isLoading = true;
+    });
 
-      if (widget.commentId != null) {
-        filters['comment_id'] = widget.commentId;
-      }
+    if (widget.commentId != null) {
+      filters['comment_id'] = widget.commentId;
+    }
 
-      filters['post_id'] = widget.postId?.toString();
-      filters['page'] = page.toString();
+    filters['post_id'] = widget.postId?.toString();
+    filters['page'] = page.toString();
 
-      final commentCommand = CommentCommandIndex(CommentIndex(), filters);
+    final commentCommand = CommentCommandIndex(CommentIndex(), filters);
 
-      try {
-        var response = await commentCommand.execute();
+    try {
+      var response = await commentCommand.execute();
 
-        if (response is CommentsModel) {
-          setState(() {
-            comments.addAll(response.results.data);
-            _hasMorePages = response.next != null && response.next!.isNotEmpty;
-            page++;
+      if (response is CommentsModel) {
+        setState(() {
+          comments.addAll(response.results.data);
+          _hasMorePages = response.next != null && response.next!.isNotEmpty;
+          page++;
 
-            reactionStates = List.generate(comments.length, (index) {
-              return comments[index].relationships.reactions.any(
-                    (reaction) => reaction.attributes.userId == _id,
-                  );
-            });
+          // Recalcular el estado de reacción a partir de los comentarios
+          reactionStates = List.generate(comments.length, (index) {
+            // Verifica si el usuario ya ha reaccionado a este comentario
+            return comments[index].relationships.reactions.any(
+                  (reaction) => reaction.attributes.userId == _id,
+                );
           });
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError ? 'Error' : 'Error de Conexión',
-              message: response.message,
-            ),
-          );
-        }
-      } catch (e) {
-        print(e);
+        });
+      } else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
           ),
         );
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _initialLoading = false;
-          });
-        }
       }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error de Flutter',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+        _initialLoading = false;
+      });
     }
+  }
+
 
   Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
 
     try {
-      var response = await ReactionCommandPost(ReactionPost()).execute('comment', id);
+      var response =
+          await ReactionCommandPost(ReactionPost()).execute('comment', id);
 
       if (response is SuccessResponse) {
         setState(() {
+          // Asegúrate de cambiar el estado de la reacción según el backend
           bool hasReaction = reactionStates[index];
           reactionStates[index] = !hasReaction;
 
           if (reactionStates[index]) {
+            // Si ahora tiene like, incrementamos el contador
             comments[index].relationships.reactionsCount++;
           } else {
+            // Si quitamos el like, decrementamos el contador, pero no puede ser menor a 0
             comments[index].relationships.reactionsCount =
                 max(0, comments[index].relationships.reactionsCount - 1);
           }
@@ -169,7 +174,7 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-    Future<void> _callComment() async {
+Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
 
     try {
@@ -177,27 +182,30 @@ class _IndexCommentState extends State<IndexComment> {
 
       if (mounted) {
         if (response is CommentModel) {
-          if (commentId_ != 0) {
             setState(() {
               _comment = response;
 
               int commentIndex = comments.indexWhere((comment) => comment.id == commentId_);
               if (commentIndex >= 0 && commentIndex < comments.length) {
-
+                // Actualizamos las reacciones y respuestas con los valores recibidos desde el servidor
                 comments[commentIndex].relationships.reactionsCount =
-                _comment!.data.relationships.reactionsCount;
+                    _comment!.data.relationships.reactionsCount;
 
                 comments[commentIndex].relationships.repliesCount =
-                _comment!.data.relationships.repliesCount;
+                    _comment!.data.relationships.repliesCount;
 
-                comments[commentIndex].relationships.repliesCount =
-                _comment!.data.relationships.repliesCount;
+                // Asegurar que la reacción del usuario esté sincronizada con el backend
+                final bool userLikedComment = _comment!
+                    .data.relationships.reactions
+                    .any((reaction) => reaction.attributes.userId == _id);
+
+                reactionStates[commentIndex] = userLikedComment;
+
                 if (likeState != null) {
                   reactionStates[commentIndex] = likeState!;
                 }
               }
             });
-          }
         } else {
           showDialog(
             context: context,
@@ -212,7 +220,6 @@ class _IndexCommentState extends State<IndexComment> {
       }
     } catch (e) {
       if (mounted) {
-        print(e);
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -229,6 +236,7 @@ class _IndexCommentState extends State<IndexComment> {
       }
     }
   }
+
 
   Future<void> _reloadComment() async {
     setState(() {
