@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/ShowConfirmationDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -126,6 +127,17 @@ class _SettingsState extends State<Settings> {
         });
       }
     }
+  }
+  
+  void _showLogoutConfirmation(BuildContext context) {
+    showConfirmationDialog(
+      context,
+      title: 'Cerrar Sesión',
+      content: '¿Estás seguro de que quieres cerrar sesión? Esta acción no se puede deshacer.',
+      onConfirmTap: () async {
+        await _logout(context); // Llama a la función de cierre de sesión
+      },
+    );
   }
 
   @override
@@ -257,10 +269,10 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: _submitting
-                  ? null
-                  : () async {
-                      await _logout(context);
-                    },
+                ? null
+                : () {
+                    _showLogoutConfirmation(context); // Muestra el diálogo de confirmación
+                  },
             ),
           ],
         ),

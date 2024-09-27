@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/ShowConfirmationDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -25,6 +26,19 @@ class ImagePickerDialog extends StatelessWidget {
     }
   }
 
+  void _showDeleteConfirmation(BuildContext context) {
+    showConfirmationDialog(
+      context,
+      title: 'Eliminar Foto',
+      content: '¿Estás seguro de que quieres eliminar esta foto? Esta acción no se puede deshacer.',
+      onConfirmTap: () {
+        if (onDeletePhoto != null) {
+          onDeletePhoto!(); // Llama a la función de eliminación
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -36,7 +50,7 @@ class ImagePickerDialog extends StatelessWidget {
             text: 'Tomar Foto',
             icon: MaterialIcons.camera,
             onPressed: () => _pickImage(context, ImageSource.camera),
-            style: TextStyle(
+            style: const TextStyle(
                 color: AppColors.black, // Color rojo para el texto
                 fontSize: 16, // Tamaño de texto
               ),
@@ -45,7 +59,7 @@ class ImagePickerDialog extends StatelessWidget {
             text: 'Elegir Foto Existente',
             icon: MaterialIcons.image,
             onPressed: () => _pickImage(context, ImageSource.gallery),
-            style: TextStyle(
+            style: const TextStyle(
                 color: AppColors.black, // Color rojo para el texto
                 fontSize: 16, // Tamaño de texto
               ),
@@ -55,10 +69,10 @@ class ImagePickerDialog extends StatelessWidget {
               text: 'Eliminar Foto',
               icon: MaterialIcons.delete,
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
-                onDeletePhoto!(); // Llama a la función de eliminar foto
+                Navigator.of(context).pop();
+                _showDeleteConfirmation(context);
               },
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.errorRed, // Color rojo para el texto
                 fontSize: 16, // Tamaño de texto
               ),

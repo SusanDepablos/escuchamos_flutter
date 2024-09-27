@@ -157,7 +157,7 @@ class _CountryUpdateState extends State<CountryUpdate> {
         context: context,
         builder: (context) => PopupWindow(
           title: 'Error',
-          message: e.toString(),
+          message: 'Espera un poco, pronto lo solucionaremos.',
         ),
       );
     } finally {

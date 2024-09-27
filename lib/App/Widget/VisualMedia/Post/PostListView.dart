@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/ShowConfirmationDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
@@ -13,6 +14,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onLikeTap;
   final VoidCallback? onIndexLikeTap;
   final VoidCallback? onIndexCommentTap;
+  final VoidCallback? onDeleteTap;
   final bool reaction;
   final DateTime createdAt;
 
@@ -24,6 +26,7 @@ class PostWidget extends StatelessWidget {
   final List<String>? mediaUrls;
   final int authorId;
   final int currentUserId; 
+  final VoidCallback onEditTap; // Agregar este parámetro
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   PostWidget({
@@ -44,6 +47,8 @@ class PostWidget extends StatelessWidget {
     this.mediaUrls,
     required this.authorId,
     required this.currentUserId,
+    this.onDeleteTap,
+    required this.onEditTap, // Agregar este parámetro
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -77,6 +82,19 @@ class PostWidget extends StatelessWidget {
     return monthNames[month - 1];
   }
 
+  void _onDeleteItem(BuildContext context) {
+    showConfirmationDialog(
+      context,
+      title: 'Confirmar eliminación',
+      content: '¿Estás seguro de que quieres eliminarlo? Esta acción no se puede deshacer.',
+      onConfirmTap: () {
+        if (onDeleteTap != null) {
+          onDeleteTap!(); // Llama a la función de eliminación
+        }
+      },
+    );
+  }
+
   void _showOptionsModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -92,19 +110,20 @@ class PostWidget extends StatelessWidget {
             children: [
               if (currentUserId == authorId) ...[
                 ListTile(
-                  leading: const Icon(MaterialIcons.edit),
-                  title: const Text('Editar'),
+                  leading: const Icon(MaterialIcons.edit, color: AppColors.black),
+                  title: const Text('Editar', style: TextStyle(color: AppColors.black)),
                   onTap: () {
                     // Lógica para editar la publicación
                     Navigator.pop(context); // Cerrar el modal
+                    onEditTap();
                   },
                 ),
                 ListTile(
                   leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
                   title: const Text('Eliminar', style: TextStyle(color: AppColors.errorRed)),
                   onTap: () {
-                    // Lógica para eliminar la publicación
-                    Navigator.pop(context); // Cerrar el modal
+                    Navigator.pop(context); // Cerrar el modal primero
+                    _onDeleteItem(context); // Mostrar el diálogo de confirmación
                   },
                 ),
               ] else ...[
@@ -117,7 +136,7 @@ class PostWidget extends StatelessWidget {
                   },
                 ),
               ],
-            ]
+            ],
           ),
         );
       },
@@ -236,7 +255,7 @@ class PostWidget extends StatelessWidget {
                 MediaCarousel(mediaUrls: mediaUrls!),
               if (mediaUrls != null && mediaUrls!.isNotEmpty)
                 const SizedBox(height: 16.0),
-              if (body != null) ...[
+              if (body != null && body != '') ...[
                 Text(
                   body!,
                   style: const TextStyle(

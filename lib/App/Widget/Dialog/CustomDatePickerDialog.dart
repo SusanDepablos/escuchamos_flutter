@@ -24,7 +24,8 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
+      backgroundColor: AppColors.whiteapp,
+      title: const Text(
         'Selecciona una fecha',
         style: TextStyle(fontSize: 18),
       ),
@@ -35,7 +36,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 maxHeight: 300,
               ),
               child: Builder(
@@ -43,7 +44,7 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog> {
                   return Theme(
                     data: ThemeData.light().copyWith(
                       primaryColor: AppColors.primaryBlue, // Color de la barra superior (AppBar)
-                      colorScheme: ColorScheme.light(
+                      colorScheme: const ColorScheme.light(
                         primary: AppColors.primaryBlue, // Color del día seleccionado
                         onPrimary: AppColors.whiteapp, // Color del texto en el día seleccionado
                         onSurface: AppColors.black, // Color del texto en los días no seleccionados
@@ -71,23 +72,23 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog> {
                     Navigator.of(context).pop(); // Cierra el diálogo sin devolver datos
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.errorRed, // Color del texto del botón "Cancelar"
+                    foregroundColor: AppColors.black, // Color del texto del botón "Cancelar"
                   ),
                   child: const Text('Cancelar', style: TextStyle(fontSize: 14)),
                 ),
-                SizedBox(width: 10), // Espacio entre los botones
+                const SizedBox(width: 10), // Espacio entre los botones
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(_selectedDate); // Devuelve la fecha seleccionada
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.primaryBlue, // Color del texto del botón "Aceptar"
+                    foregroundColor: AppColors.black, // Color del texto del botón "Aceptar"
                   ),
                   child: const Text('Aceptar', style: TextStyle(fontSize: 14)),
                 ),
               ],
             ),
-            SizedBox(height: 20), // Espacio debajo de los botones
+            const SizedBox(height: 20), // Espacio debajo de los botones
           ],
         ),
       ),

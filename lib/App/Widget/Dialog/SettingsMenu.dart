@@ -1,10 +1,11 @@
+import 'package:escuchamos_flutter/App/Widget/Dialog/ShowConfirmationDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 
 class SettingsMenu extends StatelessWidget {
   final Future<void> Function() onEditProfile;
-  final Future<void> Function() onLogout;
+  final Future<void> Function()? onLogout;
   final bool isEnabled;
 
   SettingsMenu({
@@ -12,6 +13,19 @@ class SettingsMenu extends StatelessWidget {
     required this.onLogout,
     this.isEnabled = true, // Valor predeterminado es true
   });
+
+  void _showLogoutConfirmation(BuildContext context) {
+    showConfirmationDialog(
+      context,
+      title: 'Cerrar Sesión',
+      content: '¿Estás seguro de que quieres cerrar sesión? Esta acción no se puede deshacer.',
+      onConfirmTap: () {
+        if (onLogout != null) {
+          onLogout!(); // Llama a la función de eliminación
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +35,12 @@ class SettingsMenu extends StatelessWidget {
           await onEditProfile(); // Ejecuta la función de navegación al editar perfil
         } else if (result == 'logout') {
           if (isEnabled) {
-            await onLogout(); 
+            _showLogoutConfirmation(context); // Muestra el diálogo de confirmación
           }
         }
       },
       itemBuilder: (BuildContext context) => [
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'edit',
           child: Row(
             children: [
@@ -43,7 +57,7 @@ class SettingsMenu extends StatelessWidget {
             ],
           ),
         ),
-        PopupMenuItem<String>(
+        const PopupMenuItem<String>(
           value: 'logout',
           child: Row(
             children: [

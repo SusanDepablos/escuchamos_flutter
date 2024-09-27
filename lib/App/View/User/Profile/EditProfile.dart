@@ -152,7 +152,7 @@ class _UpdateState extends State<EditProfile> {
             Navigator.of(context).pop(imageFile);
           },
           onDeletePhoto: () {
-            _DeletePhoto(isCoverPhoto ? 'cover' : 'profile');
+            _deletePhoto(isCoverPhoto ? 'cover' : 'profile');
             setState(() {
               if (isCoverPhoto) {
                 _coverPhoto = null;
@@ -280,7 +280,7 @@ class _UpdateState extends State<EditProfile> {
             _borderColors['name'] = AppColors.inputDark;
             _errorMessages['name'] = response.message('name');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['name'] = AppColors.inputBasic;
               _errorMessages['name'] = null;
@@ -293,7 +293,7 @@ class _UpdateState extends State<EditProfile> {
             _borderColors['birthdate'] = AppColors.inputDark;
             _errorMessages['birthdate'] = response.message('birthdate');
           });
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
             setState(() {
               _borderColors['birthdate'] = AppColors.inputBasic;
               _errorMessages['birthdate'] = null;
@@ -309,11 +309,10 @@ class _UpdateState extends State<EditProfile> {
           ),
         );
       } else
-        showDialog(
+        await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -332,29 +331,32 @@ class _UpdateState extends State<EditProfile> {
     }
   }
 
-  Future<void> _DeletePhoto(String type) async {
+  Future<void> _deletePhoto(String type) async {
     try {
       var response = await DeleteCommandPhoto(DeletePhoto()).execute(
         type: type, // Pasa el tipo: 'profile' o 'cover'
       );
 
-      if (response is ValidationResponse) {
-        // Manejo de validaciones, si es necesario
-      } else {
+      if (response is SuccessResponse) {
         // Mostrar el diálogo con el mensaje de éxito o error
         showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title: response is SuccessResponse
-                ? 'Correcto'
-                : response is InternalServerError
-                    ? 'Error'
-                    : 'Error de Conexión',
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
       }
-    } catch (e) {
+      else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+      } catch (e) {
       showDialog(
         context: context,
         builder: (context) => PopupWindow(
@@ -377,9 +379,9 @@ class _UpdateState extends State<EditProfile> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'Editar Perfil',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
@@ -387,7 +389,7 @@ class _UpdateState extends State<EditProfile> {
               ),
               Text(
                 '@${username ?? '...'}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
@@ -422,7 +424,7 @@ class _UpdateState extends State<EditProfile> {
                   Positioned(
                     bottom: -30,
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: ClipOval(
@@ -442,7 +444,7 @@ class _UpdateState extends State<EditProfile> {
                   ),
                 ],
               ),
-              SizedBox(height: 60.0),
+              const SizedBox(height: 60.0),
               GenericInput(
                 maxLength: 35,
                 text: 'Nombre y Apellido',
@@ -450,20 +452,20 @@ class _UpdateState extends State<EditProfile> {
                 border: _borderColors['name']!,
                 error: _errorMessages['name'],
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               BasicTextArea(
                 text: 'Biografía',
                 input: input['biography']!,
                 maxLength: 70,
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               DateInput(
                 text: 'Fecha de Nacimiento',
                 input: input['birthdate']!,
                 border: _borderColors['birthdate']!,
                 error: _errorMessages['birthdate'],
               ),
-              SizedBox(height: 35.0),
+              const SizedBox(height: 35.0),
               GenericButton(
                 label: 'Actualizar',
                 onPressed: _updateUser,
