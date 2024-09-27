@@ -65,6 +65,16 @@ class _IndexCommentState extends State<IndexComment> {
     fetchComments();
   }
 
+  Future<void> _reloadComment() async {
+    setState(() {
+      page = 1;
+      comments.clear();
+      _hasMorePages = true;
+      _initialLoading = true;
+    });
+    await fetchComments();
+  }
+
   Future<void> _getData() async {
     final id = await _storage.read(key: 'user') ?? '';
     setState(() {
@@ -97,9 +107,7 @@ class _IndexCommentState extends State<IndexComment> {
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
 
-          // Recalcular el estado de reacción a partir de los comentarios
           reactionStates = List.generate(comments.length, (index) {
-            // Verifica si el usuario ya ha reaccionado a este comentario
             return comments[index].relationships.reactions.any(
                   (reaction) => reaction.attributes.userId == _id,
                 );
@@ -131,49 +139,6 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-  Future<void> _commentReaction(int index, int id) async {
-    if (index < 0 || index >= comments.length) return;
-
-    try {
-      var response =
-          await ReactionCommandPost(ReactionPost()).execute('comment', id);
-
-      if (response is SuccessResponse) {
-        setState(() {
-          // Asegúrate de cambiar el estado de la reacción según el backend
-          bool hasReaction = reactionStates[index];
-          reactionStates[index] = !hasReaction;
-
-          if (reactionStates[index]) {
-            // Si ahora tiene like, incrementamos el contador
-            comments[index].relationships.reactionsCount++;
-          } else {
-            // Si quitamos el like, decrementamos el contador, pero no puede ser menor a 0
-            comments[index].relationships.reactionsCount =
-                max(0, comments[index].relationships.reactionsCount - 1);
-          }
-        });
-      } else {
-        await showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
-            message: response.message,
-          ),
-        );
-      }
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
-        ),
-      );
-    }
-  }
-
   Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
 
@@ -187,24 +152,19 @@ class _IndexCommentState extends State<IndexComment> {
 
             int commentIndex =
                 comments.indexWhere((comment) => comment.id == commentId_);
+
             if (commentIndex >= 0 && commentIndex < comments.length) {
-              // Actualizamos las reacciones y respuestas con los valores recibidos desde el servidor
               comments[commentIndex].relationships.reactionsCount =
                   _comment!.data.relationships.reactionsCount;
 
               comments[commentIndex].relationships.repliesCount =
                   _comment!.data.relationships.repliesCount;
 
-              // Asegurar que la reacción del usuario esté sincronizada con el backend
               final bool userLikedComment = _comment!
                   .data.relationships.reactions
                   .any((reaction) => reaction.attributes.userId == _id);
 
               reactionStates[commentIndex] = userLikedComment;
-
-              if (likeState != null) {
-                reactionStates[commentIndex] = likeState!;
-              }
             }
           });
         } else {
@@ -238,21 +198,55 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-  Future<void> _reloadComment() async {
+
+Future<void> _commentReaction(int index, int id) async {
+    if (index < 0 || index >= comments.length) return;
+
     setState(() {
-      page = 1;
-      comments.clear();
-      _hasMorePages = true;
-      _initialLoading = true;
+      reactionStates[index] =
+          !reactionStates[index]; // Cambiar el estado de la reacción
     });
-    await fetchComments();
+
+    try {
+      var response =
+          await ReactionCommandPost(ReactionPost()).execute('comment', id);
+      commentId_ = id;
+
+      if (response is SuccessResponse) {
+        // Aquí se puede hacer una actualización adicional si es necesario
+        await _callComment(); // Sincronizar con el backend para mantener los datos actualizados
+      } else {
+        // Revertir el estado visual si hay un error
+        setState(() {
+          reactionStates[index] = !reactionStates[index];
+        });
+
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      // Revertir el estado si hay un error
+      setState(() {
+        reactionStates[index] = !reactionStates[index];
+      });
+
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -313,32 +307,23 @@ class _IndexCommentState extends State<IndexComment> {
                                   itemCount: comments.length,
                                   itemBuilder: (context, index) {
                                     final comment = comments[index];
-                                    final bool hasReaction =
-                                        reactionStates[index];
+                                    final bool hasReaction = reactionStates[index];  // Aquí se asegura de que tome el estado actualizado
 
                                     return CommentWidget(
-                                      reaction: hasReaction,
-                                      onLikeTap: () =>
-                                          _commentReaction(index, comment.id),
+                                      reaction: hasReaction,  // Usar siempre el estado actualizado de `reactionStates`
+                                      onLikeTap: () => _commentReaction(index, comment.id),
                                       nameUser: comment.relationships.user.name,
-                                      usernameUser:
-                                          comment.relationships.user.username,
-                                      profilePhotoUser: comment.relationships
-                                              .user.profilePhotoUrl ??
-                                          '',
+                                      usernameUser: comment.relationships.user.username,
+                                      profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
                                       onProfileTap: () {
-                                        final userId =
-                                            comment.relationships.user.id;
-                                        Navigator.pushNamed(context, 'profile',
-                                            arguments: userId);
+                                        final userId = comment.relationships.user.id;
+                                        Navigator.pushNamed(context, 'profile', arguments: userId);
                                       },
                                       onResponseTap: () {
                                         final commentId = comment.id;
-                                        Navigator.pushNamed(
-                                                context, 'nested-comments',
-                                                arguments: commentId)
+                                        Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
                                             .then((_) {
-                                          _callComment(); // Llama a la función pr1 después de regresar
+                                          _callComment();
                                         });
                                       },
                                       onNumberLikeTap: () {
@@ -349,20 +334,15 @@ class _IndexCommentState extends State<IndexComment> {
                                           arguments: {
                                             'objectId': objectId,
                                             'model': 'comment',
-                                            'appBar': 'Reacciones'
+                                            'appBar': 'Reacciones',
                                           },
                                         );
                                       },
                                       body: comment.attributes.body,
-                                      mediaUrl: comment.relationships.file
-                                          .firstOrNull?.attributes.url,
+                                      mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
                                       createdAt: comment.attributes.createdAt,
-                                      reactionsCount: comment
-                                          .relationships.reactionsCount
-                                          .toString(),
-                                      repliesCount: comment
-                                          .relationships.repliesCount
-                                          .toString(),
+                                      reactionsCount: comment.relationships.reactionsCount.toString(),
+                                      repliesCount: comment.relationships.repliesCount.toString(),
                                     );
                                   },
                                 ),
@@ -373,7 +353,6 @@ class _IndexCommentState extends State<IndexComment> {
                 ),
           FloatingAddButton(
             onTap: () {
-              // Aquí añades la acción que quieres que ocurra al tocar el círculo
               print('Botón flotante tocado');
             },
           ),
