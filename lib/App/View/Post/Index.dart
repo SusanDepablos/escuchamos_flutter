@@ -260,7 +260,7 @@ class _IndexPostState extends State<IndexPost> {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (context, setStateLocal) {  // `setState` local del diálogo
             return AlertDialog(
               title: const Text('Editar Publicación'),
               backgroundColor: AppColors.whiteapp,
@@ -290,7 +290,12 @@ class _IndexPostState extends State<IndexPost> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await _updatePost(input['body']!.text, postId_, setState); // Pasar setState
+                    await _updatePost(
+                      input['body']!.text, 
+                      postId_,
+                      setStateLocal,  // `setState` local
+                      context,
+                    );
                   },
                   child: const Text(
                     'Guardar',
@@ -305,34 +310,36 @@ class _IndexPostState extends State<IndexPost> {
     );
   }
 
-  Future<void> _updatePost(String body, int postId, Function setState) async {
+  Future<void> _updatePost(String body, int postId, 
+    Function setStateLocal,  // `setState` local del diálogo
+    BuildContext context  // Contexto para el `setState` global
+  ) async {
     try {
       var response = await PostCommandUpdate(PostUpdate()).execute(body, postId);
 
       if (response is ValidationResponse) {
-        print(response.message('body'));
         if (response.key['body'] != null) {
-          setState(() {
+          // Actualiza el estado local para los errores de validación
+          setStateLocal(() {
             _borderColors['body'] = AppColors.inputLigth;
             _errorMessages['body'] = response.message('body');
           });
-          // Si quieres que el error desaparezca después de un tiempo
           Future.delayed(const Duration(seconds: 2), () {
-            setState(() {
+            setStateLocal(() {
               _borderColors['body'] = AppColors.inputLigth;
               _errorMessages['body'] = null;
             });
           });
         }
       } else if (response is SuccessResponse) {
-          // Buscar el índice de la publicación que estás actualizando
+        // Usar `setState` global para actualizar la lista de publicaciones
+        setState(() {
           int postIndex = posts.indexWhere((post) => post.id == postId);
           if (postIndex != -1) {
-            setState(() {
-              posts[postIndex].attributes.body = body;
-            });
+            posts[postIndex].attributes.body = body;
           }
-        Navigator.of(context).pop();
+        });
+        Navigator.of(context).pop(); // Cerrar el diálogo
         showDialog(
           context: context,
           builder: (context) => AutoClosePopup(
@@ -359,6 +366,7 @@ class _IndexPostState extends State<IndexPost> {
       );
     }
   }
+
 
   Future<void> _deletePost(int id) async {
     try {
