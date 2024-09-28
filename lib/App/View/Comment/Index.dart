@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/UserService.dart';
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as user_model;
 import 'package:escuchamos_flutter/Api/Model/CommentModels.dart';
 import 'package:escuchamos_flutter/Api/Command/CommentCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/CommentService.dart';
@@ -15,6 +17,7 @@ import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FloatingCircle.dart';
 import 'package:escuchamos_flutter/App/View/Post/Index.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopup.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int commentId_ = 0;
@@ -35,11 +38,14 @@ class _IndexCommentState extends State<IndexComment> {
   List<bool> reactionStates = [];
   late ScrollController _scrollController;
   CommentModel? _comment;
+  user_model.UserModel? _user;
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _initialLoading = true;
   int? _id;
   int page = 1;
+  String? _name;
+  String? _profilePhotoUser;
 
   final filters = {
     'pag': '10',
@@ -48,7 +54,18 @@ class _IndexCommentState extends State<IndexComment> {
     'comment_id': null
   };
 
-  @override
+  String? _getFileUrlByType(String type) {
+    try {
+      final file = _user?.data.relationships.files.firstWhere(
+        (file) => file.attributes.type == type,
+      );
+      return file!.attributes.url;
+    } catch (e) {
+      return null; // Retorna null si no se encuentra el archivo
+    }
+  }
+
+@override
   void initState() {
     postId_ = int.parse(widget.postId!);
     super.initState();
@@ -61,9 +78,11 @@ class _IndexCommentState extends State<IndexComment> {
           }
         }
       });
-    _getData();
+    _getData()
+        .then((_) => _callUser()); // Llama a _callUser después de _getData()
     fetchComments();
   }
+
 
   Future<void> _reloadComment() async {
     setState(() {
@@ -80,6 +99,46 @@ class _IndexCommentState extends State<IndexComment> {
     setState(() {
       _id = int.tryParse(id);
     });
+  }
+
+  Future<void> _callUser() async {
+    final userCommand = UserCommandShow(UserShow(), _id!);
+
+    try {
+      final response = await userCommand.execute();
+
+      if (mounted) {
+        if (response is  user_model.UserModel) {
+          setState(() {
+            _user = response;
+           _name = _user!.data.attributes.name;
+
+          _profilePhotoUser = _getFileUrlByType('profile');
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
   }
 
   Future<void> fetchComments() async {
@@ -353,7 +412,18 @@ Future<void> _commentReaction(int index, int id) async {
                 ),
           FloatingAddButton(
             onTap: () {
-              print('Botón flotante tocado');
+              CommentPopup(
+                context,
+                nameUser: _name.toString(),
+                profilePhotoUser: _profilePhotoUser,
+                onProfileTap: () {
+                  final userId = _id;
+                  Navigator.pushNamed(context, 'profile', arguments: userId)
+                      .then((_) {
+                    _callUser();
+                  });
+                },
+              );
             },
           ),
         ],

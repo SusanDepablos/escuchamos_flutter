@@ -6,6 +6,7 @@ import 'package:escuchamos_flutter/Api/Service/CommentService.dart';
 import 'package:escuchamos_flutter/Api/Model/CommentModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
 class CommentCommandIndex {
   final CommentIndex _commentData;
@@ -47,6 +48,42 @@ class CommentCommandShow {
         return SimpleErrorResponse.fromServiceResponse(response);
       } else {
         return InternalServerError.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
+class UploadCommandComment {
+  final CommentService _commentService;
+
+  UploadCommandComment(this._commentService);
+
+  Future<dynamic> execute({
+    required String? body,
+    required String postId,
+    String? commentId,
+    File? file,
+  }) async {
+    try {
+
+      var response =
+          await _commentService.addComment(body, postId, commentId, file);
+
+      if (response.statusCode == 201) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
       }
     } on SocketException catch (e) {
       return ApiError();

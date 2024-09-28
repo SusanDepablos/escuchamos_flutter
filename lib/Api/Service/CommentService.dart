@@ -3,6 +3,7 @@ import 'package:escuchamos_flutter/Api/Response/ServiceResponse.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:io';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -60,3 +61,41 @@ class CommentShow {
     );
   }
 }
+
+class CommentService {
+  Future<ServiceResponse> addComment(
+      String? body, String postId, String? commentId, File? file) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}comment/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final headers = {
+      'Authorization': 'Token $token',
+    };
+
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(headers);
+
+    request.fields['post_id'] = postId;
+
+    if (body != null) {
+      request.fields['body'] = body;
+    }
+
+    if (commentId != null) {
+      request.fields['comment_id'] = commentId;
+    }
+
+    if (file != null) {
+      request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    }
+
+    final streamedResponse = await request.send();
+
+    final response = await http.Response.fromStream(streamedResponse);
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+
