@@ -15,7 +15,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
-import 'dart:math';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int postId_ = 0 ;
@@ -48,7 +47,6 @@ class _IndexPostState extends State<IndexPost> {
 
   final input = {
     'body': TextEditingController(),
-  
   };
 
   final _borderColors = {
@@ -79,6 +77,19 @@ class _IndexPostState extends State<IndexPost> {
 
     setState(() {
       _id = int.parse(id);
+    });
+  }
+
+  Future<void> _reloadPosts() async {
+    setState(() {
+      page = 1;
+      posts.clear();
+      _hasMorePages = true;
+      _initialLoading = true;
+    });
+    await fetchPosts();
+    setState(() {
+      _initialLoading = false;
     });
   }
 
@@ -142,17 +153,62 @@ class _IndexPostState extends State<IndexPost> {
     }
   }
 
-  Future<void> _reloadPosts() async {
-    setState(() {
-      page = 1;
-      posts.clear();
-      _hasMorePages = true;
-      _initialLoading = true;
-    });
-    await fetchPosts();
-    setState(() {
-      _initialLoading = false;
-    });
+  Future<void> _callPost() async {
+    try {
+      final postCommand = PostCommandShow(PostShow(), postId_);
+
+      final response = await postCommand.execute();
+
+      if (mounted) {
+        if (response is PostModel) {
+          if (postId_ != 0) {
+            setState(() {
+              _post = response;
+
+              int postIndex = posts.indexWhere((post) => post.id == postId_);
+              if (postIndex >= 0 && postIndex < posts.length) {
+                posts[postIndex].relationships.reactionsCount =
+                    _post!.data.relationships.reactionsCount;
+
+                posts[postIndex].relationships.commentsCount =
+                    _post!.data.relationships.commentsCount;
+
+                posts[postIndex].relationships.commentsCount =
+                    _post!.data.relationships.commentsCount;
+
+                final bool userLikedPost = _post!.data.relationships.reactions
+                    .any((reaction) => reaction.attributes.userId == _id);
+
+                reactionStates[postIndex] = userLikedPost;
+              }
+            });
+          }
+        } else {
+          await showDialog(
+              context: context,
+              builder: (context) => AutoClosePopupFail(
+                    child: const FailAnimationWidget(),
+                    message: response.message,
+                  ));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          postId_ = 0;
+        });
+      }
+    }
   }
 
   Future<void> _postReaction(int index, int id) async {
@@ -160,20 +216,13 @@ class _IndexPostState extends State<IndexPost> {
 
       try {
         var response =  await ReactionCommandPost(ReactionPost()).execute('post', id);
-
+        postId_ = id;
         if (response is SuccessResponse) {
-          setState(() {
-            bool hasReaction = reactionStates[index];
-            reactionStates[index] = !hasReaction;
-
-            if (reactionStates[index]) {
-              posts[index].relationships.reactionsCount += 1;
-            } else {
-              posts[index].relationships.reactionsCount =
-                  max(0, posts[index].relationships.reactionsCount - 1);
-            }
-          });
+          await _callPost();
         } else {
+          setState(() {
+            reactionStates[index] = !reactionStates[index];
+          });
           await showDialog(
             context: context,
             builder: (context) => PopupWindow(
@@ -194,73 +243,14 @@ class _IndexPostState extends State<IndexPost> {
       }
     }
 
-  Future<void> _callPost() async {
-    try {
-      final postCommand = PostCommandShow(PostShow(), postId_);
-      
-      final response = await postCommand.execute();
-
-      if (mounted) {
-        if (response is PostModel) {
-          if (postId_ != 0) {
-            setState(() {
-              _post = response;
-
-              int postIndex = posts.indexWhere((post) => post.id == postId_);
-              if (postIndex >= 0 && postIndex < posts.length) {
-                posts[postIndex].relationships.reactionsCount =
-                    _post!.data.relationships.reactionsCount;
-
-                posts[postIndex].relationships.commentsCount =
-                    _post!.data.relationships.commentsCount;
-
-                posts[postIndex].relationships.commentsCount =
-                    _post!.data.relationships.commentsCount;
-
-                if (likeState != null) {
-                  reactionStates[postIndex] = likeState!;
-                }
-              }
-            });
-          }
-        } else {
-          await showDialog(
-            context: context,
-            builder: (context) => AutoClosePopupFail(
-              child: const FailAnimationWidget(), // Aquí se pasa la animación
-              message: response.message,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        print(e);
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          postId_ = 0;
-        });
-      }
-    }
-  }
-
   void _showTextAreaDialog(BuildContext context, String? body, int postId) {
-    postId_ = postId;  // Establecer el ID de la publicación
+    postId_ = postId;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (context, setStateLocal) {  // `setState` local del diálogo
+          builder: (context, setStateLocal) {
             return AlertDialog(
               title: const Text('Editar Publicación'),
               backgroundColor: AppColors.whiteapp,
@@ -293,7 +283,7 @@ class _IndexPostState extends State<IndexPost> {
                     await _updatePost(
                       input['body']!.text, 
                       postId_,
-                      setStateLocal,  // `setState` local
+                      setStateLocal, 
                       context,
                     );
                   },
@@ -311,15 +301,14 @@ class _IndexPostState extends State<IndexPost> {
   }
 
   Future<void> _updatePost(String body, int postId, 
-    Function setStateLocal,  // `setState` local del diálogo
-    BuildContext context  // Contexto para el `setState` global
+    Function setStateLocal,
+    BuildContext context 
   ) async {
     try {
       var response = await PostCommandUpdate(PostUpdate()).execute(body, postId);
 
       if (response is ValidationResponse) {
         if (response.key['body'] != null) {
-          // Actualiza el estado local para los errores de validación
           setStateLocal(() {
             _borderColors['body'] = AppColors.inputLigth;
             _errorMessages['body'] = response.message('body');
@@ -332,14 +321,13 @@ class _IndexPostState extends State<IndexPost> {
           });
         }
       } else if (response is SuccessResponse) {
-        // Usar `setState` global para actualizar la lista de publicaciones
         setState(() {
           int postIndex = posts.indexWhere((post) => post.id == postId);
           if (postIndex != -1) {
             posts[postIndex].attributes.body = body;
           }
         });
-        Navigator.of(context).pop(); // Cerrar el diálogo
+        Navigator.of(context).pop();
         showDialog(
           context: context,
           builder: (context) => AutoClosePopup(
@@ -373,19 +361,16 @@ class _IndexPostState extends State<IndexPost> {
       var response = await DeleteCommandPost(DeletePost()).execute(id: id);
 
       if (response is SuccessResponse) {
-        // Buscar el índice de la publicación que estás eliminando
         int postIndex = posts.indexWhere((post) => post.id == id);
 
         if (postIndex != -1) {
-          // Eliminar la publicación de la lista
           setState(() {
             posts.removeAt(postIndex);
           });
-          // Mostrar el diálogo con el mensaje de éxito
           await showDialog(
             context: context,
             builder: (context) => AutoClosePopup(
-              child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+              child: const SuccessAnimationWidget(),
               message: response.message,
             ),
           );
@@ -394,13 +379,12 @@ class _IndexPostState extends State<IndexPost> {
         await showDialog(
           context: context,
           builder: (context) => AutoClosePopupFail(
-            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            child: const FailAnimationWidget(),
             message: response.message,
           ),
         );
       }
     } catch (e) {
-      // Manejar errores inesperados
       showDialog(
         context: context,
         builder: (context) => PopupWindow(
@@ -449,10 +433,10 @@ class _IndexPostState extends State<IndexPost> {
                           itemBuilder: (context, index) {
                             final post = posts[index];
                             final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
-                            final bool hasReaction = reactionStates[index]; // Usa el estado de la lista
+                            final bool hasReaction = reactionStates[index];
                             return PostWidget(
                               reaction: hasReaction,
-                              onLikeTap: () => _postReaction(index, post.id), // Pasa el índice y el ID del post,
+                              onLikeTap: () => _postReaction(index, post.id),
                               nameUser: post.relationships.user.name,
                               usernameUser: post.relationships.user.username,
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
@@ -485,7 +469,6 @@ class _IndexPostState extends State<IndexPost> {
                                       'postId': postId,
                                     },
                                   ).then((_) {
-                                    // Esto se ejecuta cuando regresas de 'index-comments'
                                     _callPost();
                                   });
                                 },
@@ -501,9 +484,8 @@ class _IndexPostState extends State<IndexPost> {
                               onDeleteTap: () {
                                 _deletePost(post.id); 
                               },
-                              onEditTap: () { // Llama a la función de edición
-                                input['body']!.text = post.attributes.body ?? ''; // Asegurarte de que no sea nulo
-                                // Llamar al cuadro de diálogo para editar la publicación
+                              onEditTap: () {
+                                input['body']!.text = post.attributes.body ?? '';
                                 _showTextAreaDialog(context, input['body']!.text, post.id);
                               },
                             );

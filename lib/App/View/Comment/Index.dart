@@ -61,7 +61,7 @@ class _IndexCommentState extends State<IndexComment> {
       );
       return file!.attributes.url;
     } catch (e) {
-      return null; // Retorna null si no se encuentra el archivo
+      return null;
     }
   }
 
@@ -272,10 +272,8 @@ Future<void> _commentReaction(int index, int id) async {
       commentId_ = id;
 
       if (response is SuccessResponse) {
-        // Aquí se puede hacer una actualización adicional si es necesario
-        await _callComment(); // Sincronizar con el backend para mantener los datos actualizados
+        await _callComment();
       } else {
-        // Revertir el estado visual si hay un error
         setState(() {
           reactionStates[index] = !reactionStates[index];
         });
@@ -290,7 +288,6 @@ Future<void> _commentReaction(int index, int id) async {
         );
       }
     } catch (e) {
-      // Revertir el estado si hay un error
       setState(() {
         reactionStates[index] = !reactionStates[index];
       });
