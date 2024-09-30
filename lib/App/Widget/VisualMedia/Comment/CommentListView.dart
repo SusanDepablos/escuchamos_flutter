@@ -17,7 +17,7 @@ class CommentWidget extends StatelessWidget {
   final DateTime createdAt;
   final String reactionsCount;
   final String repliesCount;
-
+  final bool isHidden;
   final String? body;
   final String? mediaUrl;
   final AudioPlayer _audioPlayer = AudioPlayer(); // Crea el AudioPlayer
@@ -29,6 +29,7 @@ class CommentWidget extends StatelessWidget {
     required this.usernameUser,
     required this.createdAt,
     this.profilePhotoUser,
+    this.isHidden = false,
     this.onLikeTap,
     this.onNumberLikeTap,
     this.onResponseTap,
@@ -133,7 +134,7 @@ class CommentWidget extends StatelessWidget {
                 ),
               ],
               if (mediaUrl != null) const SizedBox(height: 10.0),
-              if (body != null) ...[
+              if (body != null && body != '') ...[
                 Text(
                   body!,
                   style: const TextStyle(
@@ -183,27 +184,29 @@ class CommentWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 30.0),
                   // Texto "Responder"
-                  GestureDetector(
-                    onTap: onResponseTap,
-                    child: const Text(
-                      'Responder',
-                      style: TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 16,
+                  if (!isHidden) ...[
+                    GestureDetector(
+                      onTap: onResponseTap,
+                      child: const Text(
+                        'Responder',
+                        style: TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 10.0),
-                  GestureDetector(
-                    onTap: onResponseTap,
-                    child: Text(
-                      repliesCount,
-                      style: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 16,
+                    const SizedBox(width: 10.0),
+                    GestureDetector(
+                      onTap: onResponseTap,
+                      child: Text(
+                        repliesCount,
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
+                  ]
                 ],
               ),
             ],

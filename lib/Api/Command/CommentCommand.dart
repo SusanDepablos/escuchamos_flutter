@@ -58,21 +58,18 @@ class CommentCommandShow {
   }
 }
 
-class UploadCommandComment {
-  final CommentService _commentService;
+class CommentCommandCreate {
+  final CommentCreate _commentCreate;
 
-  UploadCommandComment(this._commentService);
+  CommentCommandCreate(this._commentCreate);
 
   Future<dynamic> execute({
-    required String? body,
-    required String postId,
-    String? commentId,
+    final Map<String, String?>? formData, // Aquí se recibe el Map como está
     File? file,
   }) async {
     try {
-
-      var response =
-          await _commentService.addComment(body, postId, commentId, file);
+      var response = await _commentCreate.createComment(
+          formData, file);
 
       if (response.statusCode == 201) {
         return SuccessResponse.fromServiceResponse(response);
@@ -93,4 +90,3 @@ class UploadCommandComment {
     }
   }
 }
-

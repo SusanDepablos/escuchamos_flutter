@@ -54,7 +54,6 @@ class _NestedCommentsState extends State<NestedComments> {
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
             _repliesCount = _comment!.data.relationships.repliesCount.toString();
             postId = _comment!.data.attributes.postId.toString();
-            likeState = null;
             _setReactionState();
           });
         } else {
@@ -195,6 +194,7 @@ class _NestedCommentsState extends State<NestedComments> {
                           createdAt: _comment!.data.attributes.createdAt,
                           reactionsCount: _reactionsCount.toString(),
                           repliesCount: _repliesCount.toString(),
+                          isHidden: true,
                         ),
                       ],
                     ),

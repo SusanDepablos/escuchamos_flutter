@@ -18,6 +18,8 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FloatingCircle.dart';
 import 'package:escuchamos_flutter/App/View/Post/Index.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopup.dart';
+import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'dart:io';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int commentId_ = 0;
@@ -47,12 +49,22 @@ class _IndexCommentState extends State<IndexComment> {
   String? _name;
   String? _profilePhotoUser;
 
+  final Map<String, String?> _errorMessages = {
+    'body': null,
+  };
+
   final filters = {
     'pag': '10',
     'page': null,
     'post_id': null,
     'comment_id': null
   };
+
+  final Map<String, String?> formData = {
+      'body': null,
+      'comment_id': null,
+      'post_id': null,
+    };
 
   String? _getFileUrlByType(String type) {
     try {
@@ -79,7 +91,7 @@ class _IndexCommentState extends State<IndexComment> {
         }
       });
     _getData()
-        .then((_) => _callUser()); // Llama a _callUser después de _getData()
+        .then((_) => _callUser());
     fetchComments();
   }
 
@@ -100,6 +112,60 @@ class _IndexCommentState extends State<IndexComment> {
       _id = int.tryParse(id);
     });
   }
+
+  Future<bool> _commentCreate(String body, String? mediaUrl) async {
+    try {
+      formData['post_id'] = widget.postId;
+
+      if (widget.commentId != null) {
+        formData['comment_id'] = widget.commentId;
+      }
+
+      formData['body'] = body;
+
+      var response = await CommentCommandCreate(CommentCreate()).execute(
+        formData: formData,
+        file: mediaUrl != null ? File(mediaUrl) : null,
+      );
+
+      if (response is ValidationResponse) {
+        if (response.key['body'] != null) {
+          setState(() {
+            _errorMessages['body'] = response.message('body');
+            print(_errorMessages['body']);
+          });
+          Future.delayed(const Duration(seconds: 2), () {
+            setState(() {
+              _errorMessages['body'] = null;
+            });
+          });
+        }
+        return false;
+      } else if (response is SuccessResponse) {
+        _reloadComment();
+        return true;
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
+          ),
+        );
+        return false;
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+      return false; // Indica que no fue exitoso
+    }
+  }
+
 
   Future<void> _callUser() async {
     final userCommand = UserCommandShow(UserShow(), _id!);
@@ -209,8 +275,7 @@ class _IndexCommentState extends State<IndexComment> {
           setState(() {
             _comment = response;
 
-            int commentIndex =
-                comments.indexWhere((comment) => comment.id == commentId_);
+            int commentIndex = comments.indexWhere((comment) => comment.id == commentId_);
 
             if (commentIndex >= 0 && commentIndex < comments.length) {
               comments[commentIndex].relationships.reactionsCount =
@@ -413,16 +478,19 @@ Future<void> _commentReaction(int index, int id) async {
                 context,
                 nameUser: _name.toString(),
                 profilePhotoUser: _profilePhotoUser,
+                error: _errorMessages['body'], 
                 onProfileTap: () {
                   final userId = _id;
-                  Navigator.pushNamed(context, 'profile', arguments: userId)
-                      .then((_) {
+                  Navigator.pushNamed(context, 'profile', arguments: userId).then((_) {
                     _callUser();
                   });
                 },
+                onCommentCreate: (String body, String? mediaUrl) async {
+                  return await _commentCreate(body, mediaUrl);
+                },
               );
             },
-          ),
+          )
         ],
       ),
     );

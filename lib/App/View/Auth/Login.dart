@@ -75,7 +75,6 @@ class _LoginState extends State<Login> {
           });
         }
       } else if (response is SuccessResponse) {
-        // Navegar a la pantalla Home con los datos
         Navigator.pushReplacementNamed(
           context,
           'base',

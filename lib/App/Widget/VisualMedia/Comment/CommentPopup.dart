@@ -12,25 +12,33 @@ void CommentPopup(
   String? mediaUrl,
   String? profilePhotoUser,
   VoidCallback? onProfileTap,
+  String? error,
+  Function(String, String?)? onCommentCreate,
 }) {
   showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        child: PopupCommentWidget(
-          nameUser: nameUser,
-          body: body,
-          mediaUrl: mediaUrl,
-          profilePhotoUser: profilePhotoUser,
-          onProfileTap: onProfileTap,
-        ),
-      );
-    },
-  );
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+              child: PopupCommentWidget(
+                nameUser: nameUser,
+                body: body,
+                mediaUrl: mediaUrl,
+                profilePhotoUser: profilePhotoUser,
+                onProfileTap: onProfileTap,
+                onCommentCreate: onCommentCreate,
+                error: error,
+              ),
+            );
+          },
+        );
+      },
+    );
 }
 
 class PopupCommentWidget extends StatefulWidget {
@@ -38,15 +46,18 @@ class PopupCommentWidget extends StatefulWidget {
   final String? body;
   final String? mediaUrl;
   final String? profilePhotoUser;
+  final String? error;
   final VoidCallback? onProfileTap;
-
+  final Function(String, String?)? onCommentCreate;
   PopupCommentWidget({
     Key? key,
     required this.nameUser,
+    this.error,
     this.body,
+    this.onProfileTap,
+    this.onCommentCreate,
     this.mediaUrl,
     this.profilePhotoUser,
-    this.onProfileTap,
   }) : super(key: key);
 
   @override
@@ -56,6 +67,7 @@ class PopupCommentWidget extends StatefulWidget {
 class _PopupCommentWidgetState extends State<PopupCommentWidget> {
   late TextEditingController _bodyController;
   File? _selectedImage;
+  bool _isButtonDisabled = false;
 
   @override
   void initState() {
@@ -89,6 +101,28 @@ class _PopupCommentWidgetState extends State<PopupCommentWidget> {
       },
     );
   }
+
+  void _handleComment() async {
+      if (_isButtonDisabled) return;
+
+      setState(() {
+        _isButtonDisabled = true;
+      });
+
+      String body = _bodyController.text;
+      bool success =
+          await widget.onCommentCreate?.call(body, _selectedImage?.path) ?? false;
+
+      if (success) {
+        Navigator.of(context).pop();
+      }
+
+      setState(() {
+        _isButtonDisabled =
+            false;
+      });
+    }
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +165,6 @@ class _PopupCommentWidgetState extends State<PopupCommentWidget> {
                       ),
                       const SizedBox(height: 10.0),
                       if (_selectedImage != null) ...[
-                        // Mostrar la imagen seleccionada
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: GestureDetector(
@@ -160,15 +193,21 @@ class _PopupCommentWidgetState extends State<PopupCommentWidget> {
                           border: InputBorder.none,
                         ),
                       ),
-                      const SizedBox(
-                          height: 10.0),
+                      if (widget.error != null && widget.error!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            widget.error!,
+                            style: const TextStyle(
+                                color: AppColors.errorRed, fontSize: 12),
+                          ),
+                        ),
+                      const SizedBox(height: 10.0),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap:
-                                _showImagePickerDialog,
+                            onTap: _showImagePickerDialog,
                             child: const Text(
                               'Añadir',
                               style: TextStyle(
@@ -178,12 +217,11 @@ class _PopupCommentWidgetState extends State<PopupCommentWidget> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                            },
-                            child: const Text(
-                              'Responder',
+                            onTap: _isButtonDisabled ? null : _handleComment,
+                            child: Text(
+                              'Responder', // Mantener el mismo texto
                               style: TextStyle(
-                                color: AppColors.black,
+                                color: _isButtonDisabled ? AppColors.grey : AppColors.black,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

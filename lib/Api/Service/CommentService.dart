@@ -62,9 +62,9 @@ class CommentShow {
   }
 }
 
-class CommentService {
-  Future<ServiceResponse> addComment(
-      String? body, String postId, String? commentId, File? file) async {
+class CommentCreate {
+  Future<ServiceResponse> createComment(
+      Map<String, String?>? formData, File? file) async {
     final url = Uri.parse('${ApiUrl.baseUrl}comment/');
     final token = await _storage.read(key: 'token') ?? '';
 
@@ -75,22 +75,22 @@ class CommentService {
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll(headers);
 
-    request.fields['post_id'] = postId;
+    request.fields['post_id'] = formData!['post_id'].toString();
 
-    if (body != null) {
-      request.fields['body'] = body;
+    if (formData['comment_id'] != null) {
+      request.fields['comment_id'] = formData['comment_id']!.toString();
     }
 
-    if (commentId != null) {
-      request.fields['comment_id'] = commentId;
+    if (formData['body']?.isNotEmpty == true) {
+      request.fields['body'] = formData['body']!.toString();
     }
 
     if (file != null) {
       request.files.add(await http.MultipartFile.fromPath('file', file.path));
     }
 
-    final streamedResponse = await request.send();
 
+    final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return ServiceResponse.fromJsonString(
       utf8.decode(response.bodyBytes),
