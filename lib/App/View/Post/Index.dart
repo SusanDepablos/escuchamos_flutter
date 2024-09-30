@@ -1,6 +1,6 @@
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostPopup.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
 import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
@@ -15,6 +15,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as user_model;
+import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int postId_ = 0 ;
@@ -37,6 +40,10 @@ class _IndexPostState extends State<IndexPost> {
   int page = 1;
   int? _id;
   PostModel? _post;
+  bool _submitting = false;
+  user_model.UserModel? _user;
+  String? _name;
+  String? _profilePhotoUser;
 
 
   final filters = {
@@ -68,7 +75,8 @@ class _IndexPostState extends State<IndexPost> {
           }
         }
       });
-    _getData();
+    _getData()
+        .then((_) => _callUser());
     fetchPosts();
   }
 
@@ -243,56 +251,33 @@ class _IndexPostState extends State<IndexPost> {
       }
     }
 
-  void _showTextAreaDialog(BuildContext context, String? body, int postId) {
+  void showPostPopup(BuildContext context, String? body, int postId){
     postId_ = postId;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setStateLocal) {
-            return AlertDialog(
-              title: const Text('Editar Publicación'),
-              backgroundColor: AppColors.whiteapp,
-              content: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextArea(
-                      input: input['body']!,
-                      border: _borderColors['body']!,
-                      error: _errorMessages['body'],
-                      minLines: 6,
-                    ),
-                  ],
-                ),
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'Cancelar',
-                    style: TextStyle(color: AppColors.black),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await _updatePost(
-                      input['body']!.text, 
-                      postId_,
-                      setStateLocal, 
-                      context,
-                    );
-                  },
-                  child: const Text(
-                    'Guardar',
-                    style: TextStyle(color: AppColors.black),
-                  ),
-                ),
-              ],
+              child: PopupPostWidget(
+                isButtonDisabled: _submitting,
+                nameUser: _name.toString(),
+                profilePhotoUser: _profilePhotoUser,
+                error: _errorMessages['body'],
+                body: body!,
+                onPostUpdate: (String body) async {
+                await _updatePost(
+                  body, // Cuerpo actualizado
+                  postId,      // ID del post
+                  setStateLocal, 
+                  context,
+                );
+                }
+              ),
             );
           },
         );
@@ -355,6 +340,56 @@ class _IndexPostState extends State<IndexPost> {
     }
   }
 
+  String? _getFileUrlByType(String type) {
+    try {
+      final file = _user?.data.relationships.files.firstWhere(
+        (file) => file.attributes.type == type,
+      );
+      return file!.attributes.url;
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  Future<void> _callUser() async {
+    final userCommand = UserCommandShow(UserShow(), _id!);
+
+    try {
+      final response = await userCommand.execute();
+
+      if (mounted) {
+        if (response is  user_model.UserModel) {
+          setState(() {
+            _user = response;
+          _name = _user!.data.attributes.name;
+
+          _profilePhotoUser = _getFileUrlByType('profile');
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _deletePost(int id) async {
     try {
@@ -486,7 +521,7 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               onEditTap: () {
                                 input['body']!.text = post.attributes.body ?? '';
-                                _showTextAreaDialog(context, input['body']!.text, post.id);
+                              showPostPopup(context, input['body']!.text, post.id);
                               },
                             );
                           },

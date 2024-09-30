@@ -815,6 +815,54 @@ class _TextAreaState extends State<TextArea> {
   }
 }
 
+class BodyTextField extends StatefulWidget {
+  final TextEditingController input;
+  final String? error;
+  final int minLines;
+  final int maxLines;
+
+  BodyTextField({
+    required this.input,
+    this.error,
+    this.minLines = 1,
+    this.maxLines = 5,
+  });
+
+  @override
+  _BodyTextFieldState createState() => _BodyTextFieldState();
+}
+
+class _BodyTextFieldState extends State<BodyTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.input,
+          minLines: widget.minLines,
+          maxLines: widget.maxLines,
+          decoration: const InputDecoration(
+            hintText: 'Escribe aquí...',
+            hintStyle: TextStyle(fontSize: 14, color: AppColors.grey),
+            border: InputBorder.none,  // Sin bordes
+            filled: false,  // Sin fondo
+          ),
+        ),
+        if (widget.error != null && widget.error!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+
 
 
 

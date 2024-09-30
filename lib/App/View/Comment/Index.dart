@@ -48,6 +48,8 @@ class _IndexCommentState extends State<IndexComment> {
   int page = 1;
   String? _name;
   String? _profilePhotoUser;
+  bool _submitting = false;
+  bool _isAddButtonVisible = false;
 
   final Map<String, String?> _errorMessages = {
     'body': null,
@@ -113,58 +115,93 @@ class _IndexCommentState extends State<IndexComment> {
     });
   }
 
-  Future<bool> _commentCreate(String body, String? mediaUrl) async {
-    try {
-      formData['post_id'] = widget.postId;
-
-      if (widget.commentId != null) {
-        formData['comment_id'] = widget.commentId;
-      }
-
-      formData['body'] = body;
-
-      var response = await CommentCommandCreate(CommentCreate()).execute(
-        formData: formData,
-        file: mediaUrl != null ? File(mediaUrl) : null,
-      );
-
-      if (response is ValidationResponse) {
-        if (response.key['body'] != null) {
-          setState(() {
-            _errorMessages['body'] = response.message('body');
-            print(_errorMessages['body']);
-          });
-          Future.delayed(const Duration(seconds: 2), () {
-            setState(() {
-              _errorMessages['body'] = null;
-            });
-          });
-        }
-        return false;
-      } else if (response is SuccessResponse) {
-        _reloadComment();
-        return true;
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: response is InternalServerError ? 'Error' : 'Error de Conexión',
-            message: response.message,
-          ),
+  void showCommentPopup(
+    BuildContext context, {
+    String? body,
+    String? mediaUrl,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+              child: PopupCommentWidget(
+                isButtonDisabled: _submitting,
+                nameUser: _name.toString(),
+                profilePhotoUser: _profilePhotoUser,
+                onCommentCreate: (String body, String? mediaUrl) async {
+                  await _commentCreate(body, mediaUrl, context, setState);
+                },
+                error: _errorMessages['body'],
+              ),
+            );
+          },
         );
-        return false;
+      },
+    );
+  }
+
+  Future<void> _commentCreate(String body, String? mediaUrl, BuildContext context, Function setState) async {
+  setState(() {
+    _submitting = true;
+  });
+  try {
+    formData['post_id'] = widget.postId;
+
+    if (widget.commentId != null) {
+      formData['comment_id'] = widget.commentId;
+    }
+
+    formData['body'] = body;
+
+    var response = await CommentCommandCreate(CommentCreate()).execute(
+      formData: formData,
+      file: mediaUrl != null ? File(mediaUrl) : null,
+    );
+
+    if (response is ValidationResponse) {
+      if (response.key['body'] != null) {
+        setState(() {
+          _errorMessages['body'] = response.message('body');
+          print(_errorMessages['body']);
+        });
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            _errorMessages['body'] = null;
+          });
+        });
       }
-    } catch (e) {
+    } else if (response is SuccessResponse) {
+      Navigator.of(context).pop();
+      _reloadComment();
+    } else {
       showDialog(
         context: context,
         builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
+          title: response is InternalServerError ? 'Error' : 'Error de Conexión',
+          message: response.message,
         ),
       );
-      return false; // Indica que no fue exitoso
     }
+  } catch (e) {
+    showDialog(
+      context: context,
+      builder: (context) => PopupWindow(
+        title: 'Error',
+        message: e.toString(),
+      ),
+    );
+  }finally {
+    setState(() {
+      _submitting = false;
+  });
   }
+}
 
 
   Future<void> _callUser() async {
@@ -177,7 +214,7 @@ class _IndexCommentState extends State<IndexComment> {
         if (response is  user_model.UserModel) {
           setState(() {
             _user = response;
-           _name = _user!.data.attributes.name;
+          _name = _user!.data.attributes.name;
 
           _profilePhotoUser = _getFileUrlByType('profile');
           });
@@ -214,6 +251,7 @@ class _IndexCommentState extends State<IndexComment> {
       _isLoading = true;
     });
 
+    // Ajusta el uso de comment_id si no es necesario.
     if (widget.commentId != null) {
       filters['comment_id'] = widget.commentId;
     }
@@ -260,6 +298,7 @@ class _IndexCommentState extends State<IndexComment> {
       setState(() {
         _isLoading = false;
         _initialLoading = false;
+        _isAddButtonVisible = true;
       });
     }
   }
@@ -429,7 +468,6 @@ Future<void> _commentReaction(int index, int id) async {
                                   itemBuilder: (context, index) {
                                     final comment = comments[index];
                                     final bool hasReaction = reactionStates[index];  // Aquí se asegura de que tome el estado actualizado
-
                                     return CommentWidget(
                                       reaction: hasReaction,  // Usar siempre el estado actualizado de `reactionStates`
                                       onLikeTap: () => _commentReaction(index, comment.id),
@@ -472,25 +510,12 @@ Future<void> _commentReaction(int index, int id) async {
                     ],
                   ),
                 ),
-          FloatingAddButton(
-            onTap: () {
-              CommentPopup(
-                context,
-                nameUser: _name.toString(),
-                profilePhotoUser: _profilePhotoUser,
-                error: _errorMessages['body'], 
-                onProfileTap: () {
-                  final userId = _id;
-                  Navigator.pushNamed(context, 'profile', arguments: userId).then((_) {
-                    _callUser();
-                  });
-                },
-                onCommentCreate: (String body, String? mediaUrl) async {
-                  return await _commentCreate(body, mediaUrl);
-                },
-              );
-            },
-          )
+          if (_isAddButtonVisible)
+            FloatingAddButton(
+              onTap: () {
+                showCommentPopup(context);
+              },
+            )
         ],
       ),
     );
