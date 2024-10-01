@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
+import 'package:escuchamos_flutter/App/View/Post/Show.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
@@ -142,6 +143,14 @@ class AppRoutes {
       final appBar = args['appBar'] as String;
       return IndexReactions(
           model: model, objectId: objectId, appBar: appBar);
+    },
+
+    'show-post': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final id = args['id'] as int;
+      final idPost = args['idPost'] as int;
+      return Show(
+          id: id, idPost: idPost);
     },
 
     'new-post': (context) => NewPost(),

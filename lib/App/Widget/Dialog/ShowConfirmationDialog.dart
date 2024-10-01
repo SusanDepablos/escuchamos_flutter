@@ -19,27 +19,36 @@ class ConfirmationDialog extends StatelessWidget {
       backgroundColor: AppColors.whiteapp, // Fondo blanco
       title: Text(title),
       content: Text(content),
+      contentPadding: const EdgeInsets.only(right: 16, left: 16,top: 16, bottom: 5),
+      actionsPadding: const EdgeInsets.only(bottom: 12),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Cerrar el diálogo
-          },
-          child: const Text(
-            'Cancelar',
-            style: TextStyle(color: AppColors.black), // Texto negro
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            if (onConfirmTap != null) {
-              onConfirmTap!(); // Ejecuta la función de confirmación
-            }
-            Navigator.of(context).pop(); // Cerrar el diálogo
-          },
-          child: const Text(
-            'Sí',
-            style: TextStyle(color: AppColors.black), // Texto negro
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center, // Centra los botones
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: AppColors.black, fontWeight: FontWeight.bold,), // Texto negro
+              ),
+            ),
+            const SizedBox(width: 20), // Espacio entre los botones
+            TextButton(
+              onPressed: () {
+                if (onConfirmTap != null) {
+                  onConfirmTap!(); // Ejecuta la función de confirmación
+                }
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: const Text(
+                'Sí',
+                style: TextStyle(color: AppColors.black, fontWeight: FontWeight.bold,
+                        ), // Texto negro
+              ),
+            ),
+          ],
         ),
       ],
     );

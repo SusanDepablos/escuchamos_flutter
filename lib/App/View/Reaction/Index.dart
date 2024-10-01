@@ -94,7 +94,6 @@ class _IndexReactionsState extends State<IndexReactions> {
     }
   }
 
-
   void reloadView() {
     setState(() {
       widget.page = 1;
@@ -135,9 +134,7 @@ class _IndexReactionsState extends State<IndexReactions> {
         // Aquí agregué la propiedad appBar sin cambiar estilos
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Column(
+        title: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -150,7 +147,6 @@ class _IndexReactionsState extends State<IndexReactions> {
               ),
             ],
           ),
-        ),
       ),
       backgroundColor: AppColors.whiteapp,
       body: Center(

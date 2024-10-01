@@ -21,8 +21,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   // Método para seleccionar múltiples imágenes y videos
   Future<void> _pickMedia() async {
-    // Mostrar un diálogo de selección para elegir entre imagen o video
-    await showModalBottomSheet<XFile?>(
+    await showModalBottomSheet<XFile?>( // Mostrar un modal para seleccionar el tipo de medio
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
@@ -36,19 +35,27 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(MaterialIcons.image),
-                title: const Text('Imagen'),
+                leading: const Icon(MaterialIcons.camera, color: AppColors.black),
+                title: const Text('Tomar Foto', style: TextStyle(color: AppColors.black)), // Opción para tomar foto
+                onTap: () {
+                  _pickImage(context, ImageSource.camera); // Llama al método para tomar una foto
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(MaterialIcons.image, color: AppColors.black),
+                title: const Text('Imagen', style: TextStyle(color: AppColors.black)), // Opción para seleccionar imágenes de la galería
                 onTap: () async {
                   Navigator.pop(context); // Cerrar el modal
                   final List<XFile>? selectedFiles = await _picker.pickMultiImage();
                   if (selectedFiles != null) {
-                    _addMediaFiles(selectedFiles);
+                    _addMediaFiles(selectedFiles); // Agregar archivos seleccionados
                   }
                 },
               ),
               ListTile(
-                leading: const Icon(MaterialIcons.video),
-                title: const Text('Video'),
+                leading: const Icon(MaterialIcons.video, color: AppColors.black),
+                title: const Text('Video', style: TextStyle(color: AppColors.black)), // Opción para seleccionar videos de la galería
                 onTap: () async {
                   Navigator.pop(context); // Cerrar el modal
                   final XFile? videoFile = await _picker.pickVideo(source: ImageSource.gallery);
@@ -62,6 +69,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         );
       },
     );
+  }
+  
+  Future<void> _pickImage(BuildContext context, ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source); // Selecciona la imagen
+    if (pickedFile != null) {
+      final imageFile = File(pickedFile.path);
+      _addMediaFiles([pickedFile]); // Agrega la imagen a los archivos multimedia
+    }
   }
 
   // Método para agregar archivos a la lista
@@ -80,7 +95,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         });
       }
     }
-    widget.onMediaChanged(_mediaFiles);
+    widget.onMediaChanged(_mediaFiles); // Notificar cambios en los archivos
   }
 
   Future<File> _compressImage(File file) async {
@@ -99,7 +114,6 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     await tempFile.writeAsBytes(compressedBytes);
     return tempFile;
   }
-
 
   // Método para eliminar un archivo seleccionado
   void _removeMedia(int index) {

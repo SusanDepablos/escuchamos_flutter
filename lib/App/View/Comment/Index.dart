@@ -406,8 +406,6 @@ Future<void> _commentReaction(int index, int id) async {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -415,25 +413,22 @@ Future<void> _commentReaction(int index, int id) async {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Visibility(
-          visible: widget.commentId == null,
+          visible: widget.commentId == null || widget.commentId == 0.toString(),
           child: AppBar(
             backgroundColor: AppColors.whiteapp,
             centerTitle: true,
-            title: const Padding(
-              padding: EdgeInsets.only(top: 10.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Comentarios',
-                    style: TextStyle(
-                      fontSize: AppFond.title,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.black,
-                    ),
+            title: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Comentarios',
+                  style: TextStyle(
+                    fontSize: AppFond.title,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.black,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostPopup.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostListView.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
 import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
@@ -21,6 +22,7 @@ import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int postId_ = 0 ;
+int idPost = 0;
 bool? likeState;
 class IndexPost extends StatefulWidget {
   final int? userId;
@@ -43,6 +45,7 @@ class _IndexPostState extends State<IndexPost> {
   bool _submitting = false;
   user_model.UserModel? _user;
   String? _name;
+  String? _username;
   String? _profilePhotoUser;
 
 
@@ -164,7 +167,6 @@ class _IndexPostState extends State<IndexPost> {
   Future<void> _callPost() async {
     try {
       final postCommand = PostCommandShow(PostShow(), postId_);
-
       final response = await postCommand.execute();
 
       if (mounted) {
@@ -173,31 +175,38 @@ class _IndexPostState extends State<IndexPost> {
             setState(() {
               _post = response;
 
+              // Encontrar el índice del post comparando con `post.id == postId_`
               int postIndex = posts.indexWhere((post) => post.id == postId_);
+              
               if (postIndex >= 0 && postIndex < posts.length) {
+                // Actualizar las relaciones de reacciones y comentarios
                 posts[postIndex].relationships.reactionsCount =
                     _post!.data.relationships.reactionsCount;
 
                 posts[postIndex].relationships.commentsCount =
                     _post!.data.relationships.commentsCount;
 
-                posts[postIndex].relationships.commentsCount =
-                    _post!.data.relationships.commentsCount;
+                posts[postIndex].attributes.body = 
+                    _post!.data.attributes.body;
 
                 final bool userLikedPost = _post!.data.relationships.reactions
-                    .any((reaction) => reaction.attributes.userId == _id);
+                  .any((reaction) => reaction.attributes.userId == _id);
 
                 reactionStates[postIndex] = userLikedPost;
               }
             });
           }
-        } else {
-          await showDialog(
-              context: context,
-              builder: (context) => AutoClosePopupFail(
-                    child: const FailAnimationWidget(),
-                    message: response.message,
-                  ));
+        } else {    
+            setState(() {
+            // Eliminar todos los posts que coincidan con cualquiera de las dos condiciones
+            posts.removeWhere((post) => post.id == postId_ || post.attributes.postId == postId_);
+          });
+        //   await showDialog(
+        //     context: context,
+        //     builder: (context) => AutoClosePopupFail(
+        //           child: const FailAnimationWidget(),
+        //           message: response.message,
+        //         ));
         }
       }
     } catch (e) {
@@ -206,7 +215,7 @@ class _IndexPostState extends State<IndexPost> {
           context: context,
           builder: (context) => PopupWindow(
             title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
+            message: e.toString(),
           ),
         );
       }
@@ -214,6 +223,53 @@ class _IndexPostState extends State<IndexPost> {
       if (mounted) {
         setState(() {
           postId_ = 0;
+        });
+      }
+    }
+  }
+
+  Future<void> _callPostShow() async {
+    try {
+      final postCommand = PostCommandShow(PostShow(), idPost);
+      final response = await postCommand.execute();
+
+      if (mounted) {
+        if (response is PostModel) {
+          if (idPost != 0) {
+            setState(() {
+              _post = response;
+              String? body =_post!.data.relationships.post!.attributes.body;
+              // Itera sobre todos los posts y actualiza el body donde se encuentre el postId.
+              for (var post in posts) {
+                if (post.attributes.postId == postId_ && post.relationships.post != null) {
+                  post.relationships.post!.attributes.body = body;
+                }
+              }
+            });
+          }
+        } else {
+          // await showDialog(
+          //   context: context,
+          //   builder: (context) => AutoClosePopupFail(
+          //         child: const FailAnimationWidget(),
+          //         message: response.message,
+          //       ));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: e.toString(),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          idPost = 0;
         });
       }
     }
@@ -265,7 +321,8 @@ class _IndexPostState extends State<IndexPost> {
               ),
               child: PopupPostWidget(
                 isButtonDisabled: _submitting,
-                nameUser: _name.toString(),
+                username: _username!,
+                nameUser: _name!,
                 profilePhotoUser: _profilePhotoUser,
                 error: _errorMessages['body'],
                 body: body!,
@@ -309,7 +366,17 @@ class _IndexPostState extends State<IndexPost> {
         setState(() {
           int postIndex = posts.indexWhere((post) => post.id == postId);
           if (postIndex != -1) {
+            // Primer setState para actualizar el body del post
             posts[postIndex].attributes.body = body;
+          }
+        });
+        // Segundo setState para actualizar el body de relationships.post
+        setState(() {
+          // Itera sobre todos los posts y actualiza el body donde se encuentre el postId.
+          for (var post in posts) {
+            if (post.attributes.postId == postId && post.relationships.post != null) {
+              post.relationships.post!.attributes.body = body;
+            }
           }
         });
         Navigator.of(context).pop();
@@ -362,6 +429,7 @@ class _IndexPostState extends State<IndexPost> {
           setState(() {
             _user = response;
           _name = _user!.data.attributes.name;
+          _username = _user!.data.attributes.username;
 
           _profilePhotoUser = _getFileUrlByType('profile');
           });
@@ -396,20 +464,17 @@ class _IndexPostState extends State<IndexPost> {
       var response = await DeleteCommandPost(DeletePost()).execute(id: id);
 
       if (response is SuccessResponse) {
-        int postIndex = posts.indexWhere((post) => post.id == id);
-
-        if (postIndex != -1) {
-          setState(() {
-            posts.removeAt(postIndex);
-          });
-          await showDialog(
-            context: context,
-            builder: (context) => AutoClosePopup(
-              child: const SuccessAnimationWidget(),
-              message: response.message,
-            ),
-          );
-        }
+        setState(() {
+            // Eliminar todos los posts que coincidan con cualquiera de las dos condiciones
+            posts.removeWhere((post) => post.id == id || post.attributes.postId == id);
+        });
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(),
+            message: response.message,
+          ),
+        );
       } else {
         await showDialog(
           context: context,
@@ -463,12 +528,16 @@ class _IndexPostState extends State<IndexPost> {
                     : CustomRefreshIndicator(
                         onRefresh: _reloadPosts,
                         child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            final post = posts[index];
-                            final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
-                            final bool hasReaction = reactionStates[index];
+                        controller: _scrollController,
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
+                          final mediaUrlsRepost = post.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
+                          final bool hasReaction = reactionStates[index];
+
+                          if (post.attributes.postId == null) {
+                            // Si existe el postId, devolvemos el PostWidget
                             return PostWidget(
                               reaction: hasReaction,
                               onLikeTap: () => _postReaction(index, post.id),
@@ -495,38 +564,121 @@ class _IndexPostState extends State<IndexPost> {
                                   },
                                 );
                               },
-                                onIndexCommentTap: () {
-                                  String postId = post.id.toString();
-                                  Navigator.pushNamed(
-                                    context,
-                                    'index-comments',
-                                    arguments: {
-                                      'postId': postId,
-                                    },
-                                  ).then((_) {
-                                    _callPost();
-                                  });
-                                },
-
+                              onIndexCommentTap: () {
+                                String postId = post.id.toString();
+                                Navigator.pushNamed(
+                                  context,
+                                  'index-comments',
+                                  arguments: {
+                                    'postId': postId,
+                                  },
+                                ).then((_) {
+                                  _callPost();
+                                });
+                              },
                               body: post.attributes.body,
                               mediaUrls: mediaUrls,
                               createdAt: post.attributes.createdAt,
                               reactionsCount: post.relationships.reactionsCount.toString(),
                               commentsCount: post.relationships.commentsCount.toString(),
-                              sharesCount: post.relationships.sharesCount.toString(),
-                              authorId: post.relationships.user.id, 
+                              sharesCount: post.relationships.totalSharesCount.toString(),
+                              authorId: post.relationships.user.id,
                               currentUserId: _id!,
                               onDeleteTap: () {
-                                _deletePost(post.id); 
+                                _deletePost(post.id);
                               },
                               onEditTap: () {
                                 input['body']!.text = post.attributes.body ?? '';
-                              showPostPopup(context, input['body']!.text, post.id);
+                                showPostPopup(context, input['body']!.text, post.id);
                               },
                             );
-                          },
-                        ),
+                          } else {
+                            return RepostWidget(
+                              reaction: hasReaction,
+                              onLikeTap: () => _postReaction(index, post.id),
+                              nameUser: post.relationships.user.name,
+                              usernameUser: post.relationships.user.username,
+                              profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
+                              onProfileTap: () {
+                                final userId = post.relationships.user.id;
+                                Navigator.pushNamed(
+                                  context,
+                                  'profile',
+                                  arguments: userId,
+                                );
+                              },
+                              onIndexLikeTap: () {
+                                String objectId = post.id.toString();
+                                Navigator.pushNamed(
+                                  context,
+                                  'index-reactions',
+                                  arguments: {
+                                    'objectId': objectId,
+                                    'model': 'post',
+                                    'appBar': 'Reacciones'
+                                  },
+                                );
+                              },
+                              onIndexCommentTap: () {
+                                String postId = post.id.toString();
+                                Navigator.pushNamed(
+                                  context,
+                                  'index-comments',
+                                  arguments: {
+                                    'postId': postId,
+                                  },
+                                ).then((_) {
+                                  _callPost();
+                                });
+                              },
+                              body: post.attributes.body,
+                              createdAt: post.attributes.createdAt,
+                              reactionsCount: post.relationships.reactionsCount.toString(),
+                              commentsCount: post.relationships.commentsCount.toString(),
+                              sharesCount: post.relationships.totalSharesCount.toString(),
+                              authorId: post.relationships.user.id,
+                              currentUserId: _id!,
+                              onDeleteTap: () {
+                                _deletePost(post.id);
+                              },
+                              onEditTap: () {
+                                input['body']!.text = post.attributes.body ?? '';
+                                showPostPopup(context, input['body']!.text, post.id);
+                              },
+                              // Repost
+                              bodyRepost: post.relationships.post!.attributes.body,
+                              nameUserRepost: post.relationships.post!.relationships.user.name,
+                              usernameUserRepost: post.relationships.post!.relationships.user.username,
+                              createdAtRepost: post.relationships.post!.attributes.createdAt,
+                              profilePhotoUserRepost: post.relationships.post!.relationships.user.profilePhotoUrl ?? '',
+                              mediaUrlsRepost: mediaUrlsRepost,
+                              onPostTap: (){ 
+                                int postId = post.relationships.post!.id;
+                                int idPost = post.id;
+                                Navigator.pushNamed(
+                                  context,
+                                  'show-post',
+                                  arguments: {
+                                    'id': postId,
+                                    'idPost':idPost,
+                                  }
+                                  ).then((_) {
+                                  _callPost(); _callPostShow();
+                                });
+                              },
+                              onProfileTapRepost: () {
+                                final userId = post.relationships.post!.relationships.user.id;
+                                Navigator.pushNamed(
+                                  context,
+                                  'profile',
+                                  arguments: userId,
+                                );
+                              }
+                            );
+                          }
+                        }
                       ),
+                    ),
                 ),
               ],
             ),

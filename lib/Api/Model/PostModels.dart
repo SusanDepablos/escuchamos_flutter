@@ -27,7 +27,7 @@ class PostModel {
 class Data {
     int id;
     DataAttributes attributes;
-    Relationships relationships;
+    DatumRelationships relationships;
 
     Data({
         required this.id,
@@ -38,7 +38,7 @@ class Data {
     factory Data.fromJson(Map<String, dynamic> json) => Data(
         id: json["id"],
         attributes: DataAttributes.fromJson(json["attributes"]),
-        relationships: Relationships.fromJson(json["relationships"]),
+        relationships: DatumRelationships.fromJson(json["relationships"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -143,7 +143,7 @@ class Results {
 class Datum {
     int id;
     DatumAttributes attributes;
-    Relationships relationships;
+    DatumRelationships relationships;
 
     Datum({
         required this.id,
@@ -154,7 +154,7 @@ class Datum {
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
         attributes: DatumAttributes.fromJson(json["attributes"]),
-        relationships: Relationships.fromJson(json["relationships"]),
+        relationships: DatumRelationships.fromJson(json["relationships"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -208,8 +208,9 @@ class DatumAttributes {
 ///CLASES EN COMÚN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Relationships {
-    dynamic post;
+
+class DatumRelationships {
+    Datum? post;
     User user;
     Status status;
     Status typePost;
@@ -222,7 +223,7 @@ class Relationships {
     int totalSharesCount;
     int reportsCount;
 
-    Relationships({
+    DatumRelationships({
         required this.post,
         required this.user,
         required this.status,
@@ -237,8 +238,8 @@ class Relationships {
         required this.reportsCount,
     });
 
-    factory Relationships.fromJson(Map<String, dynamic> json) => Relationships(
-        post: json["post"],
+    factory DatumRelationships.fromJson(Map<String, dynamic> json) => DatumRelationships(
+        post: json["post"] == null ? null : Datum.fromJson(json["post"]),
         user: User.fromJson(json["user"]),
         status: Status.fromJson(json["status"]),
         typePost: Status.fromJson(json["type_post"]),
@@ -253,7 +254,7 @@ class Relationships {
     );
 
     Map<String, dynamic> toJson() => {
-        "post": post,
+        "post": post?.toJson(),
         "user": user.toJson(),
         "status": status.toJson(),
         "type_post": typePost.toJson(),
