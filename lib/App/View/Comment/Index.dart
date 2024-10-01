@@ -37,7 +37,7 @@ class IndexComment extends StatefulWidget {
 
 class _IndexCommentState extends State<IndexComment> {
   List<Datum> comments = [];
-  List<bool> reactionStates = [];
+  Map<int, bool> reactionStates = {};
   late ScrollController _scrollController;
   CommentModel? _comment;
   user_model.UserModel? _user;
@@ -275,11 +275,11 @@ class _IndexCommentState extends State<IndexComment> {
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
 
-          reactionStates = List.generate(comments.length, (index) {
-            return comments[index].relationships.reactions.any(
-                  (reaction) => reaction.attributes.userId == _id,
-                );
-          });
+          for (var comment in response.results.data) {
+            reactionStates[comment.id] = comment.relationships.reactions.any(
+              (reaction) => reaction.attributes.userId == _id,
+            );
+          }
         });
       } else {
         showDialog(
@@ -310,7 +310,6 @@ class _IndexCommentState extends State<IndexComment> {
 
   Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
-    print(commentId_);
     try {
       final response = await commentCommand.execute();
 
@@ -332,7 +331,7 @@ class _IndexCommentState extends State<IndexComment> {
                   .data.relationships.reactions
                   .any((reaction) => reaction.attributes.userId == _id);
 
-              reactionStates[commentIndex] = userLikedComment;
+              reactionStates[commentId_] = userLikedComment;
             }
           });
         } else {
@@ -371,11 +370,6 @@ class _IndexCommentState extends State<IndexComment> {
 Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
 
-    setState(() {
-      reactionStates[index] =
-          !reactionStates[index]; // Cambiar el estado de la reacción
-    });
-
     try {
       var response =
           await ReactionCommandPost(ReactionPost()).execute('comment', id);
@@ -385,7 +379,7 @@ Future<void> _commentReaction(int index, int id) async {
         await _callComment();
       } else {
         setState(() {
-          reactionStates[index] = !reactionStates[index];
+          reactionStates[id] = !reactionStates[id]!;
         });
 
         await showDialog(
@@ -398,9 +392,6 @@ Future<void> _commentReaction(int index, int id) async {
         );
       }
     } catch (e) {
-      setState(() {
-        reactionStates[index] = !reactionStates[index];
-      });
 
       showDialog(
         context: context,
@@ -468,7 +459,7 @@ Future<void> _commentReaction(int index, int id) async {
                                   itemCount: comments.length,
                                   itemBuilder: (context, index) {
                                     final comment = comments[index];
-                                    final bool hasReaction = reactionStates[index];  // Aquí se asegura de que tome el estado actualizado
+                                    final bool hasReaction = reactionStates[comment.id]!;  // Aquí se asegura de que tome el estado actualizado
                                     return CommentWidget(
                                       reaction: hasReaction,  // Usar siempre el estado actualizado de `reactionStates`
                                       onLikeTap: () => _commentReaction(index, comment.id),

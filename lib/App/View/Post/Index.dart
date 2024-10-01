@@ -33,7 +33,7 @@ class IndexPost extends StatefulWidget {
 
 class _IndexPostState extends State<IndexPost> {
   List<Datum> posts = [];
-  List<bool> reactionStates = [];
+  Map<int, bool> reactionStates = {};
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
@@ -99,9 +99,6 @@ class _IndexPostState extends State<IndexPost> {
       _initialLoading = true;
     });
     await fetchPosts();
-    setState(() {
-      _initialLoading = false;
-    });
   }
 
   Future<void> fetchPosts() async {
@@ -127,12 +124,12 @@ class _IndexPostState extends State<IndexPost> {
           posts.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
-          
-          reactionStates.addAll(
-            response.results.data.map((post) => post.relationships.reactions.any(
+
+          for (var post in response.results.data) {
+            reactionStates[post.id] = post.relationships.reactions.any(
               (reaction) => reaction.attributes.userId == _id,
-            )),
-          );
+            );
+          }
           
         });
       } else {
@@ -192,7 +189,7 @@ class _IndexPostState extends State<IndexPost> {
                 final bool userLikedPost = _post!.data.relationships.reactions
                   .any((reaction) => reaction.attributes.userId == _id);
 
-                reactionStates[postIndex] = userLikedPost;
+                reactionStates[postId_] = userLikedPost;
               }
             });
           }
@@ -285,7 +282,7 @@ class _IndexPostState extends State<IndexPost> {
           await _callPost();
         } else {
           setState(() {
-            reactionStates[index] = !reactionStates[index];
+            reactionStates[id] = !reactionStates[id]!;
           });
           await showDialog(
             context: context,
@@ -534,7 +531,7 @@ class _IndexPostState extends State<IndexPost> {
                           final post = posts[index];
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
                           final mediaUrlsRepost = post.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
-                          final bool hasReaction = reactionStates[index];
+                          final bool hasReaction = reactionStates[post.id]!;
 
                           if (post.attributes.postId == null) {
                             // Si existe el postId, devolvemos el PostWidget
