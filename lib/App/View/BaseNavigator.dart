@@ -14,6 +14,7 @@ import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 class BaseNavigator extends StatefulWidget {
   @override
@@ -156,6 +157,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
 
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: AppColors.whiteapp,
       appBar: _isAppBarVisible
           ? AppBar(
         backgroundColor: AppColors.whiteapp,
@@ -246,7 +248,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
           children: [
             Positioned.fill(
               child: _id.isEmpty && _groups.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CustomLoadingIndicator(color: AppColors.primaryBlue))
                   : _views[_currentIndex],
             ),
             AnimatedPositioned(
