@@ -168,7 +168,7 @@ class _IndexCommentState extends State<IndexComment> {
       if (response.key['body'] != null) {
         setState(() {
           _errorMessages['body'] = response.message('body');
-          print(_errorMessages['body']);
+
         });
         Future.delayed(const Duration(seconds: 2), () {
           setState(() {
@@ -251,7 +251,6 @@ class _IndexCommentState extends State<IndexComment> {
       _isLoading = true;
     });
 
-    // Ajusta el uso de comment_id si no es necesario.
     if (widget.commentId != null) {
       filters['comment_id'] = widget.commentId;
     }
@@ -266,7 +265,13 @@ class _IndexCommentState extends State<IndexComment> {
 
       if (response is CommentsModel) {
         setState(() {
-          comments.addAll(response.results.data);
+
+          if (widget.commentId == null) {
+            comments.addAll(response.results.data.where((comment) => comment.attributes.commentId == null));
+          } else {
+            comments.addAll(response.results.data);
+          }
+
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
 
@@ -305,7 +310,7 @@ class _IndexCommentState extends State<IndexComment> {
 
   Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
-
+    print(commentId_);
     try {
       final response = await commentCommand.execute();
 
@@ -343,6 +348,7 @@ class _IndexCommentState extends State<IndexComment> {
         }
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         showDialog(
           context: context,
@@ -477,6 +483,7 @@ Future<void> _commentReaction(int index, int id) async {
                                         final commentId = comment.id;
                                         Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
                                             .then((_) {
+                                          commentId_ = commentId;
                                           _callComment();
                                         });
                                       },

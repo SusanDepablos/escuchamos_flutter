@@ -135,8 +135,8 @@ class _NestedCommentsState extends State<NestedComments> {
 
   @override
   void initState() {
-    super.initState();
     commentId_ = widget.commentId;
+    super.initState();
     _callComment();
   }
 
