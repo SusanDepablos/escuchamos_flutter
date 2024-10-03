@@ -34,7 +34,8 @@ class _IndexFollowersState extends State<IndexFollowers> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
-  bool _isInitialLoad = true;  
+  bool _isInitialLoading = true;
+
 
   Future<void> fetchFollows() async {
     if (_isLoading || !_hasMorePages) return;
@@ -42,6 +43,12 @@ class _IndexFollowersState extends State<IndexFollowers> {
     setState(() {
       _isLoading = true;
     });
+
+    if (_isInitialLoading) {
+      setState(() {
+        _isInitialLoading = true; // Iniciar carga
+      });
+    }
 
     if (widget.searchFollowing_?.isNotEmpty ?? false) {
       filters['search_following'] = widget.searchFollowing_;
@@ -88,7 +95,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _isInitialLoad = false; 
+          _isInitialLoading = false; 
         });
       }
     }
@@ -100,7 +107,6 @@ class _IndexFollowersState extends State<IndexFollowers> {
       widget.page = 1;
       follows.clear();
       _hasMorePages = true;
-      _isInitialLoad = true;
     });
     fetchFollows();
   }
@@ -138,7 +144,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: _isInitialLoad
+              child: _isInitialLoading
                 ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
                 : follows.isEmpty
                   ? const Center(

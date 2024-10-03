@@ -31,6 +31,7 @@ class _IndexUserState extends State<IndexUser> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
+  bool _isInitialLoading = true;
 
   Future<void> fetchUsers() async {
     if (_isLoading || !_hasMorePages) return;
@@ -38,6 +39,12 @@ class _IndexUserState extends State<IndexUser> {
     setState(() {
       _isLoading = true;
     });
+
+    if (_isInitialLoading) {
+      setState(() {
+        _isInitialLoading = true;
+      });
+    }
 
     if (widget.search_?.isNotEmpty ?? false) {
       filters['search'] = widget.search_;
@@ -84,6 +91,7 @@ class _IndexUserState extends State<IndexUser> {
         // Desbloquear solicitudes después de completar la carga
         setState(() {
           _isLoading = false;
+          _isInitialLoading = false;
         });
       }
     }
@@ -138,7 +146,7 @@ class _IndexUserState extends State<IndexUser> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: _isLoading
+                child: _isInitialLoading
                   ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
                   : users.isEmpty
                     ? const Center(
