@@ -240,6 +240,39 @@ void updateCommentPopup(
     }
   }
 
+  Future<void> _deleteComment(int id, BuildContext context) async {
+    try {
+      var response = await CommentCommandDelete(CommentDeleteService()).execute(id);
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(),
+            message: response.message,
+          ),      
+        );
+
+        Navigator.pop(context);
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -301,6 +334,10 @@ void updateCommentPopup(
                           onEditTap: () {
                             updateCommentPopup(context, body: _body, mediaUrl: _mediaUrl, comentarioId: _comment!.data.id);
                           },
+
+                         onDeleteTap: () {
+                          _deleteComment(_comment!.data.id, context);
+                        },
 
                           isHidden: true,
                         ),

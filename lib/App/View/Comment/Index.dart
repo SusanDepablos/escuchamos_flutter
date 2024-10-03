@@ -124,6 +124,7 @@ class _IndexCommentState extends State<IndexComment> {
 
   Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), commentId_);
+
     try {
       final response = await commentCommand.execute();
 
@@ -153,15 +154,13 @@ class _IndexCommentState extends State<IndexComment> {
             }
           });
         } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError
-                  ? 'Error'
-                  : 'Error de Conexión',
-              message: response.message,
-            ),
-          );
+          setState(() {
+            int commentIndex =
+                comments.indexWhere((comment) => comment.id == commentId_);
+            if (commentIndex != -1) {
+              comments.removeAt(commentIndex);
+            }
+          });
         }
       }
     } catch (e) {
@@ -509,6 +508,47 @@ Future<void> _commentReaction(int index, int id) async {
     }
   }
 
+  Future<void> _deleteComment(int id, BuildContext context) async {
+    try {
+      var response = await CommentCommandDelete(CommentDeleteService()).execute(id);
+
+      if (response is SuccessResponse) {
+        setState(() {
+          int commentIndex =
+              comments.indexWhere((comment) => comment.id == id);
+          if (commentIndex != -1) {
+            comments.removeAt(commentIndex);
+          }
+        });
+
+        showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -597,6 +637,10 @@ Future<void> _commentReaction(int index, int id) async {
                                             'appBar': 'Reacciones',
                                           },
                                         );
+                                      },
+
+                                      onDeleteTap: () {
+                                        _deleteComment(comment.id, context);
                                       },
 
                                     onEditTap: () {
