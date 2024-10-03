@@ -54,7 +54,7 @@ class Data {
 }
 
 class DataAttributes {
-  final String? body;
+  String? body;
   final int statusId;
   final int postId;
   final int userId;

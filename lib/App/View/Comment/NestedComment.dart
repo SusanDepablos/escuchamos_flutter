@@ -12,7 +12,10 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
-import 'dart:math';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupCreate.dart';
+import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupUpdate.dart';
 
 FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -35,9 +38,37 @@ class _NestedCommentsState extends State<NestedComments> {
   String? _reactionsCount;
   String? _repliesCount;
   String? postId;
+  int _id = 0;
+  bool _submitting = false;
+  String? _profilePhotoUser;
   List<bool> reactionStates = [false];
 
-    Future<void> _callComment() async {
+  final Map<String, String?> _errorMessages = {
+    'body': null,
+  };
+
+  Future<void> _getData() async {
+    final id = await _storage.read(key: 'user') ?? '';
+    setState(() {
+      _id = int.parse(id);
+    });
+  }
+
+  @override
+  void initState() {
+    _getData();
+    commentId_ = widget.commentId;
+    super.initState();
+    _callComment();
+  }
+
+  void _clearErrorMessages() {
+    setState(() {
+      _errorMessages['body'] = null;
+    });
+  }
+
+  Future<void> _callComment() async {
     final commentCommand = CommentCommandShow(CommentShow(), widget.commentId);
     try {
       final response = await commentCommand.execute();
@@ -54,7 +85,8 @@ class _NestedCommentsState extends State<NestedComments> {
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
             _repliesCount = _comment!.data.relationships.repliesCount.toString();
             postId = _comment!.data.attributes.postId.toString();
-            _setReactionState();
+            reactionStates[0] = _comment!.data.relationships.reactions.any(
+            (reaction) => reaction.attributes.userId == _id);
           });
         } else {
           showDialog(
@@ -70,7 +102,7 @@ class _NestedCommentsState extends State<NestedComments> {
       }
     } catch (e) {
       if (mounted) {
-        print(e);
+        print('primero');
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -82,12 +114,45 @@ class _NestedCommentsState extends State<NestedComments> {
     }
   }
 
-  Future<void> _setReactionState() async {
-    final userId = await _storage.read(key: 'user') ?? '0';
-    setState(() {
-      reactionStates[0] = _comment!.data.relationships.reactions
-          .any((reaction) => reaction.attributes.userId == int.parse(userId));
-    });
+void updateCommentPopup(
+    BuildContext context, {
+    String? body,
+    String? mediaUrl,
+    required int comentarioId,
+  }) {
+    _clearErrorMessages();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setStateLocal) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+              child: CommentPopupUpdateWidget(
+                onCancel: () {
+                  _clearErrorMessages();
+                  Navigator.of(context).pop();
+                },
+                isButtonDisabled: _submitting,
+                nameUser: _name.toString(),
+                profilePhotoUser: _profilePhotoUser,
+                body: body,
+                mediaUrl: mediaUrl,
+                onCommentUpdate: (String body, String? mediaUrl) async {
+                  await _updateComment(
+                      body, comentarioId, setStateLocal, context);;
+                },
+                error: _errorMessages['body'],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   Future<void> _commentReaction(int index, int id) async {
@@ -97,21 +162,7 @@ class _NestedCommentsState extends State<NestedComments> {
       var response = await ReactionCommandPost(ReactionPost()).execute('comment', id);
 
       if (response is SuccessResponse) {
-        setState(() {
-          bool hasReaction = reactionStates[index];
-          likeState = !hasReaction;
-          reactionStates[index] = !hasReaction;
-
-          if (_comment != null) {
-            if (reactionStates[index]) {
-              _comment!.data.relationships.reactionsCount++;
-            } else {
-              _comment!.data.relationships.reactionsCount =
-                  max(0, _comment!.data.relationships.reactionsCount - 1);
-            }
-            _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
-          }
-        });
+          await _callComment();
       } else {
         await showDialog(
           context: context,
@@ -133,12 +184,62 @@ class _NestedCommentsState extends State<NestedComments> {
     }
   }
 
-  @override
-  void initState() {
-    commentId_ = widget.commentId;
-    super.initState();
-    _callComment();
+  Future<void> _updateComment(String body, int commentId,
+      Function setStateLocal, BuildContext context) async {
+    try {
+      var response = await CommentCommandUpdate(CommentUpdate()).execute(body, commentId);
+
+      if (response is ValidationResponse) {
+        if (response.key['body'] != null) {
+          if (mounted) {
+            setStateLocal(() {
+              _errorMessages['body'] = response.message('body');
+            });
+          }
+          Future.delayed(const Duration(seconds: 2), () {
+            if (mounted) {
+              setStateLocal(() {
+                _errorMessages['body'] = null;
+              });
+            }
+          });
+        }
+      } else if (response is SuccessResponse) {
+        await _callComment();
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+        showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      } else {
+        if (mounted) {
+          await showDialog(
+            context: context,
+            builder: (context) => AutoClosePopupFail(
+              child: const FailAnimationWidget(),
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: e.toString(),
+          ),
+        );
+      }
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +295,13 @@ class _NestedCommentsState extends State<NestedComments> {
                           createdAt: _comment!.data.attributes.createdAt,
                           reactionsCount: _reactionsCount.toString(),
                           repliesCount: _repliesCount.toString(),
+
+                          authorId: _comment!.data.relationships.user.id,
+                          currentUserId: _id,
+                          onEditTap: () {
+                            updateCommentPopup(context, body: _body, mediaUrl: _mediaUrl, comentarioId: _comment!.data.id);
+                          },
+
                           isHidden: true,
                         ),
                       ],

@@ -6,33 +6,34 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerBottomSheet.dart';
 
-class PopupCommentWidget extends StatefulWidget {
+class CommentPopupUpdateWidget extends StatefulWidget {
   final String nameUser;
   final String? body;
   final String? mediaUrl;
   final String? profilePhotoUser;
   final String? error;
-  final Function(String, String?)? onCommentCreate;
+  final Function(String, String?)? onCommentUpdate;
   final bool isButtonDisabled;
+  final VoidCallback? onCancel;
 
-  PopupCommentWidget({
+  CommentPopupUpdateWidget({
     Key? key,
     required this.nameUser,
     this.error,
+    this.onCancel,
     this.body,
-    this.onCommentCreate,
+    this.onCommentUpdate,
     this.mediaUrl,
     this.profilePhotoUser,
     required this.isButtonDisabled,
   }) : super(key: key);
 
   @override
-  _PopupCommentWidgetState createState() => _PopupCommentWidgetState();
+  _CommentPopupUpdateWidgetState createState() => _CommentPopupUpdateWidgetState();
 }
 
-class _PopupCommentWidgetState extends State<PopupCommentWidget> {
+class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
   late TextEditingController _bodyController;
-  File? _selectedImage;
 
   @override
   void initState() {
@@ -46,26 +47,6 @@ class _PopupCommentWidgetState extends State<PopupCommentWidget> {
     super.dispose();
   }
 
-  void _showImagePickerDialog() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return ImagePickerBottomSheet(
-          onImagePicked: (File image) {
-            setState(() {
-              _selectedImage = image;
-            });
-          },
-          onDeletePhoto: () {
-            setState(() {
-              _selectedImage = null;
-            });
-          },
-          hasPhoto: _selectedImage != null,
-        );
-      },
-    );
-  }
 @override
 Widget build(BuildContext context) {
   return IntrinsicHeight(
@@ -106,15 +87,15 @@ Widget build(BuildContext context) {
                       ],
                     ),
                     const SizedBox(height: 10.0),
-                    if (_selectedImage != null) ...[
+                   if (widget.mediaUrl != null) ...[
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child: Image.file(
-                          _selectedImage!,
+                        child: Image.network(
+                          widget
+                              .mediaUrl!, // Usamos Image.network para cargar la imagen
                           fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(height: 10.0),
                     ],
                     BodyTextField(
                       input: _bodyController,
@@ -126,20 +107,20 @@ Widget build(BuildContext context) {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        TextButton(
-                          onPressed: _showImagePickerDialog,
-                          child: const Text(
-                            'Añadir',
-                            style: TextStyle(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.bold,
+                          TextButton(
+                            onPressed: widget.onCancel,
+                            child: const Text(
+                              'Cancelar',
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
                         TextButton(
                           onPressed: widget.isButtonDisabled ? null : () async {
                             String body = _bodyController.text;
-                            await widget.onCommentCreate?.call(body, _selectedImage?.path);
+                            await widget.onCommentUpdate?.call(body, widget.mediaUrl);
                           },
                           child: Text(
                             'Comentar',

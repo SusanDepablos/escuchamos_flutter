@@ -17,8 +17,10 @@ import 'package:escuchamos_flutter/Api/Command/ReactionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FloatingCircle.dart';
 import 'package:escuchamos_flutter/App/View/Post/Index.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopup.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupCreate.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupUpdate.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'dart:io';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -44,7 +46,7 @@ class _IndexCommentState extends State<IndexComment> {
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _initialLoading = true;
-  int? _id;
+  int _id = 0;
   int page = 1;
   String? _name;
   String? _profilePhotoUser;
@@ -54,6 +56,12 @@ class _IndexCommentState extends State<IndexComment> {
   final Map<String, String?> _errorMessages = {
     'body': null,
   };
+
+  void _clearErrorMessages() {
+    setState(() {
+      _errorMessages['body'] = null;
+    });
+  }
 
   final filters = {
     'pag': '10',
@@ -81,6 +89,7 @@ class _IndexCommentState extends State<IndexComment> {
 
 @override
   void initState() {
+    _getData().then((_) => _callUser());
     postId_ = int.parse(widget.postId!);
     super.initState();
     _scrollController = ScrollController()
@@ -92,8 +101,6 @@ class _IndexCommentState extends State<IndexComment> {
           }
         }
       });
-    _getData()
-        .then((_) => _callUser());
     fetchComments();
   }
 
@@ -111,98 +118,71 @@ class _IndexCommentState extends State<IndexComment> {
   Future<void> _getData() async {
     final id = await _storage.read(key: 'user') ?? '';
     setState(() {
-      _id = int.tryParse(id);
+      _id = int.parse(id);
     });
   }
 
-  void showCommentPopup(
-    BuildContext context, {
-    String? body,
-    String? mediaUrl,
-  }) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-              child: PopupCommentWidget(
-                isButtonDisabled: _submitting,
-                nameUser: _name.toString(),
-                profilePhotoUser: _profilePhotoUser,
-                onCommentCreate: (String body, String? mediaUrl) async {
-                  await _commentCreate(body, mediaUrl, context, setState);
-                },
-                error: _errorMessages['body'],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+  Future<void> _callComment() async {
+    final commentCommand = CommentCommandShow(CommentShow(), commentId_);
+    try {
+      final response = await commentCommand.execute();
 
-  Future<void> _commentCreate(String body, String? mediaUrl, BuildContext context, Function setState) async {
-  setState(() {
-    _submitting = true;
-  });
-  try {
-    formData['post_id'] = widget.postId;
-
-    if (widget.commentId != null) {
-      formData['comment_id'] = widget.commentId;
-    }
-
-    formData['body'] = body;
-
-    var response = await CommentCommandCreate(CommentCreate()).execute(
-      formData: formData,
-      file: mediaUrl != null ? File(mediaUrl) : null,
-    );
-
-    if (response is ValidationResponse) {
-      if (response.key['body'] != null) {
-        setState(() {
-          _errorMessages['body'] = response.message('body');
-
-        });
-        Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        if (response is CommentModel) {
           setState(() {
-            _errorMessages['body'] = null;
+            _comment = response;
+
+            int commentIndex =
+                comments.indexWhere((comment) => comment.id == commentId_);
+
+            if (commentIndex >= 0 && commentIndex < comments.length) {
+              comments[commentIndex].relationships.reactionsCount =
+                  _comment!.data.relationships.reactionsCount;
+
+              comments[commentIndex].relationships.repliesCount =
+                  _comment!.data.relationships.repliesCount;
+
+              comments[commentIndex].attributes.body =
+                  _comment!.data.attributes.body;
+
+              final bool userLikedComment = _comment!
+                  .data.relationships.reactions
+                  .any((reaction) => reaction.attributes.userId == _id);
+
+              reactionStates[commentId_] = userLikedComment;
+            }
           });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          commentId_ = 0;
         });
       }
-    } else if (response is SuccessResponse) {
-      Navigator.of(context).pop();
-      _reloadComment();
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => PopupWindow(
-          title: response is InternalServerError ? 'Error' : 'Error de Conexión',
-          message: response.message,
-        ),
-      );
     }
-  } catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => PopupWindow(
-        title: 'Error',
-        message: e.toString(),
-      ),
-    );
-  }finally {
-    setState(() {
-      _submitting = false;
-  });
   }
-}
-
 
   Future<void> _callUser() async {
     final userCommand = UserCommandShow(UserShow(), _id!);
@@ -308,64 +288,194 @@ class _IndexCommentState extends State<IndexComment> {
     }
   }
 
-  Future<void> _callComment() async {
-    final commentCommand = CommentCommandShow(CommentShow(), commentId_);
+  void showCommentPopup(
+    BuildContext context, {
+    String? body,
+    String? mediaUrl,
+  }) {
+    _clearErrorMessages();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+              child: CommentPopupCreateWidget(
+                onCancel: () {
+                  _clearErrorMessages();
+                  Navigator.of(context).pop();
+                },
+                isButtonDisabled: _submitting,
+                nameUser: _name.toString(),
+                profilePhotoUser: _profilePhotoUser,
+                onCommentCreate: (String body, String? mediaUrl) async {
+                  await _commentCreate(body, mediaUrl, context, setState);
+                },
+                error: _errorMessages['body'],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _commentCreate(String body, String? mediaUrl,
+      BuildContext context, Function setState) async {
+    setState(() {
+      _submitting = true;
+    });
+
     try {
-      final response = await commentCommand.execute();
+      formData['post_id'] = widget.postId;
 
-      if (mounted) {
-        if (response is CommentModel) {
-          setState(() {
-            _comment = response;
-
-            int commentIndex = comments.indexWhere((comment) => comment.id == commentId_);
-
-            if (commentIndex >= 0 && commentIndex < comments.length) {
-              comments[commentIndex].relationships.reactionsCount =
-                  _comment!.data.relationships.reactionsCount;
-
-              comments[commentIndex].relationships.repliesCount =
-                  _comment!.data.relationships.repliesCount;
-
-              final bool userLikedComment = _comment!
-                  .data.relationships.reactions
-                  .any((reaction) => reaction.attributes.userId == _id);
-
-              reactionStates[commentId_] = userLikedComment;
-            }
-          });
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError
-                  ? 'Error'
-                  : 'Error de Conexión',
-              message: response.message,
-            ),
-          );
-        }
+      if (widget.commentId != null) {
+        formData['comment_id'] = widget.commentId;
       }
-    } catch (e) {
-      print(e);
-      if (mounted) {
+
+      formData['body'] = body;
+
+      var response = await CommentCommandCreate(CommentCreate()).execute(
+        formData: formData,
+        file: mediaUrl != null ? File(mediaUrl) : null,
+      );
+
+      if (response is ValidationResponse) {
+        if (response.key['body'] != null) {
+          setState(() {
+            _errorMessages['body'] = response.message('body');
+          });
+          Future.delayed(const Duration(seconds: 2), () {
+            setState(() {
+              _errorMessages['body'] = null;
+            });
+          });
+        }
+      } else if (response is SuccessResponse) {
+        Navigator.of(context).pop();
+        _reloadComment();
+      } else {
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: 'Espera un poco, pronto lo solucionaremos.',
+            title:
+                response is InternalServerError ? 'Error' : 'Error de Conexión',
+            message: response.message,
           ),
         );
       }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
     } finally {
-      if (mounted) {
-        setState(() {
-          commentId_ = 0;
-        });
-      }
+      setState(() {
+        _submitting = false;
+      });
     }
+  }  
+
+void updateCommentPopup(
+    BuildContext context, {
+    required String body,
+    String? mediaUrl,
+    required int comentarioId,
+  }) {
+    _clearErrorMessages();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setStateLocal) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+              child: CommentPopupUpdateWidget(
+                onCancel: () {
+                  _clearErrorMessages();
+                  Navigator.of(context).pop();
+                },
+                isButtonDisabled: _submitting,
+                nameUser: _name.toString(),
+                profilePhotoUser: _profilePhotoUser,
+                body: body,
+                mediaUrl: mediaUrl,
+                onCommentUpdate: (String body, String? mediaUrl) async {
+                  await _updateComment(
+                      body, comentarioId, setStateLocal, context);
+                },
+                error: _errorMessages['body'],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
+  Future<void> _updateComment(String body, int commentId, Function setStateLocal,
+      BuildContext context) async {
+    try {
+
+      var response = await CommentCommandUpdate(CommentUpdate()).execute(body, commentId);
+
+      if (response is ValidationResponse) {
+        print(response.message('body'));
+        if (response.key['body'] != null) {
+          setStateLocal(() {
+            _errorMessages['body'] = response.message('body');
+          });
+          Future.delayed(const Duration(seconds: 2), () {
+            setStateLocal(() {
+              _errorMessages['body'] = null;
+            });
+          });
+        }
+      }  else if (response is SuccessResponse) {
+        setStateLocal(() {
+          int commentIndex = comments.indexWhere((comment) => comment.id == commentId);
+          if (commentIndex != -1) {
+            comments[commentIndex].attributes.body = body;
+          }
+        });
+        Navigator.of(context).pop();
+        showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
 Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
@@ -461,7 +571,9 @@ Future<void> _commentReaction(int index, int id) async {
                                     final comment = comments[index];
                                     final bool hasReaction = reactionStates[comment.id]!;  // Aquí se asegura de que tome el estado actualizado
                                     return CommentWidget(
-                                      reaction: hasReaction,  // Usar siempre el estado actualizado de `reactionStates`
+                                      authorId: comment.attributes.userId,
+                                      currentUserId: _id,
+                                      reaction: hasReaction,
                                       onLikeTap: () => _commentReaction(index, comment.id),
                                       nameUser: comment.relationships.user.name,
                                       usernameUser: comment.relationships.user.username,
@@ -490,6 +602,13 @@ Future<void> _commentReaction(int index, int id) async {
                                           },
                                         );
                                       },
+
+                                    onEditTap: () {
+                                      String body = comment.attributes.body ?? '';  // El body actual
+                                      String? mediaUrl = comment.relationships.file.firstOrNull?.attributes.url;  // La URL de la imagen, si existe
+                                      updateCommentPopup(context, body: body, mediaUrl: mediaUrl, comentarioId: comment.id);
+                                    },
+
                                       body: comment.attributes.body,
                                       mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
                                       createdAt: comment.attributes.createdAt,

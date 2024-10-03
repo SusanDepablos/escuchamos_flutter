@@ -99,3 +99,29 @@ class CommentCreate {
   }
 }
 
+class CommentUpdate {
+  Future<ServiceResponse> updateComment(String bodyComment, int id) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}comment/$id/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'body': bodyComment.isNotEmpty ? bodyComment : '',
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}

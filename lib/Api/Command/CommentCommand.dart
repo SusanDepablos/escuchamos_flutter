@@ -90,3 +90,32 @@ class CommentCommandCreate {
     }
   }
 }
+
+class CommentCommandUpdate {
+  final CommentUpdate _commentUpdateService;
+
+  CommentCommandUpdate(this._commentUpdateService);
+
+  Future<dynamic> execute(String bodyComment, int id) async {
+    try {
+      var response = await _commentUpdateService.updateComment(bodyComment, id);
+
+      if (response.statusCode == 200) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
