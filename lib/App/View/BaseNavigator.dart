@@ -34,6 +34,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   int? followers;
   int? following;
   bool _isGroupOne = false;
+  bool _isGroupTwo = false;
   bool _isBottomNavVisible = true; // Controlador para la visibilidad del BottomNavigationBar
   bool _isAppBarVisible = true; // Controlador para la visibilidad del AppBar
 
@@ -58,7 +59,12 @@ class _BaseNavigatorState extends State<BaseNavigator> {
     setState(() {
       _id = id;
       _groups = groups;
-      _isGroupOne = groups.contains(1);
+      if (groups.contains(1)) {
+        _isGroupOne = true;
+      } else if (groups.contains(2)) {
+        _isGroupTwo = true;
+      }
+      ;
     });
   }
 
@@ -197,11 +203,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
             reloadView();
           }
         },
-        onContentModerationTap: () async {
-          if (_isGroupOne) {
-            await Navigator.pushNamed(context, 'content-moderation');
-          }
-        },
+        
         onSettingsTap: () async {
           final result = await Navigator.pushNamed(context, 'settings');
           reloadView();
@@ -237,7 +239,21 @@ class _BaseNavigatorState extends State<BaseNavigator> {
           reloadView();
         },
 
-        showContentModeration: _isGroupOne,
+        showContentModeration: _isGroupOne || _isGroupTwo,
+
+        onContentModerationTap: () async {
+          if (_isGroupOne || _isGroupTwo) {
+            await Navigator.pushNamed(context, 'content-moderation');
+          }
+        },
+
+        showAdminUser: _isGroupOne,
+
+        onAdminUserTap: () async {
+          if (_isGroupOne || _isGroupTwo) {
+            await Navigator.pushNamed(context, 'manage-users-view');
+          }
+        },
       ),
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {

@@ -9,18 +9,18 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
-class IndexUser extends StatefulWidget {
+class IndexManageUser extends StatefulWidget {
   String? search_;
   int page = 1;
   VoidCallback? onFetchUsers;
 
-  IndexUser({this.search_, this.onFetchUsers});
+  IndexManageUser({this.search_, this.onFetchUsers});
 
   @override
-  _IndexUserState createState() => _IndexUserState();
+  _IndexManageUserState createState() => _IndexManageUserState();
 }
 
-class _IndexUserState extends State<IndexUser> {
+class _IndexManageUserState extends State<IndexManageUser> {
   final filters = {
     'pag': '10',
     'page': null,

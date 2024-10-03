@@ -12,11 +12,13 @@ class CustomDrawer extends StatelessWidget {
   final ImageProvider? imageProvider;
   final Future<void> Function()? onProfileTap;
   final Future<void> Function()? onContentModerationTap;
+    final Future<void> Function()? onAdminUserTap;
   final Future<void> Function()? onSettingsTap;
   final Future<void> Function()? onAboutTap;
   final Future<void> Function()? onFollowersTap;
   final Future<void> Function()? onFollowedTap;
   final bool showContentModeration; 
+  final bool showAdminUser;
   CustomDrawer({
     this.name,
     this.username,
@@ -24,7 +26,9 @@ class CustomDrawer extends StatelessWidget {
     required this.following,
     this.imageProvider,
     this.onProfileTap,
+    this.showAdminUser = false,
     this.onContentModerationTap,
+    this.onAdminUserTap,
     this.onSettingsTap,
     this.onAboutTap,
     this.onFollowersTap,
@@ -221,6 +225,12 @@ class CustomDrawer extends StatelessWidget {
             title: 'Moderación de contenido',
             onTap: onContentModerationTap,
           ),
+          if (showAdminUser)
+            _buildListTile(
+              icon: MaterialIcons.group,
+              title: 'Administrar Usurios',
+              onTap: onAdminUserTap,
+            ),
         ],
       ),
     );

@@ -158,7 +158,7 @@ class _IndexFollowedState extends State<IndexFollowed> {
                           followedUser.name,
                       usernameUser: followedUser.username,
                       profilePhotoUser: followedUser.profilePhotoUrl ?? '',
-                      onProfileTap: () {
+                      onTap: () {
                         final userId = followedUser.id;
                         Navigator.pushNamed(
                           context,

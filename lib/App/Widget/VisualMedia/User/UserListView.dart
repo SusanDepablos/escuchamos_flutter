@@ -6,20 +6,20 @@ class UserListView extends StatelessWidget {
   final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
-  final VoidCallback? onProfileTap;
+  final VoidCallback? onTap;
 
   const UserListView({
     Key? key,
     required this.nameUser,
     required this.usernameUser,
     this.profilePhotoUser,
-    this.onProfileTap,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onProfileTap, // Ejecuta la función cuando se toca el widget
+      onTap: onTap, // Ejecuta la función cuando se toca el widget
       child: Container(
         margin: const EdgeInsets.only(
           left: 16.0,

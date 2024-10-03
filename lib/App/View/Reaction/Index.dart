@@ -176,7 +176,7 @@ class _IndexReactionsState extends State<IndexReactions> {
                       nameUser: user.name,
                       usernameUser: user.username,
                       profilePhotoUser: user.profilePhotoUrl ?? '',
-                      onProfileTap: () {
+                      onTap: () {
                         final userId = user.id;
                         Navigator.pushNamed(
                           context,

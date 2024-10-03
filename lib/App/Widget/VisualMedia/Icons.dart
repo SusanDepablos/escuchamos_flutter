@@ -33,6 +33,8 @@ class MaterialIcons {
   static const IconData close = Icons.close;
   static const IconData play = Icons.play_arrow;
   static const IconData pause = Icons.pause;
+  static const IconData group = Icons.group;
+
 
   static const IconData more = Icons.more_vert;
   static const IconData favorite = Icons.favorite;
