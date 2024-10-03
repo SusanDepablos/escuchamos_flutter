@@ -7,12 +7,14 @@ class UserListView extends StatelessWidget {
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onTap;
+  final VoidCallback? onPhotoUserTap;
 
   const UserListView({
     Key? key,
     required this.nameUser,
     required this.usernameUser,
     this.profilePhotoUser,
+    this.onPhotoUserTap,
     this.onTap,
   }) : super(key: key);
 
@@ -41,6 +43,7 @@ class UserListView extends StatelessWidget {
                         profilePhotoUser!.isNotEmpty
                     ? NetworkImage(profilePhotoUser!)
                     : null,
+                onPressed: onPhotoUserTap,
                 avatarSize: 40.0,
                 showBorder: true,
               ),

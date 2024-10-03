@@ -1,6 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
+class SelectBasic extends StatelessWidget {
+  final String? selectedValue;
+  final List<Map<String, String>> items;
+  final void Function(String?)? onChanged;
+  final String hintText; // Valor predeterminado
+
+  SelectBasic({
+    required this.selectedValue,
+    required this.items,
+    this.onChanged,
+    required this.hintText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 12.0),
+      decoration: BoxDecoration(
+        color: AppColors.whiteapp,
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(
+          color: AppColors.inputBasic,
+          width: 1.0,
+        ),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String?>(
+          value: selectedValue,
+          hint: hintText != null
+              ? Text(hintText!)
+              : null, // Muestra el valor predeterminado
+          items: items.map((item) {
+            return DropdownMenuItem<String?>(
+              value: item['value'],
+              child: Text(
+                item['name'] ?? '',
+                style: TextStyle(
+                  color: AppColors.black,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          isExpanded: true,
+        ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 abstract class SelectBase<T> extends StatelessWidget {
   final T? selectedValue;
   final List<T?> items;

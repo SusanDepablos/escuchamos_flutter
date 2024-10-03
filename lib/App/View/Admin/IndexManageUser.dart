@@ -8,6 +8,10 @@ import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserListView.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
+import 'package:escuchamos_flutter/Api/Command/GroupCommand.dart';
+import 'package:escuchamos_flutter/Api/Model/GroupModels.dart' as model_group;
+import 'package:escuchamos_flutter/Api/Service/GroupService.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserActionPopup.dart';
 
 class IndexManageUser extends StatefulWidget {
   String? search_;
@@ -21,16 +25,45 @@ class IndexManageUser extends StatefulWidget {
 }
 
 class _IndexManageUserState extends State<IndexManageUser> {
+  List<Map<String, String>> groupData = [];
+  List<Datum> users = [];
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _hasMorePages = true;
+
   final filters = {
     'pag': '10',
     'page': null,
     'search': null,
   };
 
-  List<Datum> users = [];
-  late ScrollController _scrollController;
-  bool _isLoading = false;
-  bool _hasMorePages = true;
+  void reloadView() {
+    setState(() {
+      widget.page = 1;
+      users.clear();
+      _hasMorePages = true;
+    });
+    fetchUsers();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          if (!_isLoading && _hasMorePages) {
+            setState(() {
+              widget.page++;
+              fetchUsers();
+            });
+          }
+        }
+      });
+    _callGroups();
+    fetchUsers();
+  }
 
   Future<void> fetchUsers() async {
     if (_isLoading || !_hasMorePages) return;
@@ -89,31 +122,46 @@ class _IndexManageUserState extends State<IndexManageUser> {
     }
   }
 
-  void reloadView() {
-    setState(() {
-      widget.page = 1;
-      users.clear();
-      _hasMorePages = true;
-    });
-    fetchUsers();
-  }
+  Future<void> _callGroups() async {
+    final countryCommand = GroupCommandIndex(GroupIndex());
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          if (!_isLoading && _hasMorePages) {
-            setState(() {
-              widget.page++;
-              fetchUsers();
-            });
-          }
+    try {
+      var response = await countryCommand.execute();
+
+      if (mounted) {
+        if (response is model_group.GroupsModel) {
+          setState(() {
+            groupData = response.data.map((datum) {
+              return {
+                'name': datum.attributes.name,
+                'id': datum.id.toString(),
+              };
+            }).toList();
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
         }
-      });
-    fetchUsers();
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -160,12 +208,24 @@ class _IndexManageUserState extends State<IndexManageUser> {
                           nameUser: user.attributes.name,
                           usernameUser: user.attributes.username,
                           profilePhotoUser: profileFile?.attributes.url ?? '',
-                          onTap: () {
-                            final userId = user.id; // Obtén el ID del usuario
+                          onPhotoUserTap: () {
+                            final userId = user.id;
                             Navigator.pushNamed(
                               context,
                               'profile',
-                              arguments: userId, // Pasa el ID como argumento
+                              arguments: userId,
+                            );
+                          },
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return UserOptionsModal(
+                                  hintText: 'Roles',
+                                  title: 'Administrar rol',
+                                  roles: groupData,
+                                ); // Aquí se puede mantener el mismo widget
+                              },
                             );
                           },
                         );
