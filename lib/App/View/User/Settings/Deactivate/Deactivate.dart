@@ -1,3 +1,7 @@
+import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/AuthService.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/ShowConfirmationDialog.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
@@ -83,67 +87,71 @@ class _DeactivateState extends State<Deactivate> {
   }
 
   Future<void> _verifyPassword() async {
-    setState(() {
-      _submitting = true;
-    });
+  setState(() {
+    _submitting = true;
+  });
 
-    try {
-      var response = await VerifyPasswordCommand(VerifyPasswords()).execute(
-        _input['password']!.text,
-      );
+  try {
+    var response = await VerifyPasswordCommand(VerifyPasswords()).execute(
+      _input['password']!.text,
+    );
 
-      if (response is SuccessResponse) {
-        _input['password']!.clear();
-
-        await showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Correcto',
-            message: response.message,
-          ),
-        );
-
-        password = false;
-        email = true;
-      } else if (response is ValidationResponse) {
-        if (response.key['password'] != null) {
-          setState(() {
-            _borderColors['password'] = AppColors.inputDark;
-            _errorMessages['password'] = response.message('password');
-          });
-          Future.delayed( const Duration(seconds: 2), () {
-            if (mounted) {
-              setState(() {
-                _borderColors['password'] = AppColors.inputBasic;
-                _errorMessages['password'] = null;
-              });
-            }
-          });
-        }
-      } else {
-        await showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
-            message: response.message,
-          ),
-        );
+    if (response is SuccessResponse) {
+      _input['password']!.clear();
+      // Llamar a la función de confirmación para cerrar sesión
+      _showDeleteUserConfirmation(context);
+      
+      password = false;
+      email = true;
+    } else if (response is ValidationResponse) {
+      if (response.key['password'] != null) {
+        setState(() {
+          _borderColors['password'] = AppColors.inputDark;
+          _errorMessages['password'] = response.message('password');
+        });
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            setState(() {
+              _borderColors['password'] = AppColors.inputBasic;
+              _errorMessages['password'] = null;
+            });
+          }
+        });
       }
-    } catch (e) {
+    } else {
       await showDialog(
         context: context,
         builder: (context) => PopupWindow(
-          title: 'Error',
-          message: e.toString(),
+          title: response is InternalServerError ? 'Error' : 'Error de Conexión',
+          message: response.message,
         ),
       );
-    } finally {
-      setState(() {
-        _submitting = false;
-      });
     }
+  } catch (e) {
+    await showDialog(
+      context: context,
+      builder: (context) => PopupWindow(
+        title: 'Error',
+        message: e.toString(),
+      ),
+    );
+  } finally {
+    setState(() {
+      _submitting = false;
+    });
   }
+}
+
+void _showDeleteUserConfirmation(BuildContext context) {
+  showConfirmationDialog(
+    context,
+    title: 'Eliminar Cuenta',
+    content: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
+    onConfirmTap: () async {
+      await _deleteUser(); // Llama a la función de cierre de cuenta  
+    },
+  );
+}
 
   Future<void> _updateEmail() async {
     setState(() {
@@ -206,6 +214,94 @@ class _DeactivateState extends State<Deactivate> {
       setState(() {
         _submitting = false;
       });
+    }
+  }
+
+    Future<void> _deleteUser() async {
+    final user = await _storage.read(key: 'user') ?? '0';
+    final id = int.parse(user);
+    try {
+      var response = await DeleteCommandUser(DeleteUser()).execute(id: id);
+
+      if (response is SuccessResponse) {
+        // _logout(context);
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: 'Espera un poco, pronto lo solucionaremos.',
+        ),
+      );
+    }
+  }
+
+
+  Future<void> _logout(BuildContext context) async {
+    setState(() {
+      _submitting = true;
+    });
+    final userCommandLogout = UserCommandLogout(UserLogout());
+
+    try {
+      // Ejecutar el comando de cierre de sesión
+      final response = await userCommandLogout.execute();
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const LogoutAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+        // Elimina el token y otros datos del almacenamiento seguro
+        await _storage.delete(key: 'token');
+        await _storage.delete(key: 'session_key');
+        await _storage.delete(key: 'user');
+        await _storage.delete(key: 'groups');
+
+        // Redirige al usuario a la pantalla de login
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'login',
+          (route) => false,
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _submitting = false;
+        });
+      }
     }
   }
 
@@ -274,7 +370,7 @@ class _DeactivateState extends State<Deactivate> {
                   const SizedBox(height: 29.0),
                   GenericButton(
                     color: AppColors.errorRed,
-                    label: 'Desactivar',
+                    label: 'Eliminar',
                     onPressed: () {
                       _verifyPassword();
                     },

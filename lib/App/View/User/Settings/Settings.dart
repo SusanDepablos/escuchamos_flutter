@@ -235,7 +235,7 @@ class _SettingsState extends State<Settings> {
                 size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: const Text(
-                'Desactivar cuenta',
+                'Eliminar cuenta',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -243,7 +243,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               subtitle: const Text(
-                'Desactiva tu cuenta temporalmente',
+                'Tu cuenta será eliminada permanentemente.',
                 style: TextStyle(
                   fontSize: 12,
                   color: AppColors.black,
