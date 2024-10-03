@@ -10,6 +10,7 @@ class PopupPostWidget extends StatefulWidget {
   final String? profilePhotoUser;
   final String? error;
   final Function(String)? onPostUpdate;
+  final VoidCallback? onCancel;
   final bool isButtonDisabled;
 
   PopupPostWidget({
@@ -20,6 +21,7 @@ class PopupPostWidget extends StatefulWidget {
     this.body,
     this.onPostUpdate,
     this.profilePhotoUser,
+    this.onCancel,
     required this.isButtonDisabled,
   }) : super(key: key);
 
@@ -106,9 +108,7 @@ class _PopupPostWidgetState extends State<PopupPostWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Cerrar el diálogo
-                      },
+                      onPressed: widget.onCancel,
                       child: const Text(
                         'Cancelar',
                         style: TextStyle(

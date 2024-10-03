@@ -22,7 +22,6 @@ import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int postId_ = 0 ;
-int idPost = 0;
 bool? likeState;
 class IndexPost extends StatefulWidget {
   final int? userId;
@@ -57,10 +56,6 @@ class _IndexPostState extends State<IndexPost> {
 
   final input = {
     'body': TextEditingController(),
-  };
-
-  final _borderColors = {
-    'body': AppColors.inputLigth,
   };
 
   final Map<String, String?> _errorMessages = {
@@ -171,10 +166,14 @@ class _IndexPostState extends State<IndexPost> {
           if (postId_ != 0) {
             setState(() {
               _post = response;
+              String? body =_post!.data.attributes.body;
+              for (var post in posts) {
+                if (post.attributes.postId == postId_ && post.relationships.post != null) {
+                  post.relationships.post!.attributes.body = body;
+              }
 
               // Encontrar el índice del post comparando con `post.id == postId_`
               int postIndex = posts.indexWhere((post) => post.id == postId_);
-              
               if (postIndex >= 0 && postIndex < posts.length) {
                 // Actualizar las relaciones de reacciones y comentarios
                 posts[postIndex].relationships.reactionsCount =
@@ -185,6 +184,7 @@ class _IndexPostState extends State<IndexPost> {
 
                 posts[postIndex].attributes.body = 
                     _post!.data.attributes.body;
+                }
 
                 final bool userLikedPost = _post!.data.relationships.reactions
                   .any((reaction) => reaction.attributes.userId == _id);
@@ -225,53 +225,6 @@ class _IndexPostState extends State<IndexPost> {
     }
   }
 
-  Future<void> _callPostShow() async {
-    try {
-      final postCommand = PostCommandShow(PostShow(), idPost);
-      final response = await postCommand.execute();
-
-      if (mounted) {
-        if (response is PostModel) {
-          if (idPost != 0) {
-            setState(() {
-              _post = response;
-              String? body =_post!.data.relationships.post!.attributes.body;
-              // Itera sobre todos los posts y actualiza el body donde se encuentre el postId.
-              for (var post in posts) {
-                if (post.attributes.postId == postId_ && post.relationships.post != null) {
-                  post.relationships.post!.attributes.body = body;
-                }
-              }
-            });
-          }
-        } else {
-          // await showDialog(
-          //   context: context,
-          //   builder: (context) => AutoClosePopupFail(
-          //         child: const FailAnimationWidget(),
-          //         message: response.message,
-          //       ));
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => PopupWindow(
-            title: 'Error de Flutter',
-            message: e.toString(),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          idPost = 0;
-        });
-      }
-    }
-  }
-
   Future<void> _postReaction(int index, int id) async {
       if (index < 0 || index >= posts.length) return;
 
@@ -304,10 +257,19 @@ class _IndexPostState extends State<IndexPost> {
       }
     }
 
+  void _clearErrorMessages() {
+    setState(() {
+      _errorMessages['body'] = null; // Limpia el mensaje de error específico
+    });
+  }
+
   void showPostPopup(BuildContext context, String? body, int postId){
+    // Limpia los mensajes de error antes de abrir el diálogo
+    _clearErrorMessages();
     postId_ = postId;
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setStateLocal) {
@@ -323,6 +285,10 @@ class _IndexPostState extends State<IndexPost> {
                 profilePhotoUser: _profilePhotoUser,
                 error: _errorMessages['body'],
                 body: body!,
+                onCancel: () {
+                  _clearErrorMessages(); // Limpia los mensajes de error
+                  Navigator.of(context).pop(); // Cerrar el diálogo
+                },
                 onPostUpdate: (String body) async {
                 await _updatePost(
                   body, // Cuerpo actualizado
@@ -349,14 +315,12 @@ class _IndexPostState extends State<IndexPost> {
       if (response is ValidationResponse) {
         if (response.key['body'] != null) {
           setStateLocal(() {
-            _borderColors['body'] = AppColors.inputLigth;
             _errorMessages['body'] = response.message('body');
           });
           Future.delayed(const Duration(seconds: 2), () {
-            setStateLocal(() {
-              _borderColors['body'] = AppColors.inputLigth;
-              _errorMessages['body'] = null;
-            });
+          setStateLocal(() {
+            _errorMessages['body'] = null;
+          });
           });
         }
       } else if (response is SuccessResponse) {
@@ -497,7 +461,6 @@ class _IndexPostState extends State<IndexPost> {
     _scrollController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -547,7 +510,10 @@ class _IndexPostState extends State<IndexPost> {
                                   context,
                                   'profile',
                                   arguments: userId,
-                                );
+                                ).then((_) {
+                                  postId_ = post.id;
+                                  _callPost();
+                                });
                               },
                               onIndexLikeTap: () {
                                 String objectId = post.id.toString();
@@ -602,7 +568,10 @@ class _IndexPostState extends State<IndexPost> {
                                   context,
                                   'profile',
                                   arguments: userId,
-                                );
+                                ).then((_) {
+                                  postId_ = post.id;
+                                  _callPost();
+                              });
                               },
                               onIndexLikeTap: () {
                                 String objectId = post.id.toString();
@@ -660,7 +629,8 @@ class _IndexPostState extends State<IndexPost> {
                                     'idPost':idPost,
                                   }
                                   ).then((_) {
-                                  _callPost(); _callPostShow();
+                                  postId_ = post.relationships.post!.id;
+                                  _callPost();
                                 });
                               },
                               onProfileTapRepost: () {
@@ -669,7 +639,10 @@ class _IndexPostState extends State<IndexPost> {
                                   context,
                                   'profile',
                                   arguments: userId,
-                                );
+                                ).then((_) {
+                                  postId_ = post.relationships.post!.id;
+                                  _callPost();
+                                });
                               }
                             );
                           }

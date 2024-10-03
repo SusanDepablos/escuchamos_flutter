@@ -15,7 +15,6 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Post/Index.dart';
-import 'dart:math';
 
 FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -61,7 +60,6 @@ class _ShowState extends State<Show> {
   @override
   void initState() {
     postId_ = widget.id;
-    idPost = widget.idPost;
     super.initState();
     _getData();
     _callPost();
@@ -180,7 +178,15 @@ class _ShowState extends State<Show> {
     }
   }
 
+  
+  void _clearErrorMessages() {
+    setState(() {
+      _errorMessages['body'] = null; // Limpia el mensaje de error específico
+    });
+  }
+
   void showPostPopup(BuildContext context, String? body, int postId){
+    _clearErrorMessages();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -198,6 +204,10 @@ class _ShowState extends State<Show> {
                 profilePhotoUser: _profilePhotoUrl,
                 error: _errorMessages['body'],
                 body: body!,
+                onCancel: () {
+                  _clearErrorMessages(); // Limpia los mensajes de error
+                  Navigator.of(context).pop(); // Cerrar el diálogo
+                },
                 onPostUpdate: (String body) async {
                 await _updatePost(
                   body, // Cuerpo actualizado

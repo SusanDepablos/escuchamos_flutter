@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -178,11 +179,11 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                   ),
                 ),
                 Positioned(
-                  right: 16.0, // Ajusta este valor según sea necesario
-                  top: 12.5,
+                  right: 0, // Ajusta este valor según sea necesario
+                  top: 5,
                   child: IconButton(
                     icon: const Icon(
-                      Icons.close, // Icono de 'X'
+                      MaterialIcons.close, // Icono de 'X'
                       color: AppColors.grey, // Color rojo
                     ),
                     onPressed: widget.onCancel, // Usa el parámetro pasado
