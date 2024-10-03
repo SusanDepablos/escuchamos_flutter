@@ -246,11 +246,7 @@ class _IndexCommentState extends State<IndexComment> {
       if (response is CommentsModel) {
         setState(() {
 
-          if (widget.commentId == null) {
-            comments.addAll(response.results.data.where((comment) => comment.attributes.commentId == null));
-          } else {
-            comments.addAll(response.results.data);
-          }
+          comments.addAll(response.results.data);
 
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
           page++;
