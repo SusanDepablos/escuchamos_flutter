@@ -310,7 +310,9 @@ class _ShowState extends State<Show> {
                               context,
                               'profile',
                               arguments: _userId,
-                            );
+                            ).then((_) {
+                              _callPost();
+                            });
                           },
                           onIndexLikeTap: () {
                             Navigator.pushNamed(

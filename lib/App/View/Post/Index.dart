@@ -171,7 +171,6 @@ class _IndexPostState extends State<IndexPost> {
                 if (post.attributes.postId == postId_ && post.relationships.post != null) {
                   post.relationships.post!.attributes.body = body;
               }
-
               // Encontrar el índice del post comparando con `post.id == postId_`
               int postIndex = posts.indexWhere((post) => post.id == postId_);
               if (postIndex >= 0 && postIndex < posts.length) {
@@ -633,17 +632,6 @@ class _IndexPostState extends State<IndexPost> {
                                   _callPost();
                                 });
                               },
-                              onProfileTapRepost: () {
-                                final userId = post.relationships.post!.relationships.user.id;
-                                Navigator.pushNamed(
-                                  context,
-                                  'profile',
-                                  arguments: userId,
-                                ).then((_) {
-                                  postId_ = post.relationships.post!.id;
-                                  _callPost();
-                                });
-                              }
                             );
                           }
                         }

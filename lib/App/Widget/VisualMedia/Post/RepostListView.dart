@@ -61,7 +61,7 @@ class RepostWidget extends StatelessWidget {
   final String? profilePhotoUserRepost;
   final List<String>? mediaUrlsRepost;
   final VoidCallback onPostTap;
-  final VoidCallback onProfileTapRepost;
+  final VoidCallback? onProfileTapRepost;
 
   RepostWidget({
     Key? key,
@@ -91,7 +91,7 @@ class RepostWidget extends StatelessWidget {
     required this.createdAtRepost,
     this.mediaUrlsRepost,
     required this.onPostTap,
-    required this.onProfileTapRepost,
+    this.onProfileTapRepost,
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -396,7 +396,7 @@ class PostWidgetInternal extends StatelessWidget {
   final String? body;
   final List<String>? mediaUrls;
   final VoidCallback onTap;
-  final VoidCallback onProfileTap;
+  final VoidCallback? onProfileTap;
 
   const PostWidgetInternal({
     Key? key,
@@ -407,7 +407,7 @@ class PostWidgetInternal extends StatelessWidget {
     this.body,
     this.mediaUrls,
     required this.onTap,
-    required this.onProfileTap,
+    this.onProfileTap,
   }) : super(key: key);
 
   @override
