@@ -12,6 +12,7 @@ import 'package:escuchamos_flutter/Api/Command/GroupCommand.dart';
 import 'package:escuchamos_flutter/Api/Model/GroupModels.dart' as model_group;
 import 'package:escuchamos_flutter/Api/Service/GroupService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserActionPopup.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart'; 
 
 class IndexManageUser extends StatefulWidget {
   String? search_;
@@ -30,6 +31,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
+  bool _isInitialLoading = true;
 
   final filters = {
     'pag': '10',
@@ -71,6 +73,12 @@ class _IndexManageUserState extends State<IndexManageUser> {
     setState(() {
       _isLoading = true;
     });
+
+    if (_isInitialLoading) {
+      setState(() {
+        _isInitialLoading = true;
+      });
+    }
 
     if (widget.search_?.isNotEmpty ?? false) {
       filters['search'] = widget.search_;
@@ -117,6 +125,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
         // Desbloquear solicitudes después de completar la carga
         setState(() {
           _isLoading = false;
+          _isInitialLoading = false;
         });
       }
     }
@@ -164,10 +173,82 @@ class _IndexManageUserState extends State<IndexManageUser> {
     }
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void _showChangeRoleDialog(BuildContext context, roles, userGroup) {
+    String? selectedRole;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Container(
+                alignment: Alignment.center,
+                child: const Text(
+                  'Administrar rol',
+                  style: TextStyle(
+                    fontSize: AppFond.title,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SelectBasic(
+                      hintText: 'Roles',
+                      selectedValue: userGroup,
+                      items: roles,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRole = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Cerrar diálogo
+                      },
+                      child: const Text(
+                        'Cancelar',
+                        style: TextStyle(
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        if (selectedRole != null) {
+                          // Aquí puedes manejar el rol seleccionado
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text(
+                        'Aceptar',
+                        style: TextStyle(
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   FileElement? getProfileFile(List<FileElement> files) {
@@ -186,19 +267,20 @@ class _IndexManageUserState extends State<IndexManageUser> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: _isLoading
-                  ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
-                  : users.isEmpty
-                    ? const Center(
-                      child: Text(
-                        'No existen usuarios con ese nombre.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.black,
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
+                child:
+                _isInitialLoading
+                    ? CustomLoadingIndicator(color: AppColors.primaryBlue)
+                    : users.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No existen usuarios con ese nombre.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.black,
+                              ),
+                            ),
+                        )
+                      : ListView.builder(
                       controller: _scrollController,
                       itemCount: users.length,
                       itemBuilder: (context, index) {
@@ -217,15 +299,15 @@ class _IndexManageUserState extends State<IndexManageUser> {
                             );
                           },
                           onTap: () {
+                            String userGroup = user.relationships.groups[0].id.toString();
+
                             showModalBottomSheet(
                               context: context,
-                              builder: (BuildContext context) {
-                                return UserOptionsModal(
-                                  hintText: 'Roles',
-                                  title: 'Administrar rol',
-                                  roles: groupData,
-                                ); // Aquí se puede mantener el mismo widget
-                              },
+                                builder: (BuildContext context) {
+                                  return UserOptionsModal(
+                                    showChangeRoleDialog: () => _showChangeRoleDialog(context, groupData, userGroup), // Pasar la función correctamente
+                                  );
+                                }, 
                             );
                           },
                         );

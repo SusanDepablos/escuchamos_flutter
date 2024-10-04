@@ -29,13 +29,15 @@ class SelectBasic extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String?>(
-          value: selectedValue,
-          hint: hintText != null
-              ? Text(hintText!)
-              : null, // Muestra el valor predeterminado
+          value: selectedValue, // Asegúrate de que este valor sea el correcto
+          hint: selectedValue == null
+              ? Text(hintText) // Muestra el valor predeterminado
+              : Text(items.firstWhere(
+                      (item) => item['id'] == selectedValue)['name'] ??
+                  ''), // Muestra el valor seleccionado
           items: items.map((item) {
             return DropdownMenuItem<String?>(
-              value: item['value'],
+              value: item['id'], // Cambiado a 'id' en lugar de 'value'
               child: Text(
                 item['name'] ?? '',
                 style: TextStyle(
@@ -44,7 +46,9 @@ class SelectBasic extends StatelessWidget {
               ),
             );
           }).toList(),
-          onChanged: onChanged,
+          onChanged: (value) {
+            onChanged?.call(value); // Llama a onChanged si no es nulo
+          },
           isExpanded: true,
         ),
       ),
