@@ -16,12 +16,12 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'dart:convert';
 
-class Deactivate extends StatefulWidget {
+class Delete extends StatefulWidget {
   @override
-  _DeactivateState createState() => _DeactivateState();
+  _DeleteState createState() => _DeleteState();
 }
 
-class _DeactivateState extends State<Deactivate> {
+class _DeleteState extends State<Delete> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   UserModel? _user;
   bool _submitting = false;
@@ -209,125 +209,124 @@ class _DeactivateState extends State<Deactivate> {
   }
 
 
-void _showDeleteUserConfirmation(BuildContext context) {
-  showConfirmationDialog(
-    context,
-    title: 'Eliminar Cuenta',
-    content: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
-    onConfirmTap: () async {
-      await _deleteUser(); // Llama a la función de cierre de cuenta  
-    },
-  );
-}
-
-Future<void> _deleteUser() async {
-  // Obtén el ID del usuario antes de cerrar sesión
-  final user = await _storage.read(key: 'user') ?? '0';
-  final token = await _storage.read(key: 'token') ?? '';
-  final id = int.parse(user);
-
-  // Primero, cierra sesión
-  _logout(context);
-
-  // Luego, procede a eliminar el usuario usando el ID que guardaste
-  try {
-    var response = await DeleteCommandUser(DeleteUser()).execute(id: id , token: token);
-
-    if (response is SuccessResponse) {
-      // Redirige al usuario a la pantalla de login
-
-    } else {
-      await showDialog(
-        context: context,
-        builder: (context) => AutoClosePopupFail(
-          child: const FailAnimationWidget(),
-          message: response.message,
-        ),
-      );
-    }
-  } catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => PopupWindow(
-        title: 'Error',
-        message: 'Espera un poco, pronto lo solucionaremos.',
-      ),
+  void _showDeleteUserConfirmation(BuildContext context) {
+    showConfirmationDialog(
+      context,
+      title: 'Eliminar Cuenta',
+      content: '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
+      onConfirmTap: () async {
+        await _deleteUser(); // Llama a la función de cierre de cuenta  
+      },
     );
   }
-}
 
-Future<void> _logout(BuildContext context) async {
-  setState(() {
-    _submitting = true;
-  });
-  final userCommandLogout = UserCommandLogout(UserLogout());
+  Future<void> _deleteUser() async {
+    // Obtén el ID del usuario antes de cerrar sesión
+    final user = await _storage.read(key: 'user') ?? '0';
+    final token = await _storage.read(key: 'token') ?? '';
+    final id = int.parse(user);
 
-  try {
-    // Ejecutar el comando de cierre de sesión
-    final response = await userCommandLogout.execute();
+    // Primero, cierra sesión
+    _logout(context);
 
-    if (response is SuccessResponse) {
-      await showDialog(
-        context: context,
-        builder: (context) => AutoClosePopup(
-          child: const LogoutAnimationWidget(),
-          message: response.message,
-        ),
-      );
-      // Elimina el token y otros datos del almacenamiento seguro
-      await _clearSecureStorage();
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        'login',
-        (route) => false,
-      );
-    } else {
+    // Luego, procede a eliminar el usuario usando el ID que guardaste
+    try {
+      var response = await DeleteCommandUser(DeleteUser()).execute(id: id , token: token);
+
+      if (response is SuccessResponse) {
+        // Redirige al usuario a la pantalla de login
+
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
       showDialog(
         context: context,
         builder: (context) => PopupWindow(
           title: 'Error',
-          message: response.message,
+          message: 'Espera un poco, pronto lo solucionaremos.',
         ),
       );
     }
-  } catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => PopupWindow(
-        title: 'Error',
-        message: e.toString(),
-      ),
-    );
-  } finally {
-    if (mounted) {
-      setState(() {
-        _submitting = false;
-      });
-    }
   }
-}
 
+  Future<void> _logout(BuildContext context) async {
+    setState(() {
+      _submitting = true;
+    });
+    final userCommandLogout = UserCommandLogout(UserLogout());
 
-// Método separado para limpiar el almacenamiento seguro
-Future<void> _clearSecureStorage() async {
-  try {
-    await _storage.delete(key: 'token');
-    await _storage.delete(key: 'session_key');
-    await _storage.delete(key: 'user');
-    await _storage.delete(key: 'groups');
-  } catch (e) {
-    print('Error al eliminar datos del almacenamiento seguro: $e');
-    if (mounted) {
-      await showDialog(
+    try {
+      // Ejecutar el comando de cierre de sesión
+      final response = await userCommandLogout.execute();
+
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const LogoutAnimationWidget(),
+            message: response.message,
+          ),
+        );
+        // Elimina el token y otros datos del almacenamiento seguro
+        await _clearSecureStorage();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'login',
+          (route) => false,
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
         context: context,
         builder: (context) => PopupWindow(
           title: 'Error',
-          message: 'No se pudo cerrar la sesión correctamente. Por favor intenta de nuevo.',
+          message: e.toString(),
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _submitting = false;
+        });
+      }
     }
   }
-}
+
+  // Método separado para limpiar el almacenamiento seguro
+  Future<void> _clearSecureStorage() async {
+    try {
+      await _storage.delete(key: 'token');
+      await _storage.delete(key: 'session_key');
+      await _storage.delete(key: 'user');
+      await _storage.delete(key: 'groups');
+    } catch (e) {
+      print('Error al eliminar datos del almacenamiento seguro: $e');
+      if (mounted) {
+        await showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error',
+            message: 'No se pudo cerrar la sesión correctamente. Por favor intenta de nuevo.',
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {

@@ -26,7 +26,8 @@ class PostWidget extends StatelessWidget {
   final List<String>? mediaUrls;
   final int authorId;
   final int currentUserId; 
-  final VoidCallback onEditTap; // Agregar este parámetro
+  final VoidCallback onEditTap; 
+  final VoidCallback? onRepostTap;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   PostWidget({
@@ -48,7 +49,8 @@ class PostWidget extends StatelessWidget {
     required this.authorId,
     required this.currentUserId,
     this.onDeleteTap,
-    required this.onEditTap, // Agregar este parámetro
+    required this.onEditTap, 
+    this. onRepostTap, 
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -161,15 +163,15 @@ class PostWidget extends StatelessWidget {
                 title: const Text('Compartir'),
                 onTap: () {
                   // Lógica para repostear
-                  Navigator.pop(context); // Cerrar el modal
+                  Navigator.pop(context); 
                 },
               ),
               ListTile(
                 leading: const Icon(MaterialIcons.editNote),
                 title: const Text('Repostear'),
                 onTap: () {
-                  // Lógica para compartir
                   Navigator.pop(context); // Cerrar el modal
+                  onRepostTap!();
                 },
               ),
             ],

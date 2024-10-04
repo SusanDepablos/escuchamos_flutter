@@ -251,7 +251,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, 'deactivate-account');
+                Navigator.pushNamed(context, 'delete-account');
               },
             ),
             ListTile(

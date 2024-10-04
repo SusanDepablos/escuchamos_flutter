@@ -8,12 +8,12 @@ import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 
-class DeactivateAccount extends StatefulWidget {
+class DeleteAccount extends StatefulWidget {
   @override
-  _DeactivateAccountState createState() => _DeactivateAccountState();
+  _DeleteAccountState createState() => _DeleteAccountState();
 }
 
-class _DeactivateAccountState extends State<DeactivateAccount> {
+class _DeleteAccountState extends State<DeleteAccount> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   UserModel? _user;
   String? name;
@@ -149,7 +149,7 @@ class _DeactivateAccountState extends State<DeactivateAccount> {
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
-                    'deactivate', // Nombre de la ruta definida en el archivo de rutas
+                    'delete', // Nombre de la ruta definida en el archivo de rutas
                   );
                 },
                 isLoading:

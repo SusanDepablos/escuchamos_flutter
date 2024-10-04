@@ -1,6 +1,6 @@
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostPopup.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostUpdatePopup.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostListView.dart';

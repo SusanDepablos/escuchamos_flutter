@@ -62,6 +62,7 @@ class RepostWidget extends StatelessWidget {
   final List<String>? mediaUrlsRepost;
   final VoidCallback onPostTap;
   final VoidCallback? onProfileTapRepost;
+  final VoidCallback? onRepostTap;
 
   RepostWidget({
     Key? key,
@@ -92,6 +93,7 @@ class RepostWidget extends StatelessWidget {
     this.mediaUrlsRepost,
     required this.onPostTap,
     this.onProfileTapRepost,
+    this.onRepostTap,
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -186,6 +188,7 @@ class RepostWidget extends StatelessWidget {
                 onTap: () {
                   // Lógica para compartir
                   Navigator.pop(context); // Cerrar el modal
+                  onRepostTap!();
                 },
               ),
             ],

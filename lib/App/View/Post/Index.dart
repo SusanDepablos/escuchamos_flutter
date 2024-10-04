@@ -1,6 +1,6 @@
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostPopup.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostUpdatePopup.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostListView.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
@@ -553,6 +553,18 @@ class _IndexPostState extends State<IndexPost> {
                                 input['body']!.text = post.attributes.body ?? '';
                                 showPostPopup(context, input['body']!.text, post.id);
                               },
+                              onRepostTap: () { 
+                              int postId = post.id;
+                                Navigator.pushNamed(
+                                  context,
+                                  'new-repost',
+                                  arguments: {
+                                    'postId': postId,
+                                  },
+                                ).then((_) {
+                                  _callPost();
+                                });
+                              },
                             );
                           } else {
                             return RepostWidget(
@@ -629,6 +641,18 @@ class _IndexPostState extends State<IndexPost> {
                                   }
                                   ).then((_) {
                                   postId_ = post.relationships.post!.id;
+                                  _callPost();
+                                });
+                              },
+                              onRepostTap: () { 
+                                int postId = post.relationships.post!.id;
+                                Navigator.pushNamed(
+                                  context,
+                                  'new-repost',
+                                  arguments: {
+                                    'postId': postId,
+                                  },
+                                ).then((_) {
                                   _callPost();
                                 });
                               },

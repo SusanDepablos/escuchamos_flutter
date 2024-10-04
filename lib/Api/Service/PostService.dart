@@ -44,6 +44,7 @@ class PostCreate {
   Future<ServiceResponse> createPost({
     String? body,
     int? typePost,
+    int? postId,
     List<File>? files,
     }) async {
 
@@ -68,6 +69,10 @@ class PostCreate {
       // Agregar otros campos solo si no son nulos
       if (body != null && body.isNotEmpty) {
         request.fields['body'] = body;
+      }
+
+      if (postId != null && postId.toString().isNotEmpty) {
+        request.fields['post_id'] = postId.toString();
       }
       request.fields['type_post_id'] = typePost.toString(); 
 

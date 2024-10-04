@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
+import 'package:escuchamos_flutter/App/View/Post/NewRepost.dart';
 import 'package:escuchamos_flutter/App/View/Post/Show.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
@@ -14,13 +15,13 @@ import 'package:escuchamos_flutter/App/View/BaseNavigator.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/EditProfile.dart';
 import 'package:escuchamos_flutter/App/View/User/Profile/Profile.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Settings.dart';
-import 'package:escuchamos_flutter/App/View/User/Settings/DeactivateAccount.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/DeleteAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/AccountInformation.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EditAccount.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/PhoneUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/EmailUpdate.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/Account/CountryUpdate.dart';
-import 'package:escuchamos_flutter/App/View/User/Settings/Deactivate/Deactivate.dart';
+import 'package:escuchamos_flutter/App/View/User/Settings/Delete/Delete.dart';
 import 'package:escuchamos_flutter/App/View/User/Settings/ChangePassword.dart';
 import 'package:escuchamos_flutter/App/View/User/Index.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
@@ -68,8 +69,8 @@ class AppRoutes {
 
     'user-change-password': (context) => UserChangePassword(),
     'settings': (context) => Settings(),
-    'deactivate-account': (context) => DeactivateAccount(),
-    'deactivate': (context) => Deactivate(),
+    'delete-account': (context) => DeleteAccount(),
+    'delete': (context) => Delete(),
     'account-information': (context) => AccountInformation(),
     'edit-account': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -155,6 +156,12 @@ class AppRoutes {
     },
 
     'new-post': (context) => NewPost(),
+
+    'new-repost': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final postId = args['postId'] as int;
+      return NewRepost(postId: postId);
+    },
 
     //admin
     'manage-users-view': (context) => ManageUsersView(),

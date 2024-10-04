@@ -244,11 +244,10 @@ class _UpdateState extends State<EditProfile> {
           ),
         );
       } else
-        showDialog(
+        await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );

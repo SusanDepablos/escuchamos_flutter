@@ -41,11 +41,13 @@ class PostCommandCreate {
   Future<dynamic> execute({
     String? body, 
     int? typePost, 
+    int? postId,
     List<File>? files}) async {
     try {
       var response = await _postCreateService.createPost(
         body: body,  
         typePost: typePost,
+        postId: postId,
         files: files,
       );
 
