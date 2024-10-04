@@ -1,6 +1,7 @@
 import 'package:escuchamos_flutter/Api/Model/PostModels.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostCreate.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de que los colores estén definidos en este archivo
@@ -40,9 +41,7 @@ class _NewRepostState extends State<NewRepost> {
   List<String>? _mediaUrls;
   bool _submitting = false;
 
-  final input = {
-    'body': TextEditingController(),
-  };
+  final TextEditingController _bodyController = TextEditingController();
 
   bool submitting = false;
 
@@ -120,9 +119,9 @@ class _NewRepostState extends State<NewRepost> {
       submitting = true;
     });
     try {
-      print(input['body']!.text);
+      print(_bodyController.text);
       var response = await PostCommandCreate(PostCreate()).execute(
-        body: input['body']!.text,
+        body: _bodyController.text,
         postId: widget.postId,
         typePost: 3, // Pasa el tipo: 'profile' o 'cover'
 
@@ -248,7 +247,12 @@ class _NewRepostState extends State<NewRepost> {
           child: RepostCreateWidget(
             nameUser: name ?? '',
             username: username ?? '',
-            body: input['body']!.text,
+            bodyTextField: BodyTextField(
+                  input: _bodyController,
+                  error: null, 
+                  minLines: 1,
+                  maxLines: 6,
+                ),
             profilePhotoUser: profileAvatarUrl ?? '',
             isButtonDisabled: _submitting,
             bodyRepost: _body ?? '',

@@ -185,7 +185,7 @@ class _ShowState extends State<Show> {
     });
   }
 
-  void showPostPopup(BuildContext context, String? body, int postId){
+  void showPostPopup(BuildContext context, String? body, int postId, mediaUrls){
     _clearErrorMessages();
     showDialog(
       context: context,
@@ -204,6 +204,7 @@ class _ShowState extends State<Show> {
                 profilePhotoUser: _profilePhotoUrl,
                 error: _errorMessages['body'],
                 body: body!,
+                mediaUrls: mediaUrls,
                 onCancel: () {
                   _clearErrorMessages(); // Limpia los mensajes de error
                   Navigator.of(context).pop(); // Cerrar el diálogo
@@ -347,7 +348,7 @@ class _ShowState extends State<Show> {
                           onDeleteTap: () {_deletePost();},
                           onEditTap: () {
                             input['body']!.text = _body ?? '';
-                            showPostPopup(context, input['body']!.text, widget.id);
+                            showPostPopup(context, input['body']!.text, widget.id, _mediaUrls);
                           },
                         )
                       ],

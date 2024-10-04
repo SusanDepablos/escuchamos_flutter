@@ -50,6 +50,8 @@ class RepostCreateWidget extends StatefulWidget {
   final VoidCallback? onPostTap;
   final VoidCallback? onProfileTapRepost;
 
+  final Widget bodyTextField;
+
   RepostCreateWidget({
     Key? key,
     required this.nameUser,
@@ -68,6 +70,7 @@ class RepostCreateWidget extends StatefulWidget {
     this.mediaUrlsRepost,
     this.onPostTap,
     this.onProfileTapRepost,
+    required this.bodyTextField, // Nuevo parámetro
   }) : super(key: key);
 
   @override
@@ -75,19 +78,6 @@ class RepostCreateWidget extends StatefulWidget {
 }
 
 class _RepostCreateWidgetState extends State<RepostCreateWidget> {
-  late TextEditingController _bodyController;
-
-  @override
-  void initState() {
-    super.initState();
-    _bodyController = TextEditingController(text: widget.body);
-  }
-
-  @override
-  void dispose() {
-    _bodyController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,12 +132,8 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                   ],
                 ),
                 const SizedBox(height: 8.0),
+                widget.bodyTextField,
                 // Campo de texto para el cuerpo del post
-                BodyTextField(
-                  input: _bodyController,
-                  minLines: 1,
-                  maxLines: 6,
-                ),
                 PostWidgetInternal(
                   nameUser: widget.nameUserRepost,
                   usernameUser: widget.usernameUserRepost,

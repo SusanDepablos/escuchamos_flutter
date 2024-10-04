@@ -262,7 +262,7 @@ class _IndexPostState extends State<IndexPost> {
     });
   }
 
-  void showPostPopup(BuildContext context, String? body, int postId){
+  void showPostPopup(BuildContext context, String? body, int postId, mediaUrls){
     // Limpia los mensajes de error antes de abrir el diálogo
     _clearErrorMessages();
     postId_ = postId;
@@ -284,6 +284,7 @@ class _IndexPostState extends State<IndexPost> {
                 profilePhotoUser: _profilePhotoUser,
                 error: _errorMessages['body'],
                 body: body!,
+                mediaUrls: mediaUrls,
                 onCancel: () {
                   _clearErrorMessages(); // Limpia los mensajes de error
                   Navigator.of(context).pop(); // Cerrar el diálogo
@@ -551,7 +552,7 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               onEditTap: () {
                                 input['body']!.text = post.attributes.body ?? '';
-                                showPostPopup(context, input['body']!.text, post.id);
+                                showPostPopup(context, input['body']!.text, post.id, mediaUrls);
                               },
                               onRepostTap: () { 
                               int postId = post.id;
@@ -620,7 +621,7 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               onEditTap: () {
                                 input['body']!.text = post.attributes.body ?? '';
-                                showPostPopup(context, input['body']!.text, post.id);
+                                showPostPopup(context, input['body']!.text, post.id, mediaUrls);
                               },
                               // Repost
                               bodyRepost: post.relationships.post!.attributes.body,
