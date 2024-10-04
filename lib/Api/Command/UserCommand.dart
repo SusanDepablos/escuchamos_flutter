@@ -253,10 +253,10 @@ class DeleteCommandUser {
 
   DeleteCommandUser(this._userDeleteService);
 
-  Future<dynamic> execute({required int id}) async {
+  Future<dynamic> execute({required int id, required String token}) async {
     try {
       // Llamar a la función PostUpload con los parámetros file y type
-      var response = await _userDeleteService.userDelete(id);
+      var response = await _userDeleteService.userDelete(id , token);
 
       // Manejar la respuesta según el código de estado
       if (response.statusCode == 202) {

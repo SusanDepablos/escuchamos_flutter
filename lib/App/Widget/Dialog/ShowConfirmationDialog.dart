@@ -63,6 +63,7 @@ void showConfirmationDialog(BuildContext context, {
 }) {
   showDialog(
     context: context,
+    barrierDismissible: false, // No permite cerrar el diálogo al tocar fuera de él
     builder: (BuildContext context) {
       return ConfirmationDialog(
         title: title,

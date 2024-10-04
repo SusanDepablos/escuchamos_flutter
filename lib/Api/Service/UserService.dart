@@ -243,10 +243,9 @@ class UserIndex {
 
 
 class DeleteUser {
-  Future<ServiceResponse> userDelete(int id) async {
+  Future<ServiceResponse> userDelete(int id, String token ) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}user/update/admin/$id/');
-    final token = await _storage.read(key: 'token') ?? '';
 
 
     // Define las cabeceras para la solicitud
