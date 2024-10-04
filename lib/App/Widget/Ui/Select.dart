@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class SelectBasic extends StatelessWidget {
-  final String? selectedValue;
-  final List<Map<String, String>> items;
-  final void Function(String?)? onChanged;
-  final String hintText; // Valor predeterminado
+  final int? selectedValue; // Cambiado a int
+  final List<Map<String, dynamic>> items; // Cambiado a dynamic para incluir int
+  final void Function(int?)? onChanged; // Cambiado a int
+  final String hintText;
 
   SelectBasic({
     required this.selectedValue,
@@ -28,16 +28,17 @@ class SelectBasic extends StatelessWidget {
         ),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String?>(
-          value: selectedValue, // Asegúrate de que este valor sea el correcto
+        child: DropdownButton<int?>(
+          // Cambiado a int
+          value: selectedValue,
           hint: selectedValue == null
               ? Text(hintText) // Muestra el valor predeterminado
               : Text(items.firstWhere(
                       (item) => item['id'] == selectedValue)['name'] ??
                   ''), // Muestra el valor seleccionado
           items: items.map((item) {
-            return DropdownMenuItem<String?>(
-              value: item['id'], // Cambiado a 'id' en lugar de 'value'
+            return DropdownMenuItem<int?>(
+              value: item['id'], // Asegúrate de que 'id' sea de tipo int
               child: Text(
                 item['name'] ?? '',
                 style: TextStyle(
@@ -55,6 +56,7 @@ class SelectBasic extends StatelessWidget {
     );
   }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

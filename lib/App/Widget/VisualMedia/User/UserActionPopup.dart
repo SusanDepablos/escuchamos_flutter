@@ -11,7 +11,6 @@ class UserOptionsModal extends StatefulWidget {
     this.onDeleteTap,
     this.showChangeRoleDialog, // Cambiado aquí también
   });
-
   @override
   _UserOptionsModalState createState() => _UserOptionsModalState();
 }
@@ -48,15 +47,6 @@ class _UserOptionsModalState extends State<UserOptionsModal> {
             onTap: () {
               Navigator.pop(context);
               widget.showChangeRoleDialog?.call(); // Mostrar el diálogo de cambio de rol
-            },
-          ),
-          ListTile(
-            leading:
-                const Icon(MaterialIcons.delete, color: AppColors.errorRed),
-            title: const Text('Eliminar',
-                style: TextStyle(color: AppColors.errorRed)),
-            onTap: () {
-              _onDeleteItem(context);
             },
           ),
         ],

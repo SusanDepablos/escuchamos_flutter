@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 // import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
@@ -12,8 +14,13 @@ import 'package:escuchamos_flutter/Api/Command/GroupCommand.dart';
 import 'package:escuchamos_flutter/Api/Model/GroupModels.dart' as model_group;
 import 'package:escuchamos_flutter/Api/Service/GroupService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/User/UserActionPopup.dart';
-import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart'; 
+import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
+import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+
+final FlutterSecureStorage _storage = FlutterSecureStorage();
 class IndexManageUser extends StatefulWidget {
   String? search_;
   int page = 1;
@@ -26,12 +33,13 @@ class IndexManageUser extends StatefulWidget {
 }
 
 class _IndexManageUserState extends State<IndexManageUser> {
-  List<Map<String, String>> groupData = [];
+  List<Map<String, dynamic>> groupData = [];
   List<Datum> users = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _isInitialLoading = true;
+  int _id =  0;
 
   final filters = {
     'pag': '10',
@@ -39,14 +47,15 @@ class _IndexManageUserState extends State<IndexManageUser> {
     'search': null,
   };
 
-  void reloadView() {
-    setState(() {
-      widget.page = 1;
-      users.clear();
-      _hasMorePages = true;
-    });
-    fetchUsers();
-  }
+  Future<void> reloadView() async {
+      setState(() {
+        widget.page = 1;
+        users.clear();
+        _hasMorePages = true;
+      });
+
+      fetchUsers();
+    }
 
   @override
   void initState() {
@@ -67,8 +76,20 @@ class _IndexManageUserState extends State<IndexManageUser> {
     fetchUsers();
   }
 
+  FileElement? getProfileFile(List<FileElement> files) {
+    return files.where((file) => file.attributes.type == 'profile').isNotEmpty
+        ? files.firstWhere((file) => file.attributes.type == 'profile')
+        : null;
+  }
+
   Future<void> fetchUsers() async {
     if (_isLoading || !_hasMorePages) return;
+
+    final id = await _storage.read(key: 'user') ?? '';
+
+    setState(() {
+      _id = int.parse(id);
+    });
 
     setState(() {
       _isLoading = true;
@@ -94,7 +115,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
       if (mounted) {
         if (response is UsersModel) {
           setState(() {
-            users.addAll(response.results.data);
+            users.addAll(response.results.data.where((user) => user.id != _id));
             _hasMorePages = response.next != null && response.next!.isNotEmpty;
           });
         } else {
@@ -143,7 +164,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
             groupData = response.data.map((datum) {
               return {
                 'name': datum.attributes.name,
-                'id': datum.id.toString(),
+                'id': datum.id,
               };
             }).toList();
           });
@@ -173,8 +194,8 @@ class _IndexManageUserState extends State<IndexManageUser> {
     }
   }
 
-  void _showChangeRoleDialog(BuildContext context, roles, userGroup) {
-    String? selectedRole;
+void _showChangeRoleDialog(BuildContext context, roles, userGroup, userId) {
+    int? selectedRole = userGroup;
 
     showDialog(
       context: context,
@@ -200,11 +221,12 @@ class _IndexManageUserState extends State<IndexManageUser> {
                   children: [
                     SelectBasic(
                       hintText: 'Roles',
-                      selectedValue: userGroup,
+                      selectedValue: selectedRole,
                       items: roles,
                       onChanged: (value) {
                         setState(() {
-                          selectedRole = value;
+                          selectedRole =
+                              value; // Actualiza selectedRole al cambiar
                         });
                       },
                     ),
@@ -228,10 +250,12 @@ class _IndexManageUserState extends State<IndexManageUser> {
                     ),
                     const SizedBox(width: 8),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (selectedRole != null) {
-                          // Aquí puedes manejar el rol seleccionado
-                          Navigator.of(context).pop();
+                          int groupId = selectedRole!;
+
+                          await _updateGroup(groupId, userId, context);
+                          Navigator.of(context).pop(); // Cerrar diálogo de cambio de rol
                         }
                       },
                       child: const Text(
@@ -251,11 +275,33 @@ class _IndexManageUserState extends State<IndexManageUser> {
     );
   }
 
-  FileElement? getProfileFile(List<FileElement> files) {
-    return files.where((file) => file.attributes.type == 'profile').isNotEmpty
-        ? files.firstWhere((file) => file.attributes.type == 'profile')
-        : null;
+  Future<void> _updateGroup(int groupId, int id, BuildContext context) async {
+    try {
+
+      var response = await GroupCommandUpdate(GroupUpdate()).execute(groupId, id);
+
+      if (response is SuccessResponse) {
+        reloadView();
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -267,20 +313,19 @@ class _IndexManageUserState extends State<IndexManageUser> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child:
-                _isInitialLoading
-                    ? CustomLoadingIndicator(color: AppColors.primaryBlue)
-                    : users.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No existen usuarios con ese nombre.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.black,
-                              ),
-                            ),
-                        )
-                      : ListView.builder(
+                child: _isInitialLoading
+                  ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
+                  : users.isEmpty
+                    ? const Center(
+                      child: Text(
+                        'No existen usuarios con ese nombre.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
                       controller: _scrollController,
                       itemCount: users.length,
                       itemBuilder: (context, index) {
@@ -299,13 +344,14 @@ class _IndexManageUserState extends State<IndexManageUser> {
                             );
                           },
                           onTap: () {
-                            String userGroup = user.relationships.groups[0].id.toString();
+                            int userGroup = user.relationships.groups[0].id;
+                            int userId = user.id;
 
                             showModalBottomSheet(
                               context: context,
                                 builder: (BuildContext context) {
                                   return UserOptionsModal(
-                                    showChangeRoleDialog: () => _showChangeRoleDialog(context, groupData, userGroup), // Pasar la función correctamente
+                                    showChangeRoleDialog: () => _showChangeRoleDialog(context, groupData, userGroup, userId), // Pasar la función correctamente
                                   );
                                 }, 
                             );

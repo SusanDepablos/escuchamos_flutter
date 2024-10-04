@@ -25,3 +25,31 @@ class GroupIndex {
     );
   }
 }
+
+class GroupUpdate {
+  Future<ServiceResponse> updateGroup(int groupId, int id) async {
+
+    final url = Uri.parse('${ApiUrl.baseUrl}user/update/admin/$id/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'group_id': groupId.toString(),
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}

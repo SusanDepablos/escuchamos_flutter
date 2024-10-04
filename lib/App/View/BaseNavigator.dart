@@ -35,8 +35,8 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   int? following;
   bool _isGroupOne = false;
   bool _isGroupTwo = false;
-  bool _isBottomNavVisible = true; // Controlador para la visibilidad del BottomNavigationBar
-  bool _isAppBarVisible = true; // Controlador para la visibilidad del AppBar
+  bool _isBottomNavVisible = true;
+  bool _isAppBarVisible = true;
 
   @override
   void initState() {
