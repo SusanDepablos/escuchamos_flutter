@@ -22,9 +22,11 @@ class _SearchFollowersState extends State<SearchFollowers> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
-      });
+      if (_searchController.text != _searchText) {
+        setState(() {
+          _searchText = _searchController.text;
+        });
+      }
     });
   }
 

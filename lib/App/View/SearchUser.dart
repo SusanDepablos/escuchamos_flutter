@@ -17,9 +17,11 @@ class _SearchViewState extends State<SearchView> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
-      });
+      if (_searchController.text != _searchText) {
+        setState(() {
+          _searchText = _searchController.text;
+        });
+      }
     });
   }
 
@@ -32,11 +34,11 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteapp, // Estilo de fondo
+      backgroundColor: AppColors.whiteapp,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Alineación
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20), // Espacio en la parte superior del SearchInput
+          const SizedBox(height: 20),
           SearchInput(
             input: _searchController,
             onSearch: () {

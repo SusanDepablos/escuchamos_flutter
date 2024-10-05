@@ -33,6 +33,34 @@ class _IndexUserState extends State<IndexUser> {
   bool _hasMorePages = true;
   bool _isInitialLoading = true;
 
+  void reloadView() {
+    setState(() {
+      widget.page = 1;
+      users.clear();
+      _hasMorePages = true;
+      _isInitialLoading = false;
+    });
+    fetchUsers();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          if (!_isLoading && _hasMorePages) {
+            setState(() {
+              widget.page++;
+              fetchUsers();
+            });
+          }
+        }
+      });
+    fetchUsers();
+  }
+
   Future<void> fetchUsers() async {
     if (_isLoading || !_hasMorePages) return;
 
@@ -88,40 +116,12 @@ class _IndexUserState extends State<IndexUser> {
       }
     } finally {
       if (mounted) {
-        // Desbloquear solicitudes después de completar la carga
         setState(() {
           _isLoading = false;
           _isInitialLoading = false;
         });
       }
     }
-  }
-
-  void reloadView() {
-    setState(() {
-      widget.page = 1;
-      users.clear();
-      _hasMorePages = true;
-    });
-    fetchUsers();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          if (!_isLoading && _hasMorePages) {
-            setState(() {
-              widget.page++;
-              fetchUsers();
-            });
-          }
-        }
-      });
-    fetchUsers();
   }
 
   @override

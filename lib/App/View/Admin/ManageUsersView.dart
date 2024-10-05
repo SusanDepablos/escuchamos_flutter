@@ -15,11 +15,13 @@ class _ManageUsersViewState extends State<ManageUsersView> {
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
+  _searchController.addListener(() {
+        if (_searchController.text != _searchText) {
+          setState(() {
+            _searchText = _searchController.text;
+          });
+        }
       });
-    });
   }
 
   @override
@@ -31,11 +33,11 @@ class _ManageUsersViewState extends State<ManageUsersView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteapp, // Estilo de fondo
+      backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        toolbarHeight: 50, // Ajusta según sea necesario
+        toolbarHeight: 50,
         title: const Text(
           'Administrar Usuarios',
           style: TextStyle(
@@ -47,9 +49,9 @@ class _ManageUsersViewState extends State<ManageUsersView> {
       ),
 
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Alineación
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 10), // Espacio en la parte superior del SearchInput
+          const SizedBox(height: 10),
           SearchInput(
             input: _searchController,
             onSearch: () {

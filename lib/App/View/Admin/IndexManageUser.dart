@@ -52,8 +52,8 @@ class _IndexManageUserState extends State<IndexManageUser> {
         widget.page = 1;
         users.clear();
         _hasMorePages = true;
+        _isInitialLoading = false;
       });
-
       fetchUsers();
     }
 

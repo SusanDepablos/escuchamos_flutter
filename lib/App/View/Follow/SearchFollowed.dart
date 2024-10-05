@@ -21,9 +21,11 @@ class _SearchFollowedState extends State<SearchFollowed> {
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
-      });
+      if (_searchController.text != _searchText) {
+        setState(() {
+          _searchText = _searchController.text;
+        });
+      }
     });
   }
 

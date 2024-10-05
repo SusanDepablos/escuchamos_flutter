@@ -39,6 +39,35 @@ class _IndexReactionsState extends State<IndexReactions> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
+  bool _isInitialLoading = true;
+
+  void reloadView() {
+    setState(() {
+      widget.page = 1;
+      reactions.clear();
+      _hasMorePages = true;
+      _isInitialLoading = false;
+    });
+    fetchReactions();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          if (!_isLoading && _hasMorePages) {
+            setState(() {
+              widget.page++;
+              fetchReactions();
+            });
+          }
+        }
+      });
+    fetchReactions();
+  }
 
   Future<void> fetchReactions() async {
     if (_isLoading || !_hasMorePages) return;
@@ -46,6 +75,12 @@ class _IndexReactionsState extends State<IndexReactions> {
     setState(() {
       _isLoading = true;
     });
+    
+    if (_isInitialLoading) {
+      setState(() {
+        _isInitialLoading = true;
+      });
+    }
 
     filters['page'] = widget.page.toString();
     filters['object_id'] = widget.objectId.toString();
@@ -89,36 +124,10 @@ class _IndexReactionsState extends State<IndexReactions> {
       if (mounted) {
         setState(() {
           _isLoading = false;
+          _isInitialLoading = false;
         });
       }
     }
-  }
-
-  void reloadView() {
-    setState(() {
-      widget.page = 1;
-      reactions.clear();
-      _hasMorePages = true;
-    });
-    fetchReactions();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          if (!_isLoading && _hasMorePages) {
-            setState(() {
-              widget.page++;
-              fetchReactions();
-            });
-          }
-        }
-      });
-    fetchReactions();
   }
 
   @override
@@ -154,7 +163,7 @@ class _IndexReactionsState extends State<IndexReactions> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: _isLoading
+              child: _isInitialLoading
                 ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
                 : reactions.isEmpty
                   ? const Center(

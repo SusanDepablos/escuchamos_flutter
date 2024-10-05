@@ -36,6 +36,34 @@ class _IndexFollowedState extends State<IndexFollowed> {
   bool _hasMorePages = true;
   bool _isInitialLoading = true;
 
+  void reloadView() {
+    setState(() {
+      widget.page = 1;
+      followed.clear();
+      _hasMorePages = true;
+      _isInitialLoading = false;
+    });
+    fetchfollowed();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          if (!_isLoading && _hasMorePages) {
+            setState(() {
+              widget.page++;
+              fetchfollowed();
+            });
+          }
+        }
+      });
+    fetchfollowed();
+  }
+
   Future<void> fetchfollowed() async {
     if (_isLoading || !_hasMorePages) return;
 
@@ -98,34 +126,6 @@ class _IndexFollowedState extends State<IndexFollowed> {
         });
       }
     }
-  }
-
-
-  void reloadView() {
-    setState(() {
-      widget.page = 1;
-      followed.clear();
-      _hasMorePages = true;
-    });
-    fetchfollowed();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
-          if (!_isLoading && _hasMorePages) {
-            setState(() {
-              widget.page++;
-              fetchfollowed();
-            });
-          }
-        }
-      });
-    fetchfollowed();
   }
 
   @override
