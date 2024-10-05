@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 // import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
@@ -193,8 +194,8 @@ class _IndexManageUserState extends State<IndexManageUser> {
       }
     }
   }
-
-void _showChangeRoleDialog(BuildContext context, roles, userGroup, userId) {
+  
+  void _showChangeRoleDialog(BuildContext context, roles, userGroup, userId) {
     int? selectedRole = userGroup;
 
     showDialog(
@@ -203,71 +204,25 @@ void _showChangeRoleDialog(BuildContext context, roles, userGroup, userId) {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return AlertDialog(
-              title: Container(
-                alignment: Alignment.center,
-                child: const Text(
-                  'Administrar rol',
-                  style: TextStyle(
-                    fontSize: AppFond.title,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.black,
-                  ),
-                ),
+            return CustomDialog(
+              title: 'Administrar rol',
+              content: 'Selecciona un nuevo rol para el usuario:',
+              selectWidget: SelectBasic(
+                hintText: 'Roles',
+                selectedValue: selectedRole,
+                items: roles,
+                onChanged: (value) {
+                  setState(() {
+                    selectedRole = value; // Actualiza selectedRole al cambiar
+                  });
+                },
               ),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SelectBasic(
-                      hintText: 'Roles',
-                      selectedValue: selectedRole,
-                      items: roles,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedRole =
-                              value; // Actualiza selectedRole al cambiar
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Cerrar diálogo
-                      },
-                      child: const Text(
-                        'Cancelar',
-                        style: TextStyle(
-                            color: AppColors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: () async {
-                        if (selectedRole != null) {
-                          int groupId = selectedRole!;
-
-                          await _updateGroup(groupId, userId, context);
-                          Navigator.of(context).pop(); // Cerrar diálogo de cambio de rol
-                        }
-                      },
-                      child: const Text(
-                        'Aceptar',
-                        style: TextStyle(
-                            color: AppColors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              onAccept: () async {
+                if (selectedRole != null) {
+                  int groupId = selectedRole!;
+                  await _updateGroup(groupId, userId, context); // Función para actualizar grupo
+                }
+              },
             );
           },
         );

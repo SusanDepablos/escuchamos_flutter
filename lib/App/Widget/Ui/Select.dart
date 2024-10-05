@@ -29,6 +29,7 @@ class SelectBasic extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int?>(
+          dropdownColor: AppColors.whiteapp,
           // Cambiado a int
           value: selectedValue,
           hint: selectedValue == null
