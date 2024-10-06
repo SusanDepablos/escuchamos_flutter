@@ -705,7 +705,7 @@ void updateCommentPopup(
                                       profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
                                       onProfileTap: () {
                                         int userId = comment.relationships.user.id;
-                                        Navigator.pushNamed(context, 'profile', arguments: userId);
+                                        Navigator.pushNamed(context, 'profile', arguments: {'showShares': false, 'userId': userId},);
                                       },
                                       onResponseTap: () {
                                         int commentId = comment.id;

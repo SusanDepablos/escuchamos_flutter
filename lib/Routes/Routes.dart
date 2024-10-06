@@ -63,8 +63,10 @@ class AppRoutes {
     // Pantallas de perfil y configuración de usuario
     'edit-profile': (context) => EditProfile(),
     'profile': (context) {
-      final userId = ModalRoute.of(context)!.settings.arguments as int; // Extrae el ID
-      return Profile(userId: userId); // Pásalo a la vista
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final showShares = args['showShares'] as bool; // Extrae el ID
+      final userId = args['userId'] as int; // Extrae el ID
+      return Profile(showShares: showShares, userId: userId); // Pásalo a la vista
     },
 
     'user-change-password': (context) => UserChangePassword(),

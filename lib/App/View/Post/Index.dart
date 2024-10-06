@@ -650,7 +650,7 @@ class _IndexPostState extends State<IndexPost> {
                                 Navigator.pushNamed(
                                   context,
                                   'profile',
-                                  arguments: userId,
+                                  arguments: {'showShares': false, 'userId': userId},
                                 ).then((_) {
                                   postId_ = post.id;
                                   _callPost();
@@ -728,7 +728,7 @@ class _IndexPostState extends State<IndexPost> {
                                 Navigator.pushNamed(
                                   context,
                                   'profile',
-                                  arguments: userId,
+                                  arguments: {'showShares': false, 'userId': userId},
                                 ).then((_) {
                                   postId_ = post.id;
                                   _callPost();

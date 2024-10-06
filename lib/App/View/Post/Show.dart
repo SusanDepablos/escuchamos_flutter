@@ -443,7 +443,7 @@ class _ShowState extends State<Show> {
                             Navigator.pushNamed(
                               context,
                               'profile',
-                              arguments: _userId,
+                              arguments: {'showShares': false, 'userId': _userId},
                             ).then((_) {
                               _callPost();
                             });

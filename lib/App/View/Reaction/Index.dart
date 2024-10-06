@@ -190,7 +190,7 @@ class _IndexReactionsState extends State<IndexReactions> {
                         Navigator.pushNamed(
                           context,
                           'profile',
-                          arguments: userId,
+                          arguments: {'showShares': false, 'userId': userId},
                         );
                       },
                     );

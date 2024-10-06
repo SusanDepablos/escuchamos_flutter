@@ -26,7 +26,8 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.d
 
 class Profile extends StatefulWidget {
   final int userId;
-  Profile({required this.userId});
+  final bool showShares;
+  Profile({required this.showShares, required this.userId});
 
   @override
   _UpdateState createState() => _UpdateState();
@@ -441,9 +442,9 @@ class _UpdateState extends State<Profile> {
                                   context,
                                   'navigator-follow',
                                   arguments: {
-                                    'userId': widget.userId.toString(),
+                                    'userId': widget.userId,
                                     'initialTab':
-                                        'follower', // Reemplaza con el ID del usuario seguido
+                                    'follower', // Reemplaza con el ID del usuario seguido
                                   },
                                 );
 
@@ -472,7 +473,7 @@ class _UpdateState extends State<Profile> {
                                   context,
                                   'navigator-follow',
                                   arguments: {
-                                    'userId': widget.userId.toString(),
+                                    'userId': widget.userId,
                                     'initialTab':
                                         'followed', // Reemplaza con el ID del usuario seguido
                                   },
@@ -495,8 +496,7 @@ class _UpdateState extends State<Profile> {
             ),
             SliverFillRemaining(
               child: NavigatorUser(
-                initialTab:
-                    'posts', // O 'shares', según la lógica que necesites
+                initialTab: widget.showShares ? 'shares' : 'posts', // Muestra 'shares' o 'posts' según la condición
                 userId: widget.userId,
               ),
             ),

@@ -171,7 +171,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
                         Navigator.pushNamed(
                           context,
                           'profile',
-                          arguments: userId,
+                          arguments: {'showShares': false, 'userId': userId},
                         );
                       },
                     );

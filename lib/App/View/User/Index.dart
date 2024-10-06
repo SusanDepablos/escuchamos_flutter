@@ -173,7 +173,7 @@ class _IndexUserState extends State<IndexUser> {
                             Navigator.pushNamed(
                               context,
                               'profile',
-                              arguments: userId, // Pasa el ID como argumento
+                              arguments: {'showShares': false, 'userId': userId}, // Pasa el ID como argumento
                             );
                           },
                         );

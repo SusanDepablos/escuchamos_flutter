@@ -404,7 +404,7 @@ void updateCommentPopup(
                           onProfileTap: () {
                             int userId = _comment!.data.relationships.user.id;
                             Navigator.pushNamed(context, 'profile',
-                                arguments: userId);
+                              arguments: {'showShares': false, 'userId': userId},);
                           },
                           
                           onNumberLikeTap: () {

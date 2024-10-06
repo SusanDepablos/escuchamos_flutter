@@ -295,7 +295,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
                             Navigator.pushNamed(
                               context,
                               'profile',
-                              arguments: userId,
+                              arguments: {'showShares': false, 'userId': userId},
                             );
                           },
                           onTap: () {

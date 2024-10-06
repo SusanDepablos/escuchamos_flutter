@@ -247,6 +247,8 @@ class _IndexShareState extends State<IndexShare> {
                         itemBuilder: (context, index) {
                           final share = shares[index];
                           String name = share.relationships.user.name;
+                          int userId = share.relationships.user.id;
+                          bool showShares = true;
                           String? profilePhotoUserShare = share.relationships.user.profilePhotoUrl;
                           DateTime createdAt = share.attributes.createdAt;
                           final mediaUrls = share.relationships.post.relationships.files.map((file) => file.attributes.url).toList();
@@ -264,67 +266,102 @@ class _IndexShareState extends State<IndexShare> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                      int userId = share.relationships.user.id;
-                                        Navigator.pushNamed(
-                                          context,
-                                          'profile',
-                                          arguments: userId,
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          ProfileAvatar(
-                                            imageProvider: profilePhotoUserShare != null && profilePhotoUserShare.isNotEmpty
-                                                ? NetworkImage(profilePhotoUserShare)
-                                                : null,
-                                            avatarSize: 22.0,
-                                            showBorder: false,
-                                            onPressed: () {
-                                              int userId = share.relationships.user.id;
-                                              Navigator.pushNamed(
-                                                context,
-                                                'profile',
-                                                arguments: userId,
-                                              );
-                                            }, // Puedes mantener esta función o manejarla en el GestureDetector
-                                          ),
-                                          Container(
-                                            constraints: const BoxConstraints(maxWidth: 140),
-                                            child: Text(
-                                              name,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
+                                Visibility(
+                                  visible:userId != _id, // Mostrar solo si el userId es diferente al _id
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            'profile',
+                                            arguments: {
+                                              'showShares': showShares, // Coloca las claves entre comillas
+                                              'userId': userId,
+                                            },
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            ProfileAvatar(
+                                              imageProvider: profilePhotoUserShare != null && profilePhotoUserShare.isNotEmpty
+                                                  ? NetworkImage(profilePhotoUserShare)
+                                                  : null,
+                                              avatarSize: 22.0,
+                                              showBorder: false,
+                                              onPressed: () {
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  'profile',
+                                                  arguments: {
+                                                    'showShares': showShares, // Coloca las claves entre comillas
+                                                    'userId': userId,
+                                                  },
+                                                );
+                                              },
                                             ),
-                                          ),
-                                        ],
+                                            Container(
+                                              constraints: const BoxConstraints(maxWidth: 140),
+                                              child: Text(
+                                                name,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      _formatDate(createdAt),
-                                      style: const TextStyle(
-                                        color: AppColors.grey,
-                                        fontSize: 14,
+                                      const Spacer(),
+                                      Text(
+                                        _formatDate(createdAt),
+                                        style: const TextStyle(
+                                          color: AppColors.grey,
+                                          fontSize: 14,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                                const Text(
-                                  'Ha compartido esta publicación',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontStyle: FontStyle.italic,
-                                    color: AppColors.grey
+                                Visibility(
+                                  visible:userId != _id, // Mostrar solo si el userId es diferente al _id
+                                  child: const Text(
+                                    'Ha compartido esta publicación',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontStyle: FontStyle.italic,
+                                      color: AppColors.grey,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 10), // Espacio entre la foto y el texto
+                                Visibility(
+                                  visible: userId == _id, // Mostrar solo si el userId es igual al _id
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Haz compartido esta publicación',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontStyle: FontStyle.italic,
+                                          color: AppColors.grey,
+                                        ),
+                                      ),
+                                      Text(
+                                        _formatDate(createdAt),
+                                        style: const TextStyle(
+                                          color: AppColors.grey,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (userId == _id)
+                                  const SizedBox(height: 10), // Espacio entre la foto y el texto
                                 PostWidgetInternal(
                                   nameUser: share.relationships.post.relationships.user.name,
                                   usernameUser: share.relationships.post.relationships.user.username,
