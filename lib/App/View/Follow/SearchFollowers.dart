@@ -5,7 +5,7 @@ import 'package:escuchamos_flutter/App/View/Follow/IndexFollowers.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 class SearchFollowers extends StatefulWidget {
-  String followedUserId;
+  int followedUserId;
 
   SearchFollowers(
     {required this.followedUserId});

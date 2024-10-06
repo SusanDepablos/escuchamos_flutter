@@ -10,7 +10,7 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 
 class NavigatorFollow extends StatefulWidget {
   final String initialTab;
-  final String userId;
+  final int userId;
 
   NavigatorFollow({required this.initialTab, required this.userId});
 
@@ -25,9 +25,10 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
   String? username;
   int? followers;
   int? following;
+  bool _isUserCalled = false;
 
   Future<void> _callUser() async {
-    final id = int.parse(widget.userId);
+    final id = widget.userId;
     final userCommand = UserCommandShow(UserShow(), id);
 
     try {
@@ -64,6 +65,10 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
           ),
         );
       }
+    } finally {
+      setState(() {
+        _isUserCalled = true;
+      });
     }
   }
 
@@ -157,12 +162,14 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
             ),
           ),
         ),
-        body: TabBarView(
-          children: [
-            SearchFollowers(followedUserId: widget.userId),
-            SearchFollowed(followingUserId: widget.userId),
-          ],
-        ),
+        body: _isUserCalled
+          ? TabBarView(
+              children: [
+                SearchFollowers(followedUserId: widget.userId),
+                SearchFollowed(followingUserId: widget.userId),
+              ],
+            )
+          : Container(),
       ),
     );
   }

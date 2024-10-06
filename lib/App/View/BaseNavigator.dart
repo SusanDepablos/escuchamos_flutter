@@ -24,11 +24,11 @@ class BaseNavigator extends StatefulWidget {
 class _BaseNavigatorState extends State<BaseNavigator> {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
   List<dynamic> _groups = [];
   UserModel? _user;
-  String _id = '';
+  int _id = 0;
   String? name;
   String? username;
   int? followers;
@@ -38,46 +38,50 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   bool _isBottomNavVisible = true;
   bool _isAppBarVisible = true;
 
+  Future<void> _initializeData() async {
+    await _callUser();
+    await _getData();
+  }
+
   @override
   void initState() {
     super.initState();
-    _getData();
-    _callUser();
+    _initializeData();
   }
 
-  void reloadView(){
-    _callUser();
+  void reloadView() {
+    _initializeData();
   }
 
   Future<void> _getData() async {
-    final id = await _storage.read(key: 'user') ?? '';
-    final groupsString = await _storage.read(key: 'groups') ?? '[]';
-    final groups = (groupsString.isNotEmpty)
-        ? List<dynamic>.from(json.decode(groupsString))
-        : [];
+      final id = await _storage.read(key: 'user') ?? '';
+      final groupsString = await _storage.read(key: 'groups') ?? '[]';
+      final groups = (groupsString.isNotEmpty)
+                   ? List<dynamic>.from(json.decode(groupsString))
+                   : [];
 
-    setState(() {
-      _id = id;
-      _groups = groups;
-      if (groups.contains(1)) {
-        _isGroupOne = true;
-      } else if (groups.contains(2)) {
-        _isGroupTwo = true;
-      }
-      ;
-    });
-  }
+      setState(() {
+        _id = int.parse(id);
+        _groups = groups;
+        if (groups.contains(1)) {
+          _isGroupOne = true;
+        } else if (groups.contains(2)) {
+          _isGroupTwo = true;
+        }
+      });
+    }
 
   Future<void> _callUser() async {
-    final user = await _storage.read(key: 'user') ?? '0';
-    final id = int.parse(user);
-    final userCommand = UserCommandShow(UserShow(), id);
+
+    final id = await _storage.read(key: 'user') ?? '';
+    final userCommand = UserCommandShow(UserShow(), int.parse(id));
 
     try {
       final response = await userCommand.execute();
 
       if (mounted) {
         if (response is UserModel) {
+          await _storage.delete(key: 'groups');
           setState(() {
             _user = response;
             name = _user!.data.attributes.name;
@@ -85,6 +89,10 @@ class _BaseNavigatorState extends State<BaseNavigator> {
             followers = _user!.data.relationships.followersCount;
             following = _user!.data.relationships.followingCount;
           });
+          final groupId = _user!.data.relationships.groups[0].id;
+          List<int> group = [groupId];
+          await _storage.write(key: 'groups', value: json.encode(group));
+
         } else {
           showDialog(
             context: context,
@@ -174,6 +182,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
           imageProvider: imageProvider,
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
+            reloadView();
           },
         ),
         title: Row(
@@ -193,8 +202,8 @@ class _BaseNavigatorState extends State<BaseNavigator> {
         following: following ?? 0,
         imageProvider: imageProvider,
         onProfileTap: () async {
-          if (_id.isNotEmpty) {
-            final userId = int.parse(_id); // Convierte el ID a int si es necesario
+          if (_id != 0) {
+            final userId = _id; // Convierte el ID a int si es necesario
             await Navigator.pushNamed(
               context, 
               'profile', 
@@ -204,6 +213,10 @@ class _BaseNavigatorState extends State<BaseNavigator> {
           }
         },
         
+        onHorizontalDragTap: () async {
+          reloadView();
+        },
+
         onSettingsTap: () async {
           final result = await Navigator.pushNamed(context, 'settings');
           reloadView();
@@ -263,7 +276,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: _id.isEmpty && _groups.isEmpty
+              child: _id != 0 && _groups.isEmpty
                   ? Center(child: CustomLoadingIndicator(color: AppColors.primaryBlue))
                   : _views[_currentIndex],
             ),

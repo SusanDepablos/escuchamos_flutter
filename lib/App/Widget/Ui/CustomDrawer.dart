@@ -12,11 +12,12 @@ class CustomDrawer extends StatelessWidget {
   final ImageProvider? imageProvider;
   final Future<void> Function()? onProfileTap;
   final Future<void> Function()? onContentModerationTap;
-    final Future<void> Function()? onAdminUserTap;
+  final Future<void> Function()? onAdminUserTap;
   final Future<void> Function()? onSettingsTap;
   final Future<void> Function()? onAboutTap;
   final Future<void> Function()? onFollowersTap;
   final Future<void> Function()? onFollowedTap;
+  final Future<void> Function()? onHorizontalDragTap;
   final bool showContentModeration; 
   final bool showAdminUser;
   CustomDrawer({
@@ -33,47 +34,59 @@ class CustomDrawer extends StatelessWidget {
     this.onAboutTap,
     this.onFollowersTap,
     this.onFollowedTap,
+    this.onHorizontalDragTap,
     this.showContentModeration = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.85,
-      child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.whiteapp, // Color de fondo del Drawer
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(16.0), // Redondea solo la esquina superior derecha
-            bottomRight: Radius.circular(16.0), // Redondea solo la esquina inferior derecha
-          ),
-          border: Border(
-            right: BorderSide(
-              width: 2, // Ancho del borde con gradiente
-              color: Colors.transparent, // Usamos color transparente aquí
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) {
+        if (details.delta.dx > 0) {
+          onHorizontalDragTap;
+          Scaffold.of(context).openDrawer();
+        }
+      },
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.85,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: AppColors.whiteapp, // Color de fondo del Drawer
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(
+                  16.0), // Redondea solo la esquina superior derecha
+              bottomRight: Radius.circular(
+                  16.0), // Redondea solo la esquina inferior derecha
+            ),
+            border: Border(
+              right: BorderSide(
+                width: 2, // Ancho del borde con gradiente
+                color: Colors.transparent, // Usamos color transparente aquí
+              ),
+            ),
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primaryBlue,
+                AppColors.deepPurple,
+                AppColors.errorRed
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primaryBlue,
-              AppColors.deepPurple,
-              AppColors.errorRed
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Drawer(
-          child: Container(
-            color: AppColors.whiteapp, // Color de fondo del contenido del Drawer
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildHeader(),
-                _buildBody(context),
-                Expanded(child: Container()),
-                _buildFooter(context),
-              ],
+          child: Drawer(
+            child: Container(
+              color:
+                  AppColors.whiteapp, // Color de fondo del contenido del Drawer
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildHeader(),
+                  _buildBody(context),
+                  Expanded(child: Container()),
+                  _buildFooter(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -228,7 +241,7 @@ class CustomDrawer extends StatelessWidget {
           if (showAdminUser)
             _buildListTile(
               icon: MaterialIcons.group,
-              title: 'Administrar Usurios',
+              title: 'Administrar Usuarios',
               onTap: onAdminUserTap,
             ),
         ],
