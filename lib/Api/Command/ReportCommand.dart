@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 //Api support
 import 'dart:io';
-import 'package:escuchamos_flutter/Api/Model/ReportModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/Api/Service/ReportService.dart';

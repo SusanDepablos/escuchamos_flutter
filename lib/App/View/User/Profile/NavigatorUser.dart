@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/View/Share/Index.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de que los colores estén definidos en este archivo
 import 'package:escuchamos_flutter/App/View/Post/Index.dart';
@@ -58,8 +59,7 @@ class _NavigatorUserState extends State<NavigatorUser> {
               child: TabBarView(
                 children: [
                   IndexPost(userId: widget.userId),
-                  Center(child: Text('Contenido Compartidos')),
-                  // SearchFollowed(followingUserId: widget.userId),
+                  IndexShare(userId: widget.userId),
                 ],
               ),
             ),

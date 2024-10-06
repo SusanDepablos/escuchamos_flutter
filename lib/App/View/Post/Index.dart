@@ -173,9 +173,11 @@ class _IndexPostState extends State<IndexPost> {
             setState(() {
               _post = response;
               String? body =_post!.data.attributes.body;
+              int totalSharesCount =_post!.data.relationships.totalSharesCount;
               for (var post in posts) {
                 if (post.attributes.postId == postId_ && post.relationships.post != null) {
                   post.relationships.post!.attributes.body = body;
+                  post.relationships.post!.relationships.totalSharesCount = totalSharesCount;
               }
               // Encontrar el índice del post comparando con `post.id == postId_`
               int postIndex = posts.indexWhere((post) => post.id == postId_);
@@ -189,6 +191,9 @@ class _IndexPostState extends State<IndexPost> {
 
                 posts[postIndex].attributes.body = 
                     _post!.data.attributes.body;
+
+                posts[postIndex].relationships.totalSharesCount= 
+                    _post!.data.relationships.totalSharesCount;
                 }
 
                 final bool userLikedPost = _post!.data.relationships.reactions
@@ -567,7 +572,9 @@ class _IndexPostState extends State<IndexPost> {
   Future<void> _postShare(int postId,  BuildContext context) async {
     try {
       var response =  await ShareCommandPost(SharePost()).execute(postId);
-      if (response is SuccessResponse) {
+      postId_ = postId;
+        if (response is SuccessResponse) {
+        _callPost();
         await showDialog(
           context: context,
           builder: (context) => AutoClosePopup(
@@ -676,9 +683,9 @@ class _IndexPostState extends State<IndexPost> {
                               body: post.attributes.body,
                               mediaUrls: mediaUrls,
                               createdAt: post.attributes.createdAt,
-                              reactionsCount: post.relationships.reactionsCount.toString(),
-                              commentsCount: post.relationships.commentsCount.toString(),
-                              sharesCount: post.relationships.totalSharesCount.toString(),
+                              reactionsCount: post.relationships.reactionsCount,
+                              commentsCount: post.relationships.commentsCount,
+                              totalSharesCount: post.relationships.totalSharesCount,
                               authorId: post.relationships.user.id,
                               currentUserId: _id!,
                               onDeleteTap: () {
@@ -753,9 +760,9 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               body: post.attributes.body,
                               createdAt: post.attributes.createdAt,
-                              reactionsCount: post.relationships.reactionsCount.toString(),
-                              commentsCount: post.relationships.commentsCount.toString(),
-                              sharesCount: post.relationships.totalSharesCount.toString(),
+                              reactionsCount: post.relationships.reactionsCount,
+                              commentsCount: post.relationships.commentsCount,
+                              totalSharesCount: post.relationships.post!.relationships.totalSharesCount,
                               authorId: post.relationships.user.id,
                               currentUserId: _id!,
                               onDeleteTap: () {
@@ -774,13 +781,11 @@ class _IndexPostState extends State<IndexPost> {
                               mediaUrlsRepost: mediaUrlsRepost,
                               onPostTap: (){ 
                                 int postId = post.relationships.post!.id;
-                                int idPost = post.id;
                                 Navigator.pushNamed(
                                   context,
                                   'show-post',
                                   arguments: {
                                     'id': postId,
-                                    'idPost':idPost,
                                   }
                                   ).then((_) {
                                   postId_ = post.relationships.post!.id;

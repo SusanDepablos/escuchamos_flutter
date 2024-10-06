@@ -150,9 +150,8 @@ class AppRoutes {
     'show-post': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final id = args['id'] as int;
-      final idPost = args['idPost'] as int;
       return Show(
-          id: id, idPost: idPost);
+          id: id);
     },
 
     'new-post': (context) => NewPost(),

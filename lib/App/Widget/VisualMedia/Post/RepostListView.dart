@@ -44,9 +44,9 @@ class RepostWidget extends StatelessWidget {
   final VoidCallback? onDeleteTap;
   final bool reaction;
   final DateTime createdAt;
-  final String reactionsCount;
-  final String commentsCount;
-  final String sharesCount;
+  final int reactionsCount;
+  final int commentsCount;
+  final int totalSharesCount;
   final String? body;
   final int authorId;
   final int currentUserId;
@@ -77,9 +77,9 @@ class RepostWidget extends StatelessWidget {
     this.onIndexLikeTap,
     this.onLikeTap,
     this.onProfileTap,
-    this.reactionsCount = '120',
-    this.commentsCount = '45',
-    this.sharesCount = '30',
+    this.reactionsCount = 0,
+    this.commentsCount = 0,
+    this.totalSharesCount = 0,
     this.body,
     required this.authorId,
     required this.currentUserId,
@@ -212,8 +212,8 @@ class RepostWidget extends StatelessWidget {
         margin: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          top: 8.0,
-          bottom: 8.0,
+          top: 12.0,
+          bottom: 12.0,
         ),
         decoration: BoxDecoration(
           color: AppColors.greyLigth,
@@ -329,7 +329,7 @@ class RepostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: onIndexLikeTap,
                           child: Text(
-                            reactionsCount,
+                            reactionsCount.toString(),
                             style: const TextStyle(
                               color: AppColors.grey,
                               fontSize: 18,
@@ -354,7 +354,7 @@ class RepostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: onIndexCommentTap,
                           child: Text(
-                            commentsCount,
+                            commentsCount.toString(),
                             style: const TextStyle(
                               color: AppColors.grey,
                               fontSize: 18,
@@ -377,7 +377,7 @@ class RepostWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          sharesCount,
+                          totalSharesCount.toString(),
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 18,
@@ -406,6 +406,8 @@ class PostWidgetInternal extends StatelessWidget {
   final List<String>? mediaUrls;
   final VoidCallback onTap;
   final VoidCallback? onProfileTap;
+  final Color? color;
+  final EdgeInsetsGeometry? margin;
 
   const PostWidgetInternal({
     Key? key,
@@ -417,6 +419,8 @@ class PostWidgetInternal extends StatelessWidget {
     this.mediaUrls,
     required this.onTap,
     this.onProfileTap,
+    this.color,
+    this.margin,
   }) : super(key: key);
 
   @override
@@ -424,15 +428,15 @@ class PostWidgetInternal extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(
+        margin: margin ?? const EdgeInsets.only(
           left: 0,
           right: 0,
           top: 16.0,
           bottom: 16.0,
         ),
-        padding: const EdgeInsets.all(12.0),
+        padding:const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
-          color: AppColors.whiteapp,
+          color: color ?? AppColors.whiteapp,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: AppColors.whiteapp, // Color del borde

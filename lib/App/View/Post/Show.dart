@@ -26,9 +26,8 @@ FlutterSecureStorage _storage = FlutterSecureStorage();
 
 class Show extends StatefulWidget {
   final int id;
-  final int idPost;
 
-  Show({required this.id, required this.idPost});
+  Show({required this.id});
 
   @override
   _ShowState createState() => _ShowState();
@@ -44,9 +43,9 @@ class _ShowState extends State<Show> {
   String? _body;
   DateTime? _createdAt;
   List<String>? _mediaUrls;
-  String? _reactionsCount;
-  String? _commentsCount;
-  String? _totalSharesCount;
+  int? _reactionsCount;
+  int? _commentsCount;
+  int? _totalSharesCount;
   bool? _reaction;
   bool _submitting = false;
 
@@ -94,9 +93,9 @@ class _ShowState extends State<Show> {
             _body = _post?.data.attributes.body;
             _createdAt = _post?.data.attributes.createdAt;
             _mediaUrls = _post?.data.relationships.files.map((file) => file.attributes.url).toList();
-            _reactionsCount = _post?.data.relationships.reactionsCount.toString();
-            _commentsCount = _post?.data.relationships.commentsCount.toString();
-            _totalSharesCount = _post?.data.relationships.totalSharesCount.toString();
+            _reactionsCount = _post?.data.relationships.reactionsCount;
+            _commentsCount = _post?.data.relationships.commentsCount;
+            _totalSharesCount = _post?.data.relationships.totalSharesCount;
             _reaction = _post?.data.relationships.reactions.any((reaction) => reaction.attributes.userId == _id) ?? false;
           });
         } else {
@@ -474,9 +473,9 @@ class _ShowState extends State<Show> {
                           body: _body,
                           mediaUrls: _mediaUrls,
                           createdAt: _createdAt!,
-                          reactionsCount: _reactionsCount.toString(),
-                          commentsCount: _commentsCount.toString(),
-                          sharesCount: _totalSharesCount.toString(),
+                          reactionsCount: _reactionsCount ?? 0,
+                          commentsCount: _commentsCount ?? 0,
+                          totalSharesCount: _totalSharesCount ?? 0,
                           authorId: _userId!,
                           currentUserId: _id!,
                           onDeleteTap: () {_deletePost();},

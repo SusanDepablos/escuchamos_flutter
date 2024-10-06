@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-class ShareService {
+class ShareIndex {
   Future<ServiceResponse> fetchData(Map<String, String?> filters) async {
 
     var uri = Uri.parse('${ApiUrl.baseUrl}share/');

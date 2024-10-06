@@ -20,9 +20,9 @@ class PostWidget extends StatelessWidget {
   final bool reaction;
   final DateTime createdAt;
 
-  final String reactionsCount;
-  final String commentsCount;
-  final String sharesCount;
+  final int reactionsCount;
+  final int commentsCount;
+  final int totalSharesCount;
 
   final String? body;
   final List<String>? mediaUrls;
@@ -43,9 +43,9 @@ class PostWidget extends StatelessWidget {
     this.onIndexLikeTap,
     this.onLikeTap,
     this.onProfileTap,
-    this.reactionsCount = '120',
-    this.commentsCount = '45',
-    this.sharesCount = '30',
+    this.reactionsCount = 0,
+    this.commentsCount = 0,
+    this.totalSharesCount = 0,
     this.body,
     this.mediaUrls,
     required this.authorId,
@@ -306,7 +306,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: onIndexLikeTap,
                           child: Text(
-                            reactionsCount,
+                            reactionsCount.toString(),
                             style: const TextStyle(
                               color: AppColors.grey,
                               fontSize: 18,
@@ -331,7 +331,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: onIndexCommentTap,
                           child: Text(
-                            commentsCount,
+                            commentsCount.toString(),
                             style: const TextStyle(
                               color: AppColors.grey,
                               fontSize: 18,
@@ -354,7 +354,7 @@ class PostWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          sharesCount,
+                          totalSharesCount.toString(),
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 18,
