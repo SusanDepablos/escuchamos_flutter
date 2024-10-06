@@ -13,7 +13,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.d
 class IndexFollowed extends StatefulWidget {
   String? searchfollowed_;
   int page = 1;
-  String followingUserId;
+  int followingUserId;
   VoidCallback? onFetchFollowers;
 
   IndexFollowed({this.searchfollowed_, this.onFetchFollowers, required this.followingUserId});
@@ -41,7 +41,7 @@ class _IndexFollowedState extends State<IndexFollowed> {
       widget.page = 1;
       followed.clear();
       _hasMorePages = true;
-      _isInitialLoading = false;
+      _isInitialLoading = true;
     });
     fetchfollowed();
   }
@@ -73,7 +73,7 @@ class _IndexFollowedState extends State<IndexFollowed> {
 
     if (_isInitialLoading) {
       setState(() {
-        _isInitialLoading = true; // Iniciar carga
+        _isInitialLoading = true;
       });
     }
 

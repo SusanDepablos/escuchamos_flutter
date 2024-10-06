@@ -4,7 +4,7 @@ import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de q
 import 'package:escuchamos_flutter/App/View/Follow/IndexFollowed.dart';
 
 class SearchFollowed extends StatefulWidget {
-  String followingUserId;
+  int followingUserId;
 
   SearchFollowed(
     {required this.followingUserId});
@@ -42,7 +42,7 @@ class _SearchFollowedState extends State<SearchFollowed> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start, // Alineación
         children: [
-          const SizedBox(height: 20), // Espacio en la parte superior del SearchInput
+          const SizedBox(height: 20),
           SearchInput(
             input: _searchController,
             onSearch: () {
@@ -66,8 +66,7 @@ class _SearchFollowedState extends State<SearchFollowed> {
                     snapshot.hasData) {
                   return snapshot.data!;
                 } else {
-                  return const SizedBox
-                    .shrink(); // Muestra un widget vacío mientras no haya datos.
+                  return const SizedBox .shrink(); // Muestra un widget vacío mientras no haya datos.
                 }
               },
 
@@ -84,5 +83,4 @@ class _SearchFollowedState extends State<SearchFollowed> {
       followingUserId: widget.followingUserId,
     );
   }
-
 }

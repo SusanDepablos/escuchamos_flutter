@@ -90,7 +90,7 @@ class AppRoutes {
     // Pantallas de seguidores y seguidos
     'search-followers': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final followedUserId = args['followedUserId'] as  String;
+      final followedUserId = args['followedUserId'] as int;
       return SearchFollowers(
         followedUserId: followedUserId,
       );
@@ -99,7 +99,7 @@ class AppRoutes {
     'search-followed': (context) {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final followingUserId = args['followingUserId'] as String;
+      final followingUserId = args['followingUserId'] as int;
       return SearchFollowed(
         followingUserId: followingUserId,
       );
@@ -109,7 +109,7 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final initialTab = args['initialTab'] as String;
-      final userId = args['userId'] as String;
+      final userId = args['userId'] as int;
       return NavigatorFollow(
         initialTab: initialTab, userId: userId,
       );
@@ -119,7 +119,7 @@ class AppRoutes {
       final args =
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final initialTab = args['initialTab'] as String;
-      final userId = args['userId'] as String;
+      final userId = args['userId'] as int;
       return NavigatorFollow(
         initialTab: initialTab, userId: userId,
       );
