@@ -212,10 +212,6 @@ class _BaseNavigatorState extends State<BaseNavigator> {
             reloadView();
           }
         },
-        
-        onHorizontalDragTap: () async {
-          reloadView();
-        },
 
         onSettingsTap: () async {
           final result = await Navigator.pushNamed(context, 'settings');
