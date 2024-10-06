@@ -38,12 +38,13 @@ class CustomDrawer extends StatelessWidget {
     this.showContentModeration = false,
   });
 
-  @override
+@override
   Widget build(BuildContext context) {
     return GestureDetector(
       onHorizontalDragUpdate: (details) {
+        onHorizontalDragTap;
         if (details.delta.dx > 0) {
-          onHorizontalDragTap;
+          onHorizontalDragTap?.call();
           Scaffold.of(context).openDrawer();
         }
       },

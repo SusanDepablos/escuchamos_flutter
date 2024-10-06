@@ -7,6 +7,7 @@ import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class NavigatorFollow extends StatefulWidget {
   final String initialTab;
@@ -169,7 +170,9 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
                 SearchFollowed(followingUserId: widget.userId),
               ],
             )
-          : Container(),
+          : Container(
+            color: AppColors.whiteapp, // Usando tu color personalizado
+          ),
       ),
     );
   }
