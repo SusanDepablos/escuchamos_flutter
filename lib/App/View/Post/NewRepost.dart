@@ -245,20 +245,20 @@ class _NewRepostState extends State<NewRepost> {
         child: Padding(
           padding: const EdgeInsets.all(16.0), // Padding de 16 alrededor del widget
           child: RepostCreateWidget(
-            nameUser: name ?? '',
-            username: username ?? '',
+            nameUser: name ?? '...',
+            username: username ?? '...',
             bodyTextField: BodyTextField(
                   input: _bodyController,
                   error: null, 
                   minLines: 1,
                   maxLines: 6,
                 ),
-            profilePhotoUser: profileAvatarUrl ?? '',
+            profilePhotoUser: profileAvatarUrl,
             isButtonDisabled: _submitting,
-            bodyRepost: _body ?? '',
-            nameUserRepost: _name ?? '',
-            usernameUserRepost: _username ?? '',
-            profilePhotoUserRepost: _profilePhotoUrl ?? '',
+            bodyRepost: _body,
+            nameUserRepost: _name ?? '...',
+            usernameUserRepost: _username ?? '...',
+            profilePhotoUserRepost: _profilePhotoUrl,
             createdAtRepost: _createdAt ?? DateTime.now(), // Valor por defecto si es null
             mediaUrlsRepost: _mediaUrls ?? [], // Lista vacía si es null
             onPostTap: () {

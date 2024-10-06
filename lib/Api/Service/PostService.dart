@@ -137,8 +137,8 @@ class PostUpdate {
   }
 }
 
-class DeletePost {
-  Future<ServiceResponse> postDelete(int id) async {
+class PostDelete {
+  Future<ServiceResponse> deletePost(int id) async {
     // Define el URL al que se enviará la solicitud POST
     final url = Uri.parse('${ApiUrl.baseUrl}post/$id/');
     final token = await _storage.read(key: 'token') ?? '';

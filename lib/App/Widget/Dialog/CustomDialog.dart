@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title;
-  final String content;
+  final String? content;
   final Widget selectWidget; // Widget para el Select (por ejemplo, SelectBasic)
   final VoidCallback? onAccept; // Función que se ejecuta al aceptar
 
   const CustomDialog({
     Key? key,
     required this.title,
-    required this.content,
+    this.content,
     required this.selectWidget,
     this.onAccept,
   }) : super(key: key);
@@ -19,9 +19,7 @@ class CustomDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: AppColors.whiteapp, // Fondo blanco
-      title: const Text(
-        'Administrar rol',
-      ),
+      title: Text(title), // Cambiado para usar el título proporcionado
       contentPadding: const EdgeInsets.only(
         right: 16,
         left: 16,
@@ -33,11 +31,13 @@ class CustomDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              content,
-              style: const TextStyle(color: AppColors.black), // Texto negro
-            ),
-            const SizedBox(height: 16),
+            if (content != null && content!.isNotEmpty) ...[
+              Text(
+                content!,
+                style: const TextStyle(color: AppColors.black), // Texto negro
+              ),
+              const SizedBox(height: 16), // Espacio solo si hay contenido
+            ],
             selectWidget, // El widget para el SelectBasic se pasa aquí
           ],
         ),
@@ -65,7 +65,6 @@ class CustomDialog extends StatelessWidget {
                 if (onAccept != null) {
                   onAccept!(); // Ejecuta la función pasada al aceptar
                 }
-                Navigator.of(context).pop(); // Cierra el diálogo
               },
               child: const Text(
                 'Aceptar',

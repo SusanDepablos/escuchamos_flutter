@@ -76,14 +76,14 @@ class _NewPostState extends State<NewPost> {
             username = _user!.data.attributes.username;
           });
         } else {
-          showDialog(
-            context: context,
-            builder: (context) => PopupWindow(
-              title: response is InternalServerError ? 'Error' : 'Error de Conexión',
-              message: response.message,
-            ),
-          );
-        }
+          await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
       }
     } catch (e) {
       print(e);
@@ -141,11 +141,10 @@ class _NewPostState extends State<NewPost> {
           );
         }); // Navega al home
       } else
-        showDialog(
+        await showDialog(
           context: context,
-          builder: (context) => PopupWindow(
-            title:
-                response is InternalServerError ? 'Error' : 'Error de Conexión',
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -184,9 +183,9 @@ class _NewPostState extends State<NewPost> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuir el espacio
             children: [
               // Espaciador vacío para empujar "Crear Publicación" al centro
-              Text(
+              const Text(
                 'Crear Publicación',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
@@ -210,7 +209,7 @@ class _NewPostState extends State<NewPost> {
       body: SingleChildScrollView( // Agregado para habilitar el scroll
         child: Column(
           children: [
-            Divider(
+            const Divider(
               thickness: 1,
               color: AppColors.inputLigth,
               indent: 16,

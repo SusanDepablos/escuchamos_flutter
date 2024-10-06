@@ -1,3 +1,7 @@
+import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentListView.dart';
@@ -37,7 +41,7 @@ class _NestedCommentsState extends State<NestedComments> {
   String? _mediaUrl;
   String? _reactionsCount;
   String? _repliesCount;
-  String? postId;
+  int? postId;
   int _id = 0;
   bool _submitting = false;
   String? _profilePhotoUser;
@@ -84,7 +88,7 @@ class _NestedCommentsState extends State<NestedComments> {
             _mediaUrl = _comment?.data.relationships.file.firstOrNull?.attributes.url;
             _reactionsCount = _comment!.data.relationships.reactionsCount.toString();
             _repliesCount = _comment!.data.relationships.repliesCount.toString();
-            postId = _comment!.data.attributes.postId.toString();
+            postId = _comment!.data.attributes.postId;
             reactionStates[0] = _comment!.data.relationships.reactions.any(
             (reaction) => reaction.attributes.userId == _id);
           });
@@ -274,6 +278,98 @@ void updateCommentPopup(
     }
   }
 
+  void _showReportDialog(commentId, BuildContext context) {
+    List<Map<String, dynamic>> observationData = [
+      {
+        'id': 1,
+        'name': 'Contenido inapropiado',
+      },
+      {
+        'id': 2,
+        'name': 'Spam o auto-promoción',
+      },
+      {
+        'id': 3,
+        'name': 'Desinformación',
+      },
+      {
+        'id': 4,
+        'name': 'Acoso o intimidación',
+      },
+      {
+        'id': 5,
+        'name': 'Otro',
+      },
+    ];
+
+    // Inicializa con el primer valor
+    String? selectedObservation = observationData[0]['name']; // "Contenido inapropiado"
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return CustomDialog(
+              title: 'Reportar Comentario',
+              content: 'Por favor, selecciona la razón para reportar esta comentario:',
+              selectWidget: SelectBasic(
+                hintText: 'Observación',
+                // Mostrar el valor predeterminado seleccionado
+                selectedValue: observationData.firstWhere((item) => item['name'] == selectedObservation)['id'],
+                items: observationData,
+                onChanged: (value) {
+                  setState(() {
+                    // Actualiza el selectedObservation al cambiar
+                    selectedObservation = observationData.firstWhere((item) => item['id'] == value)['name'];
+                  });
+                },
+              ),
+              onAccept: () async {
+                if (selectedObservation != null) {
+                  await _postReport(commentId, selectedObservation!, context); // Enviar el name seleccionado
+                  Navigator.of(context).pop(); // Cierra el diálogo
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _postReport(int commentId, String observation, BuildContext context) async {
+    try {
+      var response =  await ReportCommandPost(ReportPost()).execute('comment', commentId, observation);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,13 +402,13 @@ void updateCommentPopup(
                           usernameUser: _username.toString(),
                           profilePhotoUser: _profilePhotoUrl ?? '',
                           onProfileTap: () {
-                            final userId = _comment!.data.relationships.user.id;
+                            int userId = _comment!.data.relationships.user.id;
                             Navigator.pushNamed(context, 'profile',
                                 arguments: userId);
                           },
                           
                           onNumberLikeTap: () {
-                          String objectId = _comment!.data.id.toString();
+                          int objectId = _comment!.data.id;
                           Navigator.pushNamed(
                             context,
                             'index-reactions',
@@ -335,10 +431,13 @@ void updateCommentPopup(
                             updateCommentPopup(context, body: _body, mediaUrl: _mediaUrl, comentarioId: _comment!.data.id);
                           },
 
-                         onDeleteTap: () {
+                        onDeleteTap: () {
                           _deleteComment(_comment!.data.id, context);
                         },
-
+                          onReportTap: () {
+                            int commentId = _comment!.data.id;
+                            _showReportDialog(commentId, context);
+                          },
                           isHidden: true,
                         ),
                       ],
@@ -354,7 +453,7 @@ void updateCommentPopup(
                         widthFactor:
                             0.9,
                         child: IndexComment(
-                          commentId: widget.commentId.toString(),
+                          commentId: widget.commentId,
                           postId: postId,
                         ),
                       ),

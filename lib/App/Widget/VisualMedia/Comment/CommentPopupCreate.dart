@@ -113,9 +113,13 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                         if (_selectedImage != null) ...[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image.file(
-                              _selectedImage!,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              width: 300, // Ancho de la imagen
+                              height: 250, // Alto de la imagen
+                              child: Image.file(
+                                _selectedImage!,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 10.0),
@@ -180,16 +184,16 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                     ),
                   ),
                   Positioned(
-                  right: 0, // Ajusta este valor según sea necesario
-                  top: 5,
-                  child: IconButton(
-                    icon: const Icon(
-                      MaterialIcons.close, // Icono de 'X'
-                      color: AppColors.grey, // Color rojo
+                    right: 0, // Ajusta este valor según sea necesario
+                    top: 5,
+                    child: IconButton(
+                      icon: const Icon(
+                        MaterialIcons.close, // Icono de 'X'
+                        color: AppColors.grey, // Color rojo
+                      ),
+                      onPressed: widget.onCancel, // Usa el parámetro pasado
                     ),
-                    onPressed: widget.onCancel, // Usa el parámetro pasado
                   ),
-                ),
                 ],
               ),
             ),

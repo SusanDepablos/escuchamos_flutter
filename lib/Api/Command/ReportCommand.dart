@@ -2,48 +2,48 @@
 import 'package:flutter/material.dart';
 //Api support
 import 'dart:io';
-import 'package:escuchamos_flutter/Api/Model/ReactionModels.dart';
+import 'package:escuchamos_flutter/Api/Model/ReportModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
+import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
-class ReactionCommandIndex {
-  final ReactionIndex _reactionsData;
-  final Map<String, String?>? filters;
+// class ReportCommandIndex {
+//   final ReportIndex _reportsData;
+//   final Map<String, String?>? filters;
 
-  ReactionCommandIndex(this._reactionsData, [this.filters]);
+//   ReportCommandIndex(this._reportsData, [this.filters]);
 
-  Future<dynamic> execute() async {
-    try {
-      var response =
-          await _reactionsData.fetchData(filters ?? {}); 
+//   Future<dynamic> execute() async {
+//     try {
+//       var response =
+//           await _reportsData.fetchData(filters ?? {}); 
 
-      if (response.statusCode == 200) {
-        return ReactionsModel.fromJson(response.body);
-      } else {
-        return InternalServerError.fromServiceResponse(response);
-      }
-    } on SocketException catch (e) {
-      return ApiError();
-    } on FlutterError catch (flutterError) {
-      throw Exception(
-          'Error en la aplicación Flutter: ${flutterError.message}');
-    }
-  }
-}
+//       if (response.statusCode == 200) {
+//         return ReportsModel.fromJson(response.body);
+//       } else {
+//         return InternalServerError.fromServiceResponse(response);
+//       }
+//     } on SocketException catch (e) {
+//       return ApiError();
+//     } on FlutterError catch (flutterError) {
+//       throw Exception(
+//           'Error en la aplicación Flutter: ${flutterError.message}');
+//     }
+//   }
+// }
 
-class ReactionCommandPost {
-  final ReactionPost _reactionService;
+class ReportCommandPost {
+  final ReportPost _reportService;
 
-  ReactionCommandPost(this._reactionService);
+  ReportCommandPost(this._reportService);
 
   Future<dynamic> execute(
-    String model, int objectId,
+    String model, int objectId, String observation,
   ) async {
     try {
       var response =
-          await _reactionService.postReaction(model, objectId);
+          await _reportService.postReport(model, objectId, observation);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return SuccessResponse.fromServiceResponse(response);

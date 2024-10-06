@@ -1,3 +1,7 @@
+import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
@@ -28,8 +32,8 @@ int commentId_ = 0;
 bool? likeState;
 
 class IndexComment extends StatefulWidget {
-  final String? postId;
-  final String? commentId;
+  final int? postId;
+  final int? commentId;
 
   IndexComment({this.postId, this.commentId});
 
@@ -90,7 +94,7 @@ class _IndexCommentState extends State<IndexComment> {
 @override
   void initState() {
     _getData().then((_) => _callUser());
-    postId_ = int.parse(widget.postId!);
+    postId_ = widget.postId!;
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() {
@@ -231,7 +235,7 @@ class _IndexCommentState extends State<IndexComment> {
     });
 
     if (widget.commentId != null) {
-      filters['comment_id'] = widget.commentId;
+      filters['comment_id'] = widget.commentId.toString();
     }
 
     filters['post_id'] = widget.postId?.toString();
@@ -306,7 +310,7 @@ class _IndexCommentState extends State<IndexComment> {
                   Navigator.of(context).pop();
                 },
                 isButtonDisabled: _submitting,
-                nameUser: _name.toString(),
+                nameUser: _name ?? '...',
                 profilePhotoUser: _profilePhotoUser,
                 onCommentCreate: (String body, String? mediaUrl) async {
                   await _commentCreate(body, mediaUrl, context, setState);
@@ -327,10 +331,10 @@ class _IndexCommentState extends State<IndexComment> {
     });
 
     try {
-      formData['post_id'] = widget.postId;
+      formData['post_id'] = widget.postId.toString();
 
       if (widget.commentId != null) {
-        formData['comment_id'] = widget.commentId;
+        formData['comment_id'] = widget.commentId.toString();
       }
 
       formData['body'] = body;
@@ -402,7 +406,7 @@ void updateCommentPopup(
                   Navigator.of(context).pop();
                 },
                 isButtonDisabled: _submitting,
-                nameUser: _name.toString(),
+                nameUser: _name ?? '...',
                 profilePhotoUser: _profilePhotoUser,
                 body: body,
                 mediaUrl: mediaUrl,
@@ -445,13 +449,6 @@ void updateCommentPopup(
           }
         });
         Navigator.of(context).pop();
-        showDialog(
-          context: context,
-          builder: (context) => AutoClosePopup(
-            child: const SuccessAnimationWidget(),
-            message: response.message,
-          ),
-        );
       } else {
         await showDialog(
           context: context,
@@ -472,7 +469,7 @@ void updateCommentPopup(
     }
   }
 
-Future<void> _commentReaction(int index, int id) async {
+  Future<void> _commentReaction(int index, int id) async {
     if (index < 0 || index >= comments.length) return;
 
     try {
@@ -533,6 +530,98 @@ Future<void> _commentReaction(int index, int id) async {
           context: context,
           builder: (context) => AutoClosePopupFail(
             child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  void _showReportDialog(commentId, BuildContext context) {
+    List<Map<String, dynamic>> observationData = [
+      {
+        'id': 1,
+        'name': 'Contenido inapropiado',
+      },
+      {
+        'id': 2,
+        'name': 'Spam o auto-promoción',
+      },
+      {
+        'id': 3,
+        'name': 'Desinformación',
+      },
+      {
+        'id': 4,
+        'name': 'Acoso o intimidación',
+      },
+      {
+        'id': 5,
+        'name': 'Otro',
+      },
+    ];
+
+    // Inicializa con el primer valor
+    String? selectedObservation = observationData[0]['name']; // "Contenido inapropiado"
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return CustomDialog(
+              title: 'Reportar Comentario',
+              content: 'Por favor, selecciona la razón para reportar esta comentario:',
+              selectWidget: SelectBasic(
+                hintText: 'Observación',
+                // Mostrar el valor predeterminado seleccionado
+                selectedValue: observationData.firstWhere((item) => item['name'] == selectedObservation)['id'],
+                items: observationData,
+                onChanged: (value) {
+                  setState(() {
+                    // Actualiza el selectedObservation al cambiar
+                    selectedObservation = observationData.firstWhere((item) => item['id'] == value)['name'];
+                  });
+                },
+              ),
+              onAccept: () async {
+                if (selectedObservation != null) {
+                  await _postReport(commentId, selectedObservation!, context); // Enviar el name seleccionado
+                  Navigator.of(context).pop(); // Cierra el diálogo
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _postReport(int commentId, String observation, BuildContext context) async {
+    try {
+      var response =  await ReportCommandPost(ReportPost()).execute('comment', commentId, observation);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
             message: response.message,
           ),
         );
@@ -615,11 +704,11 @@ Future<void> _commentReaction(int index, int id) async {
                                       usernameUser: comment.relationships.user.username,
                                       profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
                                       onProfileTap: () {
-                                        final userId = comment.relationships.user.id;
+                                        int userId = comment.relationships.user.id;
                                         Navigator.pushNamed(context, 'profile', arguments: userId);
                                       },
                                       onResponseTap: () {
-                                        final commentId = comment.id;
+                                        int commentId = comment.id;
                                         Navigator.pushNamed(context, 'nested-comments', arguments: commentId)
                                             .then((_) {
                                           commentId_ = commentId;
@@ -627,7 +716,7 @@ Future<void> _commentReaction(int index, int id) async {
                                         });
                                       },
                                       onNumberLikeTap: () {
-                                        String objectId = comment.id.toString();
+                                        int objectId = comment.id;
                                         Navigator.pushNamed(
                                           context,
                                           'index-reactions',
@@ -648,13 +737,17 @@ Future<void> _commentReaction(int index, int id) async {
                                       String? mediaUrl = comment.relationships.file.firstOrNull?.attributes.url;  // La URL de la imagen, si existe
                                       updateCommentPopup(context, body: body, mediaUrl: mediaUrl, comentarioId: comment.id);
                                     },
-
+                                    onReportTap: () {
+                                      int commentId = comment.id;
+                                      _showReportDialog(commentId, context);
+                                    },
                                       body: comment.attributes.body,
                                       mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
                                       createdAt: comment.attributes.createdAt,
                                       reactionsCount: comment.relationships.reactionsCount.toString(),
                                       repliesCount: comment.relationships.repliesCount.toString(),
                                     );
+                                    
                                   },
                                 ),
                               ),

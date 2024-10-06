@@ -63,6 +63,8 @@ class RepostWidget extends StatelessWidget {
   final VoidCallback onPostTap;
   final VoidCallback? onProfileTapRepost;
   final VoidCallback? onRepostTap;
+  final VoidCallback onReportTap;
+  final VoidCallback onShareTap;
 
   RepostWidget({
     Key? key,
@@ -94,6 +96,8 @@ class RepostWidget extends StatelessWidget {
     required this.onPostTap,
     this.onProfileTapRepost,
     this.onRepostTap,
+    required this.onReportTap,
+    required this.onShareTap,
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -151,6 +155,7 @@ class RepostWidget extends StatelessWidget {
                   onTap: () {
                     // Lógica para reportar la publicación
                     Navigator.pop(context); // Cerrar el modal
+                    onReportTap();
                   },
                 ),
               ],
@@ -180,6 +185,7 @@ class RepostWidget extends StatelessWidget {
                 onTap: () {
                   // Lógica para repostear
                   Navigator.pop(context); // Cerrar el modal
+                  onShareTap();
                 },
               ),
               ListTile(

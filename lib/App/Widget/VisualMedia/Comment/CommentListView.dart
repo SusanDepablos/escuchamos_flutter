@@ -26,6 +26,7 @@ class CommentWidget extends StatelessWidget {
   final int currentUserId;
   final VoidCallback onEditTap;
   final VoidCallback? onDeleteTap;
+  final VoidCallback onReportTap;
 
   final AudioPlayer _audioPlayer = AudioPlayer(); // Crea el AudioPlayer
 
@@ -46,6 +47,7 @@ class CommentWidget extends StatelessWidget {
     required this.currentUserId,
     this.onDeleteTap,
     required this.onEditTap,
+    required this.onReportTap,
     
     this.reactionsCount = '0',
     this.repliesCount = '0',
@@ -135,6 +137,7 @@ class CommentWidget extends StatelessWidget {
                   onTap: () {
                     // Lógica para reportar la publicación
                     Navigator.pop(context); // Cerrar el modal
+                    onReportTap();
                   },
                 ),
               ],

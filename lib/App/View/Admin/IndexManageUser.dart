@@ -53,7 +53,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
         widget.page = 1;
         users.clear();
         _hasMorePages = true;
-        _isInitialLoading = false;
+        _isInitialLoading = true;
       });
       fetchUsers();
     }
@@ -195,8 +195,8 @@ class _IndexManageUserState extends State<IndexManageUser> {
     }
   }
   
-  void _showChangeRoleDialog(BuildContext context, roles, userGroup, userId) {
-    int? selectedRole = userGroup;
+  void _showChangeRoleDialog(groupData, userGroup, userId, BuildContext context) {
+    int? selectedGroup = userGroup;
 
     showDialog(
       context: context,
@@ -206,20 +206,19 @@ class _IndexManageUserState extends State<IndexManageUser> {
           builder: (context, setState) {
             return CustomDialog(
               title: 'Administrar rol',
-              content: 'Selecciona un nuevo rol para el usuario:',
               selectWidget: SelectBasic(
                 hintText: 'Roles',
-                selectedValue: selectedRole,
-                items: roles,
+                selectedValue: selectedGroup,
+                items: groupData,
                 onChanged: (value) {
                   setState(() {
-                    selectedRole = value; // Actualiza selectedRole al cambiar
+                    selectedGroup = value; // Actualiza selectedGroup al cambiar
                   });
                 },
               ),
               onAccept: () async {
-                if (selectedRole != null) {
-                  int groupId = selectedRole!;
+                if (selectedGroup != null) {
+                  int groupId = selectedGroup!;
                   await _updateGroup(groupId, userId, context); // Función para actualizar grupo
                 }
               },
@@ -236,6 +235,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
       var response = await GroupCommandUpdate(GroupUpdate()).execute(groupId, id);
 
       if (response is SuccessResponse) {
+        Navigator.of(context).pop(); // Cierra el diálogo
         reloadView();
       } else {
         await showDialog(
@@ -306,7 +306,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
                               context: context,
                                 builder: (BuildContext context) {
                                   return UserOptionsModal(
-                                    showChangeRoleDialog: () => _showChangeRoleDialog(context, groupData, userGroup, userId), // Pasar la función correctamente
+                                    showChangeRoleDialog: () => _showChangeRoleDialog(groupData, userGroup, userId, context), // Pasar la función correctamente
                                   );
                                 }, 
                             );

@@ -1,5 +1,11 @@
+import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Command/ShareCommand.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
+import 'package:escuchamos_flutter/Api/Service/ShareService.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostUpdatePopup.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostListView.dart';
 import 'package:flutter/material.dart';
@@ -422,7 +428,7 @@ class _IndexPostState extends State<IndexPost> {
 
   Future<void> _deletePost(int id) async {
     try {
-      var response = await DeleteCommandPost(DeletePost()).execute(id: id);
+      var response = await DeleteCommandPost(PostDelete()).execute(id: id);
 
       if (response is SuccessResponse) {
         setState(() {
@@ -461,6 +467,134 @@ class _IndexPostState extends State<IndexPost> {
     _scrollController.dispose();
     super.dispose();
   }
+
+  void _showReportDialog(postId, BuildContext context) {
+    List<Map<String, dynamic>> observationData = [
+      {
+        'id': 1,
+        'name': 'Contenido inapropiado',
+      },
+      {
+        'id': 2,
+        'name': 'Spam o auto-promoción',
+      },
+      {
+        'id': 3,
+        'name': 'Desinformación',
+      },
+      {
+        'id': 4,
+        'name': 'Violación de derechos de autor',
+      },
+      {
+        'id': 5,
+        'name': 'Acoso o intimidación',
+      },
+      {
+        'id': 6,
+        'name': 'Otro',
+      },
+    ];
+
+    // Inicializa con el primer valor
+    String? selectedObservation = observationData[0]['name']; // "Contenido inapropiado"
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return CustomDialog(
+              title: 'Reportar Publicación',
+              content: 'Por favor, selecciona la razón para reportar esta publicación:',
+              selectWidget: SelectBasic(
+                hintText: 'Observación',
+                // Mostrar el valor predeterminado seleccionado
+                selectedValue: observationData.firstWhere((item) => item['name'] == selectedObservation)['id'],
+                items: observationData,
+                onChanged: (value) {
+                  setState(() {
+                    // Actualiza el selectedObservation al cambiar
+                    selectedObservation = observationData.firstWhere((item) => item['id'] == value)['name'];
+                  });
+                },
+              ),
+              onAccept: () async {
+                if (selectedObservation != null) {
+                  await _postReport(postId, selectedObservation!, context); // Enviar el name seleccionado
+                  Navigator.of(context).pop(); // Cierra el diálogo
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _postReport(int postId, String observation, BuildContext context) async {
+    try {
+      var response =  await ReportCommandPost(ReportPost()).execute('post', postId, observation);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _postShare(int postId,  BuildContext context) async {
+    try {
+      var response =  await ShareCommandPost(SharePost()).execute(postId);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -505,7 +639,7 @@ class _IndexPostState extends State<IndexPost> {
                               usernameUser: post.relationships.user.username,
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                               onProfileTap: () {
-                                final userId = post.relationships.user.id;
+                                int userId = post.relationships.user.id;
                                 Navigator.pushNamed(
                                   context,
                                   'profile',
@@ -528,7 +662,7 @@ class _IndexPostState extends State<IndexPost> {
                                 );
                               },
                               onIndexCommentTap: () {
-                                String postId = post.id.toString();
+                                int postId = post.id;
                                 Navigator.pushNamed(
                                   context,
                                   'index-comments',
@@ -566,6 +700,14 @@ class _IndexPostState extends State<IndexPost> {
                                   _callPost();
                                 });
                               },
+                              onReportTap: () {
+                                int postId = post.id;
+                                _showReportDialog(postId, context);
+                              },
+                              onShareTap: () {
+                                int postId = post.id;
+                                _postShare(postId, context);
+                              }
                             );
                           } else {
                             return RepostWidget(
@@ -575,7 +717,7 @@ class _IndexPostState extends State<IndexPost> {
                               usernameUser: post.relationships.user.username,
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                               onProfileTap: () {
-                                final userId = post.relationships.user.id;
+                                int userId = post.relationships.user.id;
                                 Navigator.pushNamed(
                                   context,
                                   'profile',
@@ -586,7 +728,7 @@ class _IndexPostState extends State<IndexPost> {
                               });
                               },
                               onIndexLikeTap: () {
-                                String objectId = post.id.toString();
+                                int objectId = post.id;
                                 Navigator.pushNamed(
                                   context,
                                   'index-reactions',
@@ -598,7 +740,7 @@ class _IndexPostState extends State<IndexPost> {
                                 );
                               },
                               onIndexCommentTap: () {
-                                String postId = post.id.toString();
+                                int postId = post.id;
                                 Navigator.pushNamed(
                                   context,
                                   'index-comments',
@@ -657,6 +799,14 @@ class _IndexPostState extends State<IndexPost> {
                                   _callPost();
                                 });
                               },
+                              onReportTap: () {
+                                int postId = post.id;
+                                _showReportDialog(postId, context);
+                              },
+                              onShareTap: () {
+                                int postId = post.relationships.post!.id;
+                                _postShare(postId, context);
+                              }
                             );
                           }
                         }

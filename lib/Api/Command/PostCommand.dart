@@ -130,14 +130,14 @@ class PostCommandUpdate {
 }
 
 class DeleteCommandPost {
-  final DeletePost _postDeleteService;
+  final PostDelete _postDeleteService;
 
   DeleteCommandPost(this._postDeleteService);
 
   Future<dynamic> execute({required int id}) async {
     try {
       // Llamar a la función PostUpload con los parámetros file y type
-      var response = await _postDeleteService.postDelete(id);
+      var response = await _postDeleteService.deletePost(id);
 
       // Manejar la respuesta según el código de estado
       if (response.statusCode == 202) {

@@ -14,7 +14,7 @@ class IndexReactions extends StatefulWidget {
   VoidCallback? onFetchReactions;
   int page = 1;
   String model;
-  String objectId;
+  int objectId;
   String appBar;
 
   IndexReactions({
@@ -46,7 +46,7 @@ class _IndexReactionsState extends State<IndexReactions> {
       widget.page = 1;
       reactions.clear();
       _hasMorePages = true;
-      _isInitialLoading = false;
+      _isInitialLoading = true;
     });
     fetchReactions();
   }
@@ -86,7 +86,7 @@ class _IndexReactionsState extends State<IndexReactions> {
     filters['object_id'] = widget.objectId.toString();
     filters['model'] = widget.model.toString();
 
-    final userCommand = ReactionsCommandIndex(ReactionsIndex(), filters);
+    final userCommand = ReactionCommandIndex(ReactionIndex(), filters);
 
     try {
       var response = await userCommand.execute();

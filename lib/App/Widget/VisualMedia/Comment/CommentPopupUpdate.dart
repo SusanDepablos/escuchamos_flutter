@@ -89,13 +89,28 @@ class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
                         ),
                         const SizedBox(height: 10.0),
                         if (widget.mediaUrl != null) ...[
-                          ClipRRect(
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenImage(imageUrl: widget.mediaUrl!),
+                              ),
+                            );
+                          },
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              widget.mediaUrl!,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              width: 300, // Ancho de la imagen
+                              height: 250, // Alto de la imagen
+                              child: Image.network(
+                                widget.mediaUrl!,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
+                        ),
+                        const SizedBox(height: 10.0),
                         ],
                         BodyTextField(
                           input: _bodyController,

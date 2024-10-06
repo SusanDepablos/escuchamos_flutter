@@ -1,49 +1,48 @@
 //Flutter native support
+import 'package:escuchamos_flutter/Api/Service/ShareService.dart';
 import 'package:flutter/material.dart';
 //Api support
 import 'dart:io';
-import 'package:escuchamos_flutter/Api/Model/ReactionModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
-import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
-class ReactionCommandIndex {
-  final ReactionIndex _reactionsData;
-  final Map<String, String?>? filters;
+// class ShareCommandIndex {
+//   final ShareIndex _sharesData;
+//   final Map<String, String?>? filters;
 
-  ReactionCommandIndex(this._reactionsData, [this.filters]);
+//   ShareCommandIndex(this._sharesData, [this.filters]);
 
-  Future<dynamic> execute() async {
-    try {
-      var response =
-          await _reactionsData.fetchData(filters ?? {}); 
+//   Future<dynamic> execute() async {
+//     try {
+//       var response =
+//           await _sharesData.fetchData(filters ?? {}); 
 
-      if (response.statusCode == 200) {
-        return ReactionsModel.fromJson(response.body);
-      } else {
-        return InternalServerError.fromServiceResponse(response);
-      }
-    } on SocketException catch (e) {
-      return ApiError();
-    } on FlutterError catch (flutterError) {
-      throw Exception(
-          'Error en la aplicación Flutter: ${flutterError.message}');
-    }
-  }
-}
+//       if (response.statusCode == 200) {
+//         return ReportsModel.fromJson(response.body);
+//       } else {
+//         return InternalServerError.fromServiceResponse(response);
+//       }
+//     } on SocketException catch (e) {
+//       return ApiError();
+//     } on FlutterError catch (flutterError) {
+//       throw Exception(
+//           'Error en la aplicación Flutter: ${flutterError.message}');
+//     }
+//   }
+// }
 
-class ReactionCommandPost {
-  final ReactionPost _reactionService;
+class ShareCommandPost {
+  final SharePost _shareService;
 
-  ReactionCommandPost(this._reactionService);
+  ShareCommandPost(this._shareService);
 
   Future<dynamic> execute(
-    String model, int objectId,
+    int postId,
   ) async {
     try {
       var response =
-          await _reactionService.postReaction(model, objectId);
+          await _shareService.postReport(postId);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return SuccessResponse.fromServiceResponse(response);
@@ -64,4 +63,5 @@ class ReactionCommandPost {
     }
   }
 }
+
 

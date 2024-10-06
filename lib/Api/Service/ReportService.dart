@@ -6,10 +6,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-class ReactionIndex {
+class ReportService {
   Future<ServiceResponse> fetchData(Map<String, String?> filters) async {
 
-    var uri = Uri.parse('${ApiUrl.baseUrl}reaction/');
+    var uri = Uri.parse('${ApiUrl.baseUrl}report/');
     final token = await _storage.read(key: 'token') ?? '';
 
     if (filters.isNotEmpty) {
@@ -37,15 +37,16 @@ class ReactionIndex {
   }
 }
 
-class ReactionPost {
-  Future<ServiceResponse> postReaction(
-    String model, int objectId) async {
-    final url = Uri.parse('${ApiUrl.baseUrl}reaction/');
+class ReportPost {
+  Future<ServiceResponse> postReport(
+      String model, int objectId, String observation) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}report/');
     final token = await _storage.read(key: 'token') ?? '';
 
     final body = jsonEncode({
       'model': model,
-      'object_id': objectId
+      'object_id': objectId,
+      'observation': observation
     });
 
     final headers = {

@@ -128,7 +128,7 @@ class AppRoutes {
     // pantalla de comentarios
     'index-comments': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final postId = args['postId'] as String;
+      final postId = args['postId'] as int;
       return IndexComment(postId: postId);
     },
   
@@ -141,7 +141,7 @@ class AppRoutes {
     'index-reactions': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final model = args['model'] as String;
-      final objectId = args['objectId'] as String;
+      final objectId = args['objectId'] as int;
       final appBar = args['appBar'] as String;
       return IndexReactions(
           model: model, objectId: objectId, appBar: appBar);

@@ -15,6 +15,8 @@ class PostWidget extends StatelessWidget {
   final VoidCallback? onIndexLikeTap;
   final VoidCallback? onIndexCommentTap;
   final VoidCallback? onDeleteTap;
+  final VoidCallback onReportTap;
+  final VoidCallback onShareTap;
   final bool reaction;
   final DateTime createdAt;
 
@@ -50,7 +52,9 @@ class PostWidget extends StatelessWidget {
     required this.currentUserId,
     this.onDeleteTap,
     required this.onEditTap, 
-    this. onRepostTap, 
+    this.onRepostTap, 
+    required this.onReportTap, 
+    required this.onShareTap, 
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -135,6 +139,7 @@ class PostWidget extends StatelessWidget {
                   onTap: () {
                     // Lógica para reportar la publicación
                     Navigator.pop(context); // Cerrar el modal
+                    onReportTap();
                   },
                 ),
               ],
@@ -164,6 +169,7 @@ class PostWidget extends StatelessWidget {
                 onTap: () {
                   // Lógica para repostear
                   Navigator.pop(context); 
+                  onShareTap();
                 },
               ),
               ListTile(

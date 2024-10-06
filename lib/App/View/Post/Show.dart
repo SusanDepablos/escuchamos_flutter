@@ -1,5 +1,11 @@
+import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Command/ShareCommand.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
+import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
+import 'package:escuchamos_flutter/Api/Service/ShareService.dart';
+import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostUpdatePopup.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -147,7 +153,7 @@ class _ShowState extends State<Show> {
 
   Future<void> _deletePost() async {
     try {
-      var response = await DeleteCommandPost(DeletePost()).execute(id: widget.id);
+      var response = await DeleteCommandPost(PostDelete()).execute(id: widget.id);
 
       if (response is SuccessResponse) {
           await showDialog(
@@ -275,6 +281,134 @@ class _ShowState extends State<Show> {
     }
   }
 
+  void _showReportDialog(postId, BuildContext context) {
+    List<Map<String, dynamic>> observationData = [
+      {
+        'id': 1,
+        'name': 'Contenido inapropiado',
+      },
+      {
+        'id': 2,
+        'name': 'Spam o auto-promoción',
+      },
+      {
+        'id': 3,
+        'name': 'Desinformación',
+      },
+      {
+        'id': 4,
+        'name': 'Violación de derechos de autor',
+      },
+      {
+        'id': 5,
+        'name': 'Acoso o intimidación',
+      },
+      {
+        'id': 6,
+        'name': 'Otro',
+      },
+    ];
+
+    // Inicializa con el primer valor
+    String? selectedObservation = observationData[0]['name']; // "Contenido inapropiado"
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return CustomDialog(
+              title: 'Reportar Publicación',
+              content: 'Por favor, selecciona la razón para reportar esta publicación:',
+              selectWidget: SelectBasic(
+                hintText: 'Observación',
+                // Mostrar el valor predeterminado seleccionado
+                selectedValue: observationData.firstWhere((item) => item['name'] == selectedObservation)['id'],
+                items: observationData,
+                onChanged: (value) {
+                  setState(() {
+                    // Actualiza el selectedObservation al cambiar
+                    selectedObservation = observationData.firstWhere((item) => item['id'] == value)['name'];
+                  });
+                },
+              ),
+              onAccept: () async {
+                if (selectedObservation != null) {
+                  await _postReport(postId, selectedObservation!, context); // Enviar el name seleccionado
+                  Navigator.of(context).pop(); // Cierra el diálogo
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _postReport(int postId, String observation, BuildContext context) async {
+
+    try {
+      var response =  await ReportCommandPost(ReportPost()).execute('post', postId, observation);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _postShare(int postId,  BuildContext context) async {
+    try {
+      var response =  await ShareCommandPost(SharePost()).execute(postId);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -320,7 +454,7 @@ class _ShowState extends State<Show> {
                               context,
                               'index-reactions',
                               arguments: {
-                                'objectId': widget.id.toString(),
+                                'objectId': widget.id,
                                 'model': 'post',
                                 'appBar': 'Reacciones'
                               },
@@ -331,7 +465,7 @@ class _ShowState extends State<Show> {
                               context,
                               'index-comments',
                               arguments: {
-                                'postId': widget.id.toString(),
+                                'postId': widget.id,
                               },
                             ).then((_) {
                               _callPost();
@@ -350,6 +484,14 @@ class _ShowState extends State<Show> {
                             input['body']!.text = _body ?? '';
                             showPostPopup(context, input['body']!.text, widget.id, _mediaUrls);
                           },
+                          onReportTap: () {
+                            int postId = widget.id;
+                            _showReportDialog(postId, context);
+                          },
+                          onShareTap: () {
+                            int postId = widget.id;
+                            _postShare(postId, context);
+                          }
                         )
                       ],
                     ),
