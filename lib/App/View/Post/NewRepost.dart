@@ -212,15 +212,14 @@ class _NewRepostState extends State<NewRepost> {
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Row(
+        title:
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuir el espacio
             children: [
               // Espaciador vacío para empujar "Crear Publicación" al centro
-              Text(
+              const Text(
                 'Repostear',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: AppFond.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
@@ -236,40 +235,51 @@ class _NewRepostState extends State<NewRepost> {
                 isLoading: submitting,
                 borderRadius: 24
               ),
-            ],
-          ),
+            ]
         ),
       ),
-
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Padding de 16 alrededor del widget
-          child: RepostCreateWidget(
-            nameUser: name ?? '...',
-            username: username ?? '...',
-            bodyTextField: BodyTextField(
+        child: Column(
+          children: [
+            // Divider al inicio antes del contenido
+            const Divider(
+              thickness: 1,
+              color: AppColors.inputLigth,
+              indent: 16,
+              endIndent: 16,
+            ),
+            // Sección del contenido envuelta en Padding
+            Padding(
+              padding: const EdgeInsets.all(16.0), // Padding de 16 alrededor del contenido
+              child: RepostCreateWidget(
+                nameUser: name ?? '...',
+                username: username ?? '...',
+                bodyTextField: BodyTextField(
                   input: _bodyController,
                   error: null, 
                   minLines: 1,
                   maxLines: 6,
                 ),
-            profilePhotoUser: profileAvatarUrl,
-            isButtonDisabled: _submitting,
-            bodyRepost: _body,
-            nameUserRepost: _name ?? '...',
-            usernameUserRepost: _username ?? '...',
-            profilePhotoUserRepost: _profilePhotoUrl,
-            createdAtRepost: _createdAt ?? DateTime.now(), // Valor por defecto si es null
-            mediaUrlsRepost: _mediaUrls ?? [], // Lista vacía si es null
-            onPostTap: () {
-              // Acción al tocar el post
-            },
-            onProfileTapRepost: () {
-              // Acción al tocar el perfil en el repost
-            },
-          ),
+                profilePhotoUser: profileAvatarUrl,
+                isButtonDisabled: _submitting,
+                bodyRepost: _body,
+                nameUserRepost: _name ?? '...',
+                usernameUserRepost: _username ?? '...',
+                profilePhotoUserRepost: _profilePhotoUrl,
+                createdAtRepost: _createdAt ?? DateTime.now(),
+                mediaUrlsRepost: _mediaUrls ?? [],
+                onPostTap: () {
+                  // Acción al tocar el post
+                },
+                onProfileTapRepost: () {
+                  // Acción al tocar el perfil en el repost
+                },
+              ),
+            ),
+          ],
         ),
-      )
+      ),
+
     );
   }
 }

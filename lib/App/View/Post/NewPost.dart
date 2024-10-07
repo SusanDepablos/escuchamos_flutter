@@ -7,7 +7,6 @@ import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
-import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que el BasicTextArea esté definido aquí
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/AddFile.dart';
@@ -27,6 +26,8 @@ class _NewPostState extends State<NewPost> {
   UserModel? _user;
   String? name;
   String? username;
+  int? groupId;
+  bool isEscuchamos = false; // Variable para el checkbox
 
   final input = {
     'body': TextEditingController(),
@@ -48,6 +49,7 @@ class _NewPostState extends State<NewPost> {
     super.initState();
     _callUser();
   }
+  
 
   String? _getFileUrlByType(String type) {
     try {
@@ -74,6 +76,7 @@ class _NewPostState extends State<NewPost> {
             _user = response;
             name = _user!.data.attributes.name;
             username = _user!.data.attributes.username;
+            groupId = _user!.data.relationships.groups[0].id;
           });
         } else {
           await showDialog(
@@ -104,7 +107,14 @@ class _NewPostState extends State<NewPost> {
       submitting = true; // Activa el indicador de carga
     });
     try {
-      int typePost = _mediaFiles.isNotEmpty ? 2 : 1; // 2 si hay archivos, 1 si no hay
+      int typePost;
+
+      // Asigna el tipo de publicación basado en isEscuchamos
+      if (isEscuchamos) {
+        typePost = 4; // Tipo de publicación 4 si isEscuchamos es true
+      } else {
+        typePost = _mediaFiles.isNotEmpty ? 2 : 1; // 2 si hay archivos, 1 si no hay
+      }
 
       var response = await PostCommandCreate(PostCreate()).execute(
         body: input['body']!.text,
@@ -177,35 +187,31 @@ class _NewPostState extends State<NewPost> {
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuir el espacio
-            children: [
-              // Espaciador vacío para empujar "Crear Publicación" al centro
-              const Text(
-                'Crear Publicación',
-                style: TextStyle(
-                  fontSize: AppFond.title,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black,
-                ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuir el espacio
+          children: [
+            // Espaciador vacío para empujar "Crear Publicación" al centro
+            const Text(
+              'Crear Publicación',
+              style: TextStyle(
+                fontSize: AppFond.title,
+                fontWeight: FontWeight.w800,
+                color: AppColors.black,
               ),
-              GenericButton(
-                label: 'Publicar',
-                onPressed: () {
-                  _postCreate(); // Llama a la función cuando se presiona
-                },
-                width: 90,
-                height: 20,
-                isLoading: submitting,
-                borderRadius: 24
-              ),
-            ],
-          ),
+            ),
+            GenericButton(
+              label: 'Publicar',
+              onPressed: () {
+                _postCreate(); // Llama a la función cuando se presiona
+              },
+              width: 90,
+              height: 20,
+              isLoading: submitting,
+              borderRadius: 24
+            ),
+          ],
         ),
       ),
-
       body: SingleChildScrollView( // Agregado para habilitar el scroll
         child: Column(
           children: [
@@ -261,8 +267,18 @@ class _NewPostState extends State<NewPost> {
                 minLines: _mediaFiles.isNotEmpty ? 2 : 6,
               ),
             ),
-            // Aquí es donde agregas el ImagePickerWidget
-            const SizedBox(height: 16), // Espacio entre el TextArea y el ImagePickerWidget
+            if (groupId == 1 || groupId == 2) // Muestra el checkbox si groupId es 1 o 2
+            CheckboxListTile(
+              title: const Text("Publicar como EscuChamos"),
+              value: isEscuchamos,
+              activeColor: AppColors.primaryBlue,
+              onChanged: (bool? value) {
+                setState(() {
+                  isEscuchamos = value ?? false;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
             ImagePickerWidget(
               onMediaChanged: (mediaFiles) {
                 setState(() {

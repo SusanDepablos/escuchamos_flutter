@@ -98,9 +98,7 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
           child: AppBar(
             backgroundColor: AppColors.whiteapp,
             centerTitle: true,
-            title: Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Column(
+            title: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
@@ -113,7 +111,6 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
                   ),
                 ],
               ),
-            ),
             bottom: TabBar(
               isScrollable: false,
               labelColor: AppColors.primaryBlue,

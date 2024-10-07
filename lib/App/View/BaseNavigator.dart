@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/View/EscuChamos/Index.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -57,8 +58,8 @@ class _BaseNavigatorState extends State<BaseNavigator> {
       final id = await _storage.read(key: 'user') ?? '';
       final groupsString = await _storage.read(key: 'groups') ?? '[]';
       final groups = (groupsString.isNotEmpty)
-                   ? List<dynamic>.from(json.decode(groupsString))
-                   : [];
+        ? List<dynamic>.from(json.decode(groupsString))
+        : [];
 
       setState(() {
         _id = int.parse(id);
@@ -135,7 +136,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
     SearchView(), 
     NewPost(),
     const Center(child: Text('notificaciones')),
-    const Center(child: Text('post de escuchamos')),
+    IndexEscuChamos(),
   ];
 
   void _onScroll(ScrollNotification notification) {
