@@ -262,7 +262,7 @@ class _UpdateState extends State<Profile> {
         appBar: AppBar(
           backgroundColor: AppColors.whiteapp,
           centerTitle: true,
-          title:Column(
+          title: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
@@ -394,16 +394,24 @@ class _UpdateState extends State<Profile> {
                         if (_storedUserId != null &&
                             _storedUserId != widget.userId)
                           const SizedBox(height: 8),
-                        Visibility(
-                          visible: biography?.isNotEmpty ?? false,
-                          child: Text(
-                            biography ?? '',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: AppColors.black,
-                            ),
-                          ),
-                        ),
+Visibility(
+  visible: biography?.isNotEmpty ?? false, // Muestra el texto solo si biography no es nulo y no está vacío.
+  child: Container(
+    width: double.infinity, // Hace que el Container ocupe todo el ancho disponible.
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0), // Agrega un padding de 16 píxeles a los lados.
+      child: Text(
+        biography ?? '', // Muestra la biografía si existe, de lo contrario muestra una cadena vacía.
+        style: const TextStyle(
+          fontSize: 16,
+          color: AppColors.black,
+        ),
+        textAlign: TextAlign.justify, // Justifica el texto para que ocupe todo el ancho disponible.
+      ),
+    ),
+  ),
+),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -412,7 +420,7 @@ class _UpdateState extends State<Profile> {
                                   ? 'Se unió el ${_formatDate(createdAt!)}'
                                   : '...',
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 13.5,
                                 color: AppColors.black,
                               ),
                               icon: MaterialIcons.date,

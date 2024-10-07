@@ -88,12 +88,12 @@ class CustomDrawer extends StatelessWidget {
         Container(
           color: AppColors.whiteapp,
           padding: const EdgeInsets.fromLTRB(
-            25,
-            55.0,
-            10.0,
+            16,
+            65.0,
+            16.0,
             0.0,
           ),
-          height: 200,
+          height: 235,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -105,12 +105,12 @@ class CustomDrawer extends StatelessWidget {
                 showBorder: false,
                 onPressed: onProfileTap,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               // Texto
               Text(
                 name ?? '...',
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
@@ -120,21 +120,21 @@ class CustomDrawer extends StatelessWidget {
               Text(
                 '@${username ?? '...'}',
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               // Información de seguidores y siguiendo
               Row(
                 children: [
                   Text(
                     '${followers ?? '0'}',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
@@ -144,16 +144,16 @@ class CustomDrawer extends StatelessWidget {
                     text: 'Seguidores',
                     onPressed: onFollowersTap,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       color: AppColors.inputDark,
                     ),
                     padding: EdgeInsets.zero,
                   ),
-                  const SizedBox(width: 20), // Espacio entre "Siguiendo" y "Seguidores"
+                  const SizedBox(width: 25), // Espacio entre "Siguiendo" y "Seguidores"
                   Text(
                     '${following ?? '0'}',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
@@ -163,7 +163,7 @@ class CustomDrawer extends StatelessWidget {
                     text: 'Seguidos',
                     onPressed: onFollowedTap,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       color: AppColors.inputDark,
                     ),
                     padding: EdgeInsets.zero,
@@ -176,7 +176,7 @@ class CustomDrawer extends StatelessWidget {
         Container(
           height: 1.0,
           margin: const EdgeInsets.symmetric(
-            horizontal: 20.0,
+            horizontal: 16.0,
           ),
           decoration: BoxDecoration(
             color: AppColors.inputLigth,
@@ -211,7 +211,7 @@ class CustomDrawer extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -239,25 +239,24 @@ class CustomDrawer extends StatelessWidget {
   Widget _buildFooter(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 20),
         Container(
-          height: 1.0,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 20.0,
+            height: 1.0,
+            margin: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.inputLigth,
+              borderRadius: BorderRadius.circular(1.0),
+            ),
           ),
-          decoration: BoxDecoration(
-            color: AppColors.inputLigth,
-            borderRadius: BorderRadius.circular(1.0),
-          ),
-        ),
         SizedBox(
-          height: 60,
+          height: 70,
           child: ListTile(
             leading:
-              const Icon(MaterialIcons.settings, color: AppColors.black, size: 24.0),
+              const Icon(MaterialIcons.settings, color: AppColors.black, size: 20.0),
             title: const Text(
               'Configuración y privacidad',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: AppColors.black),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.black),
             ),
             onTap: () async {
               if (onSettingsTap != null) {
@@ -272,12 +271,12 @@ class CustomDrawer extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 115,
+          height: 85,
           child: ListTile(
-            leading: const Icon(MaterialIcons.info, color: AppColors.black, size: 24.0),
+            leading: const Icon(MaterialIcons.info, color: AppColors.black, size: 20.0),
             title: const Text(
               'Acerca de',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
             onTap: () async {
               if (onAboutTap != null) {

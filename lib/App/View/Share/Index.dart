@@ -342,14 +342,20 @@ class _IndexShareState extends State<IndexShare> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text(
-                                        'Haz compartido esta publicación',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontStyle: FontStyle.italic,
-                                          color: AppColors.grey,
+                                      // Ajuste del texto para que sea flexible y ocupe el espacio necesario
+                                      const Flexible(
+                                        child: Text(
+                                          'Haz compartido esta publicación',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontStyle: FontStyle.italic,
+                                            color: AppColors.grey,
+                                          ),
+                                          maxLines: 2, // Permitir un máximo de 2 líneas
+                                          overflow: TextOverflow.ellipsis, // Añadir puntos suspensivos si es necesario
                                         ),
                                       ),
+                                      const SizedBox(width: 8), // Añadir un espacio entre el texto y la fecha
                                       Text(
                                         _formatDate(createdAt),
                                         style: const TextStyle(

@@ -373,9 +373,8 @@ class _UpdateState extends State<EditProfile> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(
+        title: 
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
@@ -397,7 +396,6 @@ class _UpdateState extends State<EditProfile> {
             ],
           ),
         ),
-      ),
       body: SingleChildScrollView(
         // Aquí agregas el SingleChildScrollView
         child: Padding(
@@ -455,7 +453,7 @@ class _UpdateState extends State<EditProfile> {
               BasicTextArea(
                 text: 'Biografía',
                 input: input['biography']!,
-                maxLength: 70,
+                maxLength: 150,
               ),
               const SizedBox(height: 20.0),
               DateInput(

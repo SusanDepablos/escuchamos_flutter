@@ -232,6 +232,7 @@ class _NewRepostState extends State<NewRepost> {
                 },
                 width: 90,
                 height: 20,
+                size: 14,
                 isLoading: submitting,
                 borderRadius: 24
               ),

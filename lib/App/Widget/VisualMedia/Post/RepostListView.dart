@@ -452,7 +452,7 @@ class PostWidgetInternal extends StatelessWidget {
                   imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
                       ? NetworkImage(profilePhotoUser!)
                       : null,
-                  avatarSize: 30.0,
+                  avatarSize: 25.0,
                   onPressed: onProfileTap,
                 ),
                 const SizedBox(width: 10),
@@ -468,7 +468,7 @@ class PostWidgetInternal extends StatelessWidget {
                               nameUser,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 15,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -478,7 +478,7 @@ class PostWidgetInternal extends StatelessWidget {
                             _formatDate(createdAt),
                             style: const TextStyle(
                               color: AppColors.grey,
-                              fontSize: 14,
+                              fontSize: 13,
                             ),
                           ),
                         ],
@@ -487,7 +487,7 @@ class PostWidgetInternal extends StatelessWidget {
                         '@$usernameUser',
                         style: const TextStyle(
                           color: AppColors.grey,
-                          fontSize: 14,
+                          fontSize: 13,
                         ),
                       ),
                     ],

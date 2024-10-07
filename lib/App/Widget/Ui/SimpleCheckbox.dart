@@ -40,7 +40,7 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
                 widget.label,
                 style: TextStyle(
                   color: widget.labelColor,
-                  fontSize: 16, // Tamaño de fuente por defecto
+                  fontSize: 15, // Tamaño de fuente por defecto
                 ),
               ),
             ),

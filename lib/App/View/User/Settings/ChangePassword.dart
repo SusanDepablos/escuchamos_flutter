@@ -174,9 +174,8 @@ class _UserChangePasswordState extends State<UserChangePassword> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(
+        title:
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -198,12 +197,11 @@ class _UserChangePasswordState extends State<UserChangePassword> {
             ],
           ),
         ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 10.0),
             BasicInput(
               text: 'Contraseña actual',
               input: _input['old_password']!,

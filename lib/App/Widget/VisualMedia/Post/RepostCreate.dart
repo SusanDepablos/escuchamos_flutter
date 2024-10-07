@@ -111,20 +111,23 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Nombre del usuario
-                        Text(
-                          widget.nameUser,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.6, // Ajusta el ancho según sea necesario
+                          child: Text(
+                            widget.nameUser,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        // Nombre de usuario en formato @tal
                         Text(
                           '@${widget.username}',
                           style: const TextStyle(
-                            fontSize: 14,
                             color: Colors.grey,
+                            fontSize: 14,
                           ),
                         ),
                       ],

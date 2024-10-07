@@ -175,7 +175,7 @@ class SelectWithFlags extends SelectBase<String?> {
         Image.asset(
           flagAssetPath,
           package: 'country_icons',
-          width: 20.0,
+          width: 25.0,
           height: 14.0,
         ),
         SizedBox(width: 6.0),

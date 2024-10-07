@@ -230,9 +230,8 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(
+        title:
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -253,7 +252,6 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
               ),
             ],
           ),
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -288,14 +286,14 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
             Row(
               children: [
                 SizedBox(
-                  width: 60,
+                  width: 80,
                   child: SelectWithFlags(
                     selectedValue: _selected,
                     itemsMap: countryData,
                     hintText: '+0',
                     textStyle: const TextStyle(
                       color: AppColors.black,
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w800,
                     ),
                     dropdownColor: AppColors.whiteapp,
@@ -308,7 +306,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     },
                   ),
                 ),
-                const SizedBox(width: 15.0),
+                const SizedBox(width: 20.0),
                 Expanded(
                   child: NumericInput(
                     text: 'Número telefónico',

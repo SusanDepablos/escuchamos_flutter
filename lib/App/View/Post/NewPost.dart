@@ -194,7 +194,7 @@ class _NewPostState extends State<NewPost> {
             const Text(
               'Crear Publicación',
               style: TextStyle(
-                fontSize: AppFond.title,
+                fontSize: 18,
                 fontWeight: FontWeight.w800,
                 color: AppColors.black,
               ),
@@ -206,6 +206,7 @@ class _NewPostState extends State<NewPost> {
               },
               width: 90,
               height: 20,
+              size: 14,
               isLoading: submitting,
               borderRadius: 24
             ),
@@ -238,13 +239,17 @@ class _NewPostState extends State<NewPost> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        name ?? '...',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7, // Ajusta el ancho según sea necesario
+                        child: Text(
+                          name ?? '...',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         '@${username ?? '...'}',

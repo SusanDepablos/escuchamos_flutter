@@ -132,7 +132,6 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 ),
               ),
               const SizedBox(height: 8.0), // Espacio entre el título y el contenido
-
               const Text(
                 'Antes de proceder, ten en cuenta que si eliminas tu cuenta de EscuChamos, no habrá forma de restaurarla. Si tu cuenta se eliminó por error o accidentalmente, no podrás recuperarla.\n\n'
                 'Si solo deseas cambiar tu nombre de usuario, no es necesario que elimines tu cuenta; puedes modificarlo en tu configuración.\n\n'
@@ -142,7 +141,6 @@ class _DeleteAccountState extends State<DeleteAccount> {
               ),
 
               const SizedBox(height: 54.0), // Espacio antes del botón
-
               const Divider(color: AppColors.inputLigth, height: 40.0),
               GenericButton(
                 label: 'Eliminar',

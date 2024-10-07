@@ -8,6 +8,7 @@ class GenericButton extends StatelessWidget {
   final Color? color; // Parámetro para color
   final double? width; // Parámetro para el ancho
   final double? height; // Parámetro para el alto
+  final double? size; // Parámetro para el alto
   final double? borderRadius; // Nuevo parámetro para el radio de los bordes
 
   GenericButton({
@@ -17,6 +18,7 @@ class GenericButton extends StatelessWidget {
     this.color, // Inicialización del nuevo parámetro
     this.width, // Inicialización del parámetro de ancho
     this.height, // Inicialización del parámetro de alto
+    this.size, // Inicialización del parámetro de alto
     this.borderRadius, // Inicialización del nuevo parámetro de radio
   });
 
@@ -30,7 +32,7 @@ class GenericButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 15.0), // Bordes redondeados
         ),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         minimumSize: Size(width ?? double.infinity, height ?? 50), // Tamaño mínimo configurable
       ),
       child: Stack(
@@ -39,7 +41,7 @@ class GenericButton extends StatelessWidget {
           // Indicador de carga visible cuando isLoading es true
           Visibility(
             visible: isLoading,
-            child: SizedBox(
+            child: const SizedBox(
               width: 24, // Ancho del indicador de carga
               height: 24, // Alto del indicador de carga
               child: CircularProgressIndicator(
@@ -53,7 +55,7 @@ class GenericButton extends StatelessWidget {
             visible: !isLoading,
             child: Text(
               label,
-              style: TextStyle(fontSize: 16), // Ajusta el tamaño del texto si es necesario
+              style: TextStyle(fontSize: size ?? 16), // Ajusta el tamaño del texto si es necesario
             ),
           ),
         ],

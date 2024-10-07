@@ -181,9 +181,8 @@ class _CountryUpdateState extends State<CountryUpdate> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Column(
+        title: 
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -205,7 +204,6 @@ class _CountryUpdateState extends State<CountryUpdate> {
             ],
           ),
         ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
