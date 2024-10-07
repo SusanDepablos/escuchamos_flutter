@@ -74,9 +74,6 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Future<Widget> _fetchUsers() async {
-    if (_searchText.isEmpty) {
-      return Center(child: Text(''));
-    }
     return IndexUser(
       search_: _searchText,
     );

@@ -160,8 +160,17 @@ class _IndexUserState extends State<IndexUser> {
                     )
                   : ListView.builder(
                       controller: _scrollController,
-                      itemCount: users.length,
+                      itemCount: users.length + (_isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
+                        if (index == users.length) {
+                          return SizedBox(
+                            height: 60.0,
+                            child: Center(
+                              child: CustomLoadingIndicator(
+                                  color: AppColors.primaryBlue),
+                            ),
+                          );
+                        }
                         final user = users[index];
                         final profileFile = getProfileFile(user.relationships.files);
                         return UserListView(
@@ -178,6 +187,7 @@ class _IndexUserState extends State<IndexUser> {
                           },
                         );
                       },
+                      padding: EdgeInsets.only(top: 20.0, bottom: _hasMorePages ? 0 : 70.0),
                     ),
               ),
             ],
