@@ -273,7 +273,7 @@ class _UpdateState extends State<EditAccount> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Ingresa tu contraseña actual para cambiar el correo electrónico',
+                    'Ingresa tu contraseña actual para cambiar tú usuario',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 18,
