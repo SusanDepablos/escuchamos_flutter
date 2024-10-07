@@ -252,7 +252,7 @@ class _CountryUpdateState extends State<CountryUpdate> {
                 });
               },
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 20.0),
             GenericButton(
               label: 'Actualizar',
               onPressed: _updateCountry,

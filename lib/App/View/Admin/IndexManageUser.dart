@@ -41,6 +41,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
   bool _hasMorePages = true;
   bool _isInitialLoading = true;
   int _id =  0;
+  bool _submitting = false;
 
   final filters = {
     'pag': '10',
@@ -217,11 +218,19 @@ class _IndexManageUserState extends State<IndexManageUser> {
                 },
               ),
               onAccept: () async {
-                if (selectedGroup != null) {
+                if (selectedGroup != null && !_submitting) {
                   int groupId = selectedGroup!;
-                  await _updateGroup(groupId, userId, context); // Función para actualizar grupo
+                  setState(() {
+                    _submitting = true; 
+                  });
+                  await _updateGroup(groupId, userId, context);
+                  setState(() {
+                    _submitting = false;
+                  });
+                  Navigator.of(context).pop();
                 }
               },
+            acceptButtonEnabled: !_submitting, 
             );
           },
         );
@@ -235,7 +244,6 @@ class _IndexManageUserState extends State<IndexManageUser> {
       var response = await GroupCommandUpdate(GroupUpdate()).execute(groupId, id);
 
       if (response is SuccessResponse) {
-        Navigator.of(context).pop(); // Cierra el diálogo
         reloadView();
       } else {
         await showDialog(
@@ -301,7 +309,6 @@ class _IndexManageUserState extends State<IndexManageUser> {
                           onTap: () {
                             int userGroup = user.relationships.groups[0].id;
                             int userId = user.id;
-
                             showModalBottomSheet(
                               context: context,
                                 builder: (BuildContext context) {

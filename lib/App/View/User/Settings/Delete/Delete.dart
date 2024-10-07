@@ -390,7 +390,7 @@ class _DeleteState extends State<Delete> {
                     border: _borderColors['password']!,
                     error: _errorMessages['password'],
                   ),
-                  const SizedBox(height: 29.0),
+                  const SizedBox(height: 20.0),
                   GenericButton(
                     color: AppColors.errorRed,
                     label: 'Eliminar',

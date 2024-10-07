@@ -103,7 +103,7 @@ class SecureInput extends BasicInput {
     required TextEditingController input,
     Color border = AppColors.inputBasic,
     String? error,
-    bool obscureText = true,
+    bool obscureText = false,
     this.maxLength = 8,
   }) : super(
           text: text,
@@ -197,7 +197,7 @@ class __SecureInputState extends __BasicInputState {
         ),
         if (widget.error != null)
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 20.0),
             child: Text(
               widget.error!,
               style: const TextStyle(color: AppColors.errorRed, fontSize: 12),

@@ -37,17 +37,23 @@ class _UpdateState extends State<EditAccount> {
   bool _submitting = false;
   String? username;
   String? name;
+  bool password = true;
+  bool _username = false;
+  String? userEmail;
 
   final input = {
     'fieldUpdate': TextEditingController(),
+    'password': TextEditingController(),
   };
 
   final _borderColors = {
     'fieldUpdate': AppColors.inputBasic,
+    'password': AppColors.inputBasic,
   };
 
   final Map<String, String?> _errorMessages = {
     'fieldUpdate': null,
+    'password': null,
   };
 
   Future<void> _callUser() async {
@@ -64,6 +70,7 @@ class _UpdateState extends State<EditAccount> {
             _user = response;
             name = _user!.data.attributes.name;
             username = _user!.data.attributes.username;
+            userEmail = _user!.data.attributes.email;
           });
         } else {
           showDialog(
@@ -86,6 +93,71 @@ class _UpdateState extends State<EditAccount> {
           ),
         );
       }
+    }
+  }
+
+    Future<void> _verifyPassword() async {
+    setState(() {
+      _submitting = true;
+    });
+
+    try {
+      var response = await VerifyPasswordCommand(VerifyPasswords()).execute(
+        input['password']!.text,
+      );
+
+      if (response is SuccessResponse) {
+        input['password']!.clear();
+
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+
+        password = false;
+        _username = true;
+      } else if (response is ValidationResponse) {
+        if (response.key['password'] != null) {
+          setState(() {
+            _borderColors['password'] = AppColors.inputDark;
+            _errorMessages['password'] = response.message('password');
+          });
+          Future.delayed(const Duration(seconds: 2), () {
+            if (mounted) {
+              setState(() {
+                _borderColors['password'] = AppColors.inputBasic;
+                _errorMessages['password'] = null;
+              });
+            }
+          });
+        }
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    } finally {
+      setState(() {
+        _submitting = false;
+      });
     }
   }
 
@@ -195,46 +267,82 @@ class _UpdateState extends State<EditAccount> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.label,
-                  textAlign: TextAlign.left, // Alinea el texto a la izquierda
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.black,
+            Visibility(
+              visible: password,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Ingresa tu contraseña actual para cambiar el correo electrónico',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black,
+                    ),
                   ),
-                ),
-                // El segundo texto se oculta si _textChanged; es true
-                if (!widget.textChanged) const SizedBox(height: 1.0),
-                Text(
-                  'Usuario actual: @${username ?? '...'}',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.black,
-                    fontStyle: FontStyle.italic,
+                  const SizedBox(height: 10.0),
+                  BasicInput(
+                    text: 'Contraseña actual',
+                    input: input['password']!,
+                    obscureText: true,
+                    border: _borderColors['password']!,
+                    error: _errorMessages['password'],
                   ),
-                )
-              ],
+                  const SizedBox(height: 20.0),
+                  GenericButton(
+                    label: 'Verificar',
+                    onPressed: () {
+                      _verifyPassword();
+                    },
+                    isLoading: _submitting,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 10.0),
-            GenericInput(
-              maxLength: 30,
-              text: widget.text,
-              input: input['fieldUpdate']!,
-              border: _borderColors['fieldUpdate']!,
-              error: _errorMessages['fieldUpdate'],
-            ),
-            const SizedBox(height: 32.0),
-            GenericButton(
-              label: 'Actualizar',
-              onPressed: () {
-                _updateField();
-              },
-              isLoading: _submitting,
+            Visibility(
+              visible: _username,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.label,
+                    textAlign: TextAlign.left, // Alinea el texto a la izquierda
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  // El segundo texto se oculta si _textChanged; es true
+                  if (!widget.textChanged) const SizedBox(height: 1.0),
+                  Text(
+                    'Usuario actual: @${username ?? '...'}',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.black,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  GenericInput(
+                    maxLength: 30,
+                    text: widget.text,
+                    input: input['fieldUpdate']!,
+                    border: _borderColors['fieldUpdate']!,
+                    error: _errorMessages['fieldUpdate'],
+                  ),
+                  const SizedBox(height: 20.0),
+                  GenericButton(
+                    label: 'Actualizar',
+                    onPressed: () {
+                      _updateField();
+                    },
+                    isLoading: _submitting,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

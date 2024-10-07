@@ -26,7 +26,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
   String? name;
   bool password = true;
   bool email = false;
-  String? user_email;
+  String? userEmail;
 
   final _input = {
     'password': TextEditingController(),
@@ -56,7 +56,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
           setState(() {
             _user = response;
             name = _user!.data.attributes.name;
-            user_email = _user!.data.attributes.email;
+            userEmail = _user!.data.attributes.email;
           });
         } else {
           showDialog(
@@ -277,7 +277,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                     border: _borderColors['password']!,
                     error: _errorMessages['password'],
                   ),
-                  const SizedBox(height: 29.0),
+                  const SizedBox(height: 20.0),
                   GenericButton(
                     label: 'Verificar',
                     onPressed: () {
@@ -304,7 +304,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                   ),
                   const SizedBox(height: 1.0),
                   Text(
-                    'Correo actual: ${user_email ?? '...'}',
+                    'Correo actual: ${userEmail ?? '...'}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       fontSize: 12,
@@ -319,7 +319,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                     border: _borderColors['email']!,
                     error: _errorMessages['email'],
                   ),
-                  const SizedBox(height: 29.0),
+                  const SizedBox(height: 20.0),
                   GenericButton(
                     label: 'Actualizar',
                     onPressed: () {

@@ -645,7 +645,7 @@ Future<void> _postReport(int postId, String observation, BuildContext context) a
                                 });
                               },
                               onIndexLikeTap: () {
-                                String objectId = post.id.toString();
+                                int objectId = post.id;
                                 Navigator.pushNamed(
                                   context,
                                   'index-reactions',

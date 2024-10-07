@@ -33,7 +33,6 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
               onTap: widget.onLabelTap,
@@ -41,11 +40,11 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
                 widget.label,
                 style: TextStyle(
                   color: widget.labelColor,
-                  fontSize: 15, // Tamaño de fuente por defecto
+                  fontSize: 16, // Tamaño de fuente por defecto
                 ),
               ),
             ),
-            SizedBox(width: 8.0), // Ajusta el espaciado si es necesario
+            Spacer(), // Este widget expande el espacio entre el label y el checkbox
             Checkbox(
               value: _isChecked,
               onChanged: (bool? value) {
@@ -60,16 +59,13 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
           ],
         ),
         if (widget.error != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              widget.error!,
-              style: TextStyle(
-                color: AppColors.errorRed,
-                fontSize: 12,
-              ),
-            ),
+        Text(
+          widget.error!,
+          style: const TextStyle(
+            color: AppColors.errorRed,
+            fontSize: 12,
           ),
+        ),
       ],
     );
   }

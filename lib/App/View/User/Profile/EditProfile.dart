@@ -464,7 +464,7 @@ class _UpdateState extends State<EditProfile> {
                 border: _borderColors['birthdate']!,
                 error: _errorMessages['birthdate'],
               ),
-              const SizedBox(height: 35.0),
+              const SizedBox(height: 20.0),
               GenericButton(
                 label: 'Actualizar',
                 onPressed: _updateUser,

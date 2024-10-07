@@ -158,7 +158,6 @@ class _LabelActionWithDisableState extends State<LabelActionWithDisable> {
                   color: AppColors.primaryBlue
                 ),
               ),
-
             // Mostrar el texto si no está cargando.
             if (!widget.isLoading)
               Text(

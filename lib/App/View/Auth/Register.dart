@@ -245,8 +245,8 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 8.0),
               SimpleCheckbox(
-                label: 'Acepto los términos y condiciones',
-                labelColor: AppColors.inputDark,
+                label: 'Aceptar los términos y condiciones',
+                labelColor: AppColors.black,
                 onChanged: (bool isChecked) {
                   setState(() {
                     _checkbox = isChecked;
@@ -262,13 +262,13 @@ class _RegisterState extends State<Register> {
                 },
                 error: _errorMessages['checkbox'],
               ),
-              const SizedBox(height: 28.0),
+              const SizedBox(height: 20.0),
               GenericButton(
                 label: 'Registrarse',
                 onPressed: _call,
                 isLoading: _submitting,
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 5.0),
               Center(
                 child: BasicLabel(
                   name: 'Iniciar sesión',

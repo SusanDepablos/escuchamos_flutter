@@ -138,12 +138,13 @@ class _LoginState extends State<Login> {
                 border: _borderColors['password']!,
                 error: _errorMessages['password'],
               ),
-              const SizedBox(height: 28.0),
+              const SizedBox(height: 30.0),
               GenericButton(
                 label: 'Iniciar Sesión',
                 onPressed: _call,
                 isLoading: _submitting,
               ),
+              const SizedBox(height: 5.0),
               Center(
                 child: BasicLabel(
                   name: 'Recuperar tú cuenta',
@@ -153,7 +154,7 @@ class _LoginState extends State<Login> {
                   },
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Center(
                 child: BasicLabel(
                   name: 'Crear cuenta nueva',
@@ -183,7 +184,6 @@ class _LoginState extends State<Login> {
                                 .chain(CurveTween(curve: curve));
                             var fadeTween = Tween(begin: 0.0, end: 1.0)
                                 .chain(CurveTween(curve: curve));
-
                             return SlideTransition(
                               position: animation.drive(slideTween),
                               child: FadeTransition(

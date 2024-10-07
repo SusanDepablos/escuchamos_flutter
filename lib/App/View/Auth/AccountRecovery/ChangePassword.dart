@@ -136,7 +136,7 @@ class _RecoverAccountChangePasswordState
                 border: _borderColors['new_password']!,
                 error: _errorMessages['new_password'],
               ),
-              const SizedBox(height: 28.0),
+              const SizedBox(height: 20.0),
               GenericButton(
                 label: 'Enviar',
                 onPressed: _call,

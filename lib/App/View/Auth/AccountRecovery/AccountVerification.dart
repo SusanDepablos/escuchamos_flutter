@@ -153,7 +153,7 @@ class _RecoverAccountVerificationState
               style:
                   const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 26.0),
+            const SizedBox(height: 16.0),
             SecureInput(
               text: 'Ingrese el código',
               input: _codeController,

@@ -324,7 +324,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                 ),
               ],
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 20.0),
             LockableButton(
               label: 'Guardar',
               isLoading: _submitting,
