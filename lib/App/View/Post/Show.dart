@@ -287,30 +287,12 @@ class _ShowState extends State<Show> {
 
   void _showReportDialog(postId, BuildContext context) {
     List<Map<String, dynamic>> observationData = [
-      {
-        'id': 1,
-        'name': 'Contenido inapropiado',
-      },
-      {
-        'id': 2,
-        'name': 'Spam o auto-promoción',
-      },
-      {
-        'id': 3,
-        'name': 'Desinformación',
-      },
-      {
-        'id': 4,
-        'name': 'Violación de derechos de autor',
-      },
-      {
-        'id': 5,
-        'name': 'Acoso o intimidación',
-      },
-      {
-        'id': 6,
-        'name': 'Otro',
-      },
+      {'id': 1, 'name': 'Contenido inapropiado'},
+      {'id': 2, 'name': 'Spam o auto-promoción'},
+      {'id': 3, 'name': 'Desinformación'},
+      {'id': 4, 'name': 'Violación de derechos de autor'},
+      {'id': 5, 'name': 'Acoso o intimidación'},
+      {'id': 6, 'name': 'Otro'},
     ];
 
     // Inicializa con el primer valor
@@ -338,11 +320,18 @@ class _ShowState extends State<Show> {
                 },
               ),
               onAccept: () async {
-                if (selectedObservation != null) {
+                if (selectedObservation != null && !_submitting) { // Asegúrate de que no esté en envío
+                  setState(() {
+                    _submitting = true; // Bloquear el botón
+                  });
                   await _postReport(postId, selectedObservation!, context); // Enviar el name seleccionado
+                  setState(() {
+                    _submitting = false; // Desbloquear el botón después de la función
+                  });
                   Navigator.of(context).pop(); // Cierra el diálogo
                 }
               },
+              acceptButtonEnabled: !_submitting, // Habilitar/deshabilitar el botón
             );
           },
         );

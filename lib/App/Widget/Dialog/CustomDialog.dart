@@ -6,6 +6,7 @@ class CustomDialog extends StatelessWidget {
   final String? content;
   final Widget selectWidget; // Widget para el Select (por ejemplo, SelectBasic)
   final VoidCallback? onAccept; // Función que se ejecuta al aceptar
+  final bool acceptButtonEnabled; // Nueva variable para habilitar/deshabilitar el botón
 
   const CustomDialog({
     Key? key,
@@ -13,6 +14,7 @@ class CustomDialog extends StatelessWidget {
     this.content,
     required this.selectWidget,
     this.onAccept,
+    this.acceptButtonEnabled = true, // Valor por defecto en true
   }) : super(key: key);
 
   @override
@@ -61,11 +63,13 @@ class CustomDialog extends StatelessWidget {
             ),
             const SizedBox(width: 20), // Espacio entre los botones
             TextButton(
-              onPressed: () {
-                if (onAccept != null) {
-                  onAccept!(); // Ejecuta la función pasada al aceptar
-                }
-              },
+              onPressed: acceptButtonEnabled // Habilita/deshabilita el botón
+                  ? () {
+                      if (onAccept != null) {
+                        onAccept!(); // Ejecuta la función pasada al aceptar
+                      }
+                    }
+                  : null, // Desactiva el botón si no está habilitado
               child: const Text(
                 'Aceptar',
                 style: TextStyle(

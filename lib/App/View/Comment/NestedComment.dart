@@ -327,11 +327,18 @@ void updateCommentPopup(
                 },
               ),
               onAccept: () async {
-                if (selectedObservation != null) {
+                if (selectedObservation != null && !_submitting) { // Asegúrate de que no esté en envío
+                  setState(() {
+                    _submitting = true; // Bloquear el botón
+                  });
                   await _postReport(commentId, selectedObservation!, context); // Enviar el name seleccionado
+                  setState(() {
+                    _submitting = false; // Desbloquear el botón después de la función
+                  });
                   Navigator.of(context).pop(); // Cierra el diálogo
                 }
               },
+              acceptButtonEnabled: !_submitting, // Habilitar/deshabilitar el botóns
             );
           },
         );
