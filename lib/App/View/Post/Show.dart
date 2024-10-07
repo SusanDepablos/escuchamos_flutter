@@ -7,6 +7,7 @@ import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostUpdatePopup.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostListView.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostListView.dart';
@@ -43,9 +44,11 @@ class _ShowState extends State<Show> {
   String? _body;
   DateTime? _createdAt;
   List<String>? _mediaUrls;
+  List<String>? _mediaUrlsRepost;
   int? _reactionsCount;
   int? _commentsCount;
   int? _totalSharesCount;
+  int? _totalSharesCountRepost;
   bool? _reaction;
   bool _submitting = false;
 
@@ -97,6 +100,8 @@ class _ShowState extends State<Show> {
             _commentsCount = _post?.data.relationships.commentsCount;
             _totalSharesCount = _post?.data.relationships.totalSharesCount;
             _reaction = _post?.data.relationships.reactions.any((reaction) => reaction.attributes.userId == _id) ?? false;
+            _mediaUrlsRepost =  _post?.data.relationships.post?.relationships.files.map((file) => file.attributes.url).toList() ?? [];
+            _totalSharesCountRepost = _post?.data.relationships.post?.relationships.totalSharesCount;
           });
         } else {
           showDialog(
@@ -381,6 +386,7 @@ class _ShowState extends State<Show> {
     try {
       var response =  await ShareCommandPost(SharePost()).execute(postId);
       if (response is SuccessResponse) {
+        _callPost();
         await showDialog(
           context: context,
           builder: (context) => AutoClosePopup(
@@ -430,10 +436,83 @@ class _ShowState extends State<Show> {
           : CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PostWidget(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_post?.data.attributes.postId == null) ...[
+                      PostWidget(
+                        reaction: _reaction ?? false,
+                        onLikeTap: () => _postReaction(),
+                        nameUser: _name ?? '...',
+                        usernameUser: _username ?? '...',
+                        profilePhotoUser: _profilePhotoUrl ?? '',
+                        onProfileTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            'profile',
+                            arguments: {'showShares': false, 'userId': _userId},
+                          ).then((_) {
+                            _callPost();
+                          });
+                        },
+                        onIndexLikeTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            'index-reactions',
+                            arguments: {
+                              'objectId': widget.id,
+                              'model': 'post',
+                              'appBar': 'Reacciones'
+                            },
+                          );
+                        },
+                        onIndexCommentTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            'index-comments',
+                            arguments: {
+                              'postId': widget.id,
+                            },
+                          ).then((_) {
+                            _callPost();
+                          });
+                        },
+                        body: _body,
+                        mediaUrls: _mediaUrls,
+                        createdAt: _createdAt!,
+                        reactionsCount: _reactionsCount ?? 0,
+                        commentsCount: _commentsCount ?? 0,
+                        totalSharesCount: _totalSharesCount ?? 0,
+                        authorId: _userId!,
+                        currentUserId: _id!,
+                        onDeleteTap: () {_deletePost();},
+                        onEditTap: () {
+                          input['body']!.text = _body ?? '';
+                          showPostPopup(context, input['body']!.text, widget.id, _mediaUrls);
+                        },
+                        onRepostTap: () { 
+                          int postId = widget.id;
+                          Navigator.pushNamed(
+                            context,
+                            'new-repost',
+                            arguments: {
+                              'postId': postId,
+                            },
+                          ).then((_) {
+                            _callPost();
+                          });
+                        },
+                        onReportTap: () {
+                          int postId = widget.id;
+                          _showReportDialog(postId, context);
+                        },
+                        onShareTap: () {
+                          int postId = widget.id;
+                          _postShare(postId, context);
+                        }
+                      )
+                      ] else ...[
+                        RepostWidget(
                           reaction: _reaction ?? false,
                           onLikeTap: () => _postReaction(),
                           nameUser: _name!,
@@ -471,11 +550,10 @@ class _ShowState extends State<Show> {
                             });
                           },
                           body: _body,
-                          mediaUrls: _mediaUrls,
                           createdAt: _createdAt!,
                           reactionsCount: _reactionsCount ?? 0,
                           commentsCount: _commentsCount ?? 0,
-                          totalSharesCount: _totalSharesCount ?? 0,
+                          totalSharesCount: _totalSharesCountRepost ?? 0,
                           authorId: _userId!,
                           currentUserId: _id!,
                           onDeleteTap: () {_deletePost();},
@@ -488,15 +566,48 @@ class _ShowState extends State<Show> {
                             _showReportDialog(postId, context);
                           },
                           onShareTap: () {
-                            int postId = widget.id;
+                            int postId = _post?.data.relationships.post!.id ?? 0;
                             _postShare(postId, context);
-                          }
+                          },
+                          // Repost
+                          bodyRepost: _post?.data.relationships.post!.attributes.body ?? '',
+                          nameUserRepost: _post?.data.relationships.post!.relationships.user.name ?? '...',
+                          usernameUserRepost: _post?.data.relationships.post!.relationships.user.username ?? '...',
+                          createdAtRepost: _post?.data.relationships.post!.attributes.createdAt ??  DateTime.now(),
+                          profilePhotoUserRepost: _post?.data.relationships.post!.relationships.user.profilePhotoUrl ?? '',
+                          mediaUrlsRepost: _mediaUrlsRepost,
+                          onPostTap: (){ 
+                            int? postId = _post?.data.relationships.post!.id;
+                            Navigator.pushNamed(
+                              context,
+                              'show-post',
+                              arguments: {
+                                'id': postId,
+                              }
+                              ).then((_) {
+                              postId_ = postId ?? 0;
+                              _callPost();
+                            });
+                          },
+                          onRepostTap: () { 
+                            int? postId = _post?.data.relationships.post!.id;
+                            Navigator.pushNamed(
+                              context,
+                              'new-repost',
+                              arguments: {
+                                'postId': postId,
+                              },
+                            ).then((_) {
+                              _callPost();
+                            });
+                          },
                         )
-                      ],
-                    ),
+                      ]
+                    ],
                   ),
-              ],
-            ),
+                ),
+            ],
+          ),
     );
   }
 }

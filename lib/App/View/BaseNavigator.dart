@@ -2,6 +2,7 @@ import 'package:escuchamos_flutter/App/View/EscuChamos/Index.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:async'; // Importa esto
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart';
@@ -38,6 +39,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   bool _isGroupTwo = false;
   bool _isBottomNavVisible = true;
   bool _isAppBarVisible = true;
+  Timer? _scrollTimer; // Timer para rastrear la actividad de scroll
 
   Future<void> _initializeData() async {
     await _callUser();
@@ -142,15 +144,41 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   void _onScroll(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
       if (notification.scrollDelta! > 0 && _isBottomNavVisible) {
+        // Si estás haciendo scroll hacia abajo y el nav es visible
         setState(() {
           _isBottomNavVisible = false;
         });
       } else if (notification.scrollDelta! < 0 && !_isBottomNavVisible) {
+        // Si estás haciendo scroll hacia arriba y el nav es invisible
         setState(() {
           _isBottomNavVisible = true;
         });
       }
+
+      // Reinicia el temporizador en cada actualización de scroll
+      _resetScrollTimer();
     }
+  }
+
+  void _resetScrollTimer() {
+    // Cancela el temporizador anterior si existe
+    _scrollTimer?.cancel();
+
+    // Inicia un nuevo temporizador de 2 segundos
+    _scrollTimer = Timer(const Duration(seconds: 1), () {
+      if (!_isBottomNavVisible) {
+        setState(() {
+          _isBottomNavVisible = true; // Muestra el nav después de 2 segundos
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // Asegúrate de cancelar el temporizador cuando el widget se destruya
+    _scrollTimer?.cancel();
+    super.dispose();
   }
 
   void _onBottomNavTap(int index) {
