@@ -634,14 +634,17 @@ class _IndexPostState extends State<IndexPost> {
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                               onProfileTap: () {
                                 int userId = post.relationships.user.id;
-                                Navigator.pushNamed(
-                                  context,
-                                  'profile',
-                                  arguments: {'showShares': false, 'userId': userId},
-                                ).then((_) {
-                                  postId_ = post.id;
-                                  _callPost();
-                                });
+                                // Solo ejecuta la navegación si `userId` es diferente a `_id`
+                                if (widget.userId == null) {
+                                  Navigator.pushNamed(
+                                    context,
+                                    'profile',
+                                    arguments: {'showShares': false, 'userId': userId},
+                                  ).then((_) {
+                                    postId_ = post.id;
+                                    _callPost();
+                                  });
+                                }
                               },
                               onIndexLikeTap: () {
                                 int objectId = post.id;
@@ -714,14 +717,16 @@ class _IndexPostState extends State<IndexPost> {
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                               onProfileTap: () {
                                 int userId = post.relationships.user.id;
-                                Navigator.pushNamed(
-                                  context,
-                                  'profile',
-                                  arguments: {'showShares': false, 'userId': userId},
-                                ).then((_) {
-                                  postId_ = post.id;
-                                  _callPost();
-                              });
+                                  if (widget.userId == null) {
+                                    Navigator.pushNamed(
+                                      context,
+                                      'profile',
+                                      arguments: {'showShares': false, 'userId': userId},
+                                    ).then((_) {
+                                      postId_ = post.id;
+                                      _callPost();
+                                  });
+                                }
                               },
                               onIndexLikeTap: () {
                                 int objectId = post.id;

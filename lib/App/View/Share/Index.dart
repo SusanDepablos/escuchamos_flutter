@@ -454,14 +454,16 @@ class _IndexShareState extends State<IndexShare> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            Navigator.pushNamed(
-                                              context,
-                                              'profile',
-                                              arguments: {
-                                                'showShares': showShares, // Coloca las claves entre comillas
-                                                'userId': userId,
-                                              },
-                                            );
+                                            if (widget.userId == null) {
+                                              Navigator.pushNamed(
+                                                context,
+                                                'profile',
+                                                arguments: {
+                                                  'showShares': showShares, // Coloca las claves entre comillas
+                                                  'userId': userId,
+                                                },
+                                              );
+                                            }
                                           },
                                           child: Row(
                                             children: [
@@ -469,17 +471,20 @@ class _IndexShareState extends State<IndexShare> {
                                                 imageProvider: profilePhotoUserShare != null && profilePhotoUserShare.isNotEmpty
                                                     ? NetworkImage(profilePhotoUserShare)
                                                     : null,
-                                                avatarSize: 22.0,
+                                                avatarSize: 30.0,
+                                                iconSize: 20.0,
                                                 showBorder: false,
                                                 onPressed: () {
-                                                  Navigator.pushNamed(
-                                                    context,
-                                                    'profile',
-                                                    arguments: {
-                                                      'showShares': showShares, // Coloca las claves entre comillas
-                                                      'userId': userId,
-                                                    },
-                                                  );
+                                                if (widget.userId == null) {
+                                                    Navigator.pushNamed(
+                                                      context,
+                                                      'profile',
+                                                      arguments: {
+                                                        'showShares': showShares, // Coloca las claves entre comillas
+                                                        'userId': userId,
+                                                      },
+                                                    );
+                                                  }
                                                 },
                                               ),
                                               Container(

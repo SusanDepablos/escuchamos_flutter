@@ -453,6 +453,7 @@ class PostWidgetInternal extends StatelessWidget {
                       ? NetworkImage(profilePhotoUser!)
                       : null,
                   avatarSize: 25.0,
+                  iconSize: 15.0,
                   onPressed: onProfileTap,
                 ),
                 const SizedBox(width: 10),
