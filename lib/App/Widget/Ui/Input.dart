@@ -317,6 +317,75 @@ class __GenericInputState extends __BasicInputState {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//"INPUT QUE LIMPIA EL TEXTO PRESIONANDO LA X Y SIRVE PARA GMAIL, HEREDA GENERIC INPUT"
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class EmailInput extends GenericInput {
+  EmailInput({
+    String? text,
+    required TextEditingController input,
+    Color border = AppColors.inputBasic,
+    String? error,
+    int maxLength = 50,
+  }) : super(
+          text: text,
+          input: input,
+          border: border,
+          error: error,
+          maxLength: maxLength,
+        );
+
+  @override
+  __EmailInputState createState() => __EmailInputState();
+}
+
+class __EmailInputState extends __GenericInputState {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.input,
+          maxLength: (widget as EmailInput).maxLength,
+          onChanged: (value) {
+            // Actualizar el estado si es necesario al cambiar el texto
+            setState(() {});
+          },
+          decoration: InputDecoration(
+            labelText: widget.text,
+            labelStyle: TextStyle(color: widget.border),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(color: widget.border),
+            ),
+            hintText: 'ejemplo@gmail.com', // Un hint para ayudar al usuario
+            hintStyle: const TextStyle(
+              color: AppColors.grey, // Cambiar a un color gris suave
+              fontSize: 15, // Ajustar el tamaño del texto
+              fontStyle: FontStyle.italic, // Hacer el texto en cursiva
+              fontWeight: FontWeight.w400,
+            ),
+            counterText: '', // Ocultar el contador de caracteres
+          ),
+        ),
+        if (widget.error != null && widget.error!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.error!,
+              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //"INPUT QUE PERMITE AMPLIARSE Y LIMPIA EL TEXTO PRESIONANDO LA X, HEREDA BASIC INPUT"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -360,6 +429,7 @@ class _BasicTextAreaState extends __BasicInputState {
           maxLength: (widget as BasicTextArea).maxLength, // Limita el número de caracteres
           inputFormatters: [
             LengthLimitingTextInputFormatter((widget as BasicTextArea).maxLength),
+            FilteringTextInputFormatter.deny(RegExp(r'\n')), // Filtra los saltos de línea
           ],
           decoration: InputDecoration(
             labelText: widget.text,
@@ -452,13 +522,26 @@ class __DateInputState extends __BasicInputState {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDialog<DateTime>(
+    DateTime now = DateTime.now();
+    DateTime tenYearsAgo = DateTime(now.year - 100, now.month, now.day);
+    DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
+
+    // Convierte la fecha del controlador a DateTime
+    DateTime? initialDate;
+    String dateFromApi = widget.input.text; // Asumiendo que el texto tiene el formato 'YYYY-MM-DD'
+    if (dateFromApi.isNotEmpty) {
+        initialDate = DateTime.parse(dateFromApi);
+    } else {
+        initialDate = tenYearsAgo; // Si no hay fecha, usa la fecha por defecto
+    }
+
+    DateTime? pickedDate = await showDialog<DateTime>( 
       context: context,
       builder: (BuildContext context) {
         return CustomDatePickerDialog(
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime(2100),
+          initialDate: initialDate!, // Establece la fecha inicial
+          firstDate: tenYearsAgo,   // Primera fecha es 100 años atrás
+          lastDate: yesterday,       // Última fecha es el día de ayer
           locale: const Locale('es', ''),
         );
       },
@@ -466,7 +549,7 @@ class __DateInputState extends __BasicInputState {
 
     if (pickedDate != null) {
       setState(() {
-        widget.input.text = "${pickedDate.toLocal()}".split(' ')[0];
+        widget.input.text = "${pickedDate.toLocal()}".split(' ')[0]; // Actualiza el controlador con la nueva fecha
       });
     }
   }
@@ -484,8 +567,8 @@ class __DateInputState extends __BasicInputState {
             readOnly: true, // El campo de texto solo se puede editar a través del selector de fecha
             onTap: () => _selectDate(context),
             decoration: InputDecoration(
-              labelText: widget.text, // Cambiado de hintText a labelText
-              labelStyle: TextStyle(color: widget.border), // Estilo para el label
+              labelText: widget.text,
+              labelStyle: TextStyle(color: widget.border),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: widget.border),

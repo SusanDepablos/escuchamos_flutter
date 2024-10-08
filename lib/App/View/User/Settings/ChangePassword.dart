@@ -210,13 +210,27 @@ class _UserChangePasswordState extends State<UserChangePassword> {
               error: _errorMessages['old_password'],
             ),
             const SizedBox(height: 20.0),
-            BasicInput(
-              text: 'Contraseña nueva',
-              input: _input['new_password']!,
-              obscureText: true,
-              border: _borderColors['new_password']!,
-              error: _errorMessages['new_password'],
-            ),
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BasicInput(
+                    text: 'Contraseña nueva',
+                    input: _input['new_password']!,
+                    obscureText: true,
+                    border: _borderColors['new_password']!,
+                    error: _errorMessages['new_password'],
+                  ),
+                  const SizedBox(height: 8), // Espacio entre el input y el texto explicativo
+                  const Text(
+                    'Tu contraseña nueva debe incluir letras, números y tener al menos 8 caracteres.',
+                    style: TextStyle(
+                      color: AppColors.grey, // Color del texto explicativo
+                      fontSize: 12.5, // Tamaño del texto
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
             const SizedBox(height: 20.0),
             GenericButton(
               label: 'Actualizar',

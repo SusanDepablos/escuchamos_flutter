@@ -440,6 +440,7 @@ class _IndexPostState extends State<IndexPost> {
             // Eliminar todos los posts que coincidan con cualquiera de las dos condiciones
             posts.removeWhere((post) => post.id == id || post.attributes.postId == id);
         });
+        _callPost();
         await showDialog(
           context: context,
           builder: (context) => AutoClosePopup(
@@ -473,89 +474,88 @@ class _IndexPostState extends State<IndexPost> {
     super.dispose();
   }
 
-void _showReportDialog(int postId, BuildContext context) {
-  List<Map<String, dynamic>> observationData = [
-    {'id': 1, 'name': 'Contenido inapropiado'},
-    {'id': 2, 'name': 'Spam o auto-promoción'},
-    {'id': 3, 'name': 'Desinformación'},
-    {'id': 4, 'name': 'Violación de derechos de autor'},
-    {'id': 5, 'name': 'Acoso o intimidación'},
-    {'id': 6, 'name': 'Otro'},
-  ];
+  void _showReportDialog(int postId, BuildContext context) {
+    List<Map<String, dynamic>> observationData = [
+      {'id': 1, 'name': 'Contenido inapropiado'},
+      {'id': 2, 'name': 'Spam o auto-promoción'},
+      {'id': 3, 'name': 'Desinformación'},
+      {'id': 4, 'name': 'Violación de derechos de autor'},
+      {'id': 5, 'name': 'Acoso o intimidación'},
+      {'id': 6, 'name': 'Otro'},
+    ];
 
-  String? selectedObservation = observationData[0]['name']; // "Contenido inapropiado"
-  bool _submitting = false; // Variable para manejar el estado de envío
+    String? selectedObservation = observationData[0]['name']; // "Contenido inapropiado"
+    bool _submitting = false; // Variable para manejar el estado de envío
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return CustomDialog(
-            title: 'Reportar Publicación',
-            content: 'Por favor, selecciona la razón para reportar esta publicación:',
-            selectWidget: SelectBasic(
-              hintText: 'Observación',
-              selectedValue: observationData.firstWhere((item) => item['name'] == selectedObservation)['id'],
-              items: observationData,
-              onChanged: (value) {
-                setState(() {
-                  selectedObservation = observationData.firstWhere((item) => item['id'] == value)['name'];
-                });
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return CustomDialog(
+              title: 'Reportar Publicación',
+              content: 'Por favor, selecciona la razón para reportar esta publicación:',
+              selectWidget: SelectBasic(
+                hintText: 'Observación',
+                selectedValue: observationData.firstWhere((item) => item['name'] == selectedObservation)['id'],
+                items: observationData,
+                onChanged: (value) {
+                  setState(() {
+                    selectedObservation = observationData.firstWhere((item) => item['id'] == value)['name'];
+                  });
+                },
+              ),
+              onAccept: () async {
+                if (selectedObservation != null && !_submitting) { // Asegúrate de que no esté en envío
+                  setState(() {
+                    _submitting = true; // Bloquear el botón
+                  });
+                  await _postReport(postId, selectedObservation!, context); // Enviar el name seleccionado
+                  setState(() {
+                    _submitting = false; // Desbloquear el botón después de la función
+                  });
+                  Navigator.of(context).pop(); // Cierra el diálogo
+                }
               },
-            ),
-            onAccept: () async {
-              if (selectedObservation != null && !_submitting) { // Asegúrate de que no esté en envío
-                setState(() {
-                  _submitting = true; // Bloquear el botón
-                });
-                await _postReport(postId, selectedObservation!, context); // Enviar el name seleccionado
-                setState(() {
-                  _submitting = false; // Desbloquear el botón después de la función
-                });
-                Navigator.of(context).pop(); // Cierra el diálogo
-              }
-            },
-            acceptButtonEnabled: !_submitting, // Habilitar/deshabilitar el botón
-          );
-        },
-      );
-    },
-  );
-}
+              acceptButtonEnabled: !_submitting, // Habilitar/deshabilitar el botón
+            );
+          },
+        );
+      },
+    );
+  }
 
-Future<void> _postReport(int postId, String observation, BuildContext context) async {
-  try {
-    var response = await ReportCommandPost(ReportPost()).execute('post', postId, observation);
-    if (response is SuccessResponse) {
-      await showDialog(
+  Future<void> _postReport(int postId, String observation, BuildContext context) async {
+    try {
+      var response = await ReportCommandPost(ReportPost()).execute('post', postId, observation);
+      if (response is SuccessResponse) {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopup(
+            child: const SuccessAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      } else {
+        await showDialog(
+          context: context,
+          builder: (context) => AutoClosePopupFail(
+            child: const FailAnimationWidget(),
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      showDialog(
         context: context,
-        builder: (context) => AutoClosePopup(
-          child: const SuccessAnimationWidget(),
-          message: response.message,
-        ),
-      );
-    } else {
-      await showDialog(
-        context: context,
-        builder: (context) => AutoClosePopupFail(
-          child: const FailAnimationWidget(),
-          message: response.message,
+        builder: (context) => PopupWindow(
+          title: 'Error',
+          message: e.toString(),
         ),
       );
     }
-  } catch (e) {
-    showDialog(
-      context: context,
-      builder: (context) => PopupWindow(
-        title: 'Error',
-        message: e.toString(),
-      ),
-    );
   }
-}
-
 
   Future<void> _postShare(int postId,  BuildContext context) async {
     try {
@@ -624,7 +624,6 @@ Future<void> _postReport(int postId, String observation, BuildContext context) a
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
                           final mediaUrlsRepost = post.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
                           final bool hasReaction = reactionStates[post.id]!;
-
                           if (post.attributes.postId == null) {
                             // Si existe el postId, devolvemos el PostWidget
                             return PostWidget(
@@ -665,6 +664,7 @@ Future<void> _postReport(int postId, String observation, BuildContext context) a
                                     'postId': postId,
                                   },
                                 ).then((_) {
+                                  postId_ = post.id;
                                   _callPost();
                                 });
                               },
@@ -677,6 +677,7 @@ Future<void> _postReport(int postId, String observation, BuildContext context) a
                               authorId: post.relationships.user.id,
                               currentUserId: _id!,
                               onDeleteTap: () {
+                                postId_ = post.id;
                                 _deletePost(post.id);
                               },
                               onEditTap: () {
@@ -743,6 +744,7 @@ Future<void> _postReport(int postId, String observation, BuildContext context) a
                                     'postId': postId,
                                   },
                                 ).then((_) {
+                                  postId_ = post.id;
                                   _callPost();
                                 });
                               },
@@ -754,6 +756,7 @@ Future<void> _postReport(int postId, String observation, BuildContext context) a
                               authorId: post.relationships.user.id,
                               currentUserId: _id!,
                               onDeleteTap: () {
+                                postId_ = post.attributes.postId;
                                 _deletePost(post.id);
                               },
                               onEditTap: () {

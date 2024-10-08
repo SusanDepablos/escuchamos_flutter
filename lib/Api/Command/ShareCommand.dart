@@ -65,4 +65,35 @@ class ShareCommandPost {
   }
 }
 
+class DeleteCommandShare {
+  final ShareDelete _shareDeleteService;
+
+  DeleteCommandShare(this._shareDeleteService);
+
+  Future<dynamic> execute({required int id}) async {
+    try {
+      // Llamar a la función ShareUpload con los parámetros file y type
+      var response = await _shareDeleteService.deleteShare(id);
+
+      // Manejar la respuesta según el código de estado
+      if (response.statusCode == 202) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
 

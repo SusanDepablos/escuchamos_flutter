@@ -36,15 +36,25 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
           children: [
             GestureDetector(
               onTap: widget.onLabelTap,
-              child: Text(
-                widget.label,
-                style: TextStyle(
-                  color: widget.labelColor,
-                  fontSize: 15, // Tamaño de fuente por defecto
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: widget.labelColor,
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  children: const <TextSpan>[
+                    TextSpan(text: 'Aceptar los ', style: TextStyle(decoration: TextDecoration.none)),
+                    TextSpan(
+                      text: 'términos y condiciones',
+                      style: TextStyle(decoration: TextDecoration.underline),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Spacer(), // Este widget expande el espacio entre el label y el checkbox
+            const Spacer(), // Este widget expande el espacio entre el label y el checkbox
             Checkbox(
               value: _isChecked,
               onChanged: (bool? value) {
@@ -59,13 +69,13 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
           ],
         ),
         if (widget.error != null)
-        Text(
-          widget.error!,
-          style: const TextStyle(
-            color: AppColors.errorRed,
-            fontSize: 12,
+          Text(
+            widget.error!,
+            style: const TextStyle(
+              color: AppColors.errorRed,
+              fontSize: 12,
+            ),
           ),
-        ),
       ],
     );
   }

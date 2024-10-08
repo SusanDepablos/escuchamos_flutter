@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
             _borderColors['name'] = AppColors.inputDark;
             _errorMessages['name'] = response.message('name');
           });
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               _borderColors['name'] = AppColors.inputBasic;
               _errorMessages['name'] = null;
@@ -82,7 +82,7 @@ class _RegisterState extends State<Register> {
             _borderColors['username'] = AppColors.inputDark;
             _errorMessages['username'] = response.message('username');
           });
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               _borderColors['username'] = AppColors.inputBasic;
               _errorMessages['username'] = null;
@@ -95,7 +95,7 @@ class _RegisterState extends State<Register> {
             _borderColors['password'] = AppColors.inputDark;
             _errorMessages['password'] = response.message('password');
           });
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               _borderColors['password'] = AppColors.inputBasic;
               _errorMessages['password'] = null;
@@ -108,7 +108,7 @@ class _RegisterState extends State<Register> {
             _borderColors['email'] = AppColors.inputDark;
             _errorMessages['email'] = response.message('email');
           });
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               _borderColors['email'] = AppColors.inputBasic;
               _errorMessages['email'] = null;
@@ -121,7 +121,7 @@ class _RegisterState extends State<Register> {
             _borderColors['birthdate'] = AppColors.inputDark;
             _errorMessages['birthdate'] = response.message('birthdate');
           });
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               _borderColors['birthdate'] = AppColors.inputBasic;
               _errorMessages['birthdate'] = null;
@@ -133,7 +133,7 @@ class _RegisterState extends State<Register> {
           setState(() {
             _errorMessages['checkbox'] = response.message('checkbox');
           });
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             setState(() {
               _errorMessages['checkbox'] = null;
             });
@@ -222,19 +222,47 @@ class _RegisterState extends State<Register> {
                 error: _errorMessages['username'],
               ),
               const SizedBox(height: 16.0),
-              BasicInput(
-                text: 'Contraseña',
-                input: _inputControllers['password']!,
-                obscureText: true,
-                border: _borderColors['password']!,
-                error: _errorMessages['password'],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BasicInput(
+                    text: 'Contraseña',
+                    input: _inputControllers['password']!,
+                    obscureText: true,
+                    border: _borderColors['password']!,
+                    error: _errorMessages['password'],
+                  ),
+                  const SizedBox(height: 8), // Espacio entre el input y el texto explicativo
+                  const Text(
+                    'Tu contraseña debe incluir letras, números y tener al menos 8 caracteres.',
+                    style: TextStyle(
+                      color: AppColors.grey, // Color del texto explicativo
+                      fontSize: 12.5, // Tamaño del texto
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16.0),
-              GenericInput(
-                text: 'Correo electrónico',
-                input: _inputControllers['email']!,
-                border: _borderColors['email']!,
-                error: _errorMessages['email'],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EmailInput(
+                    text: 'Correo electrónico',
+                    input: _inputControllers['email']!,
+                    border: _borderColors['email']!,
+                    error: _errorMessages['email'],
+                  ),
+                  const SizedBox(height: 8), // Espacio entre el input y el texto explicativo
+                  const Text(
+                    'Asegurate de ingresar un correo gmail activo, ya que recibirás un código de verificación.',
+                    style: TextStyle(
+                      color: AppColors.grey, // Color del texto explicativo
+                      fontSize: 12.5, // Tamaño del texto
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16.0),
               DateInput(
@@ -245,7 +273,7 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 8.0),
               SimpleCheckbox(
-                label: 'Aceptar los términos y condiciones',
+                label: '', // Puedes dejarlo vacío, ya que vamos a usar RichText dentro del widget.
                 labelColor: AppColors.black,
                 onChanged: (bool isChecked) {
                   setState(() {

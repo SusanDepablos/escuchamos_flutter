@@ -636,7 +636,7 @@ class _IndexEscuChamosState extends State<IndexEscuChamos> {
                             });
                           },
                           onIndexLikeTap: () {
-                            String objectId = post.id.toString();
+                            int objectId = post.id;
                             Navigator.pushNamed(
                               context,
                               'index-reactions',
@@ -656,6 +656,7 @@ class _IndexEscuChamosState extends State<IndexEscuChamos> {
                                 'postId': postId,
                               },
                             ).then((_) {
+                              postId_ = post.id;
                               _callPost();
                             });
                           },

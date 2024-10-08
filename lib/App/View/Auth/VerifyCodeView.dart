@@ -139,7 +139,6 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             const SizedBox(height: 26.0),
             DigitBox(
               input: _codeController,
-              border: AppColors.primaryBlue,
             ),
             const SizedBox(height: 16.0),
             const Text(

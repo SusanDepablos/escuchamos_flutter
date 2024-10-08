@@ -311,7 +311,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  GenericInput(
+                  EmailInput(
                     text: 'Introduce tu nuevo correo',
                     input: _input['email']!,
                     border: _borderColors['email']!,
