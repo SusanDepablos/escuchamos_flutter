@@ -117,7 +117,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
       if (mounted) {
         if (response is UsersModel) {
           setState(() {
-            users.addAll(response.results.data.where((user) => user.id != _id));
+            users.addAll(response.results.data);
             _hasMorePages = response.next != null && response.next!.isNotEmpty;
           });
         } else {
@@ -145,7 +145,6 @@ class _IndexManageUserState extends State<IndexManageUser> {
       }
     } finally {
       if (mounted) {
-        // Desbloquear solicitudes después de completar la carga
         setState(() {
           _isLoading = false;
           _isInitialLoading = false;
@@ -213,7 +212,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
                 items: groupData,
                 onChanged: (value) {
                   setState(() {
-                    selectedGroup = value; // Actualiza selectedGroup al cambiar
+                    selectedGroup = value;
                   });
                 },
               ),
@@ -269,7 +268,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteapp, // Estilo de fondo
+      backgroundColor: AppColors.whiteapp,
       body: Stack(
         children: <Widget>[
           Column(
@@ -290,8 +289,17 @@ class _IndexManageUserState extends State<IndexManageUser> {
                     )
                   : ListView.builder(
                       controller: _scrollController,
-                      itemCount: users.length,
+                      itemCount: users.length + (_isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
+                        if (index == users.length) {
+                          return SizedBox(
+                            height: 60.0,
+                            child: Center(
+                              child: CustomLoadingIndicator(
+                                  color: AppColors.primaryBlue),
+                            ),
+                          );
+                        }
                         final user = users[index];
                         final profileFile = getProfileFile(user.relationships.files);
                         return UserListView(
@@ -320,6 +328,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
                           },
                         );
                       },
+                      // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                     ),
               ),
             ],

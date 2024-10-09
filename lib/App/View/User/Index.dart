@@ -195,7 +195,7 @@ class _IndexUserState extends State<IndexUser> {
                           },
                         );
                       },
-                      padding: EdgeInsets.only(top: 20.0, bottom: _hasMorePages ? 0 : 70.0),
+                      padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                     ),
               ),
             ],

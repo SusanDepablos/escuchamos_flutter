@@ -1,7 +1,6 @@
 import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
 import 'package:escuchamos_flutter/Api/Command/ShareCommand.dart';
 import 'package:escuchamos_flutter/Api/Model/ShareModels.dart';
-import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
 import 'package:escuchamos_flutter/Api/Service/ShareService.dart';
@@ -22,6 +21,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as user_model;
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 
@@ -419,8 +419,17 @@ class _IndexShareState extends State<IndexShare> {
                           onRefresh: _reloadShares,
                           child: ListView.builder(
                             controller: _scrollController,
-                            itemCount: shares.length,
-                            itemBuilder: (context, index) {
+                            itemCount: shares.length + (_isLoading ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == shares.length) {
+                                  return SizedBox(
+                                    height: 60.0,
+                                    child: Center(
+                                      child: CustomLoadingIndicator(
+                                          color: AppColors.primaryBlue),
+                                    ),
+                                  );
+                                }
                               final share = shares[index];
                               String name = share.relationships.user.name;
                               int userId = share.relationships.user.id;
@@ -585,6 +594,7 @@ class _IndexShareState extends State<IndexShare> {
                             )
                           );
                         },
+                      padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                       )
                     ),
                 ),

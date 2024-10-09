@@ -25,6 +25,7 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as user_model;
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
 int postId_ = 0 ;
@@ -566,7 +567,7 @@ class _IndexPostState extends State<IndexPost> {
         await showDialog(
           context: context,
           builder: (context) => AutoClosePopup(
-            child: const SuccessAnimationWidget(), // Aquí se pasa la animación
+            child: const SuccessAnimationWidget(),
             message: response.message,
           ),
         );
@@ -574,7 +575,7 @@ class _IndexPostState extends State<IndexPost> {
         await showDialog(
           context: context,
           builder: (context) => AutoClosePopupFail(
-            child: const FailAnimationWidget(), // Aquí se pasa la animación
+            child: const FailAnimationWidget(),
             message: response.message,
           ),
         );
@@ -618,8 +619,17 @@ class _IndexPostState extends State<IndexPost> {
                         onRefresh: _reloadPosts,
                         child: ListView.builder(
                         controller: _scrollController,
-                        itemCount: posts.length,
+                        itemCount: posts.length + (_isLoading ? 1 : 0),
                         itemBuilder: (context, index) {
+                          if (index == posts.length) {
+                            return SizedBox(
+                              height: 60.0,
+                              child: Center(
+                                child: CustomLoadingIndicator(
+                                    color: AppColors.primaryBlue),
+                              ),
+                            );
+                          }
                           final post = posts[index];
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
                           final mediaUrlsRepost = post.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
@@ -810,7 +820,8 @@ class _IndexPostState extends State<IndexPost> {
                               }
                             );
                           }
-                        }
+                        },
+                      padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                       ),
                     ),
                 ),

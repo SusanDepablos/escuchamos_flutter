@@ -157,8 +157,17 @@ class _IndexFollowedState extends State<IndexFollowed> {
                   )
                 : ListView.builder(
                   controller: _scrollController,
-                  itemCount: followed.length,
+                  itemCount: followed.length + (_isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index == followed.length) {
+                      return SizedBox(
+                        height: 60.0,
+                        child: Center(
+                          child: CustomLoadingIndicator(
+                              color: AppColors.primaryBlue),
+                        ),
+                      );
+                    }
                     final list = followed[index];
                     final followedUser = list.attributes.followedUser;
                     return UserListView(
@@ -184,6 +193,7 @@ class _IndexFollowedState extends State<IndexFollowed> {
                       },
                     );
                   },
+                  // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                 ),
             ),
           ],

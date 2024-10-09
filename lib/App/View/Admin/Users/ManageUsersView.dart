@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart'; // Asegúrate de que esta ruta sea correcta
-import 'package:escuchamos_flutter/App/View/Admin/IndexManageUser.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Users/IndexManageUser.dart';
 
 class ManageUsersView extends StatefulWidget {
   @override

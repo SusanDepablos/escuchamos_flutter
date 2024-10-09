@@ -25,6 +25,7 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupCr
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupUpdate.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 import 'dart:io';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -698,8 +699,17 @@ void updateCommentPopup(
                                 onRefresh: _reloadComment,
                                 child: ListView.builder(
                                   controller: _scrollController,
-                                  itemCount: comments.length,
+                                  itemCount: comments.length + (_isLoading ? 1 : 0),
                                   itemBuilder: (context, index) {
+                                    if (index == comments.length) {
+                                      return SizedBox(
+                                        height: 60.0,
+                                        child: Center(
+                                          child: CustomLoadingIndicator(
+                                              color: AppColors.primaryBlue),
+                                        ),
+                                      );
+                                    }
                                     final comment = comments[index];
                                     final bool hasReaction = reactionStates[comment.id]!;  // Aquí se asegura de que tome el estado actualizado
                                     return CommentWidget(
@@ -756,6 +766,7 @@ void updateCommentPopup(
                                     );
                                     
                                   },
+                                  // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                                 ),
                               ),
                       ),

@@ -144,7 +144,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
           children: <Widget>[
             Expanded(
               child: _isInitialLoading
-                ? CustomLoadingIndicator(color: AppColors.primaryBlue) // Mostrar el widget de carga mientras esperamos la respuesta
+                ? CustomLoadingIndicator(color: AppColors.primaryBlue)
                 : follows.isEmpty
                   ? const Center(
                     child: Text(
@@ -157,8 +157,17 @@ class _IndexFollowersState extends State<IndexFollowers> {
                   )
                 : ListView.builder(
                   controller: _scrollController,
-                  itemCount: follows.length,
+                  itemCount: follows.length + (_isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index == follows.length) {
+                      return SizedBox(
+                        height: 60.0,
+                        child: Center(
+                          child: CustomLoadingIndicator(
+                              color: AppColors.primaryBlue),
+                        ),
+                      );
+                    }
                     final list = follows[index];
                     final followingUser = list.attributes.followingUser;
                     return UserListView(
@@ -184,6 +193,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
                       },
                     );
                   },
+                  // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
                 ),
             ),
           ],

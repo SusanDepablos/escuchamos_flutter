@@ -30,7 +30,7 @@ import 'package:escuchamos_flutter/App/View/Follow/NavigatorFollow.dart';
 import 'package:escuchamos_flutter/App/View/Reaction/Index.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
 import 'package:escuchamos_flutter/App/View/Comment/NestedComment.dart';
-import 'package:escuchamos_flutter/App/View/Admin/ManageUsersView.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Users/ManageUsersView.dart';
 
 class AppRoutes {
   static final routes = {
