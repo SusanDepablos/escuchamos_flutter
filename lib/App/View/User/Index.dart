@@ -185,6 +185,14 @@ class _IndexUserState extends State<IndexUser> {
                               arguments: {'showShares': false, 'userId': userId}, // Pasa el ID como argumento
                             );
                           },
+                          onPhotoUserTap: () {
+                            final userId = user.id; // Obtén el ID del usuario
+                            Navigator.pushNamed(
+                              context,
+                              'profile',
+                              arguments: {'showShares': false, 'userId': userId}, // Pasa el ID como argumento
+                            );
+                          },
                         );
                       },
                       padding: EdgeInsets.only(top: 20.0, bottom: _hasMorePages ? 0 : 70.0),

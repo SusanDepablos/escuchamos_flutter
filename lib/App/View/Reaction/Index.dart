@@ -193,6 +193,14 @@ class _IndexReactionsState extends State<IndexReactions> {
                           arguments: {'showShares': false, 'userId': userId},
                         );
                       },
+                      onPhotoUserTap: () {
+                        final userId = user.id;
+                        Navigator.pushNamed(
+                          context,
+                          'profile',
+                          arguments: {'showShares': false, 'userId': userId},
+                        );
+                      },
                     );
                   },
                 ),

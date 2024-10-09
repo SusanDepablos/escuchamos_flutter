@@ -456,7 +456,7 @@ class PostWidgetInternal extends StatelessWidget {
                   iconSize: 15.0,
                   onPressed: onProfileTap,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

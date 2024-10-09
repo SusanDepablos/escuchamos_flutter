@@ -276,6 +276,35 @@ class Status {
       };
 }
 
+class StatusAttributes {
+  String name;
+  String? description;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  StatusAttributes({
+    required this.name,
+    this.description,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory StatusAttributes.fromJson(Map<String, dynamic> json) =>
+      StatusAttributes(
+        name: json["name"],
+        description: json["description"] as String,
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "description": description,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
 
 class User {
   int id;
@@ -287,14 +316,14 @@ class User {
     required this.id,
     required this.username,
     required this.name,
-    required this.profilePhotoUrl,
+    this.profilePhotoUrl,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         username: json["username"],
         name: json["name"],
-        profilePhotoUrl: json["profile_photo_url"],
+        profilePhotoUrl: json["profile_photo_url"] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -302,35 +331,6 @@ class User {
         "username": username,
         "name": name,
         "profile_photo_url": profilePhotoUrl,
-      };
-}
-
-class StatusAttributes {
-  String name;
-  String description;
-  DateTime createdAt;
-  DateTime updatedAt;
-
-  StatusAttributes({
-    required this.name,
-    required this.description,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory StatusAttributes.fromJson(Map<String, dynamic> json) =>
-      StatusAttributes(
-        name: json["name"],
-        description: json["description"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "description": description,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
       };
 }
 

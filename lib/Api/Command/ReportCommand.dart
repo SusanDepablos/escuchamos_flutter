@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
+import 'package:escuchamos_flutter/Api/Model/ReportModels.dart';
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 
 // class ReportCommandIndex {
@@ -31,6 +32,31 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 //     }
 //   }
 // }
+
+class ReportGroupedCommandIndex {
+  final ReportGroupedIndex _reportsData;
+  final Map<String, String?>? filters;
+
+  ReportGroupedCommandIndex(this._reportsData, [this.filters]);
+
+  Future<dynamic> execute() async {
+    try {
+      var response =
+          await _reportsData.fetchData(filters ?? {}); 
+
+      if (response.statusCode == 200) {
+        return ReportsGroupedModel.fromJson(response.body);
+      } else {
+        return InternalServerError.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
 
 class ReportCommandPost {
   final ReportPost _reportService;

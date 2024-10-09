@@ -174,6 +174,14 @@ class _IndexFollowedState extends State<IndexFollowed> {
                           arguments: {'showShares': false, 'userId': userId},
                         );
                       },
+                      onPhotoUserTap: () {
+                        final userId = followedUser.id;
+                        Navigator.pushNamed(
+                          context,
+                          'profile',
+                          arguments: {'showShares': false, 'userId': userId},
+                        );
+                      },
                     );
                   },
                 ),
