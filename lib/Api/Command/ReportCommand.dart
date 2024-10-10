@@ -34,15 +34,15 @@ import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
 // }
 
 class ReportGroupedCommandIndex {
-  final ReportGroupedIndex _reportsData;
+  final ReportGroupedIndex _reportsGroupedData;
   final Map<String, String?>? filters;
 
-  ReportGroupedCommandIndex(this._reportsData, [this.filters]);
+  ReportGroupedCommandIndex(this._reportsGroupedData, [this.filters]);
 
   Future<dynamic> execute() async {
     try {
       var response =
-          await _reportsData.fetchData(filters ?? {}); 
+          await _reportsGroupedData.fetchData(filters ?? {}); 
 
       if (response.statusCode == 200) {
         return ReportsGroupedModel.fromJson(response.body);

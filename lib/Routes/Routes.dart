@@ -1,6 +1,8 @@
+import 'package:escuchamos_flutter/App/View/Admin/Report/ReportGrouped.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewRepost.dart';
 import 'package:escuchamos_flutter/App/View/Post/Show.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Report/NavigatorReport.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
@@ -165,6 +167,14 @@ class AppRoutes {
     },
 
     //admin
+    'navigator-report': (context){
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final initialTab = args['initialTab'] as String;
+      return  NavigatorReport(initialTab: initialTab);
+    },
+
     'manage-users-view': (context) => ManageUsersView(),
+
+    'content-moderation': (context) => IndexReportGrouped(),
   };
 }

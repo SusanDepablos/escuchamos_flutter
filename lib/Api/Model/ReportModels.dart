@@ -456,7 +456,7 @@ class CommentRelationships {
         user: User.fromJson(json["user"]),
         status: Status.fromJson(json["status"]),
         file: List<FileElement>.from(json["file"].map((x) => FileElement.fromJson(x))),
-        reactions: List<Reaction>.from(json["reactions"].map((x) => x)),
+        reactions: List<Reaction>.from(json["reactions"].map((x) => Reaction.fromJson(x))),
         repliesCount: json["replies_count"],
         reactionsCount: json["reactions_count"],
         reportsCount: json["reports_count"],
@@ -576,7 +576,7 @@ class FileAttributes {
     String extension;
     String size;
     String type;
-    dynamic url;
+    String url;
     DateTime createdAt;
     DateTime updatedAt;
 

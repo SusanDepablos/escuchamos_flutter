@@ -1,19 +1,18 @@
-import 'package:escuchamos_flutter/App/View/Share/Index.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Report/Index/IndexReportComment.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Report/Index/IndexReportPost.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Report/Index/IndexReportRepost.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de que los colores estén definidos en este archivo
-import 'package:escuchamos_flutter/App/View/Post/Index.dart';
 
-class NavigatorUser extends StatefulWidget {
+class NavigatorReport extends StatefulWidget {
   final String initialTab; // Solo el parámetro requerido
-  final int? userId; // ID del usuario que se usará en la vista
-
-  NavigatorUser({required this.initialTab, this.userId});
+  NavigatorReport({required this.initialTab});
 
   @override
-  _NavigatorUserState createState() => _NavigatorUserState();
+  _NavigatorReportState createState() => _NavigatorReportState();
 }
 
-class _NavigatorUserState extends State<NavigatorUser> {
+class _NavigatorReportState extends State<NavigatorReport> {
   late int _initialIndex;
 
   @override
@@ -22,8 +21,10 @@ class _NavigatorUserState extends State<NavigatorUser> {
     // Determina el índice inicial basado en el parámetro `initialTab`
     if (widget.initialTab == 'posts') {
       _initialIndex = 0;
-    } else if (widget.initialTab == 'shares') {
+    } else if (widget.initialTab == 'reposts') {
       _initialIndex = 1;
+    } else if (widget.initialTab == 'comments') {
+      _initialIndex = 2;
     } else {
       _initialIndex = 0; // Valor predeterminado si no coincide con ningún caso
     }
@@ -32,7 +33,7 @@ class _NavigatorUserState extends State<NavigatorUser> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Número de tabs
+      length: 3, // Cambiado a 3 para incluir todas las pestañas
       initialIndex: _initialIndex, // Establece el índice inicial
       child: Scaffold(
         body: Column(
@@ -51,15 +52,17 @@ class _NavigatorUserState extends State<NavigatorUser> {
                 ),
                 tabs: [
                   Tab(text: 'Publicaciones'),
-                  Tab(text: 'Compartidos'),
+                  Tab(text: 'Repost'),
+                  Tab(text: 'Comentarios'),
                 ],
               ),
             ),
             Expanded(
               child: TabBarView(
                 children: [
-                  IndexPost(userId: widget.userId),
-                  IndexShare(userId: widget.userId),
+                  IndexReportPost(),
+                  IndexReportRepost(),
+                  IndexReportComment()
                 ],
               ),
             ),
