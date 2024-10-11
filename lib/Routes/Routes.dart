@@ -1,4 +1,6 @@
 import 'package:escuchamos_flutter/App/View/Admin/Report/ReportGrouped.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Report/Show/ShowReportComment.dart';
+import 'package:escuchamos_flutter/App/View/Admin/Report/Show/ShowReportPost.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewRepost.dart';
 import 'package:escuchamos_flutter/App/View/Post/Show.dart';
@@ -176,5 +178,19 @@ class AppRoutes {
     'manage-users-view': (context) => ManageUsersView(),
 
     'content-moderation': (context) => IndexReportGrouped(),
+
+    //show
+    'show-report-comment': (context){
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final commentId = args['commentId'] as int;
+      return ShowReportComment(commentId: commentId);
+    },
+
+    'show-report-post': (context){
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final postId = args['postId'] as int;
+      return ShowReportPost(postId: postId);
+    }
+
   };
 }

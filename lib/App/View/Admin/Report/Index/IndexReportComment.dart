@@ -1,6 +1,9 @@
+import 'package:escuchamos_flutter/Api/Command/CommentCommand.dart';
 import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Model/CommentModels.dart' as comment_model;
 import 'package:escuchamos_flutter/Api/Model/ReportModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/Api/Service/CommentService.dart';
 import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/CustomRefreshIndicator.dart';
@@ -9,9 +12,6 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Report/ReportListView.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-final FlutterSecureStorage _storage = FlutterSecureStorage();
 
 class IndexReportComment extends StatefulWidget {
   @override
@@ -19,12 +19,14 @@ class IndexReportComment extends StatefulWidget {
 }
 
 class _IndexReportCommentState extends State<IndexReportComment> {
+  comment_model.CommentModel? _comment;
   List<Datum> reportsGrouped = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _initialLoading = true;
   int page = 1;
+  bool _isDeleted = false;
 
   final filters = {
     'pag': '10',
@@ -105,6 +107,49 @@ class _IndexReportCommentState extends State<IndexReportComment> {
       }
     }
   }
+
+  Future<void> _callComment(commentId) async {
+    final commentCommand = CommentCommandShow(CommentShow(), commentId);
+    try {
+      final response = await commentCommand.execute();
+
+      if (mounted) {
+        if (response is comment_model.CommentModel) {
+          setState(() {
+            _comment = response;
+            _isDeleted = _comment?.data.attributes.statusId == 4 || _comment?.data.attributes.statusId == 3;
+              
+            if (_isDeleted) {
+              reportsGrouped.removeWhere((report) =>
+                report.relationships.comment?.id == commentId
+              );
+            }
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,7 +197,20 @@ class _IndexReportCommentState extends State<IndexReportComment> {
                             createdAt: report.relationships.comment?.attributes.createdAt ?? DateTime.now(),
                             mediaUrl:  report.relationships.comment?.relationships.file.firstOrNull?.attributes.url,
                             body: report.relationships.comment?.attributes.body,
-                            );
+                            onCommentTap: () {
+                              int commentId = report.relationships.comment?.id ?? 0;
+                              Navigator.pushNamed(
+                                context,
+                                'show-report-comment',
+                                arguments: {
+                                  'commentId': commentId,
+                                },
+                              ).then((_) {
+                                int commentId = report.relationships.comment?.id ?? 0;
+                              _callComment(commentId);
+                              });
+                            }
+                          );
                         },
                       ),
                     ),

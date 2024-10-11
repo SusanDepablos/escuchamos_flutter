@@ -99,3 +99,33 @@ class ReportPost {
   }
 }
 
+class ReportUpdate {
+  Future<ServiceResponse> updateReport(
+      String model, int objectId, int statusId) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}report/update/status/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'model': model,
+      'object_id': objectId,
+      'status_id': statusId
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+

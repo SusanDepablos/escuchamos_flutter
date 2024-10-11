@@ -106,7 +106,6 @@ class _NestedCommentsState extends State<NestedComments> {
       }
     } catch (e) {
       if (mounted) {
-        print('primero');
         showDialog(
           context: context,
           builder: (context) => PopupWindow(
@@ -118,7 +117,7 @@ class _NestedCommentsState extends State<NestedComments> {
     }
   }
 
-void updateCommentPopup(
+  void updateCommentPopup(
     BuildContext context, {
     String? body,
     String? mediaUrl,

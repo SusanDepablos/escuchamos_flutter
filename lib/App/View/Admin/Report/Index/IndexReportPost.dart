@@ -1,6 +1,9 @@
+import 'package:escuchamos_flutter/Api/Command/PostCommand.dart';
 import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Model/PostModels.dart' as post_model;
 import 'package:escuchamos_flutter/Api/Model/ReportModels.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/Api/Service/PostService.dart';
 import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/CustomRefreshIndicator.dart';
@@ -9,22 +12,20 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Report/ReportListView.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-final FlutterSecureStorage _storage = FlutterSecureStorage();
-
 class IndexReportPost extends StatefulWidget {
   @override
   _IndexReportPostState createState() => _IndexReportPostState();
 }
 
 class _IndexReportPostState extends State<IndexReportPost> {
+  post_model.PostModel? _post;
   List<Datum> reportsGrouped = [];
   late ScrollController _scrollController;
   bool _isLoading = false;
   bool _hasMorePages = true;
   bool _initialLoading = true;
   int page = 1;
+  bool _isDeleted = false;
 
   final filters = {
     'pag': '10',
@@ -105,6 +106,50 @@ class _IndexReportPostState extends State<IndexReportPost> {
       }
     }
   }
+
+  
+  Future<void> _callPost(postId) async {
+    final postCommand = PostCommandShow(PostShow(), postId);
+    try {
+      final response = await postCommand.execute();
+      if (mounted) {
+        if (response is post_model.PostModel) {
+          setState(() {
+            _post = response; // Establecer _post aquí
+            _isDeleted = _post?.data.attributes.statusId == 4 || _post?.data.attributes.statusId == 3;
+              
+            if (_isDeleted) {
+              reportsGrouped.removeWhere((report) =>
+                report.relationships.post?.id == postId
+              );
+            }
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        print(e.toString());
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: e.toString(),
+          ),
+        );
+      }
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +205,21 @@ class _IndexReportPostState extends State<IndexReportPost> {
                               top: 8.0,
                               bottom: 8.0,
                             ),
-                            onTap: (){}
+                            avatarSize: 40.0,
+                            iconSize: 26.0,
+                            onTap: (){
+                              int postId = report.relationships.post?.id ?? 0;
+                              Navigator.pushNamed(
+                                context,
+                                'show-report-post',
+                                arguments: {
+                                  'postId': postId,
+                                },
+                              ).then((_) {
+                                int postId = report.relationships.post?.id ?? 0;
+                                _callPost(postId);
+                              });
+                            }
                           );            
                         },
                       ),
