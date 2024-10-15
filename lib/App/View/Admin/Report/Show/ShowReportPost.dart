@@ -5,6 +5,7 @@ import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/CustomRefreshIndicator.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Report/ReportListView.dart';
@@ -43,6 +44,7 @@ class _ShowReportPostState extends State<ShowReportPost> {
   int page = 1;
   bool _submitting = false;
   bool _isResolved = false;
+  bool _isVerified = false;
 
 
   final filters = {
@@ -84,7 +86,8 @@ class _ShowReportPostState extends State<ShowReportPost> {
             _createdAt = _post?.data.attributes.createdAt;
             _mediaUrls = _post?.data.relationships.files.map((file) => file.attributes.url).toList();
             _mediaUrlsRepost =  _post?.data.relationships.post?.relationships.files.map((file) => file.attributes.url).toList() ?? [];
-          
+            _isVerified = _post?.data.relationships.user.groupId?.contains(1) == true ||
+              _post?.data.relationships.user.groupId?.contains(2) == true;
             _isResolved = _post?.data.attributes.statusId == 4 || _post?.data.attributes.statusId == 3;
           });
         } else {
@@ -260,15 +263,26 @@ class _ShowReportPostState extends State<ShowReportPost> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Text(
-          'Publicación de ${_name ?? '...'}',
-          style: const TextStyle(
-            fontSize: AppFond.title,
-            fontWeight: FontWeight.w800,
-            color: AppColors.black,
+          title: Row( // Asegura que el Row esté centrado
+            children: [
+              Text(
+                'Publicación de ${_username ?? '...'}', // Usar un valor por defecto si _username es null
+                style: const TextStyle(
+                  fontSize: AppFond.title,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.black,
+                ),
+              ),
+              const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+              if (_isVerified) // Asegúrate de que isVerified esté definido
+                const Icon(
+                  CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                  color: AppColors.primaryBlue, // Color del ícono
+                  size: 16, // Tamaño del ícono
+                ),
+            ],
           ),
         ),
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +290,6 @@ class _ShowReportPostState extends State<ShowReportPost> {
             // Muestra el PostWidgetInternal o RepostSimpleWidget según la condición
             _post?.data.attributes.postId == null
               ? PostWidgetInternal(
-                  nameUser: _name ?? '...', // Usar un valor por defecto
                   usernameUser: _username ?? '...',
                   profilePhotoUser: _profilePhotoUrl,
                   createdAt: _createdAt ?? DateTime.now(), // Usar un valor por defecto
@@ -316,13 +329,13 @@ class _ShowReportPostState extends State<ShowReportPost> {
                     );
                   }
                 },
+                isVerified: _post?.data.relationships.user.groupId?.contains(1) == true ||
+                _post?.data.relationships.user.groupId?.contains(2) == true,
               )
               : RepostSimpleWidget(
-                  nameUser: _name ?? '...',
                   usernameUser: _username ?? '...',
                   profilePhotoUser: _profilePhotoUrl,
                   createdAt: _createdAt ?? DateTime.now(),
-                  nameUserRepost: _post?.data.relationships.post?.relationships.user.name ?? '...',
                   usernameUserRepost: _post?.data.relationships.post?.relationships.user.username ?? '...',
                   profilePhotoUserRepost: _post?.data.relationships.post?.relationships.user.profilePhotoUrl,
                   createdAtRepost: _post?.data.relationships.post?.attributes.createdAt ?? DateTime.now(),
@@ -353,6 +366,10 @@ class _ShowReportPostState extends State<ShowReportPost> {
                       );
                     }
                   },
+                  isVerified: _post?.data.relationships.user.groupId?.contains(1) == true ||
+                _post?.data.relationships.user.groupId?.contains(2) == true,
+                  isVerifiedRepost: _post?.data.relationships.post?.relationships.user.groupId?.contains(1) == true ||
+                _post?.data.relationships.post?.relationships.user.groupId?.contains(2) == true,
                 ),
             // Título "Reportes"
             const Center(
@@ -408,12 +425,13 @@ class _ShowReportPostState extends State<ShowReportPost> {
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Center(
                                 child: ReportUserWidget(
-                                  nameUser: report.relationships.user.name,
                                   usernameUser: report.relationships.user.username,
                                   createdAt: report.attributes.createdAt,
                                   profilePhotoUser: report.relationships.user.profilePhotoUrl,
                                   observation: report.attributes.observation,
                                   report: 'publicación',
+                                  isVerified: report.relationships.user.groupId?.contains(1) == true ||
+                                  report.relationships.user.groupId?.contains(2) == true,
                                 ),
                               ),
                             );

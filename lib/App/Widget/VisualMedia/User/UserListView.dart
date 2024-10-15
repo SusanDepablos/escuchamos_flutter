@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
@@ -8,6 +9,7 @@ class UserListView extends StatelessWidget {
   final String? profilePhotoUser;
   final VoidCallback? onTap;
   final VoidCallback? onPhotoUserTap;
+  final bool isVerified;
 
   const UserListView({
     Key? key,
@@ -16,6 +18,7 @@ class UserListView extends StatelessWidget {
     this.profilePhotoUser,
     this.onPhotoUserTap,
     this.onTap,
+    this.isVerified = false,
   }) : super(key: key);
 
   @override
@@ -52,19 +55,30 @@ class UserListView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 150),
-                      child: Text(
-                        nameUser,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                    Row(
+                      children: [
+                        Container(
+                          constraints: const BoxConstraints(maxWidth: 150),
+                          child: Text(
+                            usernameUser,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                        const SizedBox(width: 4), // Espaciador entre el nombre y el ícono
+                        if (isVerified)
+                          const Icon(
+                            CupertinoIcons.checkmark_seal_fill,// Reemplaza con el ícono que desees
+                            color: AppColors.primaryBlue, // Cambia el color según sea necesario
+                            size: 16, // Tamaño del ícono
+                          ),
+                      ],
                     ),
                     Text(
-                      '@$usernameUser',
+                      '$nameUser',
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
@@ -73,6 +87,7 @@ class UserListView extends StatelessWidget {
                   ],
                 ),
               ),
+
             ],
           ),
         ),

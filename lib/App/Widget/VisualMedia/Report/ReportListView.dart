@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
@@ -32,15 +33,14 @@ String _getAbbreviatedMonthName(int month) {
 }
 
 class RepostSimpleWidget extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final DateTime createdAt;
   final String? body;
+  final bool isVerified;
 
   //Repost
   final String? bodyRepost;
-  final String nameUserRepost;
   final String usernameUserRepost;
   final DateTime createdAtRepost;
   final String? profilePhotoUserRepost;
@@ -48,18 +48,18 @@ class RepostSimpleWidget extends StatelessWidget {
   final VoidCallback onRepostTap;
   final VoidCallback? onPostTap;
   final VoidCallback? onProfileTap;
+  final bool isVerifiedRepost;
 
   RepostSimpleWidget({
     Key? key,
-    required this.nameUser,
     required this.usernameUser,
     required this.createdAt,
     this.profilePhotoUser,
     this.body,
+    this.isVerified = false,
 
     //Repost
     this.bodyRepost,
-    required this.nameUserRepost,
     required this.usernameUserRepost,
     this.profilePhotoUserRepost,
     required this.createdAtRepost,
@@ -67,6 +67,7 @@ class RepostSimpleWidget extends StatelessWidget {
     required this.onRepostTap,
     this.onPostTap,
     this.onProfileTap,
+    this.isVerifiedRepost = false,
   }) : super(key: key);
 
   @override
@@ -102,22 +103,33 @@ class RepostSimpleWidget extends StatelessWidget {
                   const SizedBox(width: 12.0),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuye espacio entre el nombre y el icono
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 140),
-                              child: Text(
-                                nameUser,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                            // Nombre de usuario
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      usernameUser,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                    if (isVerified)
+                                      const Icon(
+                                        CupertinoIcons.checkmark_seal_fill,
+                                        size: 16,
+                                        color: AppColors.primaryBlue// Cambia el color según prefieras
+                                      ),
+                                  ],
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            const Spacer(),
                             Text(
                               _formatDate(createdAt),
                               style: const TextStyle(
@@ -126,13 +138,6 @@ class RepostSimpleWidget extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ),
-                        Text(
-                          '@$usernameUser',
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 14,
-                          ),
                         ),
                       ],
                     ),
@@ -149,7 +154,6 @@ class RepostSimpleWidget extends StatelessWidget {
               ),
               // Agregar el PostWidget interno
               PostWidgetInternal(
-                nameUser: nameUserRepost,
                 usernameUser: usernameUserRepost,
                 profilePhotoUser: profilePhotoUserRepost,
                 createdAt: createdAtRepost,
@@ -158,6 +162,7 @@ class RepostSimpleWidget extends StatelessWidget {
                 onTap: () {
                   onPostTap!();
                 },
+                isVerified: isVerifiedRepost,
               ),
             ],
           ),
@@ -169,7 +174,6 @@ class RepostSimpleWidget extends StatelessWidget {
 
 // PostWidget interno simplificado
 class PostWidgetInternal extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final DateTime createdAt;
@@ -181,10 +185,10 @@ class PostWidgetInternal extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final double avatarSize;
   final double iconSize;
+  final bool isVerified;
 
   PostWidgetInternal({
     Key? key,
-    required this.nameUser,
     required this.usernameUser,
     this.profilePhotoUser,
     required this.createdAt,
@@ -195,7 +199,8 @@ class PostWidgetInternal extends StatelessWidget {
     this.color,
     this.margin,
     this.avatarSize = 25.0,
-    this.iconSize = 15.0
+    this.iconSize = 15.0,
+    this.isVerified = false
   }) : super(key: key);
 
   @override
@@ -233,38 +238,43 @@ class PostWidgetInternal extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuye espacio entre el nombre y el icono
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             constraints: const BoxConstraints(maxWidth: 140),
-                            child: Text(
-                              nameUser,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start, // Alineación a la izquierda
+                              children: [
+                                Text(
+                                  usernameUser,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                if (isVerified)
+                                  const Icon(
+                                    CupertinoIcons.checkmark_seal_fill,
+                                    size: 16,
+                                    color: AppColors.primaryBlue, // Cambia el color según prefieras
+                                  ),
+                              ],
                             ),
                           ),
-                          const Spacer(),
                           Text(
                             _formatDate(createdAt),
                             style: const TextStyle(
                               color: AppColors.grey,
-                              fontSize: 13,
+                              fontSize: 14,
                             ),
                           ),
                         ],
-                      ),
-                      Text(
-                        '@$usernameUser',
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 13,
-                        ),
                       ),
                     ],
                   ),
@@ -292,7 +302,6 @@ class PostWidgetInternal extends StatelessWidget {
 }
 
 class CommentSimpleWidget extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final DateTime createdAt;
@@ -300,10 +309,10 @@ class CommentSimpleWidget extends StatelessWidget {
   final String? mediaUrl;
   final VoidCallback? onProfileTap;
   final VoidCallback? onCommentTap;
+  final bool isVerified;
 
   CommentSimpleWidget({
     Key? key,
-    required this.nameUser,
     required this.usernameUser,
     required this.createdAt,
     this.profilePhotoUser,
@@ -311,6 +320,7 @@ class CommentSimpleWidget extends StatelessWidget {
     this.mediaUrl,
     this.onProfileTap,
     this.onCommentTap,
+    this.isVerified = false,
   }) : super(key: key);
 
   String _formatDate(DateTime date) {
@@ -358,16 +368,29 @@ class CommentSimpleWidget extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        nameUser,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                    // Contenedor que incluye el nombre de usuario y el ícono de verificación
+                    Row(
+                      children: [
+                        Text(
+                          usernameUser,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
+                        // Aquí va el ícono de verificación
+                        if (isVerified) // Asegúrate de definir isVerified
+                          const SizedBox(width: 4.0),
+                        if (isVerified) // Asegúrate de definir isVerified
+                          const Icon(
+                            CupertinoIcons.checkmark_seal_fill,
+                            size: 16,
+                            color: AppColors.primaryBlue, // Cambia el color según prefieras
+                          ),
+                      ],
                     ),
-                    const SizedBox(width: 8.0),
+                    const Spacer(), // Espacio entre el nombre de usuario y la fecha
                     // Aquí añadimos la fecha formateada
                     Text(
                       _formatDate(createdAt),
@@ -440,23 +463,23 @@ class CommentSimpleWidget extends StatelessWidget {
 }
 
 class ReportUserWidget extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final DateTime createdAt;
   final String observation;
   final String report;
   final VoidCallback? onProfileTap;
+  final bool isVerified;
 
   ReportUserWidget({
     Key? key,
-    required this.nameUser,
     required this.usernameUser,
     required this.createdAt,
     this.profilePhotoUser,
     required this.observation,
     required this.report,
     this.onProfileTap,
+    this.isVerified = false,
   }) : super(key: key);
 
   String _formatDate(DateTime date) {
@@ -502,12 +525,24 @@ class ReportUserWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text(
-                        nameUser,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      child: Row(
+                        children: [
+                          Text(
+                            usernameUser,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                          if (isVerified)
+                            const Icon(
+                              CupertinoIcons.checkmark_seal_fill,
+                              size: 16,
+                              color: AppColors.primaryBlue// Cambia el color según prefieras
+                            ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8.0),

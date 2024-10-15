@@ -284,7 +284,6 @@ class _IndexEscuChamosState extends State<IndexEscuChamos> {
               child: PopupPostWidget(
                 isButtonDisabled: _submitting,
                 username: _username!,
-                nameUser: _name!,
                 profilePhotoUser: _profilePhotoUser,
                 error: _errorMessages['body'],
                 body: body!,
@@ -631,7 +630,6 @@ class _IndexEscuChamosState extends State<IndexEscuChamos> {
                         return PostWidget(
                           reaction: hasReaction,
                           onLikeTap: () => _postReaction(index, post.id),
-                          nameUser: post.relationships.user.name,
                           usernameUser: post.relationships.user.username,
                           profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                           onProfileTap: () {
@@ -704,7 +702,8 @@ class _IndexEscuChamosState extends State<IndexEscuChamos> {
                           onShareTap: () {
                             int postId = post.id;
                             _postShare(postId, context);
-                          }
+                          },
+                          isVerified: true, 
                         );
                     },
                     padding: EdgeInsets.only(top: 20.0, bottom: _hasMorePages ? 0 : 70.0),

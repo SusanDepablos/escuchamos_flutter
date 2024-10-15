@@ -29,17 +29,17 @@ class NewRepost extends StatefulWidget{
 class _NewRepostState extends State<NewRepost> {
   UserModel? _user;
   int _id = 0;
-  String? name;
   String? username;
   String? profileAvatarUrl;
   PostModel? _post;
-  String? _name;
   String? _username;
   String? _profilePhotoUrl;
   String? _body;
   DateTime? _createdAt;
   List<String>? _mediaUrls;
   bool _submitting = false;
+  bool _isVerified = false;
+  int? groupId;
 
   final TextEditingController _bodyController = TextEditingController();
 
@@ -85,10 +85,10 @@ class _NewRepostState extends State<NewRepost> {
         if (response is UserModel) {
           setState(() {
             _user = response;
-            name = _user!.data.attributes.name;
             username = _user!.data.attributes.username;
-
             profileAvatarUrl = _getFileUrlByType('profile');
+            groupId = _user!.data.relationships.groups[0].id;            
+            _isVerified = (groupId == 1 || groupId == 2);
           });
         } else {
           showDialog(
@@ -173,12 +173,17 @@ class _NewRepostState extends State<NewRepost> {
         if (response is PostModel) {
           setState(() {
             _post = response; // Establecer _post aquí
-            _name = _post?.data.relationships.user.name;
             _username = _post?.data.relationships.user.username;
             _profilePhotoUrl = _post?.data.relationships.user.profilePhotoUrl;
             _body = _post?.data.attributes.body;
             _createdAt = _post?.data.attributes.createdAt;
             _mediaUrls = _post?.data.relationships.files.map((file) => file.attributes.url).toList();
+            List<int>? groupIds = _post?.data.relationships.user.groupId; // Asegúrate de que groupId no sea null
+              if (groupIds != null && (groupIds.contains(1) || groupIds.contains(2))) {
+                _isVerified = true; // Si el usuario es parte de los grupos 1 o 2, se considera verificado
+              } else {
+                _isVerified = false; // Si no, no está verificado
+              }
           });
         } else {
           showDialog(
@@ -253,7 +258,6 @@ class _NewRepostState extends State<NewRepost> {
             Padding(
               padding: const EdgeInsets.all(16.0), // Padding de 16 alrededor del contenido
               child: RepostCreateWidget(
-                nameUser: name ?? '...',
                 username: username ?? '...',
                 bodyTextField: BodyTextField(
                   input: _bodyController,
@@ -264,7 +268,6 @@ class _NewRepostState extends State<NewRepost> {
                 profilePhotoUser: profileAvatarUrl,
                 isButtonDisabled: _submitting,
                 bodyRepost: _body,
-                nameUserRepost: _name ?? '...',
                 usernameUserRepost: _username ?? '...',
                 profilePhotoUserRepost: _profilePhotoUrl,
                 createdAtRepost: _createdAt ?? DateTime.now(),
@@ -275,6 +278,8 @@ class _NewRepostState extends State<NewRepost> {
                 onProfileTapRepost: () {
                   // Acción al tocar el perfil en el repost
                 },
+                isVerified: _isVerified,
+                isVerifiedRepost: _isVerified,
               ),
             ),
           ],

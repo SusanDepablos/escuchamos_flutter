@@ -181,6 +181,8 @@ class _IndexReactionsState extends State<IndexReactions> {
                   itemBuilder: (context, index) {
                   final datum = reactions[index];
                   final user = datum.relationships.user;
+                  bool isVerified = user.groupId != null && 
+                      (user.groupId!.contains(1) || user.groupId!.contains(2));
                     return UserListView(
                       nameUser: user.name,
                       usernameUser: user.username,
@@ -201,6 +203,7 @@ class _IndexReactionsState extends State<IndexReactions> {
                           arguments: {'showShares': false, 'userId': userId},
                         );
                       },
+                      isVerified: isVerified,
                     );
                   },
                 ),

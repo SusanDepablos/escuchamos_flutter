@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/MediaCarousel.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostListView.dart';
 import 'package:flutter/material.dart';
@@ -33,43 +34,43 @@ import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
   }
 
 class RepostCreateWidget extends StatefulWidget {
-  final String nameUser;
   final String username;
   final String? body;
   final String? profilePhotoUser;
   final Function(String)? onPostUpdate;
   final VoidCallback? onCancel;
   final bool isButtonDisabled;
+  final bool isVerified;
 
   final String? bodyRepost;
-  final String nameUserRepost;
   final String usernameUserRepost;
   final DateTime createdAtRepost;
   final String? profilePhotoUserRepost;
   final List<String>? mediaUrlsRepost;
   final VoidCallback? onPostTap;
   final VoidCallback? onProfileTapRepost;
+  final bool isVerifiedRepost;
 
   final Widget bodyTextField;
 
   RepostCreateWidget({
     Key? key,
-    required this.nameUser,
     required this.username,
     this.body,
     this.onPostUpdate,
     this.profilePhotoUser,
     this.onCancel,
     required this.isButtonDisabled,
+    this.isVerified = false,
 
     this.bodyRepost,
-    required this.nameUserRepost,
     required this.usernameUserRepost,
     this.profilePhotoUserRepost,
     required this.createdAtRepost,
     this.mediaUrlsRepost,
     this.onPostTap,
     this.onProfileTapRepost,
+    this.isVerifiedRepost = false,
     required this.bodyTextField, // Nuevo parámetro
   }) : super(key: key);
 
@@ -113,21 +114,27 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.6, // Ajusta el ancho según sea necesario
-                          child: Text(
-                            widget.nameUser,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text(
-                          '@${widget.username}',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
+                          child: Row(
+                            children: [
+                              // El nombre de usuario
+                              Text(
+                                widget.username, // Asegúrate de que widget.nameUser no sea null
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                              // Aquí va el ícono de verificación
+                              if (widget.isVerified) // Asegúrate de definir isVerified
+                                const Icon(
+                                  CupertinoIcons.checkmark_seal_fill,
+                                  size: 16,
+                                  color: AppColors.primaryBlue, // Cambia el color según prefieras
+                                ),
+                            ],
                           ),
                         ),
                       ],
@@ -138,7 +145,6 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                 widget.bodyTextField,
                 // Campo de texto para el cuerpo del post
                 PostWidgetInternal(
-                  nameUser: widget.nameUserRepost,
                   usernameUser: widget.usernameUserRepost,
                   profilePhotoUser: widget.profilePhotoUserRepost,
                   createdAt: widget.createdAtRepost, // Ajusta esta fecha según sea necesario
@@ -150,6 +156,7 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                   onProfileTap: () {
                     // Acción a realizar al tocar el perfil
                   },
+                  isVerified: widget.isVerifiedRepost,
                 ),
               ],
             ),

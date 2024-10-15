@@ -40,6 +40,8 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   bool _isBottomNavVisible = true;
   bool _isAppBarVisible = true;
   Timer? _scrollTimer; // Timer para rastrear la actividad de scroll
+  DateTime? _lastPressTime;
+  bool _isVerified = false;
 
   Future<void> _initializeData() async {
     await _callUser();
@@ -57,22 +59,24 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   }
 
   Future<void> _getData() async {
-      final id = await _storage.read(key: 'user') ?? '';
-      final groupsString = await _storage.read(key: 'groups') ?? '[]';
-      final groups = (groupsString.isNotEmpty)
-        ? List<dynamic>.from(json.decode(groupsString))
-        : [];
+    final id = await _storage.read(key: 'user') ?? '';
+    final groupsString = await _storage.read(key: 'groups') ?? '[]';
+    final groups = (groupsString.isNotEmpty)
+      ? List<dynamic>.from(json.decode(groupsString))
+      : [];
 
-      setState(() {
-        _id = int.parse(id);
-        _groups = groups;
-        if (groups.contains(1)) {
-          _isGroupOne = true;
-        } else if (groups.contains(2)) {
-          _isGroupTwo = true;
-        }
-      });
-    }
+    setState(() {
+      _id = int.parse(id);
+      _groups = groups;
+      if (groups.contains(1)) {
+        _isGroupOne = true;
+        _isVerified = true;
+      } else if (groups.contains(2)) {
+        _isGroupTwo = true;
+        _isVerified = true;
+      }
+    });
+  }
 
   Future<void> _callUser() async {
 
@@ -182,12 +186,28 @@ class _BaseNavigatorState extends State<BaseNavigator> {
   }
 
   void _onBottomNavTap(int index) {
-    setState(() {
-      _currentIndex = index;
-      // Cambiar la visibilidad del AppBar según el índice seleccionado
-      _isAppBarVisible = index != 2; // Supongamos que 2 es el índice de NewPostView
-    });
+    if (index == 0) { // Si el botón presionado es el de "Home"
+      final currentTime = DateTime.now();
+      if (_lastPressTime == null || currentTime.difference(_lastPressTime!) > const Duration(seconds: 1)) {
+        // Si no hay un último tiempo de presión, o ha pasado más de 1 segundo
+        setState(() {
+          _currentIndex = index;
+          _isAppBarVisible = index != 2; // Cambia la visibilidad del AppBar
+        });
+      } else {
+        // Si ha presionado el botón de "Home" dos veces en menos de 1 segundo
+        Navigator.pushReplacementNamed(context, 'base'); // Vuelve a la pantalla de inicio
+      }
+      _lastPressTime = currentTime; // Actualiza el último tiempo de presión
+    } else {
+      setState(() {
+        _currentIndex = index;
+        _isAppBarVisible = index != 2; // Cambia la visibilidad del AppBar
+      });
+      _lastPressTime = null; // Reinicia el contador si se presiona otro botón
+    }
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -214,13 +234,22 @@ class _BaseNavigatorState extends State<BaseNavigator> {
             reloadView();
           },
         ),
-        title: Row(
-          children: [
-            Center(
+      title: Row(
+        children: [
+          Center(
+            child: GestureDetector(
+              onTap: () {
+                // Aquí puedes poner la acción que desees, como recargar la página
+                Navigator.pushReplacementNamed(context, 'base'); // Esto recarga la página actual
+                // O navegar a otra vista, por ejemplo:
+                // Navigator.pushNamed(context, 'otraRuta');
+              },
               child: LogoBanner(),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+
         centerTitle: true,
         toolbarHeight: kToolbarHeight,
       ): null,
@@ -230,6 +259,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
         followers: followers ?? 0,
         following: following ?? 0,
         imageProvider: imageProvider,
+        isVerified: _isVerified,
         onProfileTap: () async {
           if (_id != 0) {
             final userId = _id; // Convierte el ID a int si es necesario

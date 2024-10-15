@@ -7,7 +7,6 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/ShowConfirmationDialog.dart';
 
 class CommentWidget extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
@@ -27,14 +26,14 @@ class CommentWidget extends StatelessWidget {
   final VoidCallback onEditTap;
   final VoidCallback? onDeleteTap;
   final VoidCallback onReportTap;
+  final bool isVerified;
 
   final AudioPlayer _audioPlayer = AudioPlayer(); // Crea el AudioPlayer
 
   CommentWidget({
     Key? key,
-    required this.nameUser,
-    required this.reaction,
     required this.usernameUser,
+    required this.reaction,
     required this.createdAt,
     this.profilePhotoUser,
     this.isHidden = false,
@@ -53,6 +52,7 @@ class CommentWidget extends StatelessWidget {
     this.repliesCount = '0',
     this.body,
     this.mediaUrl,
+    this.isVerified = false,
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -153,173 +153,188 @@ class CommentWidget extends StatelessWidget {
     const double mediaHeight = 250.0;
     const double mediaWidth = double.infinity;
 
-    return GestureDetector(
-        onLongPress: () => _showOptionsModal(context),
-        child: Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(
-                left: 56.0,
-                right: 16.0,
-                top: 8.0,
-                bottom: 8.0,
-              ),
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: AppColors.greyLigth,
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-              child: Column(
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(
+            left: 56.0,
+            right: 16.0,
+            top: 8.0,
+            bottom: 8.0,
+          ),
+          padding:
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          decoration: BoxDecoration(
+            color: AppColors.greyLigth,
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          nameUser,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8.0),
-                      // Aquí añadimos la fecha formateada
-                      Text(
-                        _formatDate(createdAt),
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    usernameUser,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 10.0),
-                  if (mediaUrl != null) ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  FullScreenImage(imageUrl: mediaUrl!),
-                            ),
-                          );
-                        },
-                        child: SizedBox(
-                          height: mediaHeight,
-                          width: mediaWidth,
-                          child: Image.network(
-                            mediaUrl!,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                  const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                  if (isVerified)
+                    const Icon(
+                      CupertinoIcons.checkmark_seal_fill,
+                      size: 16,
+                      color: AppColors.primaryBlue// Cambia el color según prefieras
                     ),
-                  ],
-                  if (mediaUrl != null) const SizedBox(height: 10.0),
-                  if (body != null && body != '') ...[
-                    Text(
-                      body!,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
+                  // Espaciado entre el nombre y los tres puntos
+                  const Spacer(), // Ajusta el valor según sea necesario
+                  // Tres puntos
+                  GestureDetector(
+                    onTap: () {
+                      _showOptionsModal(context);
+                    },
+                    child: const Icon(
+                      MaterialIcons.more,
+                      color: AppColors.grey, // Color de los tres puntos
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (!reaction) {
-                            _playSound();
-                          }
-                          if (onLikeTap != null) {
-                            onLikeTap!(); // Ejecutar cualquier otra acción
-                          }
-                        },
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                                scale: animation, child: child);
-                          },
-                          child: Icon(
-                            reaction
-                                ? MaterialIcons.favorite
-                                : MaterialIcons.favoriteBorder,
-                            key: ValueKey<bool>(reaction),
-                            color:
-                                reaction ? AppColors.errorRed : AppColors.grey,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10.0),
-                      // Número de reacciones
-                      GestureDetector(
-                        onTap: onNumberLikeTap,
-                        child: Text(
-                          reactionsCount,
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 30.0),
-                      // Texto "Responder"
-                      if (!isHidden) ...[
-                        GestureDetector(
-                          onTap: onResponseTap,
-                          child: const Text(
-                            'Responder',
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10.0),
-                        GestureDetector(
-                          onTap: onResponseTap,
-                          child: Text(
-                            repliesCount,
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ]
-                    ],
                   ),
                 ],
               ),
-            ),
-            Positioned(
-              left: 8.0,
-              top: 8.0,
-              child: Container(
-                width: 40.0,
-                height: 40.0,
-                child: ProfileAvatar(
-                  imageProvider:
-                      profilePhotoUser != null && profilePhotoUser!.isNotEmpty
-                          ? NetworkImage(profilePhotoUser!)
-                          : null,
-                  avatarSize: 40.0,
-                  showBorder: true,
-                  onPressed: onProfileTap,
+              const SizedBox(height: 10.0),
+              if (mediaUrl != null) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              FullScreenImage(imageUrl: mediaUrl!),
+                        ),
+                      );
+                    },
+                    child: SizedBox(
+                      height: mediaHeight,
+                      width: mediaWidth,
+                      child: Image.network(
+                        mediaUrl!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                 ),
+              ],
+              if (mediaUrl != null) const SizedBox(height: 10.0),
+              if (body != null && body != '') ...[
+                Text(
+                  body!,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (!reaction) {
+                        _playSound();
+                      }
+                      if (onLikeTap != null) {
+                        onLikeTap!(); // Ejecutar cualquier otra acción
+                      }
+                    },
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return ScaleTransition(
+                            scale: animation, child: child);
+                      },
+                      child: Icon(
+                        reaction
+                            ? MaterialIcons.favorite
+                            : MaterialIcons.favoriteBorder,
+                        key: ValueKey<bool>(reaction),
+                        color:
+                            reaction ? AppColors.errorRed : AppColors.grey,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  // Número de reacciones
+                  GestureDetector(
+                    onTap: onNumberLikeTap,
+                    child: Text(
+                      reactionsCount,
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 30.0),
+                  // Texto "Responder"
+                  if (!isHidden) ...[
+                    GestureDetector(
+                      onTap: onResponseTap,
+                      child: const Text(
+                        'Responder',
+                        style: TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10.0),
+                    GestureDetector(
+                      onTap: onResponseTap,
+                      child: Text(
+                        repliesCount,
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                  const Spacer(),
+                  Text(
+                      _formatDate(createdAt),
+                      style: const TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                ],
               ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: 8.0,
+          top: 8.0,
+          child: Container(
+            width: 40.0,
+            height: 40.0,
+            child: ProfileAvatar(
+              imageProvider:
+                  profilePhotoUser != null && profilePhotoUser!.isNotEmpty
+                      ? NetworkImage(profilePhotoUser!)
+                      : null,
+              avatarSize: 40.0,
+              showBorder: true,
+              onPressed: onProfileTap,
             ),
-          ],
-        ));
+          ),
+        ),
+      ],
+    );
   }
 }

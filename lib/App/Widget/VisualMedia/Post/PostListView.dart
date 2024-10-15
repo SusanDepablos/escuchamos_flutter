@@ -7,7 +7,6 @@ import 'package:escuchamos_flutter/App/Widget/VisualMedia/MediaCarousel.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class PostWidget extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
@@ -19,6 +18,7 @@ class PostWidget extends StatelessWidget {
   final VoidCallback onShareTap;
   final bool reaction;
   final DateTime createdAt;
+  final bool isVerified;
 
   final int reactionsCount;
   final int commentsCount;
@@ -34,10 +34,10 @@ class PostWidget extends StatelessWidget {
 
   PostWidget({
     Key? key,
-    required this.nameUser,
-    required this.reaction,
     required this.usernameUser,
+    required this.reaction,
     required this.createdAt,
+    this.isVerified = false,
     this.onIndexCommentTap,
     this.profilePhotoUser,
     this.onIndexLikeTap,
@@ -46,6 +46,7 @@ class PostWidget extends StatelessWidget {
     this.reactionsCount = 0,
     this.commentsCount = 0,
     this.totalSharesCount = 0,
+
     this.body,
     this.mediaUrls,
     required this.authorId,
@@ -189,9 +190,8 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () => _showOptionsModal(context), // Mostrar modal al mantener presionado
-      child: Container(
+    return
+      Container(
         margin: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
@@ -220,23 +220,53 @@ class PostWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 12.0),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuye espacio entre el nombre y el icono
                       children: [
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              constraints: const BoxConstraints(maxWidth: 140),
-                              child: Text(
-                                nameUser,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                              constraints: const BoxConstraints(maxWidth: 230),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Espacio entre los elementos
+                                children: [
+                                  // Nombre de usuario
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          usernameUser,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                        if (isVerified)
+                                          const Icon(
+                                            CupertinoIcons.checkmark_seal_fill,
+                                            size: 16,
+                                            color: AppColors.primaryBlue// Cambia el color según prefieras
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Tres puntos
+                                  GestureDetector(
+                                    onTap: () {
+                                      _showOptionsModal(context);
+                                    },
+                                    child: const Icon(
+                                      MaterialIcons.more,
+                                      color: AppColors.grey, // Color de los tres puntos
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const Spacer(),
+                            // Fecha
                             Text(
                               _formatDate(createdAt),
                               style: const TextStyle(
@@ -245,13 +275,6 @@ class PostWidget extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ),
-                        Text(
-                          '@$usernameUser',
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 14,
-                          ),
                         ),
                       ],
                     ),
@@ -323,7 +346,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: onIndexCommentTap,
                           child: const Icon(
-                            MaterialIcons.comment,
+                            CupertinoIcons.bubble_left,
                             color: AppColors.grey,
                           ),
                         ),
@@ -348,7 +371,7 @@ class PostWidget extends StatelessWidget {
                         GestureDetector(
                           onTap: () => _showShareModal(context), // Mostrar modal de compartir
                           child: const Icon(
-                            MaterialIcons.repeat,
+                            CupertinoIcons.arrow_2_squarepath,
                             color: AppColors.grey,
                           ),
                         ),
@@ -368,7 +391,7 @@ class PostWidget extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
+
 }

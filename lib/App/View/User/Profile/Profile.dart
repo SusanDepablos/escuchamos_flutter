@@ -46,6 +46,8 @@ class _UpdateState extends State<Profile> {
   int? _storedUserId;
   bool isFollowing = false;
   bool _loadingFollow = true; // Inicialmente cargando
+  int? groupId;
+  bool isVerified = false;
 
   // Obtener el userId desde el almacenamiento seguro
   Future<void> _getStoredUserId() async {
@@ -128,6 +130,9 @@ class _UpdateState extends State<Profile> {
             createdAt = _user!.data.attributes.createdAt;
             _profileAvatarUrl = _getFileUrlByType('profile');
             _coverPhotoUrl = _getFileUrlByType('cover');
+
+            groupId = _user!.data.relationships.groups[0].id;
+            isVerified = groupId == 1 || groupId == 2;
 
             final followersList = _user!.data.relationships.followers;
             isFollowing = followersList.any((follower) =>
@@ -262,19 +267,31 @@ class _UpdateState extends State<Profile> {
         appBar: AppBar(
           backgroundColor: AppColors.whiteapp,
           centerTitle: true,
-          title: Column(
+          title: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  name ?? '...',
-                  style: const TextStyle(
-                    fontSize: AppFond.title,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.black,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // Asegura que el Row esté centrado
+                  children: [
+                    Text(
+                      username ?? '...',
+                      style: const TextStyle(
+                        fontSize: AppFond.title,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.black,
+                      ),
+                    ),
+                    const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+                    if (isVerified)
+                      const Icon(
+                        CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                        color: AppColors.primaryBlue, // Color del ícono
+                        size: 16, // Tamaño del ícono
+                      ),
+                  ],
                 ),
               ],
-            ),
+          ),
           actions: [
             if (_storedUserId != null && _storedUserId == widget.userId) // Validación del userId
               SettingsMenu(
@@ -360,7 +377,7 @@ class _UpdateState extends State<Profile> {
                         Align(
                           alignment: Alignment.center,
                           child: Text(
-                            '@${username ?? '...'}',
+                            '${name ?? '...'}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,

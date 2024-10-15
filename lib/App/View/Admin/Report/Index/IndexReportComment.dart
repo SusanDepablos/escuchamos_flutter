@@ -191,7 +191,6 @@ class _IndexReportCommentState extends State<IndexReportComment> {
                           }
                           final report = reportsGrouped[index];
                           return CommentSimpleWidget(
-                            nameUser: report.relationships.comment?.relationships.user.name ?? '...', 
                             usernameUser: report.relationships.comment?.relationships.user.username ?? '...', 
                             profilePhotoUser: report.relationships.comment?.relationships.user.profilePhotoUrl,
                             createdAt: report.relationships.comment?.attributes.createdAt ?? DateTime.now(),
@@ -209,7 +208,9 @@ class _IndexReportCommentState extends State<IndexReportComment> {
                                 int commentId = report.relationships.comment?.id ?? 0;
                               _callComment(commentId);
                               });
-                            }
+                            },
+                            isVerified: report.relationships.comment?.relationships.user.groupId?.contains(1) == true ||
+                              report.relationships.comment?.relationships.user.groupId?.contains(2) == true,
                           );
                         },
                       ),

@@ -50,7 +50,6 @@ class _IndexPostState extends State<IndexPost> {
   PostModel? _post;
   bool _submitting = false;
   user_model.UserModel? _user;
-  String? _name;
   String? _username;
   String? _profilePhotoUser;
 
@@ -292,7 +291,6 @@ class _IndexPostState extends State<IndexPost> {
               child: PopupPostWidget(
                 isButtonDisabled: _submitting,
                 username: _username!,
-                nameUser: _name!,
                 profilePhotoUser: _profilePhotoUser,
                 error: _errorMessages['body'],
                 body: body!,
@@ -309,6 +307,7 @@ class _IndexPostState extends State<IndexPost> {
                   context,
                 );
                 }
+                
               ),
             );
           },
@@ -401,7 +400,6 @@ class _IndexPostState extends State<IndexPost> {
         if (response is  user_model.UserModel) {
           setState(() {
             _user = response;
-          _name = _user!.data.attributes.name;
           _username = _user!.data.attributes.username;
 
           _profilePhotoUser = _getFileUrlByType('profile');
@@ -639,7 +637,6 @@ class _IndexPostState extends State<IndexPost> {
                             return PostWidget(
                               reaction: hasReaction,
                               onLikeTap: () => _postReaction(index, post.id),
-                              nameUser: post.relationships.user.name,
                               usernameUser: post.relationships.user.username,
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                               onProfileTap: () {
@@ -716,13 +713,14 @@ class _IndexPostState extends State<IndexPost> {
                               onShareTap: () {
                                 int postId = post.id;
                                 _postShare(postId, context);
-                              }
+                              }, 
+                              isVerified: post.relationships.user.groupId?.contains(1) == true ||
+                              post.relationships.user.groupId?.contains(2) == true,
                             );
                           } else {
                             return RepostWidget(
                               reaction: hasReaction,
                               onLikeTap: () => _postReaction(index, post.id),
-                              nameUser: post.relationships.user.name,
                               usernameUser: post.relationships.user.username,
                               profilePhotoUser: post.relationships.user.profilePhotoUrl ?? '',
                               onProfileTap: () {
@@ -780,7 +778,6 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               // Repost
                               bodyRepost: post.relationships.post!.attributes.body,
-                              nameUserRepost: post.relationships.post!.relationships.user.name,
                               usernameUserRepost: post.relationships.post!.relationships.user.username,
                               createdAtRepost: post.relationships.post!.attributes.createdAt,
                               profilePhotoUserRepost: post.relationships.post!.relationships.user.profilePhotoUrl ?? '',
@@ -817,7 +814,11 @@ class _IndexPostState extends State<IndexPost> {
                               onShareTap: () {
                                 int postId = post.relationships.post!.id;
                                 _postShare(postId, context);
-                              }
+                              }, 
+                              isVerified: post.relationships.user.groupId?.contains(1) == true ||
+                              post.relationships.user.groupId?.contains(2) == true, 
+                              isVerifiedRepost: post.relationships.post?.relationships.user.groupId?.contains(1) == true ||
+                              post.relationships.post?.relationships.user.groupId?.contains(2) == true, 
                             );
                           }
                         },

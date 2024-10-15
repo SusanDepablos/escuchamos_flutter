@@ -34,7 +34,6 @@ String _getAbbreviatedMonthName(int month) {
 }
 
 class RepostWidget extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final VoidCallback? onProfileTap;
@@ -44,6 +43,7 @@ class RepostWidget extends StatelessWidget {
   final VoidCallback? onDeleteTap;
   final bool reaction;
   final DateTime createdAt;
+  final bool isVerified;
   final int reactionsCount;
   final int commentsCount;
   final int totalSharesCount;
@@ -55,7 +55,6 @@ class RepostWidget extends StatelessWidget {
 
   //Repost
   final String? bodyRepost;
-  final String nameUserRepost;
   final String usernameUserRepost;
   final DateTime createdAtRepost;
   final String? profilePhotoUserRepost;
@@ -65,13 +64,14 @@ class RepostWidget extends StatelessWidget {
   final VoidCallback? onRepostTap;
   final VoidCallback onReportTap;
   final VoidCallback onShareTap;
+  final bool isVerifiedRepost;
 
   RepostWidget({
     Key? key,
-    required this.nameUser,
     required this.reaction,
     required this.usernameUser,
     required this.createdAt,
+    this.isVerified = false,
     this.onIndexCommentTap,
     this.profilePhotoUser,
     this.onIndexLikeTap,
@@ -88,7 +88,6 @@ class RepostWidget extends StatelessWidget {
 
     //Repost
     this.bodyRepost,
-    required this.nameUserRepost,
     required this.usernameUserRepost,
     this.profilePhotoUserRepost,
     required this.createdAtRepost,
@@ -98,6 +97,7 @@ class RepostWidget extends StatelessWidget {
     this.onRepostTap,
     required this.onReportTap,
     required this.onShareTap,
+    this.isVerifiedRepost = false,
   }) : super(key: key);
 
   Future<void> _playSound() async {
@@ -206,190 +206,210 @@ class RepostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () => _showOptionsModal(context), // Mantener funcionalidad de modal en el widget externo
-      child: Container(
-        margin: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 8.0,
-          bottom: 8.0,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.greyLigth,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ProfileAvatar(
-                    imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
-                        ? NetworkImage(profilePhotoUser!)
-                        : null,
-                    avatarSize: 40.0,
-                    showBorder: true,
-                    onPressed: onProfileTap,
-                  ),
-                  const SizedBox(width: 12.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 140),
-                              child: Text(
-                                nameUser,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              _formatDate(createdAt),
-                              style: const TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          '@$usernameUser',
-                          style: const TextStyle(
-                            color: AppColors.grey,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              if (body != null && body != '')
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Text(
-                    body!,
-                    style: const TextStyle(fontSize: 14),
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        top: 8.0,
+        bottom: 8.0,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.greyLigth,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ProfileAvatar(
+                  imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
+                      ? NetworkImage(profilePhotoUser!)
+                      : null,
+                  avatarSize: 40.0,
+                  showBorder: true,
+                  onPressed: onProfileTap,
                 ),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuye espacio entre el nombre y el icono
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 230),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Espacio entre los elementos
+                              children: [
+                                // Nombre de usuario
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        usernameUser,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                      if (isVerified)
+                                        const Icon(
+                                          CupertinoIcons.checkmark_seal_fill,
+                                          size: 16,
+                                          color: AppColors.primaryBlue// Cambia el color según prefieras
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                // Tres puntos
+                                GestureDetector(
+                                  onTap: () {
+                                    _showOptionsModal(context);
+                                  },
+                                  child: const Icon(
+                                    MaterialIcons.more,
+                                    color: AppColors.grey, // Color de los tres puntos
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Fecha
+                          Text(
+                            _formatDate(createdAt),
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (body != null && body != '')
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  body!,
+                  style: const TextStyle(fontSize: 14),
               ),
-              // Agregar el PostWidget interno
-              PostWidgetInternal(
-                nameUser: nameUserRepost,
-                usernameUser: usernameUserRepost,
-                profilePhotoUser: profilePhotoUserRepost,
-                createdAt: createdAtRepost,
-                mediaUrls: mediaUrlsRepost,
-                body: bodyRepost,
-                onTap: () {
-                  onPostTap();
-                },
-                onProfileTap: onProfileTapRepost,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            if (!reaction) {
-                              _playSound();
-                            }
-                            if (onLikeTap != null) {
-                              onLikeTap!();
-                            }
+            ),
+            // Agregar el PostWidget interno
+            PostWidgetInternal(
+              usernameUser: usernameUserRepost,
+              profilePhotoUser: profilePhotoUserRepost,
+              createdAt: createdAtRepost,
+              mediaUrls: mediaUrlsRepost,
+              body: bodyRepost,
+              onTap: () {
+                onPostTap();
+              },
+              onProfileTap: onProfileTapRepost,
+              isVerified: isVerifiedRepost,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (!reaction) {
+                            _playSound();
+                          }
+                          if (onLikeTap != null) {
+                            onLikeTap!();
+                          }
+                        },
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return ScaleTransition(scale: animation, child: child);
                           },
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            transitionBuilder: (Widget child, Animation<double> animation) {
-                              return ScaleTransition(scale: animation, child: child);
-                            },
-                            child: Icon(
-                              reaction ? MaterialIcons.favorite // Si reaccionado, icono lleno
-                              : MaterialIcons.favoriteBorder,
-                              key: ValueKey<bool>(reaction),
-                              color: reaction ? AppColors.errorRed : AppColors.grey,
-                              size: 24,
-                            ),
+                          child: Icon(
+                            reaction ? MaterialIcons.favorite // Si reaccionado, icono lleno
+                            : MaterialIcons.favoriteBorder,
+                            key: ValueKey<bool>(reaction),
+                            color: reaction ? AppColors.errorRed : AppColors.grey,
+                            size: 24,
                           ),
                         ),
-                        const SizedBox(width: 15),
-                        GestureDetector(
-                          onTap: onIndexLikeTap,
-                          child: Text(
-                            reactionsCount.toString(),
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: onIndexCommentTap,
-                          child: const Icon(
-                            MaterialIcons.comment,
-                            color: AppColors.grey,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        GestureDetector(
-                          onTap: onIndexCommentTap,
-                          child: Text(
-                            commentsCount.toString(),
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => _showShareModal(context), // Mostrar modal de compartir
-                          child: const Icon(
-                            MaterialIcons.repeat,
-                            color: AppColors.grey,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          totalSharesCount.toString(),
+                      ),
+                      const SizedBox(width: 15),
+                      GestureDetector(
+                        onTap: onIndexLikeTap,
+                        child: Text(
+                          reactionsCount.toString(),
                           style: const TextStyle(
                             color: AppColors.grey,
                             fontSize: 18,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: onIndexCommentTap,
+                        child: const Icon(
+                          CupertinoIcons. bubble_left,
+                          color: AppColors.grey,
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      GestureDetector(
+                        onTap: onIndexCommentTap,
+                        child: Text(
+                          commentsCount.toString(),
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showShareModal(context), // Mostrar modal de compartir
+                        child: const Icon(
+                          CupertinoIcons.arrow_2_squarepath,
+                          color: AppColors.grey,
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Text(
+                        totalSharesCount.toString(),
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -398,7 +418,6 @@ class RepostWidget extends StatelessWidget {
 
 // PostWidget interno simplificado
 class PostWidgetInternal extends StatelessWidget {
-  final String nameUser;
   final String usernameUser;
   final String? profilePhotoUser;
   final DateTime createdAt;
@@ -408,10 +427,10 @@ class PostWidgetInternal extends StatelessWidget {
   final VoidCallback? onProfileTap;
   final Color? color;
   final EdgeInsetsGeometry? margin;
+  final bool isVerified;
 
   const PostWidgetInternal({
     Key? key,
-    required this.nameUser,
     required this.usernameUser,
     this.profilePhotoUser,
     required this.createdAt,
@@ -421,6 +440,7 @@ class PostWidgetInternal extends StatelessWidget {
     this.onProfileTap,
     this.color,
     this.margin,
+    this.isVerified = false,
   }) : super(key: key);
 
   @override
@@ -458,38 +478,43 @@ class PostWidgetInternal extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuye espacio entre el nombre y el icono
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             constraints: const BoxConstraints(maxWidth: 140),
-                            child: Text(
-                              nameUser,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start, // Alineación a la izquierda
+                              children: [
+                                Text(
+                                  usernameUser,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                if (isVerified)
+                                  const Icon(
+                                    CupertinoIcons.checkmark_seal_fill,
+                                    size: 16,
+                                    color: AppColors.primaryBlue, // Cambia el color según prefieras
+                                  ),
+                              ],
                             ),
                           ),
-                          const Spacer(),
                           Text(
                             _formatDate(createdAt),
                             style: const TextStyle(
                               color: AppColors.grey,
-                              fontSize: 13,
+                              fontSize: 14,
                             ),
                           ),
                         ],
-                      ),
-                      Text(
-                        '@$usernameUser',
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 13,
-                        ),
                       ),
                     ],
                   ),

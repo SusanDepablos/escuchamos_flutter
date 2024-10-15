@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowers.dart';
 import 'package:escuchamos_flutter/App/View/Follow/SearchFollowed.dart';
@@ -21,11 +22,12 @@ class NavigatorFollow extends StatefulWidget {
 class _NavigatorFollowState extends State<NavigatorFollow> {
   late int _initialIndex;
   UserModel? _user;
-  String? name;
   String? username;
   int? followers;
   int? following;
   bool _isUserCalled = false;
+  int? groupId;
+  bool isVerified = false;
 
   Future<void> _callUser() async {
     final id = widget.userId;
@@ -38,9 +40,12 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
         if (response is UserModel) {
           setState(() {
             _user = response;
-            name = _user!.data.attributes.name;
+            username = _user!.data.attributes.username;
             followers = _user!.data.relationships.followersCount;
             following = _user!.data.relationships.followingCount;
+
+            groupId = _user!.data.relationships.groups[0].id;
+            isVerified = groupId == 1 || groupId == 2;
           });
         } else {
           showDialog(
@@ -92,24 +97,34 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
       initialIndex: _initialIndex,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize:
-              const Size.fromHeight(100.0),
+          preferredSize: const Size.fromHeight(100.0),
           child: AppBar(
             backgroundColor: AppColors.whiteapp,
             centerTitle: true,
-            title: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    name ?? "...",
-                    style: const TextStyle(
-                      fontSize: AppFond.title,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.black,
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      username ?? '...',
+                      style: const TextStyle(
+                        fontSize: AppFond.title,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.black,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+                    if (isVerified)
+                      const Icon(
+                        CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                        color: AppColors.primaryBlue, // Color del ícono
+                        size: 16, // Tamaño del ícono
+                      ),
+                  ],
+                ),
                 ],
-              ),
+            ),
             bottom: TabBar(
               isScrollable: false,
               labelColor: AppColors.primaryBlue,

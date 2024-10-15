@@ -19,6 +19,8 @@ class CustomDrawer extends StatelessWidget {
   final Future<void> Function()? onFollowedTap;
   final bool showContentModeration; 
   final bool showAdminUser;
+  final bool isVerified;
+
   CustomDrawer({
     this.name,
     this.username,
@@ -34,6 +36,7 @@ class CustomDrawer extends StatelessWidget {
     this.onFollowersTap,
     this.onFollowedTap,
     this.showContentModeration = false,
+    this.isVerified = false,
   });
 
   @override
@@ -107,18 +110,29 @@ class CustomDrawer extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               // Texto
-              Text(
-                name ?? '...',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black,
-                ),
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
+              Row(
+                children: [
+                  Text(
+                    username ?? '...', // Usar un valor por defecto si username es null
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.black,
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+                  if (isVerified) // Asegúrate de que isVerified esté definido
+                    const Icon(
+                      CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                      color: AppColors.primaryBlue, // Color del ícono
+                      size: 16, // Tamaño del ícono
+                    ),
+                ],
               ),
               Text(
-                '@${username ?? '...'}',
+                '${name ?? '...'}',
                 style: const TextStyle(
                   fontSize: 15,
                   color: AppColors.black,

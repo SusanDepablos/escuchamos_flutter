@@ -11,6 +11,13 @@ class CupertinoIcons {
       IconData(0xf6f8, fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
   static const IconData instagram = IconData(0xf40e, // Reemplaza con el código correcto si está disponible
       fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData bubble_left = IconData(0xf5a3,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData arrow_2_squarepath = IconData(0xf4e6,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData checkmark_seal_fill = IconData(0xf5cc, 
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+
 }
 
 class MaterialIcons {
@@ -36,7 +43,7 @@ class MaterialIcons {
   static const IconData group = Icons.group;
 
 
-  static const IconData more = Icons.more_vert;
+  static const IconData more = Icons.more_horiz;
   static const IconData favorite = Icons.favorite;
   static const IconData favoriteBorder = Icons.favorite_border;
   static const IconData comment = Icons.comment;

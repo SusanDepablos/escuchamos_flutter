@@ -1,115 +1,23 @@
 import 'dart:convert';
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///MODELO DE PUBLICACIONES PARA SHOW
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+StoriesModel storiesModelFromJson(String str) => StoriesModel.fromJson(json.decode(str));
 
-PostModel postModelFromJson(String str) => PostModel.fromJson(json.decode(str));
+String storiesModelToJson(StoriesModel data) => json.encode(data.toJson());
 
-String postModelToJson(PostModel data) => json.encode(data.toJson());
-
-class PostModel {
-    Data data;
-
-    PostModel({
-        required this.data,
-    });
-
-    factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
-        data: Data.fromJson(json["data"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "data": data.toJson(),
-    };
-}
-
-class Data {
-    int id;
-    DataAttributes attributes;
-    DatumRelationships relationships;
-
-    Data({
-        required this.id,
-        required this.attributes,
-        required this.relationships,
-    });
-
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        attributes: DataAttributes.fromJson(json["attributes"]),
-        relationships: DatumRelationships.fromJson(json["relationships"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "attributes": attributes.toJson(),
-        "relationships": relationships.toJson(),
-    };
-}
-
-class DataAttributes {
-    String? body;
-    dynamic postId;
-    int userId;
-    int statusId;
-    int typePostId;
-    DateTime createdAt;
-    DateTime updatedAt;
-
-    DataAttributes({
-        this.body,
-        required this.postId,
-        required this.userId,
-        required this.statusId,
-        required this.typePostId,
-        required this.createdAt,
-        required this.updatedAt,
-    });
-
-    factory DataAttributes.fromJson(Map<String, dynamic> json) => DataAttributes(
-        body: json["body"] as String?,
-        postId: json["post_id"],
-        userId: json["user_id"],
-        statusId: json["status_id"],
-        typePostId: json["type_post_id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "body": body,
-        "post_id": postId,
-        "user_id": userId,
-        "status_id": statusId,
-        "type_post_id": typePostId,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-    };
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///MODELO DE PUBLICACIONES PARA INDEX
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-PostsModel postsModelFromJson(String str) => PostsModel.fromJson(json.decode(str));
-
-String postsModelToJson(PostsModel data) => json.encode(data.toJson());
-
-class PostsModel {
+class StoriesModel {
     int count;
     dynamic next;
     dynamic previous;
     Results results;
 
-    PostsModel({
+    StoriesModel({
         required this.count,
         required this.next,
         required this.previous,
         required this.results,
     });
 
-    factory PostsModel.fromJson(Map<String, dynamic> json) => PostsModel(
+    factory StoriesModel.fromJson(Map<String, dynamic> json) => StoriesModel(
         count: json["count"],
         next: json["next"],
         previous: json["previous"],
@@ -165,106 +73,81 @@ class Datum {
 }
 
 class DatumAttributes {
-    String? body;
-    dynamic postId;
+    String? content;
+    bool archive;
     int userId;
     int statusId;
-    int typePostId;
+    dynamic postId;
     DateTime createdAt;
     DateTime updatedAt;
 
     DatumAttributes({
-        this.body,
-        required this.postId,
+        required this.content,
+        required this.archive,
         required this.userId,
         required this.statusId,
-        required this.typePostId,
+        required this.postId,
         required this.createdAt,
         required this.updatedAt,
     });
 
     factory DatumAttributes.fromJson(Map<String, dynamic> json) => DatumAttributes(
-        body: json["body"] as String?,
-        postId: json["post_id"],
+        content: json["content"] as String,
+        archive: json["archive"],
         userId: json["user_id"],
         statusId: json["status_id"],
-        typePostId: json["type_post_id"],
+        postId: json["post_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "body": body,
-        "post_id": postId,
+        "content": content,
+        "archive": archive,
         "user_id": userId,
         "status_id": statusId,
-        "type_post_id": typePostId,
+        "post_id": postId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
     };
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///CLASES EN COMÚN
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 class DatumRelationships {
-    Datum? post;
     User user;
     Status status;
-    Status typePost;
-    List<FileElement> files;
+    Post? post;
+    List<FileElement> file;
     List<Reaction> reactions;
     int reactionsCount;
-    int commentsCount;
-    int repostsCount;
-    int sharesCount;
-    int totalSharesCount;
     int reportsCount;
 
     DatumRelationships({
-        required this.post,
         required this.user,
         required this.status,
-        required this.typePost,
-        required this.files,
+        required this.post,
+        required this.file,
         required this.reactions,
         required this.reactionsCount,
-        required this.commentsCount,
-        required this.repostsCount,
-        required this.sharesCount,
-        required this.totalSharesCount,
         required this.reportsCount,
     });
 
     factory DatumRelationships.fromJson(Map<String, dynamic> json) => DatumRelationships(
-        post: json["post"] == null ? null : Datum.fromJson(json["post"]),
         user: User.fromJson(json["user"]),
         status: Status.fromJson(json["status"]),
-        typePost: Status.fromJson(json["type_post"]),
-        files: List<FileElement>.from(json["files"].map((x) => FileElement.fromJson(x))),
+        post: json["post"] == null ? null : Post.fromJson(json["post"]),
+        file: List<FileElement>.from(json["file"].map((x) => FileElement.fromJson(x))),
         reactions: List<Reaction>.from(json["reactions"].map((x) => Reaction.fromJson(x))),
         reactionsCount: json["reactions_count"],
-        commentsCount: json["comments_count"],
-        repostsCount: json["reposts_count"],
-        sharesCount: json["shares_count"],
-        totalSharesCount: json["total_shares_count"],
         reportsCount: json["reports_count"],
     );
 
     Map<String, dynamic> toJson() => {
-        "post": post?.toJson(),
         "user": user.toJson(),
         "status": status.toJson(),
-        "type_post": typePost.toJson(),
-        "files": List<dynamic>.from(files.map((x) => x.toJson())),
-        "reactions": List<dynamic>.from(reactions.map((x) => x.toJson())),
+        "post": post?.toJson(),
+        "file": List<dynamic>.from(file.map((x) => x.toJson())),
+        "reactions": List<dynamic>.from(reactions.map((x) => x)),
         "reactions_count": reactionsCount,
-        "comments_count": commentsCount,
-        "reposts_count": repostsCount,
-        "shares_count": sharesCount,
-        "total_shares_count": totalSharesCount,
         "reports_count": reportsCount,
     };
 }
@@ -418,6 +301,130 @@ class FileAttributes {
     };
 }
 
+class Post {
+    int id;
+    PostAttributes attributes;
+    PostRelationships relationships;
+
+    Post({
+        required this.id,
+        required this.attributes,
+        required this.relationships,
+    });
+
+    factory Post.fromJson(Map<String, dynamic> json) => Post(
+        id: json["id"],
+        attributes: PostAttributes.fromJson(json["attributes"]),
+        relationships: PostRelationships.fromJson(json["relationships"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "attributes": attributes.toJson(),
+        "relationships": relationships.toJson(),
+    };
+}
+
+class PostAttributes {
+    String body;
+    dynamic postId;
+    int userId;
+    int statusId;
+    int typePostId;
+    DateTime createdAt;
+    DateTime updatedAt;
+
+    PostAttributes({
+        required this.body,
+        required this.postId,
+        required this.userId,
+        required this.statusId,
+        required this.typePostId,
+        required this.createdAt,
+        required this.updatedAt,
+    });
+
+    factory PostAttributes.fromJson(Map<String, dynamic> json) => PostAttributes(
+        body: json["body"],
+        postId: json["post_id"],
+        userId: json["user_id"],
+        statusId: json["status_id"],
+        typePostId: json["type_post_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "body": body,
+        "post_id": postId,
+        "user_id": userId,
+        "status_id": statusId,
+        "type_post_id": typePostId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+    };
+}
+
+class PostRelationships {
+    dynamic post;
+    User user;
+    Status status;
+    Status typePost;
+    List<FileElement> files;
+    List<Reaction> reactions;
+    int reactionsCount;
+    int commentsCount;
+    int repostsCount;
+    int sharesCount;
+    int totalSharesCount;
+    int reportsCount;
+
+    PostRelationships({
+        required this.post,
+        required this.user,
+        required this.status,
+        required this.typePost,
+        required this.files,
+        required this.reactions,
+        required this.reactionsCount,
+        required this.commentsCount,
+        required this.repostsCount,
+        required this.sharesCount,
+        required this.totalSharesCount,
+        required this.reportsCount,
+    });
+
+    factory PostRelationships.fromJson(Map<String, dynamic> json) => PostRelationships(
+        post: json["post"],
+        user: User.fromJson(json["user"]),
+        status: Status.fromJson(json["status"]),
+        typePost: Status.fromJson(json["type_post"]),
+        files: List<FileElement>.from(json["files"].map((x) => FileElement.fromJson(x))),
+        reactions: List<Reaction>.from(json["reactions"].map((x) => Reaction.fromJson(x))),
+        reactionsCount: json["reactions_count"],
+        commentsCount: json["comments_count"],
+        repostsCount: json["reposts_count"],
+        sharesCount: json["shares_count"],
+        totalSharesCount: json["total_shares_count"],
+        reportsCount: json["reports_count"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "post": post,
+        "user": user.toJson(),
+        "status": status.toJson(),
+        "type_post": typePost.toJson(),
+        "files": List<dynamic>.from(files.map((x) => x.toJson())),
+        "reactions": List<dynamic>.from(reactions.map((x) => x.toJson())),
+        "reactions_count": reactionsCount,
+        "comments_count": commentsCount,
+        "reposts_count": repostsCount,
+        "shares_count": sharesCount,
+        "total_shares_count": totalSharesCount,
+        "reports_count": reportsCount,
+    };
+}
+
 class Reaction {
     int id;
     ReactionAttributes attributes;
@@ -489,3 +496,5 @@ class ReactionRelationships {
         "user": user.toJson(),
     };
 }
+
+

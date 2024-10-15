@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerBottomSheet.dart';
 
 class CommentPopupCreateWidget extends StatefulWidget {
-  final String nameUser;
+  final String username;
   final String? body;
   final String? mediaUrl;
   final String? profilePhotoUser;
@@ -15,16 +15,18 @@ class CommentPopupCreateWidget extends StatefulWidget {
   final Function(String, String?)? onCommentCreate;
   final bool isButtonDisabled;
   final VoidCallback? onCancel;
+  final bool isVerified;
 
   CommentPopupCreateWidget({
     Key? key,
-    required this.nameUser,
+    required this.username,
     this.error,
     this.onCancel,
     this.body,
     this.onCommentCreate,
     this.mediaUrl,
     this.profilePhotoUser,
+    this.isVerified = false,
     required this.isButtonDisabled,
   }) : super(key: key);
 
@@ -96,17 +98,24 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                widget.nameUser,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                            Text(
+                              widget.username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            // Aquí va el ícono de verificación
+                            if (widget.isVerified) // Asegúrate de definir isVerified
+                              const SizedBox(width: 4.0),
+                            if (widget.isVerified) // Asegúrate de definir isVerified
+                              const Icon(
+                                CupertinoIcons.checkmark_seal_fill,
+                                size: 16,
+                                color: AppColors.primaryBlue, // Cambia el color según prefieras
+                              ),
                           ],
                         ),
                         const SizedBox(height: 10.0),

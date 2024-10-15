@@ -192,12 +192,10 @@ class _IndexReportRepostState extends State<IndexReportRepost> {
                           final report = reportsGrouped[index];
                           final mediaUrlsRepost = report.relationships.post?.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
                           return RepostSimpleWidget(
-                            nameUser: report.relationships.post?.relationships.user.name ?? '...', 
                             usernameUser: report.relationships.post?.relationships.user.username ?? '...', 
                             profilePhotoUser: report.relationships.post?.relationships.user.profilePhotoUrl,
                             createdAt: report.relationships.post?.attributes.createdAt ?? DateTime.now(), 
                             body: report.relationships.post?.attributes.body,
-                            nameUserRepost: report.relationships.post?.relationships.post?.relationships.user.name ?? '...',
                             usernameUserRepost: report.relationships.post?.relationships.post?.relationships.user.username ?? '...',
                             profilePhotoUserRepost: report.relationships.post?.relationships.post?.relationships.user.profilePhotoUrl,
                             createdAtRepost: report.relationships.post?.relationships.post?.attributes.createdAt ??  DateTime.now(), 
@@ -215,7 +213,11 @@ class _IndexReportRepostState extends State<IndexReportRepost> {
                                 int postId = report.relationships.post?.id ?? 0;
                                 _callPost(postId);
                               });
-                            }
+                            },
+                            isVerified: report.relationships.post?.relationships.user.groupId?.contains(1) == true ||
+                            report.relationships.post?.relationships.user.groupId?.contains(2) == true,
+                            isVerifiedRepost: report.relationships.post?.relationships.post?.relationships.user.groupId?.contains(1) == true ||
+                            report.relationships.post?.relationships.post?.relationships.user.groupId?.contains(2) == true,
                           );
                         },
                       ),

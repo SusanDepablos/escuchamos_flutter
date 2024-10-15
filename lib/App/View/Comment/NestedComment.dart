@@ -1,5 +1,8 @@
 import 'package:escuchamos_flutter/Api/Command/ReportCommand.dart';
+import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
+import 'package:escuchamos_flutter/Api/Model/UserModels.dart' as user_model;
 import 'package:escuchamos_flutter/Api/Service/ReportService.dart';
+import 'package:escuchamos_flutter/Api/Service/UserService.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +19,6 @@ import 'package:escuchamos_flutter/Api/Service/ReactionService.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupCreate.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Comment/CommentPopupUpdate.dart';
@@ -34,7 +36,7 @@ class NestedComments extends StatefulWidget {
 
 class _NestedCommentsState extends State<NestedComments> {
   CommentModel? _comment;
-  String? _name;
+  user_model.UserModel? _user;
   String? _username;
   String? _profilePhotoUrl;
   String? _body;
@@ -46,6 +48,8 @@ class _NestedCommentsState extends State<NestedComments> {
   bool _submitting = false;
   String? _profilePhotoUser;
   List<bool> reactionStates = [false];
+  int? groupId;
+  bool isVerified = false;
 
   final Map<String, String?> _errorMessages = {
     'body': null,
@@ -58,18 +62,76 @@ class _NestedCommentsState extends State<NestedComments> {
     });
   }
 
+  String? _getFileUrlByType(String type) {
+    try {
+      final file = _user?.data.relationships.files.firstWhere(
+        (file) => file.attributes.type == type,
+      );
+      return file!.attributes.url;
+    } catch (e) {
+      return null;
+    }
+  }
+  
   @override
   void initState() {
-    _getData();
-    commentId_ = widget.commentId;
     super.initState();
-    _callComment();
+    commentId_ = widget.commentId; // Mueve esto arriba del _getData
+
+    // Llama a _getData y espera a que complete
+    _getData().then((_) {
+      // Una vez que _getData complete, llama a _callComment y _callUser
+      _callComment();
+      _callUser();
+    });
   }
 
   void _clearErrorMessages() {
     setState(() {
       _errorMessages['body'] = null;
     });
+  }
+
+  Future<void> _callUser() async {
+    final userCommand = UserCommandShow(UserShow(), _id);
+    print(_id);
+
+    try {
+      final response = await userCommand.execute();
+
+      if (mounted) {
+        if (response is  user_model.UserModel) {
+          setState(() {
+            _user = response;
+          _username = _user!.data.attributes.username;
+          _profilePhotoUser = _getFileUrlByType('profile');
+          groupId = _user!.data.relationships.groups[0].id;
+          isVerified = groupId == 1 || groupId == 2;
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => PopupWindow(
+              title: response is InternalServerError
+                  ? 'Error'
+                  : 'Error de Conexión',
+              message: response.message,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _callComment() async {
@@ -81,7 +143,6 @@ class _NestedCommentsState extends State<NestedComments> {
         if (response is CommentModel) {
           setState(() {
             _comment = response;
-            _name = _comment!.data.relationships.user.name;
             _username = _comment!.data.relationships.user.username;
             _profilePhotoUrl = _comment?.data.relationships.user.profilePhotoUrl;
             _body = _comment?.data.attributes.body;
@@ -141,7 +202,7 @@ class _NestedCommentsState extends State<NestedComments> {
                   Navigator.of(context).pop();
                 },
                 isButtonDisabled: _submitting,
-                nameUser: _name.toString(),
+                username: _username ?? '...',
                 profilePhotoUser: _profilePhotoUser,
                 body: body,
                 mediaUrl: mediaUrl,
@@ -150,6 +211,7 @@ class _NestedCommentsState extends State<NestedComments> {
                       body, comentarioId, setStateLocal, context);;
                 },
                 error: _errorMessages['body'],
+                isVerified: isVerified,
               ),
             );
           },
@@ -378,6 +440,14 @@ class _NestedCommentsState extends State<NestedComments> {
 
   @override
   Widget build(BuildContext context) {
+    bool isUserVerified(List<int>? groupId) {
+      // Verifica si la lista de groupId no es nula y contiene 1 o 2
+      if (groupId != null) {
+        return groupId.contains(1) || groupId.contains(2);
+      }
+      // Si groupId es nulo o no contiene 1 ni 2, el usuario no está verificado
+      return false;
+    }
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
@@ -404,48 +474,46 @@ class _NestedCommentsState extends State<NestedComments> {
                         CommentWidget(
                           reaction: reactionStates[0],
                           onLikeTap: () => _commentReaction(0, _comment!.data.id),
-                          nameUser: _name.toString(),
-                          usernameUser: _username.toString(),
+                          usernameUser: _username ?? '...',
                           profilePhotoUser: _profilePhotoUrl ?? '',
                           onProfileTap: () {
                             int userId = _comment!.data.relationships.user.id;
                             Navigator.pushNamed(context, 'profile',
                               arguments: {'showShares': false, 'userId': userId},);
-                          },
-                          
+                          },                         
                           onNumberLikeTap: () {
-                          int objectId = _comment!.data.id;
-                          Navigator.pushNamed(
-                            context,
-                            'index-reactions',
-                            arguments: {
-                              'objectId': objectId,
-                              'model': 'comment',
-                              'appBar': 'Reacciones'
-                            },
-                          );
-                        },
+                            int objectId = _comment!.data.id;
+                            Navigator.pushNamed(
+                              context,
+                              'index-reactions',
+                              arguments: {
+                                'objectId': objectId,
+                                'model': 'comment',
+                                'appBar': 'Reacciones'
+                              },
+                            );
+                          },
                           body: _body,
                           mediaUrl: _mediaUrl,
                           createdAt: _comment!.data.attributes.createdAt,
                           reactionsCount: _reactionsCount.toString(),
                           repliesCount: _repliesCount.toString(),
-
                           authorId: _comment!.data.relationships.user.id,
                           currentUserId: _id,
                           onEditTap: () {
                             updateCommentPopup(context, body: _body, mediaUrl: _mediaUrl, comentarioId: _comment!.data.id);
                           },
-
-                        onDeleteTap: () {
-                          _deleteComment(_comment!.data.id, context);
-                        },
+                          onDeleteTap: () {
+                            _deleteComment(_comment!.data.id, context);
+                          },
                           onReportTap: () {
                             int commentId = _comment!.data.id;
                             _showReportDialog(commentId, context);
                           },
                           isHidden: true,
+                          isVerified: isUserVerified(_comment!.data.relationships.user.groupId),
                         ),
+                        
                       ],
                     ),
                   ),

@@ -9,6 +9,7 @@ import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/CustomRefreshIndicator.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingScreen.dart';
@@ -43,6 +44,7 @@ class _ShowReportCommentState extends State<ShowReportComment> {
   int page = 1;
   bool _submitting = false;
   bool _isResolved = false;
+  bool _isVerified = false;
 
   final filters = {
     'pag': '10',
@@ -82,7 +84,8 @@ class _ShowReportCommentState extends State<ShowReportComment> {
             _body = _comment?.data.attributes.body;
             _mediaUrl = _comment?.data.relationships.file.firstOrNull?.attributes.url;
             postId = _comment!.data.attributes.postId;
-
+            _isVerified = _comment?.data.relationships.user.groupId?.contains(1) == true ||
+              _comment?.data.relationships.user.groupId?.contains(2) == true;
             _isResolved = _comment?.data.attributes.statusId == 4 || _comment?.data.attributes.statusId == 3;
               
           });
@@ -258,13 +261,24 @@ class _ShowReportCommentState extends State<ShowReportComment> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Text(
-          'Comentario de ${_name ?? '...'}',
-          style: const TextStyle(
-            fontSize: AppFond.title,
-            fontWeight: FontWeight.w800,
-            color: AppColors.black,
-          ),
+        title: Row( // Asegura que el Row esté centrado
+          children: [
+            Text(
+              'Comentario de ${_username ?? '...'}', // Usar un valor por defecto si _username es null
+              style: const TextStyle(
+                fontSize: AppFond.title,
+                fontWeight: FontWeight.w800,
+                color: AppColors.black,
+              ),
+            ),
+            const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+            if (_isVerified) // Asegúrate de que isVerified esté definido
+              const Icon(
+                CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                color: AppColors.primaryBlue, // Color del ícono
+                size: 16, // Tamaño del ícono
+              ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -273,7 +287,6 @@ class _ShowReportCommentState extends State<ShowReportComment> {
           children: [
             // Mostrar el comentario
             CommentSimpleWidget(
-              nameUser: _name ?? '...',
               usernameUser: _username ?? '...',
               profilePhotoUser: _profilePhotoUrl,
               createdAt: _createdAt ?? DateTime.now(),
@@ -305,6 +318,8 @@ class _ShowReportCommentState extends State<ShowReportComment> {
                   );
                 }
               },
+              isVerified: _comment?.data.relationships.user.groupId?.contains(1) == true ||
+                _comment?.data.relationships.user.groupId?.contains(2) == true,
             ),
             // Título "Reportes"
             const Center(
@@ -362,12 +377,13 @@ class _ShowReportCommentState extends State<ShowReportComment> {
                             horizontal: 16.0), // Margen alrededor del widget
                             child: Center( // Centra el contenido
                               child: ReportUserWidget(
-                                nameUser: report.relationships.user.name,
                                 usernameUser: report.relationships.user.username,
                                 createdAt: report.attributes.createdAt,
                                 profilePhotoUser: report.relationships.user.profilePhotoUrl,
                                 observation: report.attributes.observation,
                                 report: 'comentario',
+                                isVerified: report.relationships.user.groupId?.contains(1) == true ||
+                                report.relationships.user.groupId?.contains(2) == true,
                               ),
                             ),
                           );

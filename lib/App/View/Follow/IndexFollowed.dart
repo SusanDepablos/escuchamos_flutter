@@ -170,9 +170,10 @@ class _IndexFollowedState extends State<IndexFollowed> {
                     }
                     final list = followed[index];
                     final followedUser = list.attributes.followedUser;
+                    bool isVerified = followedUser.groupId != null && 
+                      (followedUser.groupId!.contains(1) || followedUser.groupId!.contains(2));
                     return UserListView(
-                      nameUser:
-                          followedUser.name,
+                      nameUser: followedUser.name,
                       usernameUser: followedUser.username,
                       profilePhotoUser: followedUser.profilePhotoUrl ?? '',
                       onTap: () {
@@ -191,6 +192,7 @@ class _IndexFollowedState extends State<IndexFollowed> {
                           arguments: {'showShares': false, 'userId': userId},
                         );
                       },
+                      isVerified: isVerified,
                     );
                   },
                   // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),

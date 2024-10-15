@@ -315,7 +315,7 @@ class _UpdateState extends State<EditAccount> {
                   // El segundo texto se oculta si _textChanged; es true
                   if (!widget.textChanged) const SizedBox(height: 1.0),
                   Text(
-                    'Usuario actual: @${username ?? '...'}',
+                    'Usuario actual: ${username ?? '...'}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       fontSize: 12,

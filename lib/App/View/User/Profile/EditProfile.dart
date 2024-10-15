@@ -386,7 +386,7 @@ class _UpdateState extends State<EditProfile> {
                 ),
               ),
               Text(
-                '@${username ?? '...'}',
+                '${username ?? '...'}',
                 style: const TextStyle(
                   fontSize: AppFond.subtitle,
                   color: AppColors.black,

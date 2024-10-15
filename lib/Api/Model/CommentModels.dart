@@ -306,32 +306,37 @@ class StatusAttributes {
 }
 
 
+
 class User {
-  int id;
-  String username;
-  String name;
-  String? profilePhotoUrl;
+    int id;
+    String username;
+    String name;
+    String? profilePhotoUrl;
+    List<int>? groupId;
 
-  User({
-    required this.id,
-    required this.username,
-    required this.name,
-    this.profilePhotoUrl,
-  });
+    User({
+        required this.id,
+        required this.username,
+        required this.name,
+        this.profilePhotoUrl,
+        this.groupId,
+    });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+    factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         username: json["username"],
         name: json["name"],
         profilePhotoUrl: json["profile_photo_url"] as String?,
-      );
+        groupId: json["group_id"] == null ? [] : List<int>.from(json["group_id"]!.map((x) => x)),
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "id": id,
         "username": username,
         "name": name,
         "profile_photo_url": profilePhotoUrl,
-      };
+        "group_id": groupId == null ? [] : List<dynamic>.from(groupId!.map((x) => x)),
+    };
 }
 
 class FileElement {

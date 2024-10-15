@@ -192,7 +192,6 @@ class _IndexReportPostState extends State<IndexReportPost> {
                           final report = reportsGrouped[index];
                           final mediaUrls = report.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
                           return PostWidgetInternal(
-                            nameUser: report.relationships.post?.relationships.user.name ?? '...', 
                             usernameUser: report.relationships.post?.relationships.user.username ?? '...', 
                             profilePhotoUser: report.relationships.post?.relationships.user.profilePhotoUrl,
                             createdAt: report.relationships.post?.attributes.createdAt ?? DateTime.now(), 
@@ -219,7 +218,9 @@ class _IndexReportPostState extends State<IndexReportPost> {
                                 int postId = report.relationships.post?.id ?? 0;
                                 _callPost(postId);
                               });
-                            }
+                            },
+                            isVerified: report.relationships.post?.relationships.user.groupId?.contains(1) == true ||
+                            report.relationships.post?.relationships.user.groupId?.contains(2) == true,
                           );            
                         },
                       ),

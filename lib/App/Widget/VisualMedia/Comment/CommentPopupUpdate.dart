@@ -1,13 +1,12 @@
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/FullScreenImage.dart';
-import 'dart:io';
-import 'package:escuchamos_flutter/App/Widget/Dialog/ImagePickerBottomSheet.dart';
 
 class CommentPopupUpdateWidget extends StatefulWidget {
-  final String nameUser;
+  final String username;
   final String? body;
   final String? mediaUrl;
   final String? profilePhotoUser;
@@ -15,16 +14,18 @@ class CommentPopupUpdateWidget extends StatefulWidget {
   final Function(String, String?)? onCommentUpdate;
   final bool isButtonDisabled;
   final VoidCallback? onCancel;
+  final bool isVerified;
 
   CommentPopupUpdateWidget({
     Key? key,
-    required this.nameUser,
+    required this.username,
     this.error,
     this.onCancel,
     this.body,
     this.onCommentUpdate,
     this.mediaUrl,
     this.profilePhotoUser,
+    this.isVerified = false,
     required this.isButtonDisabled,
   }) : super(key: key);
 
@@ -74,17 +75,24 @@ class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                widget.nameUser,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                            Text(
+                              widget.username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            // Aquí va el ícono de verificación
+                            if (widget.isVerified) // Asegúrate de definir isVerified
+                              const SizedBox(width: 4.0),
+                            if (widget.isVerified) // Asegúrate de definir isVerified
+                              const Icon(
+                                CupertinoIcons.checkmark_seal_fill,
+                                size: 16,
+                                color: AppColors.primaryBlue, // Cambia el color según prefieras
+                              ),
                           ],
                         ),
                         const SizedBox(height: 10.0),

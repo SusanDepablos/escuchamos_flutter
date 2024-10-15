@@ -170,6 +170,8 @@ class _IndexFollowersState extends State<IndexFollowers> {
                     }
                     final list = follows[index];
                     final followingUser = list.attributes.followingUser;
+                    bool isVerified = followingUser.groupId != null && 
+                      (followingUser.groupId!.contains(1) || followingUser.groupId!.contains(2));
                     return UserListView(
                       nameUser:
                           followingUser.name,
@@ -191,6 +193,7 @@ class _IndexFollowersState extends State<IndexFollowers> {
                           arguments: {'showShares': false, 'userId': userId},
                         );
                       },
+                      isVerified: isVerified,
                     );
                   },
                   // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),

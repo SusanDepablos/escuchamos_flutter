@@ -30,17 +30,17 @@ String _formatDate(DateTime createdAt) {
   final difference = now.difference(createdAt);
 
   if (difference.inSeconds < 60) {
-    return difference.inSeconds == 1 ? "1 s" : "${difference.inSeconds} s";
+    return difference.inSeconds == 1 ? "hace 1 s" : "hace ${difference.inSeconds} s";
   } else if (difference.inMinutes < 60) {
-    return difference.inMinutes == 1 ? "1 min" : "${difference.inMinutes} min";
+    return difference.inMinutes == 1 ? "hace 1 min" : "hace ${difference.inMinutes} min";
   } else if (difference.inHours < 24) {
-    return difference.inHours == 1 ? "1 h" : "${difference.inHours} h";
+    return difference.inHours == 1 ? "hace 1 h" : "hace ${difference.inHours} h";
   } else if (difference.inDays < 7) {
-    return difference.inDays == 1 ? "1 d" : "${difference.inDays} d";
+    return difference.inDays == 1 ? "hace 1 d" : "hace ${difference.inDays} d";
   } else if (difference.inDays < 30) {
-    return "${createdAt.day} ${_getAbbreviatedMonthName(createdAt.month)}";
+    return "el ${createdAt.day} ${_getAbbreviatedMonthName(createdAt.month)}";
   } else {
-    return "${createdAt.day} ${_getAbbreviatedMonthName(createdAt.month)} de ${createdAt.year}";
+    return "el ${createdAt.day} ${_getAbbreviatedMonthName(createdAt.month)} de ${createdAt.year}";
   }
 }
 
@@ -431,7 +431,7 @@ class _IndexShareState extends State<IndexShare> {
                                   );
                                 }
                               final share = shares[index];
-                              String name = share.relationships.user.name;
+                              String username = share.relationships.user.username;
                               int userId = share.relationships.user.id;
                               bool showShares = true;
                               String? profilePhotoUserShare =
@@ -440,10 +440,11 @@ class _IndexShareState extends State<IndexShare> {
                               final mediaUrls = share.relationships.post.relationships.files
                                   .map((file) => file.attributes.url)
                                   .toList();
-                              return GestureDetector(
-                                onLongPress: () {
-                                  _showOptionsModal(context, share.id, share.relationships.user.id, share.attributes.postId);
-                                }, child:  Container(
+                              bool isVerified = share.relationships.user.groupId != null && 
+                              (share.relationships.user.groupId!.contains(1) || 
+                              share.relationships.user.groupId!.contains(2));
+                              return
+                                Container(
                               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16), // Margen arriba y abajo
                               padding: const EdgeInsets.only(
                                 left: 16,
@@ -458,7 +459,7 @@ class _IndexShareState extends State<IndexShare> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Visibility(
-                                    visible:userId != _id, // Mostrar solo si el userId es diferente al _id
+                                    visible: userId != _id, // Mostrar solo si el userId es diferente al _id
                                     child: Row(
                                       children: [
                                         GestureDetector(
@@ -484,7 +485,7 @@ class _IndexShareState extends State<IndexShare> {
                                                 iconSize: 20.0,
                                                 showBorder: false,
                                                 onPressed: () {
-                                                if (widget.userId == null) {
+                                                  if (widget.userId == null) {
                                                     Navigator.pushNamed(
                                                       context,
                                                       'profile',
@@ -498,37 +499,67 @@ class _IndexShareState extends State<IndexShare> {
                                               ),
                                               Container(
                                                 constraints: const BoxConstraints(maxWidth: 140),
-                                                child: Text(
-                                                  name,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min, // Asegúrate de que el Row no ocupe más espacio del necesario
+                                                  children: [
+                                                    Text(
+                                                      username,
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    if (isVerified) // Asegúrate de definir isVerified
+                                                      const SizedBox(width: 4),
+                                                    // Aquí va el ícono de verificación
+                                                    if (isVerified) // Asegúrate de definir isVerified
+                                                      const Icon(
+                                                        CupertinoIcons.checkmark_seal_fill,
+                                                        size: 16,
+                                                        color: AppColors.primaryBlue, // Cambia el color según prefieras
+                                                      ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         const Spacer(),
-                                        Text(
-                                          _formatDate(createdAt),
-                                          style: const TextStyle(
+                                        GestureDetector(
+                                          onTap: () {
+                                            _showOptionsModal(
+                                              context,
+                                              share.id,
+                                              share.relationships.user.id,
+                                              share.attributes.postId,
+                                            );
+                                          },
+                                          child: const Icon(
+                                            MaterialIcons.more,
                                             color: AppColors.grey,
-                                            fontSize: 14,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   Visibility(
-                                    visible:userId != _id, // Mostrar solo si el userId es diferente al _id
-                                    child: const Text(
-                                      'Ha compartido esta publicación',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontStyle: FontStyle.italic,
-                                        color: AppColors.grey,
+                                    visible: userId != _id, // Mostrar solo si el userId es diferente al _id
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                          color: AppColors.grey,
+                                        ),
+                                        children: [
+                                          const TextSpan(
+                                            text: 'Ha compartido esta publicación ', // Texto estático
+                                          ),
+                                          TextSpan(
+                                            text: _formatDate(createdAt), // Fecha formateada
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -539,24 +570,41 @@ class _IndexShareState extends State<IndexShare> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         // Ajuste del texto para que sea flexible y ocupe el espacio necesario
-                                        const Flexible(
-                                          child: Text(
-                                            'Haz compartido esta publicación',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontStyle: FontStyle.italic,
-                                              color: AppColors.grey,
-                                            ),
-                                            maxLines: 2, // Permitir un máximo de 2 líneas
-                                            overflow: TextOverflow.ellipsis, // Añadir puntos suspensivos si es necesario
-                                          ),
+                                        Flexible(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                          color: AppColors.grey,
                                         ),
-                                        const SizedBox(width: 8), // Añadir un espacio entre el texto y la fecha
-                                        Text(
-                                          _formatDate(createdAt),
-                                          style: const TextStyle(
+                                        children: [
+                                          const TextSpan(
+                                            text: 'Haz compartido esta publicación ',
+                                            // Texto estático
+                                          ),
+                                          TextSpan(
+                                            text: _formatDate(createdAt), // Fecha formateada
+                                          ),
+                                        ],
+                                      ),
+                                      maxLines: 2, // Este comportamiento no se aplica directamente a RichText
+                                      overflow: TextOverflow.ellipsis, // Este comportamiento no se aplica directamente a RichText
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                        GestureDetector(
+                                          onTap: () {
+                                            _showOptionsModal(
+                                              context,
+                                              share.id,
+                                              share.relationships.user.id,
+                                              share.attributes.postId,
+                                            );
+                                          },
+                                          child: const  Icon(
+                                            MaterialIcons.more,
                                             color: AppColors.grey,
-                                            fontSize: 14,
                                           ),
                                         ),
                                       ],
@@ -565,7 +613,6 @@ class _IndexShareState extends State<IndexShare> {
                                   if (userId == _id)
                                     const SizedBox(height: 10), // Espacio entre la foto y el texto
                                   PostWidgetInternal(
-                                    nameUser: share.relationships.post.relationships.user.name,
                                     usernameUser: share.relationships.post.relationships.user.username,
                                     profilePhotoUser: share.relationships.post.relationships.user.profilePhotoUrl,
                                     createdAt: share.relationships.post.attributes.createdAt,
@@ -588,10 +635,11 @@ class _IndexShareState extends State<IndexShare> {
                                       top: 0,
                                       bottom: 20.0,
                                     ),
+                                    isVerified: share.relationships.post.relationships.user.groupId?.contains(1) == true ||
+                                    share.relationships.post.relationships.user.groupId?.contains(2) == true, 
                                   ),
                                 ],
                               ),
-                            )
                           );
                         },
                       padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),

@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de que los colores estén definidos en este archivo
@@ -241,21 +242,27 @@ class _NewPostState extends State<NewPost> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.7, // Ajusta el ancho según sea necesario
-                        child: Text(
-                          name ?? '...',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text(
-                        '@${username ?? '...'}',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
+                        child: Row(
+                          children: [
+                            // El nombre de usuario
+                            Text(
+                              username ?? '...', // Asegúrate de que 'username' no sea null
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                            // Aquí va el ícono de verificación
+                            if (groupId == 1 || groupId == 2) // Asegúrate de definir isVerified
+                              const Icon(
+                                CupertinoIcons.checkmark_seal_fill,
+                                size: 16,
+                                color: AppColors.primaryBlue, // Cambia el color según prefieras
+                              ),
+                          ],
                         ),
                       ),
                     ],

@@ -105,12 +105,14 @@ class FollowUser {
     String username;
     String name;
     String? profilePhotoUrl;
+    List<int>? groupId;
 
     FollowUser({
         required this.id,
         required this.username,
         required this.name,
         this.profilePhotoUrl,
+        this.groupId,
     });
 
     factory FollowUser.fromJson(Map<String, dynamic> json) => FollowUser(
@@ -118,6 +120,7 @@ class FollowUser {
         username: json["username"],
         name: json["name"],
         profilePhotoUrl: json["profile_photo_url"] as String?,
+        groupId: json["group_id"] == null ? [] : List<int>.from(json["group_id"]!.map((x) => x)),
     );
 
     Map<String, dynamic> toJson() => {
@@ -125,5 +128,6 @@ class FollowUser {
         "username": username,
         "name": name,
         "profile_photo_url": profilePhotoUrl,
+        "group_id": groupId == null ? [] : List<dynamic>.from(groupId!.map((x) => x)),
     };
 }

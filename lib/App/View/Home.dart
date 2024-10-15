@@ -19,22 +19,34 @@ class _HomeState extends State<Home> {
           SliverToBoxAdapter(
             child: Container(
               height: 100, // Ajusta la altura según lo necesites
-              padding: EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
                   StoryList(
-                    imageUrl: 'https://example.com/profile1.jpg',
-                    userName: 'User1',
+                    imageUrl: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
+                    username: 'isabella.ladera',
+                    showAddIcon: true,
+                    isGradientBorder : false,
+                    showBorder: false,
                   ),
                   StoryList(
-                    imageUrl: 'https://example.com/profile2.jpg',
-                    userName: 'User2',
+                    imageUrl: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
+                    username: 'juan.pablo',
                   ),
                   StoryList(
-                    imageUrl: 'https://example.com/profile3.jpg',
-                    userName: 'User3',
+                    imageUrl: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
+                    username: 'beele',
                   ),
+                  StoryList(
+                    imageUrl: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
+                    username: 'susan.depablos.official',
+                  ),
+                  StoryList(
+                    imageUrl: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
+                    username: 'escuchamos',
+                  ),
+                  // Agrega más StoryList según sea necesario...
                 ],
               ),
             ),

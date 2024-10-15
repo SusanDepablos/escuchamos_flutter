@@ -6,6 +6,7 @@ import 'package:escuchamos_flutter/Api/Service/ShareService.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/CustomDialog.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Select.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/PostUpdatePopup.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Post/RepostListView.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,6 @@ class _ShowState extends State<Show> {
   PostModel? _post;
   int? _id;
   int? _userId;
-  String? _name;
   String? _username;
   String? _profilePhotoUrl;
   String? _body;
@@ -51,6 +51,8 @@ class _ShowState extends State<Show> {
   int? _totalSharesCountRepost;
   bool? _reaction;
   bool _submitting = false;
+  bool _isVerified = false;
+  bool _isVerifiedRepost = false;
 
   final input = {
     'body': TextEditingController(),
@@ -90,7 +92,6 @@ class _ShowState extends State<Show> {
           setState(() {
             _post = response; // Establecer _post aquí
             _userId = _post?.data.relationships.user.id;
-            _name = _post?.data.relationships.user.name;
             _username = _post?.data.relationships.user.username;
             _profilePhotoUrl = _post?.data.relationships.user.profilePhotoUrl;
             _body = _post?.data.attributes.body;
@@ -102,6 +103,10 @@ class _ShowState extends State<Show> {
             _reaction = _post?.data.relationships.reactions.any((reaction) => reaction.attributes.userId == _id) ?? false;
             _mediaUrlsRepost =  _post?.data.relationships.post?.relationships.files.map((file) => file.attributes.url).toList() ?? [];
             _totalSharesCountRepost = _post?.data.relationships.post?.relationships.totalSharesCount;
+            _isVerified = _post?.data.relationships.user.groupId?.contains(1) == true ||
+              _post?.data.relationships.user.groupId?.contains(2) == true;
+            _isVerifiedRepost = _post?.data.relationships.post?.relationships.user.groupId?.contains(1) == true ||
+              _post?.data.relationships.post?.relationships.user.groupId?.contains(2) == true;
           });
         } else {
           showDialog(
@@ -210,7 +215,6 @@ class _ShowState extends State<Show> {
               child: PopupPostWidget(
                 isButtonDisabled: _submitting,
                 username: _username!,
-                nameUser: _name!,
                 profilePhotoUser: _profilePhotoUrl,
                 error: _errorMessages['body'],
                 body: body!,
@@ -410,13 +414,24 @@ class _ShowState extends State<Show> {
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
         centerTitle: true,
-        title: Text(
-          'Publicación de ${_name ?? '...'}', // Usar un valor por defecto si _name es null
-          style: const TextStyle(
-            fontSize: AppFond.title,
-            fontWeight: FontWeight.w800,
-            color: AppColors.black,
-          ),
+        title: Row( // Asegura que el Row esté centrado
+          children: [
+            Text(
+              'Publicación de ${_username ?? '...'}', // Usar un valor por defecto si _username es null
+              style: const TextStyle(
+                fontSize: AppFond.title,
+                fontWeight: FontWeight.w800,
+                color: AppColors.black,
+              ),
+            ),
+            const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+            if (_isVerified) // Asegúrate de que isVerified esté definido
+              const Icon(
+                CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                color: AppColors.primaryBlue, // Color del ícono
+                size: 16, // Tamaño del ícono
+              ),
+          ],
         ),
       ),
       body: _post == null
@@ -432,7 +447,6 @@ class _ShowState extends State<Show> {
                       PostWidget(
                         reaction: _reaction ?? false,
                         onLikeTap: () => _postReaction(),
-                        nameUser: _name ?? '...',
                         usernameUser: _username ?? '...',
                         profilePhotoUser: _profilePhotoUrl ?? '',
                         onProfileTap: () {
@@ -498,13 +512,13 @@ class _ShowState extends State<Show> {
                         onShareTap: () {
                           int postId = widget.id;
                           _postShare(postId, context);
-                        }
+                        },
+                        isVerified: _isVerified,
                       )
                       ] else ...[
                         RepostWidget(
                           reaction: _reaction ?? false,
                           onLikeTap: () => _postReaction(),
-                          nameUser: _name!,
                           usernameUser: _username!,
                           profilePhotoUser: _profilePhotoUrl ?? '',
                           onProfileTap: () {
@@ -560,7 +574,6 @@ class _ShowState extends State<Show> {
                           },
                           // Repost
                           bodyRepost: _post?.data.relationships.post!.attributes.body ?? '',
-                          nameUserRepost: _post?.data.relationships.post!.relationships.user.name ?? '...',
                           usernameUserRepost: _post?.data.relationships.post!.relationships.user.username ?? '...',
                           createdAtRepost: _post?.data.relationships.post!.attributes.createdAt ??  DateTime.now(),
                           profilePhotoUserRepost: _post?.data.relationships.post!.relationships.user.profilePhotoUrl ?? '',
@@ -590,6 +603,8 @@ class _ShowState extends State<Show> {
                               _callPost();
                             });
                           },
+                          isVerified: _isVerified,
+                          isVerifiedRepost: _isVerifiedRepost,
                         )
                       ]
                     ],

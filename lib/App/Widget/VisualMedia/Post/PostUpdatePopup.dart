@@ -5,7 +5,6 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/MediaCarousel.dart'; // Asegúrate de que esta importación sea correcta
 
 class PopupPostWidget extends StatefulWidget {
-  final String nameUser;
   final String username; // Agrega el campo para el nombre de usuario
   final String? body;
   final String? profilePhotoUser;
@@ -17,7 +16,6 @@ class PopupPostWidget extends StatefulWidget {
 
   PopupPostWidget({
     Key? key,
-    required this.nameUser,
     required this.username, // Inicializa el nombre de usuario
     this.error,
     this.body,
@@ -82,20 +80,13 @@ class _PopupPostWidgetState extends State<PopupPostWidget> {
                         children: [
                           // Nombre del usuario
                           Text(
-                            widget.nameUser,
+                            widget.username,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
                           ),
                           // Nombre de usuario en formato @tal
-                          Text(
-                            '@${widget.username}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
                         ],
                       ),
                     ],

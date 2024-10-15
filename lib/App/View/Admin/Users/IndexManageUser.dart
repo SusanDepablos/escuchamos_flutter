@@ -302,6 +302,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
                         }
                         final user = users[index];
                         final profileFile = getProfileFile(user.relationships.files);
+                        bool isVerified = user.relationships.groups.any((group) => group.id == 1 || group.id == 2);
                         return UserListView(
                           nameUser: user.attributes.name,
                           usernameUser: user.attributes.username,
@@ -326,6 +327,7 @@ class _IndexManageUserState extends State<IndexManageUser> {
                                 }, 
                             );
                           },
+                          isVerified: isVerified, 
                         );
                       },
                       // padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),

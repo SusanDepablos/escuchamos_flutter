@@ -53,10 +53,12 @@ class _IndexCommentState extends State<IndexComment> {
   bool _initialLoading = true;
   int _id = 0;
   int page = 1;
-  String? _name;
+  String? _username;
   String? _profilePhotoUser;
   bool _submitting = false;
   bool _isAddButtonVisible = false;
+  int? groupId;
+  bool isVerified = false;
 
   final Map<String, String?> _errorMessages = {
     'body': null,
@@ -198,9 +200,10 @@ class _IndexCommentState extends State<IndexComment> {
         if (response is  user_model.UserModel) {
           setState(() {
             _user = response;
-          _name = _user!.data.attributes.name;
-
+          _username = _user!.data.attributes.username;
           _profilePhotoUser = _getFileUrlByType('profile');
+          groupId = _user!.data.relationships.groups[0].id;
+          isVerified = groupId == 1 || groupId == 2;
           });
         } else {
           showDialog(
@@ -311,12 +314,13 @@ class _IndexCommentState extends State<IndexComment> {
                   Navigator.of(context).pop();
                 },
                 isButtonDisabled: _submitting,
-                nameUser: _name ?? '...',
+                username: _username ?? '...',
                 profilePhotoUser: _profilePhotoUser,
                 onCommentCreate: (String body, String? mediaUrl) async {
                   await _commentCreate(body, mediaUrl, context, setState);
                 },
                 error: _errorMessages['body'],
+                isVerified: isVerified,
               ),
             );
           },
@@ -407,7 +411,7 @@ void updateCommentPopup(
                   Navigator.of(context).pop();
                 },
                 isButtonDisabled: _submitting,
-                nameUser: _name ?? '...',
+                username: _username ?? '...',
                 profilePhotoUser: _profilePhotoUser,
                 body: body,
                 mediaUrl: mediaUrl,
@@ -416,6 +420,7 @@ void updateCommentPopup(
                       body, comentarioId, setStateLocal, context);
                 },
                 error: _errorMessages['body'],
+                isVerified: isVerified,
               ),
             );
           },
@@ -717,7 +722,6 @@ void updateCommentPopup(
                                       currentUserId: _id,
                                       reaction: hasReaction,
                                       onLikeTap: () => _commentReaction(index, comment.id),
-                                      nameUser: comment.relationships.user.name,
                                       usernameUser: comment.relationships.user.username,
                                       profilePhotoUser: comment.relationships.user.profilePhotoUrl ?? '',
                                       onProfileTap: () {
@@ -758,11 +762,13 @@ void updateCommentPopup(
                                       int commentId = comment.id;
                                       _showReportDialog(commentId, context);
                                     },
-                                      body: comment.attributes.body,
-                                      mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
-                                      createdAt: comment.attributes.createdAt,
-                                      reactionsCount: comment.relationships.reactionsCount.toString(),
-                                      repliesCount: comment.relationships.repliesCount.toString(),
+                                    body: comment.attributes.body,
+                                    mediaUrl: comment.relationships.file.firstOrNull?.attributes.url,
+                                    createdAt: comment.attributes.createdAt,
+                                    reactionsCount: comment.relationships.reactionsCount.toString(),
+                                    repliesCount: comment.relationships.repliesCount.toString(),
+                                    isVerified:comment.relationships.user.groupId?.contains(1) == true ||
+                                    comment.relationships.user.groupId?.contains(2) == true,
                                     );
                                     
                                   },

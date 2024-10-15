@@ -123,11 +123,6 @@ class _RecoverAccountChangePasswordState
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
               ),
-              const SizedBox(height: 4.0),
-              const Text(
-                style: TextStyle(fontSize: 13.0),
-                'Las contraseñas fuertes incluyen números, letras y signos de puntuación. Mínimo 8 dígitos.',
-              ),
               const SizedBox(height: 16.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

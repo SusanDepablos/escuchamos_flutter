@@ -44,7 +44,7 @@ class _AccountInformationState extends State<AccountInformation> {
         if (response is UserModel) {
           setState(() {
             _user = response;
-            username = '@${_user!.data.attributes.username}';
+            username = '${_user!.data.attributes.username}';
             phoneNumber = _user!.data.attributes.phoneNumber;
             email = _user!.data.attributes.email;
             country = _user?.data.relationships.country?.attributes.name;
