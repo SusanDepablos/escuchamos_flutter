@@ -18,7 +18,9 @@ class DigitBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), // Mantiene el tamaño del texto
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
@@ -30,13 +32,13 @@ class DigitBox extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: digitTextColor,
-                fontSize: 24.0, // Tamaño de fuente
+                fontSize: AppFond.count, // Tamaño de fuente
               ),
               decoration: InputDecoration(
                 hintText: 'Introduce el código', // Placeholder ajustado
                 hintStyle: const TextStyle(
                   color: AppColors.grey, // Color del placeholder
-                  fontSize: 20.0, // Tamaño del texto del placeholder
+                  fontSize: AppFond.count, // Tamaño del texto del placeholder
                 ),
                 counterText: "", // Ocultar contador
                 enabledBorder: OutlineInputBorder(
@@ -67,10 +69,12 @@ class DigitBox extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               error!,
-              style: TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }

@@ -35,16 +35,16 @@ class ImagePickerBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: const Icon(MaterialIcons.camera, color: AppColors.black),
-            title: const Text('Tomar Foto', style: TextStyle(color: AppColors.black)), // Color del texto igual al ícono
+            leading: const Icon(CupertinoIcons.photo_camera_solid, color: AppColors.black, size: AppFond.iconShare,),
+            title: const Text('Tomar Foto', style: TextStyle(fontSize:AppFond.subtitle, color: AppColors.black), textScaleFactor: 1.0), // Color del texto igual al ícono
             onTap: () {
               _pickImage(context, ImageSource.camera);
               Navigator.of(context).pop();
             },
           ),
           ListTile(
-            leading: const Icon(MaterialIcons.image, color: AppColors.black),
-            title: const Text('Elegir Foto Existente', style: TextStyle(color: AppColors.black)), // Color del texto igual al ícono
+            leading: const Icon(CupertinoIcons.photo_fill, color: AppColors.black, size: AppFond.iconShare),
+            title: const Text('Elegir Foto Existente', style: TextStyle(fontSize:AppFond.subtitle, color: AppColors.black), textScaleFactor: 1.0), // Color del texto igual al ícono
             onTap: () {
               _pickImage(context, ImageSource.gallery);
               Navigator.of(context).pop();
@@ -52,8 +52,8 @@ class ImagePickerBottomSheet extends StatelessWidget {
           ),
           if (hasPhoto)
             ListTile(
-              leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
-              title: const Text('Eliminar Foto', style: TextStyle(color: AppColors.errorRed)), // Color del texto igual al ícono
+              leading: const Icon(CupertinoIcons.delete_solid, color: AppColors.errorRed, size: AppFond.iconShare),
+              title: const Text('Eliminar Foto', style: TextStyle(fontSize:AppFond.subtitle, color: AppColors.errorRed), textScaleFactor: 1.0), // Color del texto igual al ícono
               onTap: () {
                 if (onDeletePhoto != null) {
                   onDeletePhoto!();

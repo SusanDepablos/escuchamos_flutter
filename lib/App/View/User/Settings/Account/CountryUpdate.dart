@@ -192,6 +192,7 @@ class _CountryUpdateState extends State<CountryUpdate> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Configuración',
@@ -200,6 +201,7 @@ class _CountryUpdateState extends State<CountryUpdate> {
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -215,10 +217,11 @@ class _CountryUpdateState extends State<CountryUpdate> {
                   'Cambiar país',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: AppFond.title,
                     fontWeight: FontWeight.w500,
                     color: AppColors.black,
                   ),
+                  textScaleFactor: 1.0,
                 ),
                 const SizedBox(height: 1.0),
                 if (country != null && country!.isNotEmpty)
@@ -226,10 +229,11 @@ class _CountryUpdateState extends State<CountryUpdate> {
                     'País actual: ${country ?? '...'}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: AppFond.text,
                       color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0,
                   )
               ],
             ),

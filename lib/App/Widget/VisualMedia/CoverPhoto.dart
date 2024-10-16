@@ -39,7 +39,7 @@ class CoverPhoto extends StatelessWidget {
           if (imageProvider == null && !isEditing)
             Center(
               child: Icon(
-                MaterialIcons.image,
+                CupertinoIcons.photo_fill,
                 color: AppColors.inputDark,
                 size: iconSize,
               ),

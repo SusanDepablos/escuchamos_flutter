@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:async'; // Necesario para el Timer.
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
+
 class LabelAction extends StatefulWidget {
   final String? text;
   final VoidCallback? onPressed;
@@ -59,16 +60,17 @@ class _LabelActionState extends State<LabelAction> {
                 children: [
                   if (widget.icon != null) ...[
                     Icon(widget.icon, size: widget.iconSize, color: widget.style?.color ?? AppColors.black),
-                    SizedBox(width: 8), // Espacio entre el ícono y el texto
+                    const SizedBox(width: 8), // Espacio entre el ícono y el texto
                   ],
                   if (widget.text != null)
                     Text(
                       widget.text!,
                       style: widget.style ??
-                          TextStyle(
-                            color: AppColors.primaryBlue,
-                            fontSize: 16, // Tamaño de fuente por defecto
+                          const TextStyle(
+                            color: AppColors.dark,
+                            fontSize: AppFond.subtitle, // Tamaño de fuente por defecto
                           ),
+                      textScaleFactor: 1.0
                     ),
                 ],
               ),
@@ -166,8 +168,9 @@ class _LabelActionWithDisableState extends State<LabelActionWithDisable> {
                     TextStyle(
                       color: _isDisabled ? AppColors.black : AppColors.primaryBlue,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: AppFond.subtitle,
                     ),
+                textScaleFactor: 1.0
               ),
             SizedBox(width: 10), // Espacio entre el texto y el temporizador.
             // Mostrar el cronómetro solo si el botón está deshabilitado.
@@ -175,12 +178,13 @@ class _LabelActionWithDisableState extends State<LabelActionWithDisable> {
               Text(
                 '$minutes:$seconds', // Formato cronómetro "MM:SS"
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: AppFond.subtitle,
                   fontWeight: FontWeight.bold,
                   color: _remainingTime <= 10
                       ? AppColors.errorRed // Cambiar a rojo si quedan 10 segundos o menos.
                       : AppColors.primaryBlue,
                 ),
+                textScaleFactor: 1.0
               ),
           ],
         ),
@@ -206,14 +210,15 @@ class BasicLabel extends StatelessWidget {
     return GestureDetector(
       onTap: onTap, // Si onTap es null, no hace nada
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Text(
           name,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: AppFond.subtitle,
             color: color, // Usa el color especificado
             decoration: TextDecoration.none, // Sin subrayado
           ),
+          textScaleFactor: 1.0
         ),
       ),
     );

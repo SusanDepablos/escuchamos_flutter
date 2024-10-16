@@ -241,6 +241,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Configuración',
@@ -249,6 +250,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -264,10 +266,11 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                   'Cambiar número telefónico',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: AppFond.title,
                     fontWeight: FontWeight.w500,
                     color: AppColors.black,
                   ),
+                  textScaleFactor: 1.0,
                 ),
                 const SizedBox(height: 1.0),
                 if (phone != null && phone!.isNotEmpty)
@@ -275,10 +278,11 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     'Número actual: $phone',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: AppFond.text,
                       color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0,
                   ),
               ],
             ),
@@ -293,7 +297,7 @@ class _PhoneUpdateState extends State<PhoneUpdate> {
                     hintText: '+0',
                     textStyle: const TextStyle(
                       color: AppColors.black,
-                      fontSize: 12,
+                      fontSize: AppFond.text,
                       fontWeight: FontWeight.w800,
                     ),
                     dropdownColor: AppColors.whiteapp,

@@ -40,7 +40,7 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
                 text: TextSpan(
                   style: TextStyle(
                     color: widget.labelColor,
-                    fontSize: 13.5,
+                    fontSize: AppFond.subtitle,
                     fontWeight: FontWeight.w400,
                     fontStyle: FontStyle.italic,
                   ),
@@ -52,6 +52,7 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
                     ),
                   ],
                 ),
+                textScaleFactor: 1.0,
               ),
             ),
             const Spacer(), // Este widget expande el espacio entre el label y el checkbox
@@ -73,8 +74,9 @@ class _SimpleCheckboxState extends State<SimpleCheckbox> {
             widget.error!,
             style: const TextStyle(
               color: AppColors.errorRed,
-              fontSize: 12,
+              fontSize: AppFond.text,
             ),
+            textScaleFactor: 1.0,
           ),
       ],
     );

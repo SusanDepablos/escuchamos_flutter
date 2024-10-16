@@ -169,9 +169,10 @@ class _IndexReportCommentState extends State<IndexReportComment> {
                         child: Text(
                           'No hay Reportes.',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: AppFond.subtitle,
                             color: AppColors.black,
                           ),
+                          textScaleFactor: 1.0,
                         ),
                       )
                     : CustomRefreshIndicator(

@@ -113,6 +113,7 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
                         fontWeight: FontWeight.w800,
                         color: AppColors.black,
                       ),
+                      textScaleFactor: 1.0
                     ),
                     const SizedBox(width: 4), // Espaciado entre el texto y el ícono
                     if (isVerified)
@@ -145,12 +146,19 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
                       Text(
                         '${followers ?? 0}',
                         style: const TextStyle(
-                          fontSize: 14.0,
+                          fontSize: AppFond.subtitle,
                           fontWeight: FontWeight.w600,
                         ),
+                      textScaleFactor: 1.0
                       ),
                       const SizedBox(width: 8.0),
-                      const Text('Seguidores'),      
+                      const Text(
+                        'Seguidores',
+                        style: TextStyle(
+                          fontSize: AppFond.subtitle, // Accediendo al tamaño de fuente del estilo
+                        ),
+                        textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                      ),
                     ],
                   ),
                 ),
@@ -161,12 +169,19 @@ class _NavigatorFollowState extends State<NavigatorFollow> {
                       Text(
                         '${following ?? 0}',
                         style: const TextStyle(
-                          fontSize: 14.0,
+                          fontSize: AppFond.subtitle,
                           fontWeight: FontWeight.w600,
                         ),
+                      textScaleFactor: 1.0
                       ),
                       const SizedBox(width: 8.0),
-                      const Text('Seguidos'),
+                      const Text(
+                        'Seguidos',
+                        style: TextStyle(
+                          fontSize: AppFond.subtitle, // Accediendo al tamaño de fuente del estilo
+                        ),
+                        textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                      ),
                     ],
                   ),
                 ),

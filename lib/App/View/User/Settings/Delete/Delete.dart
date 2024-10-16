@@ -353,6 +353,7 @@ class _DeleteState extends State<Delete> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Configuración',
@@ -361,6 +362,7 @@ class _DeleteState extends State<Delete> {
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -374,13 +376,14 @@ class _DeleteState extends State<Delete> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Ingresa contraseña actual',
+                    'Ingresa tú contraseña actual',
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppFond.title,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                   const SizedBox(height: 10.0),
                   BasicInput(

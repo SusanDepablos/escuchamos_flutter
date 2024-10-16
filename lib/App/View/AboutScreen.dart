@@ -81,10 +81,11 @@ class _AboutScreenState extends State<AboutScreen> {
                 child: Text(
                   'Conéctate con nosotros:',
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: AppFond.title,
                     fontWeight: FontWeight.w600,
                     color: AppColors.black,
                   ),
+                  textScaleFactor: 1.0,
                 ),
               ),
               const SizedBox(height: 10.0),
@@ -122,7 +123,7 @@ class _AboutScreenState extends State<AboutScreen> {
               const Center(
                 child: Text(
                   'Versión 1.0.0',
-                  style: TextStyle(fontSize: 14.0, color: AppColors.inputDark),
+                  style: TextStyle(fontSize: AppFond.subtitle, color: AppColors.inputDark),
                 ),
               ),
             ],
@@ -139,10 +140,11 @@ class _AboutScreenState extends State<AboutScreen> {
       child: Text(
         title,
         style: const TextStyle(
-          fontSize: 18.0,
+          fontSize: AppFond.title,
           fontWeight: FontWeight.w600,
           color: AppColors.black,
         ),
+        textScaleFactor: 1.0,
       ),
     );
   }
@@ -153,8 +155,9 @@ class _AboutScreenState extends State<AboutScreen> {
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Text(
         content,
-        style: const TextStyle(fontSize: 16.0, color: AppColors.black),
+        style: const TextStyle(fontSize: AppFond.subtitle, color: AppColors.black),
         textAlign: TextAlign.justify,
+        textScaleFactor: 1.0,
       ),
     );
   }

@@ -215,7 +215,7 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 16.0),
               GenericInput(
-                maxLength: 30,
+                maxLength: 15,
                 text: 'Usuario',
                 input: _inputControllers['username']!,
                 border: _borderColors['username']!,
@@ -237,9 +237,10 @@ class _RegisterState extends State<Register> {
                     'Tu contraseña debe incluir letras, números y tener al menos 8 caracteres.',
                     style: TextStyle(
                       color: AppColors.grey, // Color del texto explicativo
-                      fontSize: 12.5, // Tamaño del texto
+                      fontSize: AppFond.text, // Tamaño del texto
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                 ],
               ),
@@ -258,9 +259,10 @@ class _RegisterState extends State<Register> {
                     'Asegurate de ingresar un correo gmail activo, ya que recibirás un código de verificación.',
                     style: TextStyle(
                       color: AppColors.grey, // Color del texto explicativo
-                      fontSize: 12.5, // Tamaño del texto
+                      fontSize: AppFond.text, // Tamaño del texto
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                 ],
               ),

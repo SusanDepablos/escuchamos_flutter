@@ -122,19 +122,22 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             const Text(
               'Verifica tu correo electrónico',
               style: TextStyle(
-                fontSize: 18.0,
+                fontSize: AppFond.title,
                 fontWeight: FontWeight.bold, // Texto en negrita
               ),
+              textScaleFactor: 1.0,
             ),
             const SizedBox(height: 4.0),
             const Text(
               'Escribe el código de 6 dígitos que enviamos a:',
-              style: TextStyle(fontSize: 13.0),
+              style: TextStyle(fontSize: AppFond.text),
+              textScaleFactor: 1.0,
             ),
             Text(
               widget.email,
               style:
-                  const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                  const TextStyle(fontSize: AppFond.text, fontWeight: FontWeight.bold),
+                  textScaleFactor: 1.0,
             ),
             const SizedBox(height: 26.0),
             DigitBox(
@@ -143,7 +146,8 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
             const SizedBox(height: 16.0),
             const Text(
               'Puedes solicitar un nuevo código en:',
-              style: TextStyle(fontSize: 14.0, color: AppColors.black),
+              style: TextStyle(fontSize: AppFond.subtitle, color: AppColors.black),
+              textScaleFactor: 1.0,
             ),
             const SizedBox(height: 10.0),
             Align(

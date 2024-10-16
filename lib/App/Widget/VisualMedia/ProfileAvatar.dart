@@ -40,7 +40,7 @@ class ProfileAvatar extends StatelessWidget {
             if (imageProvider == null && !isEditing)
               Center(
                 child: Icon(
-                  MaterialIcons.person,
+                  CupertinoIcons.person_fill,
                   color: AppColors.inputDark,
                   size: iconSize,
                 ),

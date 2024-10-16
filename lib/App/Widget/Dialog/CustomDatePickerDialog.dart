@@ -33,75 +33,78 @@ class _CustomDatePickerDialogState extends State<CustomDatePickerDialog> {
     }
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: AppColors.whiteapp,
-      title: const Text(
-        'Selecciona una fecha',
-        style: TextStyle(fontSize: 18),
-      ),
-      contentPadding: EdgeInsets.zero,
-      content: SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              constraints: const BoxConstraints(
-                maxHeight: 300,
-              ),
-              child: Builder(
-                builder: (BuildContext context) {
-                  return Theme(
-                    data: ThemeData.light().copyWith(
-                      primaryColor: AppColors.primaryBlue,
-                      colorScheme: const ColorScheme.light(
-                        primary: AppColors.primaryBlue,
-                        onPrimary: AppColors.whiteapp,
-                        onSurface: AppColors.black,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), // Mantiene el tamaño del texto
+      child: AlertDialog(
+        backgroundColor: AppColors.whiteapp,
+        title: const Text(
+          'Selecciona una fecha',
+          style: TextStyle(fontSize: 18),
+        ),
+        contentPadding: EdgeInsets.zero,
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                constraints: const BoxConstraints(
+                  maxHeight: 300,
+                ),
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return Theme(
+                      data: ThemeData.light().copyWith(
+                        primaryColor: AppColors.primaryBlue,
+                        colorScheme: const ColorScheme.light(
+                          primary: AppColors.primaryBlue,
+                          onPrimary: AppColors.whiteapp,
+                          onSurface: AppColors.black,
+                        ),
                       ),
-                    ),
-                    child: CalendarDatePicker(
-                      initialDate: _selectedDate!,
-                      firstDate: widget.firstDate,
-                      lastDate: widget.lastDate,
-                      onDateChanged: (DateTime newDate) {
-                        setState(() {
-                          _selectedDate = newDate;
-                        });
-                      },
-                    ),
-                  );
-                },
+                      child: CalendarDatePicker(
+                        initialDate: _selectedDate!,
+                        firstDate: widget.firstDate,
+                        lastDate: widget.lastDate,
+                        onDateChanged: (DateTime newDate) {
+                          setState(() {
+                            _selectedDate = newDate;
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Cierra el diálogo sin devolver datos
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.black,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Cierra el diálogo sin devolver datos
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.black,
+                    ),
+                    child: const Text('Cancelar', style: TextStyle(fontSize: AppFond.subtitle)),
                   ),
-                  child: const Text('Cancelar', style: TextStyle(fontSize: 14)),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(_selectedDate); // Devuelve la fecha seleccionada
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.black,
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(_selectedDate); // Devuelve la fecha seleccionada
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.black,
+                    ),
+                    child: const Text('Aceptar', style: TextStyle(fontSize: AppFond.subtitle)),
                   ),
-                  child: const Text('Aceptar', style: TextStyle(fontSize: 14)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

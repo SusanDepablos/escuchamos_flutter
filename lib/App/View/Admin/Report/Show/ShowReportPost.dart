@@ -268,17 +268,18 @@ class _ShowReportPostState extends State<ShowReportPost> {
               Text(
                 'Publicación de ${_username ?? '...'}', // Usar un valor por defecto si _username es null
                 style: const TextStyle(
-                  fontSize: AppFond.title,
+                  fontSize: AppFond.username,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+              textScaleFactor: 1.0
               ),
               const SizedBox(width: 4), // Espaciado entre el texto y el ícono
               if (_isVerified) // Asegúrate de que isVerified esté definido
                 const Icon(
                   CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
                   color: AppColors.primaryBlue, // Color del ícono
-                  size: 16, // Tamaño del ícono
+                  size: AppFond.iconVerified, // Tamaño del ícono
                 ),
             ],
           ),
@@ -378,10 +379,11 @@ class _ShowReportPostState extends State<ShowReportPost> {
                 child: Text(
                   'Reportes',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: AppFond.subtitle,
                     fontWeight: FontWeight.bold,
                     color: AppColors.black,
                   ),
+                  textScaleFactor: 1.0
                 ),
               ),
             ),
@@ -429,7 +431,7 @@ class _ShowReportPostState extends State<ShowReportPost> {
                                   createdAt: report.attributes.createdAt,
                                   profilePhotoUser: report.relationships.user.profilePhotoUrl,
                                   observation: report.attributes.observation,
-                                  report: 'publicación',
+                                  report: 'esta publicación',
                                   isVerified: report.relationships.user.groupId?.contains(1) == true ||
                                   report.relationships.user.groupId?.contains(2) == true,
                                 ),

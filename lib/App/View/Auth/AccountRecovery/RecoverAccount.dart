@@ -112,14 +112,16 @@ class _RecoverAccountState extends State<RecoverAccount> {
               const Text(
                 'Recupera tu cuenta',
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
+                textScaleFactor: 1.0
               ),
               const SizedBox(height: 4.0),
               const Text(
                 'Introduce tu dirección de correo electrónico',
-                style: TextStyle(fontSize: 16.0),
+                style: TextStyle(fontSize: AppFond.subtitle),
+                textScaleFactor: 1.0
               ),
               const SizedBox(height: 16.0),
               GenericInput(

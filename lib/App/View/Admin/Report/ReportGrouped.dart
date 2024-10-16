@@ -28,6 +28,7 @@ class _IndexReportGroupedState extends State<IndexReportGrouped> {
                 fontWeight: FontWeight.w800,
                 color: AppColors.black,
               ),
+            textScaleFactor: 1.0,
             ),
           ],
         ),

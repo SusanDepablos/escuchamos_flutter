@@ -17,7 +17,7 @@ class FloatingAddButton extends StatelessWidget {
       child: MouseRegion(
         cursor: SystemMouseCursors.click, // Cambia el cursor al pasar el ratón
         child: Tooltip(
-          message: "Comentar", // Mensaje del tooltip
+          message: "", // Mensaje del tooltip
           child: Container(
             width: 53.0, // Ancho del contenedor
             height: 53.0, // Alto del contenedor

@@ -604,9 +604,10 @@ class _IndexEscuChamosState extends State<IndexEscuChamos> {
                     child: Text(
                       'No hay publicaciones.',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: AppFond.subtitle,
                         color: AppColors.black,
-                      ),
+                        ),
+                      textScaleFactor: 1.0,
                     ),
                   )
                   : CustomRefreshIndicator(

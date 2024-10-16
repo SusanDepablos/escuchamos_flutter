@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -21,6 +22,8 @@ class _AccountInformationState extends State<AccountInformation> {
   String? country;
   String? name;
   bool isLoading = true;
+  int? groupId;
+  bool isVerified = false;
 
   @override
   void initState() {
@@ -50,6 +53,8 @@ class _AccountInformationState extends State<AccountInformation> {
             country = _user?.data.relationships.country?.attributes.name;
             name = _user?.data.attributes.name;
             isLoading = false; // La carga ha finalizado
+            groupId = _user!.data.relationships.groups[0].id;
+            isVerified = groupId == 1 || groupId == 2;
           });
         } else {
           setState(() {
@@ -102,6 +107,7 @@ class _AccountInformationState extends State<AccountInformation> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Información de la cuenta',
@@ -110,6 +116,7 @@ class _AccountInformationState extends State<AccountInformation> {
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -122,18 +129,31 @@ class _AccountInformationState extends State<AccountInformation> {
               title: const Text(
                 'Nombre de usuario',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
-              subtitle: Text(
-                username ?? "...", 
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.black,
-                  fontStyle: FontStyle.italic,
-                ),
+              subtitle: Row(
+                children: [
+                  Text(
+                    username ?? '...',
+                    style: const TextStyle(
+                      fontSize: AppFond.text,
+                      color: AppColors.black,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textScaleFactor: 1.0,
+                  ),
+                  const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+                  if (isVerified)
+                    const Icon(
+                      CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                      color: AppColors.primaryBlue, // Color del ícono
+                      size: AppFond.iconVerified - 2, // Tamaño del ícono
+                    ),
+                ],
               ),
               onTap: () async {
                 // Navega a la página 'edit-account' y espera su resultado
@@ -155,18 +175,20 @@ class _AccountInformationState extends State<AccountInformation> {
               title: const Text(
                 'Teléfono',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               subtitle: Text(
                 isLoading ? "..." : (phoneNumber ?? "Añadir"),
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFond.text,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
               onTap: () async {
                 final result = await Navigator.pushNamed(
@@ -181,18 +203,20 @@ class _AccountInformationState extends State<AccountInformation> {
               title: const Text(
                 'Correo electrónico',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               subtitle: Text(
                 email ?? "...",
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFond.text,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
               onTap: () async {
                 final result = await Navigator.pushNamed(
@@ -207,18 +231,20 @@ class _AccountInformationState extends State<AccountInformation> {
               title: const Text(
                 'País',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w500,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               subtitle: Text(
                 isLoading ? "..." : (country ?? "Añadir"),
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFond.text,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
               onTap: () async{
                 final result = await Navigator.pushNamed(

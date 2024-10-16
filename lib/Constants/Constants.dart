@@ -19,7 +19,6 @@ class ApiUrl{
   // ---------------------------colores de la app ---------------------------//
 class AppColors {
 
-  
   static const Color dark = Color.fromRGBO(0, 0, 0, 1); // Color negro
   static const Color black = Color.fromRGBO(0, 0, 32, 1); // Color negro
   static const Color white = Color.fromRGBO(255, 255, 255, 1); // Color blanco
@@ -38,7 +37,31 @@ class AppColors {
   // -------------------------------------------------------------------------//
 
 class AppFond {
-  static const double title = 20.0; // Tamaño de letra para el título
+  static const double title = 18.0; // Tamaño de letra para el título
+  static const double label = 16.0;
   static const double subtitle = 14.0; // Tamaño de letra para el subtítulo
+  static const double text = 12.00;
+  static const double username = 15.0;
+  static const double name = 13.0;
+  static const double date = 12.0;
+  static const double body = 14.0;
+  static const double count = 15.0;
+  static const double countComment = 14.0;
+  static const double response = 13.0;
+
+// ----------------------------Iconos---------------------------------------------//
+  static const double iconVerified = 14.0;
+  static const double iconMore = 20.0;
+  static const double iconHeart = 20.0;
+  static const double iconHeartComment = 18.0;
+  static const double iconChat = 20.0;
+  static const double iconShare = 20.0;
+  static const double avatarSize = 40.0;
+  static const double avatarSizeSmall = 25.0;
+  static const double avatarSizeShare = 30.0;
+  static const double iconSize = 25.0;
+  static const double iconSizeSmall = 15.0;
+  static const double iconSizeShare = 20.0;
+
 }
   // -------------------------------------------------------------------------//

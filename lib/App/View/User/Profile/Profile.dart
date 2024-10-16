@@ -280,13 +280,14 @@ class _UpdateState extends State<Profile> {
                         fontWeight: FontWeight.w800,
                         color: AppColors.black,
                       ),
+                    textScaleFactor: 1.0
                     ),
                     const SizedBox(width: 4), // Espaciado entre el texto y el ícono
                     if (isVerified)
                       const Icon(
                         CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
                         color: AppColors.primaryBlue, // Color del ícono
-                        size: 16, // Tamaño del ícono
+                        size: AppFond.iconVerified // Tamaño del ícono
                       ),
                   ],
                 ),
@@ -379,10 +380,11 @@ class _UpdateState extends State<Profile> {
                           child: Text(
                             '${name ?? '...'}',
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: AppFond.title,
                               fontWeight: FontWeight.w600,
                               color: AppColors.black,
                             ),
+                          textScaleFactor: 1.0
                           ),
                         ),
                         const SizedBox(
@@ -424,6 +426,7 @@ class _UpdateState extends State<Profile> {
                                   color: AppColors.black,
                                 ),
                                 textAlign: TextAlign.justify, // Justifica el texto para que ocupe todo el ancho disponible.
+                                textScaleFactor: 1.0
                               ),
                             ),
                           ),
@@ -450,10 +453,11 @@ class _UpdateState extends State<Profile> {
                             Text(
                               '${followers ?? '0'}',
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: AppFond.subtitle,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.black,
                               ),
+                              textScaleFactor: 1.0
                             ),
                             const SizedBox(width: 4),
                             LabelAction(
@@ -468,23 +472,19 @@ class _UpdateState extends State<Profile> {
                                     'follower', // Reemplaza con el ID del usuario seguido
                                   },
                                 );
-
                                 reloadView();
                               },
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.inputDark,
-                              ),
                               padding: EdgeInsets.zero,
                             ),
                             const SizedBox(width: 20),
                             Text(
                               '${following ?? '0'}',
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: AppFond.subtitle,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.black,
                               ),
+                              textScaleFactor: 1.0
                             ),
                             const SizedBox(width: 4),
                             LabelAction(
@@ -501,10 +501,6 @@ class _UpdateState extends State<Profile> {
                                 );
                                 reloadView();
                               },
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.inputDark,
-                              ),
                               padding: EdgeInsets.zero,
                             ),
                           ],

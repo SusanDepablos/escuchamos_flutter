@@ -195,10 +195,11 @@ class _NewPostState extends State<NewPost> {
             const Text(
               'Crear Publicación',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppFond.title,
                 fontWeight: FontWeight.w800,
                 color: AppColors.black,
               ),
+              textScaleFactor: 1.0,
             ),
             GenericButton(
               label: 'Publicar',
@@ -207,7 +208,7 @@ class _NewPostState extends State<NewPost> {
               },
               width: 90,
               height: 20,
-              size: 14,
+              size: AppFond.subtitle,
               isLoading: submitting,
               borderRadius: 24
             ),
@@ -229,7 +230,7 @@ class _NewPostState extends State<NewPost> {
               child: Row(
                 children: [
                   ProfileAvatar(
-                    avatarSize: 40.0,
+                    avatarSize: AppFond.avatarSize,
                     imageProvider: imageProvider,
                     showBorder: true,
                     onPressed: () {
@@ -249,17 +250,18 @@ class _NewPostState extends State<NewPost> {
                               username ?? '...', // Asegúrate de que 'username' no sea null
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: AppFond.username,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                              textScaleFactor: 1.0,
                             ),
                             const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
                             // Aquí va el ícono de verificación
                             if (groupId == 1 || groupId == 2) // Asegúrate de definir isVerified
                               const Icon(
                                 CupertinoIcons.checkmark_seal_fill,
-                                size: 16,
+                                size: AppFond.iconVerified,
                                 color: AppColors.primaryBlue, // Cambia el color según prefieras
                               ),
                           ],
@@ -281,7 +283,11 @@ class _NewPostState extends State<NewPost> {
             ),
             if (groupId == 1 || groupId == 2) // Muestra el checkbox si groupId es 1 o 2
             CheckboxListTile(
-              title: const Text("Publicar como EscuChamos"),
+              title: const Text(
+                "Publicar como EscuChamos",
+                style: TextStyle(fontSize: AppFond.subtitle),
+                textScaleFactor: 1.0, // Ajusta el valor según tus necesidades
+              ),
               value: isEscuchamos,
               activeColor: AppColors.primaryBlue,
               onChanged: (bool? value) {

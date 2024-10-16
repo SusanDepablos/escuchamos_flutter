@@ -117,11 +117,12 @@ class _RecoverAccountChangePasswordState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Actualizar tu Contraseña',
+                'Cambiar tu contraseña',
                 style: TextStyle(
-                  fontSize: 19.0,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.bold, // Texto en negrita
                 ),
+                textScaleFactor: 1.0
               ),
               const SizedBox(height: 16.0),
               Column(
@@ -139,15 +140,16 @@ class _RecoverAccountChangePasswordState
                     'Tu contraseña nueva debe incluir letras, números y tener al menos 8 caracteres.',
                     style: TextStyle(
                       color: AppColors.grey, // Color del texto explicativo
-                      fontSize: 12.5, // Tamaño del texto
+                      fontSize: AppFond.text, // Tamaño del texto
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0
                   ),
                 ],
               ),
               const SizedBox(height: 20.0),
               GenericButton(
-                label: 'Enviar',
+                label: 'Guardar',
                 onPressed: _call,
                 isLoading: _submitting,
               ),

@@ -268,7 +268,7 @@ class _IndexShareState extends State<IndexShare> {
     );
   }
 
-    void _showReportDialog(int postId, BuildContext context) {
+  void _showReportDialog(int postId, BuildContext context) {
     List<Map<String, dynamic>> observationData = [
       {'id': 1, 'name': 'Contenido inapropiado'},
       {'id': 2, 'name': 'Spam o auto-promoción'},
@@ -366,23 +366,28 @@ class _IndexShareState extends State<IndexShare> {
             children: [
               if (_id == userId) ...[
                 ListTile(
-                  leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
-                  title: const Text('Eliminar', style: TextStyle(color: AppColors.errorRed)),
+                  leading: const Icon(CupertinoIcons.delete_solid, color: AppColors.errorRed),
+                  title: const Text(
+                    'Eliminar',
+                    style: TextStyle(color: AppColors.errorRed, fontSize: AppFond.subtitle),
+                  ),
                   onTap: () {
                     Navigator.pop(context); // Cerrar el modal primero
-                    _onDeleteItem(context, shareId);
+                    _onDeleteItem(context, shareId); // Mostrar el diálogo de confirmación
                   },
                 ),
               ]else ...[
                 ListTile(
-                  leading: const Icon(MaterialIcons.report, color: AppColors.errorRed),
-                  title: const Text('Reportar', style: TextStyle(color: AppColors.errorRed)),
-                  onTap: () {
-                    // Lógica para reportar la publicación
-                    Navigator.pop(context); // Cerrar el modal
-                    _showReportDialog(postId, context);
-                  },
-                ),
+                    leading: const Icon(MaterialIcons.report, color: AppColors.errorRed),
+                    title: const Text(
+                      'Reportar',
+                      style: TextStyle(color: AppColors.errorRed, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                       Navigator.pop(context); // Cerrar el modal
+                      _showReportDialog(postId, context);
+                    },
+                  ),
               ]
             ],
           ),
@@ -401,254 +406,260 @@ class _IndexShareState extends State<IndexShare> {
             verticalOffset: -0.3,
           )
         : Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: shares.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No hay compartidos.',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.black,
-                            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: shares.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No hay compartidos.',
+                          style: TextStyle(
+                            fontSize: AppFond.subtitle,
+                            color: AppColors.black,
                           ),
-                        )
-                      : CustomRefreshIndicator(
-                          onRefresh: _reloadShares,
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: shares.length + (_isLoading ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index == shares.length) {
-                                  return SizedBox(
-                                    height: 60.0,
-                                    child: Center(
-                                      child: CustomLoadingIndicator(
-                                          color: AppColors.primaryBlue),
-                                    ),
-                                  );
-                                }
-                              final share = shares[index];
-                              String username = share.relationships.user.username;
-                              int userId = share.relationships.user.id;
-                              bool showShares = true;
-                              String? profilePhotoUserShare =
-                                  share.relationships.user.profilePhotoUrl;
-                              DateTime createdAt = share.attributes.createdAt;
-                              final mediaUrls = share.relationships.post.relationships.files
-                                  .map((file) => file.attributes.url)
-                                  .toList();
-                              bool isVerified = share.relationships.user.groupId != null && 
-                              (share.relationships.user.groupId!.contains(1) || 
-                              share.relationships.user.groupId!.contains(2));
-                              return
-                                Container(
-                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16), // Margen arriba y abajo
-                              padding: const EdgeInsets.only(
-                                left: 16,
-                                right: 16,
-                                top: 0,
-                                bottom: 0,),
-                              decoration: BoxDecoration(
-                                color: AppColors.greyLigth, // Color de fondo
-                                borderRadius: BorderRadius.circular(24), // Borde redondeado
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Visibility(
-                                    visible: userId != _id, // Mostrar solo si el userId es diferente al _id
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            if (widget.userId == null) {
-                                              Navigator.pushNamed(
-                                                context,
-                                                'profile',
-                                                arguments: {
-                                                  'showShares': showShares, // Coloca las claves entre comillas
-                                                  'userId': userId,
-                                                },
-                                              );
-                                            }
-                                          },
-                                          child: Row(
-                                            children: [
-                                              ProfileAvatar(
-                                                imageProvider: profilePhotoUserShare != null && profilePhotoUserShare.isNotEmpty
-                                                    ? NetworkImage(profilePhotoUserShare)
-                                                    : null,
-                                                avatarSize: 30.0,
-                                                iconSize: 20.0,
-                                                showBorder: false,
-                                                onPressed: () {
-                                                  if (widget.userId == null) {
-                                                    Navigator.pushNamed(
-                                                      context,
-                                                      'profile',
-                                                      arguments: {
-                                                        'showShares': showShares, // Coloca las claves entre comillas
-                                                        'userId': userId,
-                                                      },
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                              Container(
-                                                constraints: const BoxConstraints(maxWidth: 140),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min, // Asegúrate de que el Row no ocupe más espacio del necesario
-                                                  children: [
-                                                    Text(
+                          textScaleFactor: 1.0,
+                        ),
+                      )
+                    : CustomRefreshIndicator(
+                        onRefresh: _reloadShares,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: shares.length + (_isLoading ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == shares.length) {
+                                return SizedBox(
+                                  height: 60.0,
+                                  child: Center(
+                                    child: CustomLoadingIndicator(
+                                        color: AppColors.primaryBlue),
+                                  ),
+                                );
+                              }
+                            final share = shares[index];
+                            String username = share.relationships.user.username;
+                            int userId = share.relationships.user.id;
+                            bool showShares = true;
+                            String? profilePhotoUserShare =
+                                share.relationships.user.profilePhotoUrl;
+                            DateTime createdAt = share.attributes.createdAt;
+                            final mediaUrls = share.relationships.post.relationships.files
+                                .map((file) => file.attributes.url)
+                                .toList();
+                            bool isVerified = share.relationships.user.groupId != null && 
+                            (share.relationships.user.groupId!.contains(1) || 
+                            share.relationships.user.groupId!.contains(2));
+                            return
+                              Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16), // Margen arriba y abajo
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              top: 0,
+                              bottom: 0,),
+                            decoration: BoxDecoration(
+                              color: AppColors.greyLigth, // Color de fondo
+                              borderRadius: BorderRadius.circular(24), // Borde redondeado
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Visibility(
+                                  visible: userId != _id, // Mostrar solo si el userId es diferente al _id
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (widget.userId == null) {
+                                            Navigator.pushNamed(
+                                              context,
+                                              'profile',
+                                              arguments: {
+                                                'showShares': showShares, // Coloca las claves entre comillas
+                                                'userId': userId,
+                                              },
+                                            );
+                                          }
+                                        },
+                                        child: Row(
+                                          children: [
+                                            ProfileAvatar(
+                                              imageProvider: profilePhotoUserShare != null &&
+                                                      profilePhotoUserShare.isNotEmpty
+                                                  ? NetworkImage(profilePhotoUserShare)
+                                                  : null,
+                                              avatarSize: AppFond.avatarSizeShare,
+                                              iconSize: AppFond.iconSizeShare,
+                                              showBorder: false,
+                                              onPressed: () {
+                                                if (widget.userId == null) {
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    'profile',
+                                                    arguments: {
+                                                      'showShares': showShares,
+                                                      'userId': userId,
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                            Container(
+                                              constraints: const BoxConstraints(maxWidth: 230),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
                                                       username,
                                                       style: const TextStyle(
                                                         fontWeight: FontWeight.bold,
-                                                        fontSize: 16,
+                                                        fontSize: AppFond.username,
                                                       ),
-                                                      overflow: TextOverflow.ellipsis,
+                                                      textScaleFactor: 1.0,
+                                                      overflow: TextOverflow.ellipsis, // Recortar con puntos suspensivos si es demasiado largo
+                                                      maxLines: 1, // Limitar a una sola línea
                                                     ),
-                                                    if (isVerified) // Asegúrate de definir isVerified
-                                                      const SizedBox(width: 4),
-                                                    // Aquí va el ícono de verificación
-                                                    if (isVerified) // Asegúrate de definir isVerified
-                                                      const Icon(
-                                                        CupertinoIcons.checkmark_seal_fill,
-                                                        size: 16,
-                                                        color: AppColors.primaryBlue, // Cambia el color según prefieras
-                                                      ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  if (isVerified)
+                                                    const Icon(
+                                                      CupertinoIcons.checkmark_seal_fill,
+                                                      size: AppFond.iconVerified,
+                                                      color: AppColors.primaryBlue,
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      GestureDetector(
+                                        onTap: () {
+                                          _showOptionsModal(
+                                            context,
+                                            share.id,
+                                            share.relationships.user.id,
+                                            share.attributes.postId,
+                                          );
+                                        },
+                                        child: const Icon(
+                                          CupertinoIcons.ellipsis,
+                                          color: AppColors.grey,
+                                          size: AppFond.iconMore,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: userId != _id,
+                                  child: RichText(
+                                    textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                        fontSize: AppFond.subtitle,
+                                        fontStyle: FontStyle.italic,
+                                        color: AppColors.grey,
+                                      ),
+                                      children: [
+                                        const TextSpan(
+                                          text: 'Ha compartido esta publicación ',
+                                        ),
+                                        TextSpan(
+                                          text: _formatDate(createdAt),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Visibility(
+                                  visible: userId == _id,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: RichText(
+                                          textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                                          text: TextSpan(
+                                            style: const TextStyle(
+                                              fontSize: AppFond.subtitle,
+                                              fontStyle: FontStyle.italic,
+                                              color: AppColors.grey,
+                                            ),
+                                            children: [
+                                              const TextSpan(
+                                                text: 'Haz compartido esta publicación ',
+                                              ),
+                                              TextSpan(
+                                                text: _formatDate(createdAt),
                                               ),
                                             ],
                                           ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        const Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _showOptionsModal(
-                                              context,
-                                              share.id,
-                                              share.relationships.user.id,
-                                              share.attributes.postId,
-                                            );
-                                          },
-                                          child: const Icon(
-                                            MaterialIcons.more,
-                                            color: AppColors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: userId != _id, // Mostrar solo si el userId es diferente al _id
-                                    child: RichText(
-                                      text: TextSpan(
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontStyle: FontStyle.italic,
-                                          color: AppColors.grey,
-                                        ),
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Ha compartido esta publicación ', // Texto estático
-                                          ),
-                                          TextSpan(
-                                            text: _formatDate(createdAt), // Fecha formateada
-                                          ),
-                                        ],
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10), // Espacio entre la foto y el texto
-                                  Visibility(
-                                    visible: userId == _id, // Mostrar solo si el userId es igual al _id
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        // Ajuste del texto para que sea flexible y ocupe el espacio necesario
-                                        Flexible(
-                                    child: RichText(
-                                      text: TextSpan(
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontStyle: FontStyle.italic,
+                                      const SizedBox(width: 5),
+                                      GestureDetector(
+                                        onTap: () {
+                                          _showOptionsModal(
+                                            context,
+                                            share.id,
+                                            share.relationships.user.id,
+                                            share.attributes.postId,
+                                          );
+                                        },
+                                        child: const Icon(
+                                          CupertinoIcons.ellipsis,
                                           color: AppColors.grey,
+                                          size: AppFond.iconMore,
                                         ),
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Haz compartido esta publicación ',
-                                            // Texto estático
-                                          ),
-                                          TextSpan(
-                                            text: _formatDate(createdAt), // Fecha formateada
-                                          ),
-                                        ],
                                       ),
-                                      maxLines: 2, // Este comportamiento no se aplica directamente a RichText
-                                      overflow: TextOverflow.ellipsis, // Este comportamiento no se aplica directamente a RichText
-                                    ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 5),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _showOptionsModal(
-                                              context,
-                                              share.id,
-                                              share.relationships.user.id,
-                                              share.attributes.postId,
-                                            );
-                                          },
-                                          child: const  Icon(
-                                            MaterialIcons.more,
-                                            color: AppColors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                ),
+                                if (userId == _id) 
+                                  const SizedBox(height: 10),
+                                PostWidgetInternal(
+                                  usernameUser: share.relationships.post.relationships.user.username,
+                                  profilePhotoUser: share.relationships.post.relationships.user.profilePhotoUrl,
+                                  createdAt: share.relationships.post.attributes.createdAt,
+                                  mediaUrls: mediaUrls,
+                                  body: share.relationships.post.attributes.body,
+                                  onTap: (){ 
+                                  int postId = share.attributes.postId;
+                                  Navigator.pushNamed(
+                                    context,
+                                    'show-post',
+                                    arguments: {
+                                      'id': postId,
+                                    }
+                                  );
+                                  },
+                                  color: AppColors.whiteapp, // Transparente ya que el container tiene fondo
+                                  margin: const EdgeInsets.only(
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 20.0,
                                   ),
-                                  if (userId == _id)
-                                    const SizedBox(height: 10), // Espacio entre la foto y el texto
-                                  PostWidgetInternal(
-                                    usernameUser: share.relationships.post.relationships.user.username,
-                                    profilePhotoUser: share.relationships.post.relationships.user.profilePhotoUrl,
-                                    createdAt: share.relationships.post.attributes.createdAt,
-                                    mediaUrls: mediaUrls,
-                                    body: share.relationships.post.attributes.body,
-                                    onTap: (){ 
-                                    int postId = share.attributes.postId;
-                                    Navigator.pushNamed(
-                                      context,
-                                      'show-post',
-                                      arguments: {
-                                        'id': postId,
-                                      }
-                                    );
-                                    },
-                                    color: AppColors.whiteapp, // Transparente ya que el container tiene fondo
-                                    margin: const EdgeInsets.only(
-                                      left: 0,
-                                      right: 0,
-                                      top: 0,
-                                      bottom: 20.0,
-                                    ),
-                                    isVerified: share.relationships.post.relationships.user.groupId?.contains(1) == true ||
-                                    share.relationships.post.relationships.user.groupId?.contains(2) == true, 
-                                  ),
-                                ],
-                              ),
-                          );
-                        },
-                      padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
-                      )
-                    ),
-                ),
-              ],
-            ),
+                                  isVerified: share.relationships.post.relationships.user.groupId?.contains(1) == true ||
+                                  share.relationships.post.relationships.user.groupId?.contains(2) == true, 
+                                ),
+                              ],
+                            ),
+                        );
+                      },
+                    padding: EdgeInsets.only(bottom: _hasMorePages ? 0 : 70.0),
+                    )
+                  ),
+              ),
+            ],
           ),
+        ),
     );
   }
 }

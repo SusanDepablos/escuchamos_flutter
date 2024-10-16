@@ -21,7 +21,11 @@ class CustomDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: AppColors.whiteapp, // Fondo blanco
-      title: Text(title), // Cambiado para usar el título proporcionado
+      title: Text(
+        title,
+        style: const TextStyle(color: AppColors.black, fontSize: AppFond.title, fontWeight: FontWeight.bold,),
+        textScaleFactor: 1.0, // Mantener el tamaño del texto constante
+      ),
       contentPadding: const EdgeInsets.only(
         right: 16,
         left: 16,
@@ -36,7 +40,8 @@ class CustomDialog extends StatelessWidget {
             if (content != null && content!.isNotEmpty) ...[
               Text(
                 content!,
-                style: const TextStyle(color: AppColors.black), // Texto negro
+                style: const TextStyle(color: AppColors.black, fontSize: AppFond.subtitle), // Texto negro
+                textScaleFactor: 1.0, // Mantener el tamaño del texto constante
               ),
               const SizedBox(height: 16), // Espacio solo si hay contenido
             ],
@@ -57,8 +62,9 @@ class CustomDialog extends StatelessWidget {
                 'Cancelar',
                 style: TextStyle(
                   color: AppColors.black,
-                  fontWeight: FontWeight.bold, // Texto negro y en negrita
+                  fontSize: AppFond.subtitle,
                 ),
+                textScaleFactor: 1.0, // Mantener el tamaño del texto constante
               ),
             ),
             const SizedBox(width: 20), // Espacio entre los botones
@@ -74,8 +80,9 @@ class CustomDialog extends StatelessWidget {
                 'Aceptar',
                 style: TextStyle(
                   color: AppColors.black,
-                  fontWeight: FontWeight.bold, // Texto negro y en negrita
+                  fontSize: AppFond.subtitle,
                 ),
+                textScaleFactor: 1.0, // Mantener el tamaño del texto constante
               ),
             ),
           ],

@@ -17,6 +17,36 @@ class CupertinoIcons {
     fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
   static const IconData checkmark_seal_fill = IconData(0xf5cc, 
     fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData heart = IconData(0xf442,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData heart_fill = IconData(0xf443,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData ellipsis = IconData(0xf46a, 
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData pencil = IconData(0xf37e,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData square_arrow_right = IconData(0xf90e,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData delete_solid = IconData(0xf4c5,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData pencil_ellipsis_rectangle = IconData(0xf73c,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData photo_camera_solid = IconData(0xf3f6,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData photo_fill = IconData(0xf768,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData video_camera_solid = IconData(0xf4cd, 
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData person_fill = IconData(0xf47e,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData doc_chart_fill = IconData(0xf8d1,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData group_solid = IconData(0xf47c,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData gear_alt_fill = IconData(0xf43d,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData exclamationmark_circle_fill = IconData(0xf659,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
 
 }
 

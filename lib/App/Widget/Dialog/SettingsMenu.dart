@@ -44,15 +44,16 @@ class SettingsMenu extends StatelessWidget {
           value: 'edit',
           child: Row(
             children: [
-              Icon(MaterialIcons.edit, color: AppColors.black), // Puedes ajustar el color del ícono
+              Icon(CupertinoIcons.pencil, color: AppColors.black), // Puedes ajustar el color del ícono
               SizedBox(width: 8),
               Text(
                 'Editar perfil',
                 style: TextStyle(
-                  fontSize: 16, // Tamaño de fuente
+                  fontSize: AppFond.subtitle, // Tamaño de fuente
                   fontWeight: FontWeight.w500, // Peso de la fuente
                   color: AppColors.black, // Color del texto
                 ),
+              textScaleFactor: 1.0
               ),
             ],
           ),
@@ -61,15 +62,16 @@ class SettingsMenu extends StatelessWidget {
           value: 'logout',
           child: Row(
             children: [
-              Icon(MaterialIcons.logout, color: AppColors.errorRed), // Puedes ajustar el color del ícono
+              Icon(CupertinoIcons.square_arrow_right, color: AppColors.errorRed), // Puedes ajustar el color del ícono
               SizedBox(width: 8),
               Text(
                 'Cerrar sesión',
                 style: TextStyle(
-                  fontSize: 16, // Tamaño de fuente
+                  fontSize: AppFond.subtitle, // Tamaño de fuente
                   fontWeight: FontWeight.w500, // Peso de la fuente
                   color: AppColors.errorRed, // Color del texto
                 ),
+                textScaleFactor: 1.0
               ),
             ],
           ),

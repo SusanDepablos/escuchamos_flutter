@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
@@ -12,6 +13,7 @@ class PopupPostWidget extends StatefulWidget {
   final Function(String)? onPostUpdate;
   final VoidCallback? onCancel;
   final bool isButtonDisabled;
+  final bool isVerified;
   final List<String>? mediaUrls; // Nuevo parámetro
 
   PopupPostWidget({
@@ -23,6 +25,7 @@ class PopupPostWidget extends StatefulWidget {
     this.profilePhotoUser,
     this.onCancel,
     required this.isButtonDisabled,
+    this.isVerified = false,
     this.mediaUrls, // Inicializa el nuevo parámetro
   }) : super(key: key);
 
@@ -71,22 +74,27 @@ class _PopupPostWidgetState extends State<PopupPostWidget> {
                         imageProvider: widget.profilePhotoUser != null && widget.profilePhotoUser!.isNotEmpty
                             ? NetworkImage(widget.profilePhotoUser!)
                             : null,
-                        avatarSize: 40.0,
+                        avatarSize: AppFond.avatarSize,
                         showBorder: false,
                       ),
                       const SizedBox(width: 10.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center, // Alinea el texto y el ícono al centro
                         children: [
-                          // Nombre del usuario
                           Text(
                             widget.username,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: AppFond.username,
                             ),
                           ),
-                          // Nombre de usuario en formato @tal
+                          const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                          if (widget.isVerified)
+                            const Icon(
+                              CupertinoIcons.checkmark_seal_fill,
+                              size: AppFond.iconVerified,
+                              color: AppColors.primaryBlue, // Cambia el color según prefieras
+                            ),
                         ],
                       ),
                     ],
@@ -117,8 +125,9 @@ class _PopupPostWidgetState extends State<PopupPostWidget> {
                           'Cancelar',
                           style: TextStyle(
                             color: AppColors.black,
-                            fontWeight: FontWeight.bold,
+                            fontSize: AppFond.subtitle
                           ),
+                          textScaleFactor: 1.0
                         ),
                       ),
                       TextButton(
@@ -130,8 +139,9 @@ class _PopupPostWidgetState extends State<PopupPostWidget> {
                           'Guardar',
                           style: TextStyle(
                             color: widget.isButtonDisabled ? AppColors.grey : AppColors.black,
-                            fontWeight: FontWeight.bold,
+                            fontSize: AppFond.subtitle
                           ),
+                          textScaleFactor: 1.0
                         ),
                       ),
                     ],

@@ -416,12 +416,16 @@ class _ShowState extends State<Show> {
         centerTitle: true,
         title: Row( // Asegura que el Row esté centrado
           children: [
-            Text(
-              'Publicación de ${_username ?? '...'}', // Usar un valor por defecto si _username es null
-              style: const TextStyle(
-                fontSize: AppFond.title,
-                fontWeight: FontWeight.w800,
-                color: AppColors.black,
+            Flexible(
+              child: Text(
+                'Publicación de ${_username ?? '...'}', 
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: AppFond.username,
+                ),
+                textScaleFactor: 1.0,
+                overflow: TextOverflow.ellipsis, // Recortar con puntos suspensivos si es demasiado largo
+                maxLines: 1, // Limitar a una sola línea
               ),
             ),
             const SizedBox(width: 4), // Espaciado entre el texto y el ícono

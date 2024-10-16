@@ -90,10 +90,11 @@ class _CountTimerState extends State<CountTimer> {
         child: Text(
           "$minutes:$seconds",
           style: TextStyle(
-            fontSize: 16.0,
+            fontSize: AppFond.label,
             fontWeight: FontWeight.bold,
             color: textColor,
           ),
+          textScaleFactor: 1.0,
         ),
       ),
     );

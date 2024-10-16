@@ -12,7 +12,7 @@ class CustomDrawer extends StatelessWidget {
   final ImageProvider? imageProvider;
   final Future<void> Function()? onProfileTap;
   final Future<void> Function()? onContentModerationTap;
-    final Future<void> Function()? onAdminUserTap;
+  final Future<void> Function()? onAdminUserTap;
   final Future<void> Function()? onSettingsTap;
   final Future<void> Function()? onAboutTap;
   final Future<void> Function()? onFollowersTap;
@@ -42,7 +42,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.85,
+      width: MediaQuery.of(context).size.width * 0.86,
       child: Container(
         decoration: const BoxDecoration(
           color: AppColors.whiteapp, // Color de fondo del Drawer
@@ -90,17 +90,11 @@ class CustomDrawer extends StatelessWidget {
       children: [
         Container(
           color: AppColors.whiteapp,
-          padding: const EdgeInsets.fromLTRB(
-            16,
-            65.0,
-            16.0,
-            0.0,
-          ),
+          padding: const EdgeInsets.fromLTRB(16, 65.0, 16.0, 0.0),
           height: 235,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Foto de perfil
               ProfileAvatar(
                 avatarSize: 50.0,
                 iconSize: 30.0,
@@ -109,32 +103,33 @@ class CustomDrawer extends StatelessWidget {
                 onPressed: onProfileTap,
               ),
               const SizedBox(height: 15),
-              // Texto
               Row(
                 children: [
                   Text(
-                    username ?? '...', // Usar un valor por defecto si username es null
+                    username ?? '...',
+                    textScaleFactor: 1.0,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: AppFond.title,
                       fontWeight: FontWeight.w800,
                       color: AppColors.black,
                     ),
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(width: 4), // Espaciado entre el texto y el ícono
-                  if (isVerified) // Asegúrate de que isVerified esté definido
+                  const SizedBox(width: 4),
+                  if (isVerified)
                     const Icon(
-                      CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
-                      color: AppColors.primaryBlue, // Color del ícono
-                      size: 16, // Tamaño del ícono
+                      CupertinoIcons.checkmark_seal_fill,
+                      color: AppColors.primaryBlue,
+                      size: AppFond.iconVerified,
                     ),
                 ],
               ),
               Text(
                 '${name ?? '...'}',
+                textScaleFactor: 1.0,
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: AppFond.subtitle,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
@@ -142,13 +137,13 @@ class CustomDrawer extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 15),
-              // Información de seguidores y siguiendo
               Row(
                 children: [
                   Text(
                     '${followers ?? '0'}',
+                    textScaleFactor: 1.0,
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: AppFond.subtitle,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
@@ -157,17 +152,14 @@ class CustomDrawer extends StatelessWidget {
                   LabelAction(
                     text: 'Seguidores',
                     onPressed: onFollowersTap,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: AppColors.inputDark,
-                    ),
                     padding: EdgeInsets.zero,
                   ),
-                  const SizedBox(width: 25), // Espacio entre "Siguiendo" y "Seguidores"
+                  const SizedBox(width: 25),
                   Text(
                     '${following ?? '0'}',
+                    textScaleFactor: 1.0,
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: AppFond.subtitle,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
@@ -176,10 +168,6 @@ class CustomDrawer extends StatelessWidget {
                   LabelAction(
                     text: 'Seguidos',
                     onPressed: onFollowedTap,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: AppColors.inputDark,
-                    ),
                     padding: EdgeInsets.zero,
                   ),
                 ],
@@ -189,9 +177,7 @@ class CustomDrawer extends StatelessWidget {
         ),
         Container(
           height: 1.0,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-          ),
+          margin: const EdgeInsets.symmetric(horizontal: 16.0),
           decoration: BoxDecoration(
             color: AppColors.inputLigth,
             borderRadius: BorderRadius.circular(1.0),
@@ -208,12 +194,12 @@ class CustomDrawer extends StatelessWidget {
       required Future<void> Function()? onTap,
     }) {
       return ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
         leading: Icon(icon, color: AppColors.black, size: 24.0),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: AppColors.black),
+          textScaleFactor: 1.0,
+          style: const TextStyle(fontSize: AppFond.title, fontWeight: FontWeight.w500, color: AppColors.black),
         ),
         onTap: () async {
           if (onTap != null) {
@@ -230,18 +216,19 @@ class CustomDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildListTile(
-            icon: MaterialIcons.person,
+            icon: CupertinoIcons.person_fill,
             title: 'Perfil',
             onTap: onProfileTap,
           ),
-          if (showContentModeration) _buildListTile(
-            icon: MaterialIcons.description,
-            title: 'Moderación de contenido',
-            onTap: onContentModerationTap,
-          ),
+          if (showContentModeration)
+            _buildListTile(
+              icon: CupertinoIcons.doc_chart_fill,
+              title: 'Moderación de contenido',
+              onTap: onContentModerationTap,
+            ),
           if (showAdminUser)
             _buildListTile(
-              icon: MaterialIcons.group,
+              icon: CupertinoIcons.group_solid,
               title: 'Administrar Usuarios',
               onTap: onAdminUserTap,
             ),
@@ -254,57 +241,51 @@ class CustomDrawer extends StatelessWidget {
     return Column(
       children: [
         Container(
-            height: 1.0,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.inputLigth,
-              borderRadius: BorderRadius.circular(1.0),
-            ),
+          height: 1.0,
+          margin: const EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            color: AppColors.inputLigth,
+            borderRadius: BorderRadius.circular(1.0),
           ),
+        ),
         SizedBox(
           height: 70,
           child: ListTile(
-            leading:
-              const Icon(MaterialIcons.settings, color: AppColors.black, size: 20.0),
+            leading: const Icon(CupertinoIcons.gear_alt_fill, color: AppColors.black, size: 20.0),
             title: const Text(
               'Configuración y privacidad',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.black),
+              textScaleFactor: 1.0,
+              style: TextStyle(fontSize: AppFond.label, fontWeight: FontWeight.w500, color: AppColors.black),
             ),
             onTap: () async {
               if (onSettingsTap != null) {
-                await onSettingsTap!(); // Usar '!' para indicar que 'onSettingsTap' no es null
+                await onSettingsTap!();
               }
             },
             tileColor: Colors.transparent,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 9.0,
-              horizontal: 25.0,
-            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 9.0, horizontal: 25.0),
           ),
         ),
         SizedBox(
           height: 85,
           child: ListTile(
-            leading: const Icon(MaterialIcons.info, color: AppColors.black, size: 20.0),
+            leading: const Icon(CupertinoIcons.exclamationmark_circle_fill, color: AppColors.black, size: 20.0),
             title: const Text(
               'Acerca de',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              textScaleFactor: 1.0,
+              style: TextStyle(fontSize: AppFond.label, fontWeight: FontWeight.w500),
             ),
             onTap: () async {
               if (onAboutTap != null) {
-                await onAboutTap!(); // Usar '!' para indicar que 'onAboutTap' no es null
+                await onAboutTap!();
               }
             },
             tileColor: Colors.transparent,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 7.0,
-              horizontal: 25.0,
-            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 7.0, horizontal: 25.0),
           ),
         ),
       ],
     );
   }
+
 }

@@ -153,6 +153,7 @@ class _IndexReactionsState extends State<IndexReactions> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black, // No se cambió el color
                 ),
+              textScaleFactor: 1.0
               ),
             ],
           ),
@@ -170,9 +171,10 @@ class _IndexReactionsState extends State<IndexReactions> {
                     child: Text(
                       'No hay reacciones.',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: AppFond.subtitle,
                         color: AppColors.black,
-                      ),
+                        ),
+                      textScaleFactor: 1.0,
                     ),
                   )
                 : ListView.builder(

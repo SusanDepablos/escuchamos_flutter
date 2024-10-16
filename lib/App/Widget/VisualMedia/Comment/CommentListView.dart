@@ -96,52 +96,55 @@ class CommentWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.whiteapp,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-          ),
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (currentUserId == authorId) ...[
-                ListTile(
-                  leading:
-                      const Icon(MaterialIcons.edit, color: AppColors.black),
-                  title: const Text('Editar',
-                      style: TextStyle(color: AppColors.black)),
-                  onTap: () {
-                    // Lógica para editar la publicación
-                    Navigator.pop(context); // Cerrar el modal
-                    onEditTap();
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(MaterialIcons.delete,
-                      color: AppColors.errorRed),
-                  title: const Text('Eliminar',
-                      style: TextStyle(color: AppColors.errorRed)),
-                  onTap: () {
-                    Navigator.pop(context); // Cerrar el modal primero
-                    _onDeleteItem(
-                        context); // Mostrar el diálogo de confirmación
-                  },
-                ),
-              ] else ...[
-                ListTile(
-                  leading: const Icon(MaterialIcons.report,
-                      color: AppColors.errorRed),
-                  title: const Text('Reportar',
-                      style: TextStyle(color: AppColors.errorRed)),
-                  onTap: () {
-                    // Lógica para reportar la publicación
-                    Navigator.pop(context); // Cerrar el modal
-                    onReportTap();
-                  },
-                ),
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.whiteapp,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            ),
+            padding: EdgeInsets.zero,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (currentUserId == authorId) ...[
+                  ListTile(
+                    leading: const Icon(CupertinoIcons.pencil, color: AppColors.black),
+                    title: const Text(
+                      'Editar',
+                      style: TextStyle(color: AppColors.black, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Cerrar el modal
+                      onEditTap();
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(CupertinoIcons.delete_solid, color: AppColors.errorRed),
+                    title: const Text(
+                      'Eliminar',
+                      style: TextStyle(color: AppColors.errorRed, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Cerrar el modal primero
+                      _onDeleteItem(context); // Mostrar el diálogo de confirmación
+                    },
+                  ),
+                ] else ...[
+                  ListTile(
+                    leading: const Icon(MaterialIcons.report, color: AppColors.errorRed),
+                    title: const Text(
+                      'Reportar',
+                      style: TextStyle(color: AppColors.errorRed, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Cerrar el modal
+                      onReportTap();
+                    },
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },
@@ -162,8 +165,7 @@ class CommentWidget extends StatelessWidget {
             top: 8.0,
             bottom: 8.0,
           ),
-          padding:
-              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           decoration: BoxDecoration(
             color: AppColors.greyLigth,
             borderRadius: BorderRadius.circular(25.0),
@@ -172,33 +174,35 @@ class CommentWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center, // Alineación centrada verticalmente
                 children: [
-                  Text(
-                    usernameUser,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                  MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                    child: Text(
+                      usernameUser,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppFond.username,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                  const SizedBox(width: 4),
                   if (isVerified)
                     const Icon(
                       CupertinoIcons.checkmark_seal_fill,
-                      size: 16,
-                      color: AppColors.primaryBlue// Cambia el color según prefieras
+                      size: AppFond.iconVerified,
+                      color: AppColors.primaryBlue,
                     ),
-                  // Espaciado entre el nombre y los tres puntos
-                  const Spacer(), // Ajusta el valor según sea necesario
-                  // Tres puntos
+                  const Spacer(),
                   GestureDetector(
                     onTap: () {
                       _showOptionsModal(context);
                     },
                     child: const Icon(
-                      MaterialIcons.more,
-                      color: AppColors.grey, // Color de los tres puntos
+                      CupertinoIcons.ellipsis,
+                      color: AppColors.grey,
+                      size: AppFond.iconMore,
                     ),
                   ),
                 ],
@@ -212,8 +216,7 @@ class CommentWidget extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              FullScreenImage(imageUrl: mediaUrl!),
+                          builder: (context) => FullScreenImage(imageUrl: mediaUrl!),
                         ),
                       );
                     },
@@ -230,10 +233,13 @@ class CommentWidget extends StatelessWidget {
               ],
               if (mediaUrl != null) const SizedBox(height: 10.0),
               if (body != null && body != '') ...[
-                Text(
-                  body!,
-                  style: const TextStyle(
-                    fontSize: 14,
+                MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  child: Text(
+                    body!,
+                    style: const TextStyle(
+                      fontSize: AppFond.body,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -246,41 +252,37 @@ class CommentWidget extends StatelessWidget {
                         _playSound();
                       }
                       if (onLikeTap != null) {
-                        onLikeTap!(); // Ejecutar cualquier otra acción
+                        onLikeTap!();
                       }
                     },
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return ScaleTransition(
-                            scale: animation, child: child);
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(scale: animation, child: child);
                       },
                       child: Icon(
-                        reaction
-                            ? MaterialIcons.favorite
-                            : MaterialIcons.favoriteBorder,
+                        reaction ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
                         key: ValueKey<bool>(reaction),
-                        color:
-                            reaction ? AppColors.errorRed : AppColors.grey,
-                        size: 24,
+                        color: reaction ? AppColors.errorRed : AppColors.grey,
+                        size: AppFond.iconHeartComment,
                       ),
                     ),
                   ),
                   const SizedBox(width: 10.0),
-                  // Número de reacciones
                   GestureDetector(
                     onTap: onNumberLikeTap,
-                    child: Text(
-                      reactionsCount,
-                      style: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 16,
+                    child: MediaQuery(
+                      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                      child: Text(
+                        reactionsCount,
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                          fontSize: AppFond.countComment,
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 30.0),
-                  // Texto "Responder"
+                  const SizedBox(width: 20.0),
                   if (!isHidden) ...[
                     GestureDetector(
                       onTap: onResponseTap,
@@ -288,30 +290,36 @@ class CommentWidget extends StatelessWidget {
                         'Responder',
                         style: TextStyle(
                           color: AppColors.grey,
-                          fontSize: 16,
+                          fontSize: AppFond.response,
                         ),
                       ),
                     ),
                     const SizedBox(width: 10.0),
                     GestureDetector(
                       onTap: onResponseTap,
-                      child: Text(
-                        repliesCount,
-                        style: const TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 16,
+                      child: MediaQuery(
+                        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                        child: Text(
+                          repliesCount,
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: AppFond.countComment,
+                          ),
                         ),
                       ),
                     ),
                   ],
                   const Spacer(),
-                  Text(
+                  MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                    child: Text(
                       _formatDate(createdAt),
                       style: const TextStyle(
                         color: AppColors.grey,
-                        fontSize: 16,
+                        fontSize: AppFond.countComment,
                       ),
                     ),
+                  ),
                 ],
               ),
             ],
@@ -324,11 +332,10 @@ class CommentWidget extends StatelessWidget {
             width: 40.0,
             height: 40.0,
             child: ProfileAvatar(
-              imageProvider:
-                  profilePhotoUser != null && profilePhotoUser!.isNotEmpty
-                      ? NetworkImage(profilePhotoUser!)
-                      : null,
-              avatarSize: 40.0,
+              imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
+                  ? NetworkImage(profilePhotoUser!)
+                  : null,
+              avatarSize: AppFond.avatarSize,
               showBorder: true,
               onPressed: onProfileTap,
             ),
@@ -337,4 +344,5 @@ class CommentWidget extends StatelessWidget {
       ],
     );
   }
+
 }

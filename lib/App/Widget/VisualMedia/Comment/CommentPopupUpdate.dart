@@ -80,9 +80,10 @@ class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
                               widget.username,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: AppFond.username,
                               ),
                               overflow: TextOverflow.ellipsis,
+                              textScaleFactor: 1.0
                             ),
                             // Aquí va el ícono de verificación
                             if (widget.isVerified) // Asegúrate de definir isVerified
@@ -136,8 +137,9 @@ class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
                                 'Cancelar',
                                 style: TextStyle(
                                   color: AppColors.black,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppFond.subtitle,
                                 ),
+                                textScaleFactor: 1.0
                               ),
                             ),
                             TextButton(
@@ -149,8 +151,9 @@ class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
                                 'Comentar',
                                 style: TextStyle(
                                   color: widget.isButtonDisabled ? AppColors.grey : AppColors.black,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppFond.subtitle,
                                 ),
+                                textScaleFactor: 1.0
                               ),
                             ),
                           ],
@@ -169,7 +172,7 @@ class _CommentPopupUpdateWidgetState extends State<CommentPopupUpdateWidget> {
                                 widget.profilePhotoUser!.isNotEmpty
                             ? NetworkImage(widget.profilePhotoUser!)
                             : null,
-                        avatarSize: 40.0,
+                        avatarSize: AppFond.avatarSize,
                         showBorder: false,
                       ),
                     ),

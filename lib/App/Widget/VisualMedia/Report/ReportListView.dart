@@ -96,46 +96,60 @@ class RepostSimpleWidget extends StatelessWidget {
                     imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
                         ? NetworkImage(profilePhotoUser!)
                         : null,
-                    avatarSize: 40.0,
+                    avatarSize: AppFond.avatarSize,
                     showBorder: true,
                     onPressed: onProfileTap,
                   ),
                   const SizedBox(width: 12.0),
                   Expanded(
-                    child: Column(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribuye espacio entre el nombre y el icono
                       children: [
-                        Row(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Nombre de usuario
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      usernameUser,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
+                            Container(
+                              constraints: const BoxConstraints(maxWidth: 230),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Espacio entre los elementos
+                                children: [
+                                  // Nombre de usuario
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            usernameUser,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: AppFond.username,
+                                            ),
+                                            overflow: TextOverflow.ellipsis, // Recortar con puntos suspensivos si es demasiado largo
+                                            maxLines: 1, // Limitar a una sola línea
+                                            textScaleFactor: 1.0,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                        if (isVerified)
+                                          const Icon(
+                                            CupertinoIcons.checkmark_seal_fill,
+                                            size: AppFond.iconVerified,
+                                            color: AppColors.primaryBlue, // Cambia el color según prefieras
+                                          ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
-                                    if (isVerified)
-                                      const Icon(
-                                        CupertinoIcons.checkmark_seal_fill,
-                                        size: 16,
-                                        color: AppColors.primaryBlue// Cambia el color según prefieras
-                                      ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                            ),
+                            // Fecha
                             Text(
                               _formatDate(createdAt),
                               style: const TextStyle(
                                 color: AppColors.grey,
-                                fontSize: 14,
+                                fontSize: AppFond.date,
                               ),
+                              textScaleFactor: 1.0,
                             ),
                           ],
                         ),
@@ -149,7 +163,8 @@ class RepostSimpleWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     body!,
-                    style: const TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: AppFond.body),
+                    textScaleFactor: 1.0,
                 ),
               ),
               // Agregar el PostWidget interno
@@ -245,33 +260,42 @@ class PostWidgetInternal extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            constraints: const BoxConstraints(maxWidth: 140),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start, // Alineación a la izquierda
-                              children: [
-                                Text(
-                                  usernameUser,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                            constraints: const BoxConstraints(maxWidth: 230),
+                            child: MediaQuery(
+                              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      usernameUser,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: AppFond.username,
+                                      ),
+                                      overflow: TextOverflow.ellipsis, // Recortar con puntos suspensivos si es demasiado largo
+                                      maxLines: 1, // Limitar a una sola línea
+                                    ),
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
-                                if (isVerified)
-                                  const Icon(
-                                    CupertinoIcons.checkmark_seal_fill,
-                                    size: 16,
-                                    color: AppColors.primaryBlue, // Cambia el color según prefieras
-                                  ),
-                              ],
+                                  const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
+                                  if (isVerified)
+                                    const Icon(
+                                      CupertinoIcons.checkmark_seal_fill,
+                                      size: AppFond.iconVerified,
+                                      color: AppColors.primaryBlue, // Cambia el color según prefieras
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                          Text(
-                            _formatDate(createdAt),
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 14,
+                          MediaQuery(
+                            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                            child: Text(
+                              _formatDate(createdAt),
+                              style: const TextStyle(
+                                color: AppColors.grey,
+                                fontSize: AppFond.date,
+                              ),
                             ),
                           ),
                         ],
@@ -289,10 +313,13 @@ class PostWidgetInternal extends StatelessWidget {
             if (body != null && body != '')
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 5),
-                child: Text(
-                  body!,
-                  style: const TextStyle(fontSize: 14),
-              ),
+                child: MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  child: Text(
+                    body!,
+                    style: const TextStyle(fontSize: AppFond.body),
+                  ),
+                ),
             )
           ],
         ),
@@ -371,32 +398,36 @@ class CommentSimpleWidget extends StatelessWidget {
                     // Contenedor que incluye el nombre de usuario y el ícono de verificación
                     Row(
                       children: [
-                        Text(
-                          usernameUser,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        MediaQuery(
+                          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                          child: Text(
+                            usernameUser,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: AppFond.username,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        // Aquí va el ícono de verificación
-                        if (isVerified) // Asegúrate de definir isVerified
-                          const SizedBox(width: 4.0),
-                        if (isVerified) // Asegúrate de definir isVerified
+                        const SizedBox(width: 4),
+                        if (isVerified)
                           const Icon(
                             CupertinoIcons.checkmark_seal_fill,
-                            size: 16,
-                            color: AppColors.primaryBlue, // Cambia el color según prefieras
+                            size: AppFond.iconVerified,
+                            color: AppColors.primaryBlue,
                           ),
                       ],
                     ),
                     const Spacer(), // Espacio entre el nombre de usuario y la fecha
                     // Aquí añadimos la fecha formateada
-                    Text(
-                      _formatDate(createdAt),
-                      style: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 14,
+                    MediaQuery(
+                      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                      child: Text(
+                        _formatDate(createdAt),
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                          fontSize: AppFond.count,
+                        ),
                       ),
                     ),
                   ],
@@ -428,10 +459,13 @@ class CommentSimpleWidget extends StatelessWidget {
                   ],
                   if (mediaUrl != null) const SizedBox(height: 10.0),
                   if (body != null && body != '') ...[
-                    Text(
-                      body!,
-                      style: const TextStyle(
-                        fontSize: 14,
+                    MediaQuery(
+                      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                      child: Text(
+                        body!,
+                        style: const TextStyle(
+                          fontSize: AppFond.body,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -527,50 +561,58 @@ class ReportUserWidget extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          Text(
+                          MediaQuery(
+                          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                          child: Text(
                             usernameUser,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: AppFond.username,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
-                          if (isVerified)
-                            const Icon(
-                              CupertinoIcons.checkmark_seal_fill,
-                              size: 16,
-                              color: AppColors.primaryBlue// Cambia el color según prefieras
-                            ),
+                        ),
+                        const SizedBox(width: 4),
+                        if (isVerified)
+                          const Icon(
+                            CupertinoIcons.checkmark_seal_fill,
+                            size: AppFond.iconVerified,
+                            color: AppColors.primaryBlue,
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 8.0),
-                    Text(
-                      _formatDate(createdAt),
-                      style: const TextStyle(
-                        color: AppColors.grey,
-                        fontSize: 14,
+                    MediaQuery(
+                      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                      child: Text(
+                        _formatDate(createdAt),
+                        style: const TextStyle(
+                          color: AppColors.grey,
+                          fontSize: AppFond.date,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  'Reporto este ${report} por:', // Manejo de caso nulo
+                  'Reporto ${report} por:', // Manejo de caso nulo
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: AppFond.body,
                     fontStyle: FontStyle.italic,
                   ),
+                  textScaleFactor: 1.0
                 ),
                 const SizedBox(height: 10.0),
                 Text(
                   observation,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: AppFond.body,
                     fontWeight: FontWeight.w800,
                     color: AppColors.errorRed,
                   ),
+                  textScaleFactor: 1.0
                 ),
               ],
             ),
@@ -586,7 +628,7 @@ class ReportUserWidget extends StatelessWidget {
                     profilePhotoUser != null && profilePhotoUser!.isNotEmpty
                         ? NetworkImage(profilePhotoUser!)
                         : null,
-                avatarSize: 40.0,
+                avatarSize: AppFond.avatarSize,
                 showBorder: true,
                 onPressed: onProfileTap,
               ),

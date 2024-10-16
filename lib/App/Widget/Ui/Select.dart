@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 
 class SelectBasic extends StatelessWidget {
-  final int? selectedValue; // Cambiado a int
-  final List<Map<String, dynamic>> items; // Cambiado a dynamic para incluir int
-  final void Function(int?)? onChanged; // Cambiado a int
+  final int? selectedValue;
+  final List<Map<String, dynamic>> items;
+  final void Function(int?)? onChanged;
   final String hintText;
 
   SelectBasic({
@@ -16,48 +16,50 @@ class SelectBasic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 12.0),
-      decoration: BoxDecoration(
-        color: AppColors.whiteapp,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: AppColors.inputBasic,
-          width: 1.0,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 12.0),
+        decoration: BoxDecoration(
+          color: AppColors.whiteapp,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: AppColors.inputBasic,
+            width: 1.0,
+          ),
         ),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<int?>(
-          dropdownColor: AppColors.whiteapp,
-          // Cambiado a int
-          value: selectedValue,
-          hint: selectedValue == null
-              ? Text(hintText) // Muestra el valor predeterminado
-              : Text(items.firstWhere(
-                      (item) => item['id'] == selectedValue)['name'] ??
-                  ''), // Muestra el valor seleccionado
-          items: items.map((item) {
-            return DropdownMenuItem<int?>(
-              value: item['id'], // Asegúrate de que 'id' sea de tipo int
-              child: Text(
-                item['name'] ?? '',
-                style: TextStyle(
-                  color: AppColors.black,
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<int?>(
+            dropdownColor: AppColors.whiteapp,
+            value: selectedValue,
+            hint: selectedValue == null
+                ? Text(hintText)
+                : Text(
+                    items.firstWhere((item) => item['id'] == selectedValue)['name'] ?? '',
+                  ),
+            items: items.map((item) {
+              return DropdownMenuItem<int?>(
+                value: item['id'],
+                child: Text(
+                  item['name'] ?? '',
+                  style: const TextStyle(
+                    color: AppColors.black,
+                    fontSize: AppFond.subtitle,                    
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
-          onChanged: (value) {
-            onChanged?.call(value); // Llama a onChanged si no es nulo
-          },
-          isExpanded: true,
+              );
+            }).toList(),
+            onChanged: (value) {
+              onChanged?.call(value);
+            },
+            isExpanded: true,
+          ),
         ),
       ),
     );
   }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,28 +84,31 @@ abstract class SelectBase<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: DropdownButton<T?>(
-        value: selectedValue,
-        hint: Text(
-          hintText,
-          style: textStyle,
-          textAlign: TextAlign.center,
-        ),
-        items: items.map((item) {
-          return DropdownMenuItem<T?>(
-            value: item,
-            child: buildItem(context, item),
-          );
-        }).toList(),
-        onChanged: onChanged,
-        style: textStyle,
-        dropdownColor: dropdownColor,
-        underline: SizedBox(), // Sin subrayado
-        icon: SizedBox(), // Sin ícono
-        iconSize: iconSize,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Container(
         alignment: Alignment.center,
+        child: DropdownButton<T?>(
+          value: selectedValue,
+          hint: Text(
+            hintText,
+            style: textStyle,
+            textAlign: TextAlign.center,
+          ),
+          items: items.map((item) {
+            return DropdownMenuItem<T?>(
+              value: item,
+              child: buildItem(context, item),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          style: textStyle,
+          dropdownColor: dropdownColor,
+          underline: SizedBox(),
+          icon: SizedBox(),
+          iconSize: iconSize,
+          alignment: Alignment.center,
+        ),
       ),
     );
   }
@@ -209,50 +214,53 @@ class SelectCountryWithFlags extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity, // Ocupar todo el ancho disponible
-      padding: EdgeInsets.symmetric(horizontal: 12.0),
-      decoration: BoxDecoration(
-        color: AppColors.whiteapp, // Fondo blanco
-        borderRadius: BorderRadius.circular(16.0), // Bordes más redondeados
-        border: Border.all(
-          color: AppColors.inputBasic, // Color del borde
-          width: 1.0, // Grosor del borde
-        ),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String?>(
-          value: selectedValue,
-          hint: Text(
-            hintText,
-            style: textStyle,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 12.0),
+        decoration: BoxDecoration(
+          color: AppColors.whiteapp,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: AppColors.inputBasic,
+            width: 1.0,
           ),
-          items: itemsMap.map((data) {
-            String? code = data['isoCode'];
-            String flagAssetPath = 'icons/flags/png100px/${code?.toLowerCase()}.png';
-            return DropdownMenuItem<String?>(
-              value: data['id'],
-              child: Row(
-                children: [
-                  Image.asset(
-                    flagAssetPath,
-                    package: 'country_icons',
-                    width: 20.0,
-                    height: 14.0,
-                  ),
-                  SizedBox(width: 8.0),
-                  Text(
-                    data['name'] ?? '',
-                    style: textStyle,
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-          onChanged: onChanged,
-          dropdownColor: dropdownColor,
-          iconSize: iconSize,
-          isExpanded: true, // Permite que el dropdown use todo el espacio disponible
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String?>(
+            value: selectedValue,
+            hint: Text(
+              hintText,
+              style: textStyle,
+            ),
+            items: itemsMap.map((data) {
+              String? code = data['isoCode'];
+              String flagAssetPath = 'icons/flags/png100px/${code?.toLowerCase()}.png';
+              return DropdownMenuItem<String?>(
+                value: data['id'],
+                child: Row(
+                  children: [
+                    Image.asset(
+                      flagAssetPath,
+                      package: 'country_icons',
+                      width: 20.0,
+                      height: 14.0,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      data['name'] ?? '',
+                      style: textStyle,
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+            onChanged: onChanged,
+            dropdownColor: dropdownColor,
+            iconSize: iconSize,
+            isExpanded: true,
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Button.dart';
@@ -40,6 +41,8 @@ class _UpdateState extends State<EditAccount> {
   bool password = true;
   bool _username = false;
   String? userEmail;
+  int? groupId;
+  bool isVerified = false;
 
   final input = {
     'fieldUpdate': TextEditingController(),
@@ -71,6 +74,8 @@ class _UpdateState extends State<EditAccount> {
             name = _user!.data.attributes.name;
             username = _user!.data.attributes.username;
             userEmail = _user!.data.attributes.email;
+            groupId = _user!.data.relationships.groups[0].id;
+            isVerified = groupId == 1 || groupId == 2;
           });
         } else {
           showDialog(
@@ -249,6 +254,7 @@ class _UpdateState extends State<EditAccount> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               Text(
                 widget.head ?? 'Configuración',
@@ -257,6 +263,7 @@ class _UpdateState extends State<EditAccount> {
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -274,10 +281,11 @@ class _UpdateState extends State<EditAccount> {
                     'Ingresa tu contraseña actual para cambiar tú usuario',
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppFond.subtitle + 1,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                   const SizedBox(height: 10.0),
                   BasicInput(
@@ -307,25 +315,38 @@ class _UpdateState extends State<EditAccount> {
                     widget.label,
                     textAlign: TextAlign.left, // Alinea el texto a la izquierda
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: AppFond.title,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                   // El segundo texto se oculta si _textChanged; es true
                   if (!widget.textChanged) const SizedBox(height: 1.0),
-                  Text(
-                    'Usuario actual: ${username ?? '...'}',
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.black,
-                      fontStyle: FontStyle.italic,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        'Usuario actual: ${username ?? '...'}',
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          fontSize: AppFond.text,
+                          color: AppColors.black,
+                          fontStyle: FontStyle.italic,
+                        ),
+                        textScaleFactor: 1.0,
+                      ),
+                      const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+                      if (isVerified)
+                        const Icon(
+                          CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                          color: AppColors.primaryBlue, // Color del ícono
+                          size: AppFond.iconVerified - 2, // Tamaño del ícono
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 10.0),
                   GenericInput(
-                    maxLength: 30,
+                    maxLength: 15,
                     text: widget.text,
                     input: input['fieldUpdate']!,
                     border: _borderColors['fieldUpdate']!,

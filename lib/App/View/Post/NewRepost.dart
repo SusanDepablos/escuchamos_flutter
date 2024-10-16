@@ -39,6 +39,7 @@ class _NewRepostState extends State<NewRepost> {
   List<String>? _mediaUrls;
   bool _submitting = false;
   bool _isVerified = false;
+  bool _isVerifiedRepost = false;
   int? groupId;
 
   final TextEditingController _bodyController = TextEditingController();
@@ -180,9 +181,9 @@ class _NewRepostState extends State<NewRepost> {
             _mediaUrls = _post?.data.relationships.files.map((file) => file.attributes.url).toList();
             List<int>? groupIds = _post?.data.relationships.user.groupId; // Asegúrate de que groupId no sea null
               if (groupIds != null && (groupIds.contains(1) || groupIds.contains(2))) {
-                _isVerified = true; // Si el usuario es parte de los grupos 1 o 2, se considera verificado
+                _isVerifiedRepost = true; // Si el usuario es parte de los grupos 1 o 2, se considera verificado
               } else {
-                _isVerified = false; // Si no, no está verificado
+                _isVerifiedRepost = false; // Si no, no está verificado
               }
           });
         } else {
@@ -229,6 +230,7 @@ class _NewRepostState extends State<NewRepost> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               GenericButton(
                 label: 'Publicar',
@@ -237,7 +239,7 @@ class _NewRepostState extends State<NewRepost> {
                 },
                 width: 90,
                 height: 20,
-                size: 14,
+                size: AppFond.subtitle,
                 isLoading: submitting,
                 borderRadius: 24
               ),
@@ -279,7 +281,7 @@ class _NewRepostState extends State<NewRepost> {
                   // Acción al tocar el perfil en el repost
                 },
                 isVerified: _isVerified,
-                isVerifiedRepost: _isVerified,
+                isVerifiedRepost: _isVerifiedRepost,
               ),
             ),
           ],

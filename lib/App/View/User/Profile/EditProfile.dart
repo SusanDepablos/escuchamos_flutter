@@ -1,4 +1,5 @@
 import 'package:escuchamos_flutter/App/Widget/Dialog/SuccessAnimation.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
@@ -33,6 +34,8 @@ class _UpdateState extends State<EditProfile> {
   File? _imageToPreview;
   bool _showPreview = false;
   bool _isCoverPhoto = true; // Flag to determine which image is being previewed
+  int? groupId;
+  bool isVerified = false;
 
   final input = {
     'name': TextEditingController(),
@@ -73,6 +76,9 @@ class _UpdateState extends State<EditProfile> {
             // Buscar la URL para el avatar y la portada basándose en el tipo de archivo
             _profileAvatarUrl = _getFileUrlByType('profile');
             _coverPhotoUrl = _getFileUrlByType('cover');
+
+            groupId = _user!.data.relationships.groups[0].id;
+            isVerified = groupId == 1 || groupId == 2;
           });
         } else {
           showDialog(
@@ -372,30 +378,44 @@ class _UpdateState extends State<EditProfile> {
       backgroundColor: AppColors.whiteapp,
       appBar: AppBar(
         backgroundColor: AppColors.whiteapp,
-        centerTitle: true,
-        title: 
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Editar Perfil',
-                style: TextStyle(
-                  fontSize: AppFond.title,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black,
-                ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Editar Perfil',
+              style: TextStyle(
+                fontSize: AppFond.title,
+                fontWeight: FontWeight.w800,
+                color: AppColors.black,
               ),
-              Text(
-                '${username ?? '...'}',
-                style: const TextStyle(
-                  fontSize: AppFond.subtitle,
-                  color: AppColors.black,
-                  fontStyle: FontStyle.italic,
+              textScaleFactor: 1.0,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min, // Asegura que el Row use solo el espacio necesario
+              mainAxisAlignment: MainAxisAlignment.center, // Centra horizontalmente
+              children: [
+                Text(
+                  username ?? '...',
+                  style: const TextStyle(
+                    fontSize: AppFond.subtitle,
+                    color: AppColors.black,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textScaleFactor: 1.0,
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 4), // Espaciado entre el texto y el ícono
+                if (isVerified)
+                  const Icon(
+                    CupertinoIcons.checkmark_seal_fill, // Cambia este ícono según tus necesidades
+                    color: AppColors.primaryBlue, // Color del ícono
+                    size: AppFond.iconVerified - 2, // Tamaño del ícono
+                  ),
+              ],
+            ),
+          ],
         ),
+        centerTitle: true, // Asegura que el título esté centrado
+      ),
       body: SingleChildScrollView(
         // Aquí agregas el SingleChildScrollView
         child: Padding(

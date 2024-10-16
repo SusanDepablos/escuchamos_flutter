@@ -105,7 +105,7 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                       imageProvider: widget.profilePhotoUser != null && widget.profilePhotoUser!.isNotEmpty
                           ? NetworkImage(widget.profilePhotoUser!)
                           : null,
-                      avatarSize: 40.0,
+                      avatarSize: AppFond.avatarSize,
                       showBorder: false,
                     ),
                     const SizedBox(width: 10.0),
@@ -121,17 +121,18 @@ class _RepostCreateWidgetState extends State<RepostCreateWidget> {
                                 widget.username, // Asegúrate de que widget.nameUser no sea null
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: AppFond.username,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
+                                textScaleFactor: 1.0,
                               ),
                               const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
                               // Aquí va el ícono de verificación
                               if (widget.isVerified) // Asegúrate de definir isVerified
                                 const Icon(
                                   CupertinoIcons.checkmark_seal_fill,
-                                  size: 16,
+                                  size: AppFond.iconVerified,
                                   color: AppColors.primaryBlue, // Cambia el color según prefieras
                                 ),
                             ],

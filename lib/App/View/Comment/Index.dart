@@ -672,6 +672,7 @@ void updateCommentPopup(
                     fontWeight: FontWeight.w800,
                     color: AppColors.black,
                   ),
+                  textScaleFactor: 1.0
                 ),
               ],
             ),
@@ -695,9 +696,10 @@ void updateCommentPopup(
                                 child: Text(
                                   'No hay comentarios.',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: AppFond.subtitle,
                                     color: AppColors.black,
                                   ),
+                                  textScaleFactor: 1.0,
                                 ),
                               )
                             : CustomRefreshIndicator(

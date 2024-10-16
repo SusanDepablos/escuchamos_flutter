@@ -185,6 +185,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Cambiar contraseña',
@@ -193,6 +194,7 @@ class _UserChangePasswordState extends State<UserChangePassword> {
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -225,9 +227,10 @@ class _UserChangePasswordState extends State<UserChangePassword> {
                     'Tu contraseña nueva debe incluir letras, números y tener al menos 8 caracteres.',
                     style: TextStyle(
                       color: AppColors.grey, // Color del texto explicativo
-                      fontSize: 12.5, // Tamaño del texto
+                      fontSize: AppFond.text, // Tamaño del texto
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                 ],
               ),

@@ -47,7 +47,7 @@ class UserListView extends StatelessWidget {
                     ? NetworkImage(profilePhotoUser!)
                     : null,
                 onPressed: onPhotoUserTap,
-                avatarSize: 40.0,
+                avatarSize: AppFond.avatarSize,
                 showBorder: true,
               ),
               const SizedBox(width: 12.0),
@@ -59,13 +59,17 @@ class UserListView extends StatelessWidget {
                       children: [
                         Container(
                           constraints: const BoxConstraints(maxWidth: 150),
-                          child: Text(
-                            usernameUser,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                          child: Flexible(
+                            child: Text(
+                              usernameUser,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: AppFond.username,
+                              ),
+                              textScaleFactor: 1.0,
+                              overflow: TextOverflow.ellipsis, // Recortar con puntos suspensivos si es demasiado largo
+                              maxLines: 1, // Limitar a una sola línea
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         const SizedBox(width: 4), // Espaciador entre el nombre y el ícono
@@ -81,8 +85,9 @@ class UserListView extends StatelessWidget {
                       '$nameUser',
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 14,
+                        fontSize: AppFond.name,
                       ),
+                      textScaleFactor: 1.0
                     ),
                   ],
                 ),

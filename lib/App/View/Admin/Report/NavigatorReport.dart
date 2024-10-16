@@ -51,9 +51,33 @@ class _NavigatorReportState extends State<NavigatorReport> {
                   insets: EdgeInsets.symmetric(horizontal: 16.0), // Espaciado alrededor de la línea
                 ),
                 tabs: [
-                  Tab(text: 'Publicaciones'),
-                  Tab(text: 'Repost'),
-                  Tab(text: 'Comentarios'),
+                  Tab(
+                    child: Text(
+                      'Publicaciones',
+                      style: TextStyle(
+                        fontSize: AppFond.name, // Accediendo al tamaño de fuente del estilo
+                      ),
+                      textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Repost',
+                      style: TextStyle(
+                        fontSize: AppFond.name, // Accediendo al tamaño de fuente del estilo
+                      ),
+                      textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Comentarios',
+                      style: TextStyle(
+                        fontSize: AppFond.name, // Accediendo al tamaño de fuente del estilo
+                      ),
+                      textScaleFactor: 1.0, // Ajuste de textScaleFactor
+                    ),
+                  ),
                 ],
               ),
             ),

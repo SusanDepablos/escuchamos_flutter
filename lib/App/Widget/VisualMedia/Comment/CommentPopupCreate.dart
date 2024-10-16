@@ -103,8 +103,9 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                               widget.username,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: AppFond.username,
                               ),
+                              textScaleFactor: 1.0,
                               overflow: TextOverflow.ellipsis,
                             ),
                             // Aquí va el ícono de verificación
@@ -149,8 +150,9 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                                 'Añadir',
                                 style: TextStyle(
                                   color: AppColors.black,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppFond.subtitle
                                 ),
+                                textScaleFactor: 1.0
                               ),
                             ),
                             TextButton(
@@ -167,8 +169,9 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                                   color: widget.isButtonDisabled
                                       ? AppColors.grey
                                       : AppColors.black,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppFond.subtitle
                                 ),
+                                textScaleFactor: 1.0
                               ),
                             ),
                           ],
@@ -187,7 +190,7 @@ class _CommentPopupCreateWidgetState extends State<CommentPopupCreateWidget> {
                                 widget.profilePhotoUser!.isNotEmpty
                             ? NetworkImage(widget.profilePhotoUser!)
                             : null,
-                        avatarSize: 40.0,
+                        avatarSize: AppFond.avatarSize,
                         showBorder: false,
                       ),
                     ),

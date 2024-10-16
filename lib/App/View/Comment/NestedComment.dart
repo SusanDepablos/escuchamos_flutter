@@ -460,6 +460,7 @@ class _NestedCommentsState extends State<NestedComments> {
             fontWeight: FontWeight.w800,
             color: AppColors.black,
           ),
+          textScaleFactor: 1.0
         ),
       ),
       body: _comment == null

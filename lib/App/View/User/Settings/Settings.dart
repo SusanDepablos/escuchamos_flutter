@@ -158,6 +158,7 @@ class _SettingsState extends State<Settings> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Configuración',
@@ -166,6 +167,7 @@ class _SettingsState extends State<Settings> {
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0
               ),
             ],
           ),
@@ -176,25 +178,26 @@ class _SettingsState extends State<Settings> {
             const SizedBox(height: 16),
             ListTile(
               leading: const Icon(
-                MaterialIcons.person,
+                CupertinoIcons.person_fill,
                 color: AppColors.black,
-                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: const Text(
                 'Información de la cuenta',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w600,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0
               ),
               subtitle: const Text(
                 'Ver y actualizar los detalles de tu cuenta',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFond.text,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0
               ),
               onTap: () {
                 Navigator.pushNamed(context, 'account-information');
@@ -204,23 +207,24 @@ class _SettingsState extends State<Settings> {
               leading: const Icon(
                 MaterialIcons.lock,
                 color: AppColors.black,
-                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: const Text(
                 'Cambiar contraseña',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w600,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0
               ),
               subtitle: const Text(
                 'Actualiza tu contraseña de forma segura',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFond.text,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0
               ),
               onTap: () {
                 Navigator.pushNamed(context, 'user-change-password');
@@ -230,23 +234,24 @@ class _SettingsState extends State<Settings> {
               leading: const Icon(
                 MaterialIcons.cancel,
                 color: AppColors.black,
-                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: const Text(
                 'Eliminar cuenta',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w600,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0
               ),
               subtitle: const Text(
                 'Tu cuenta será eliminada permanentemente.',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFond.text,
                   color: AppColors.black,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0
               ),
               onTap: () {
                 Navigator.pushNamed(context, 'delete-account');
@@ -254,17 +259,17 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               leading: const Icon(
-                MaterialIcons.logout,
+                CupertinoIcons.square_arrow_right,
                 color: AppColors.errorRed,
-                size: 25.0, // Ajusta este valor según el tamaño que desees
               ),
               title: const Text(
                 'Cerrar sesión',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFond.title,
                   fontWeight: FontWeight.w600,
                   color: AppColors.errorRed,
                 ),
+                textScaleFactor: 1.0
               ),
               onTap: _submitting
                 ? null

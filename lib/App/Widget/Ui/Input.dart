@@ -45,50 +45,54 @@ class __BasicInputState extends State<BasicInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: _controller,
-          obscureText: _obscureText,
-          decoration: InputDecoration(
-            labelText: widget.text,
-            labelStyle: TextStyle(color: widget.border),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: _controller,
+            obscureText: _obscureText,
+            decoration: InputDecoration(
+              labelText: widget.text,
+              labelStyle: TextStyle(color: widget.border, fontSize: AppFond.body),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              suffixIcon: widget.obscureText
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? MaterialIcons.visibility : MaterialIcons.visibilityOff,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                  : null,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
-            ),
-            suffixIcon: widget.obscureText
-                ? IconButton(
-                    icon: Icon(
-                      _obscureText ? MaterialIcons.visibility : MaterialIcons.visibilityOff,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  )
-                : null,
+            style: const TextStyle(fontSize: AppFond.body), // Ajusta el tamaño del texto
           ),
-        ),
-        if (widget.error != null &&
-            widget
-                .error!.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+          if (widget.error != null && widget.error!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                widget.error!,
+                style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+                textScaleFactor: 1.0, // Mantiene el tamaño del texto del error
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
+
 }
 
 
@@ -152,58 +156,61 @@ class __SecureInputState extends __BasicInputState {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: widget.input,
-          focusNode: _focusNode,
-          obscureText: _obscureText,
-          maxLength:
-              widget is SecureInput ? (widget as SecureInput).maxLength : null,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(
-                RegExp(r'[a-zA-Z0-9]')),
-          ],
-          decoration: InputDecoration(
-            hintText: widget.text,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: widget.input,
+            focusNode: _focusNode,
+            obscureText: _obscureText,
+            maxLength: widget is SecureInput ? (widget as SecureInput).maxLength : null,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+            ],
+            decoration: InputDecoration(
+              hintText: widget.text,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              suffixIcon: _obscureText
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                  : _showClearIcon
+                      ? IconButton(
+                          icon: Icon(MaterialIcons.clear),
+                          onPressed: _clearText,
+                        )
+                      : null,
+              counterText: "",
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
-            ),
-            suffixIcon: _obscureText
-                ? IconButton(
-                    icon: Icon(
-                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  )
-                : _showClearIcon
-                    ? IconButton(
-                        icon: Icon(MaterialIcons.clear),
-                        onPressed: _clearText,
-                      )
-                    : null,
-            counterText: "",
+            style: const TextStyle(fontSize: AppFond.body), // Ajusta el tamaño del texto
           ),
-        ),
-        if (widget.error != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: Text(
-              widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+          if (widget.error != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Text(
+                widget.error!,
+                style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+                textScaleFactor: 1.0, // Mantiene el tamaño del texto del error
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -262,56 +269,62 @@ class __GenericInputState extends __BasicInputState {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: widget.input,
-          obscureText: _obscureText,
-          maxLength: (widget as GenericInput).maxLength, // Limitar el número de caracteres
-          inputFormatters: [
-            LengthLimitingTextInputFormatter((widget as GenericInput).maxLength),
-          ],
-          decoration: InputDecoration(
-            labelText: widget.text, // Cambiado de hintText a labelText
-            labelStyle: TextStyle(color: widget.border), // Estilo para el label
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
+    return  MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: widget.input,
+            obscureText: _obscureText,
+            maxLength: (widget as GenericInput).maxLength, // Limitar el número de caracteres
+            inputFormatters: [
+              LengthLimitingTextInputFormatter((widget as GenericInput).maxLength),
+            ],
+            decoration: InputDecoration(
+              labelText: widget.text, // Cambiado de hintText a labelText
+              labelStyle: TextStyle(color: widget.border, fontSize: AppFond.body), // Estilo para el label
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: widget.border),
+              ),
+              suffixIcon: widget.obscureText
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                  : _showClearIcon
+                      ? IconButton(
+                          icon: const Icon(MaterialIcons.clear),
+                          onPressed: _clearText,
+                        )
+                      : null,
+              counterText: '', // Ocultar el contador de caracteres
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: widget.border),
-            ),
-            suffixIcon: widget.obscureText
-                ? IconButton(
-                    icon: Icon(
-                      _obscureText ? MaterialIcons.visibilityOff : MaterialIcons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  )
-                : _showClearIcon
-                    ? IconButton(
-                        icon: const Icon(MaterialIcons.clear),
-                        onPressed: _clearText,
-                      )
-                    : null,
-            counterText: '', // Ocultar el contador de caracteres
+             style: const TextStyle(fontSize: AppFond.body), // Ajusta el tamaño del texto
           ),
-        ),
-        if (widget.error != null && widget.error!.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+          
+          if (widget.error != null && widget.error!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                widget.error!,
+                style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+                textScaleFactor: 1.0
+              ),
             ),
-          ),
-      ],
+        ],
+      )
     );
   }
 }
@@ -341,7 +354,9 @@ class EmailInput extends GenericInput {
 class __EmailInputState extends __GenericInputState {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
@@ -353,7 +368,7 @@ class __EmailInputState extends __GenericInputState {
           },
           decoration: InputDecoration(
             labelText: widget.text,
-            labelStyle: TextStyle(color: widget.border),
+            labelStyle: TextStyle(color: widget.border, fontSize: AppFond.body),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(color: widget.border),
@@ -365,22 +380,25 @@ class __EmailInputState extends __GenericInputState {
             hintText: 'ejemplo@gmail.com', // Un hint para ayudar al usuario
             hintStyle: const TextStyle(
               color: AppColors.grey, // Cambiar a un color gris suave
-              fontSize: 15, // Ajustar el tamaño del texto
+              fontSize: AppFond.body, // Ajustar el tamaño del texto
               fontStyle: FontStyle.italic, // Hacer el texto en cursiva
               fontWeight: FontWeight.w400,
             ),
             counterText: '', // Ocultar el contador de caracteres
           ),
+          style: const TextStyle(fontSize: AppFond.body), // Ajusta el tamaño del texto
         ),
         if (widget.error != null && widget.error!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }
@@ -418,7 +436,9 @@ class BasicTextArea extends BasicInput {
 class _BasicTextAreaState extends __BasicInputState {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
@@ -433,7 +453,7 @@ class _BasicTextAreaState extends __BasicInputState {
           ],
           decoration: InputDecoration(
             labelText: widget.text,
-            labelStyle: TextStyle(color: widget.border),
+            labelStyle: TextStyle(color: widget.border, fontSize: AppFond.body),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(color: widget.border),
@@ -455,16 +475,19 @@ class _BasicTextAreaState extends __BasicInputState {
                   )
                 : null,
           ),
+          style: const TextStyle(fontSize: AppFond.body), // Ajusta el tamaño del texto
         ),
         if (widget.error != null && widget.error!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }
@@ -556,7 +579,9 @@ class __DateInputState extends __BasicInputState {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
@@ -568,7 +593,7 @@ class __DateInputState extends __BasicInputState {
             onTap: () => _selectDate(context),
             decoration: InputDecoration(
               labelText: widget.text,
-              labelStyle: TextStyle(color: widget.border),
+              labelStyle: TextStyle(color: widget.border, fontSize: AppFond.body),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: widget.border),
@@ -584,6 +609,7 @@ class __DateInputState extends __BasicInputState {
                     )
                   : const Icon(MaterialIcons.calendar),
             ),
+            style: const TextStyle(fontSize: AppFond.body), // Ajusta el tamaño del texto
           ),
         ),
         if (widget.error != null)
@@ -591,10 +617,12 @@ class __DateInputState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }
@@ -640,7 +668,9 @@ class _SearchInputState extends __BasicInputState {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
@@ -650,7 +680,7 @@ class _SearchInputState extends __BasicInputState {
             obscureText: _obscureText,
             decoration: InputDecoration(
               labelText: widget.text,
-              labelStyle: TextStyle(color: widget.border),
+              labelStyle: TextStyle(color: widget.border, fontSize: AppFond.body),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: widget.border),
@@ -678,6 +708,7 @@ class _SearchInputState extends __BasicInputState {
                     )
                   : null, // Solo muestra el ícono de la "X" si _hasText es true
             ),
+            style: const TextStyle(fontSize: AppFond.body),
           ),
         ),
         if (widget.error != null && widget.error!.isNotEmpty)
@@ -685,10 +716,12 @@ class _SearchInputState extends __BasicInputState {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      ) 
     );
   }
 }
@@ -724,7 +757,9 @@ class _NumericInputState extends State<NumericInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
@@ -739,7 +774,7 @@ class _NumericInputState extends State<NumericInput> {
           decoration: InputDecoration(
             labelText: widget.text,
             labelStyle: TextStyle(
-                color: widget.isDisabled ? AppColors.grey : widget.border),
+                color: widget.isDisabled ? AppColors.grey : widget.border, fontSize: AppFond.body),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.0),
               borderSide: BorderSide(
@@ -784,16 +819,19 @@ class _NumericInputState extends State<NumericInput> {
               widget.onChanged!(text);
             }
           },
+          style: const TextStyle(fontSize: AppFond.body),
         ),
         if (widget.error != null)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }
@@ -850,7 +888,9 @@ class _TextAreaState extends State<TextArea> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
@@ -860,7 +900,7 @@ class _TextAreaState extends State<TextArea> {
           maxLines: widget.maxLines, // Establecer líneas máximas
           decoration: InputDecoration(
             hintText: 'Escribe aquí...', // Placeholder
-            hintStyle: const TextStyle(fontSize: 14, color: AppColors.grey),
+            hintStyle: const TextStyle(fontSize: AppFond.body, color: AppColors.grey),
             filled: true, // Permitir color de fondo
             fillColor: widget.fillColor, // Color de fondo
             enabledBorder: OutlineInputBorder(
@@ -884,16 +924,19 @@ class _TextAreaState extends State<TextArea> {
                   )
                 : null,
           ),
+          style: const TextStyle(fontSize: AppFond.body),
         ),
         if (widget.error != null && widget.error!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }
@@ -918,7 +961,9 @@ class BodyTextField extends StatefulWidget {
 class _BodyTextFieldState extends State<BodyTextField> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
@@ -927,20 +972,23 @@ class _BodyTextFieldState extends State<BodyTextField> {
           maxLines: widget.maxLines,
           decoration: const InputDecoration(
             hintText: 'Escribe aquí...',
-            hintStyle: TextStyle(fontSize: 14, color: AppColors.grey),
+            hintStyle: TextStyle(fontSize: AppFond.body, color: AppColors.grey),
             border: InputBorder.none,  // Sin bordes
             filled: false,  // Sin fondo
           ),
+          style: const TextStyle(fontSize: AppFond.body),
         ),
         if (widget.error != null && widget.error!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.error!,
-              style: const TextStyle(color: AppColors.errorRed, fontSize: 12),
+              style: const TextStyle(color: AppColors.errorRed, fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
           ),
-      ],
+        ],
+      )
     );
   }
 }

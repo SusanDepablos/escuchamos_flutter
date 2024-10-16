@@ -106,45 +106,55 @@ class PostWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.whiteapp,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-          ),
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (currentUserId == authorId) ...[
-                ListTile(
-                  leading: const Icon(MaterialIcons.edit, color: AppColors.black),
-                  title: const Text('Editar', style: TextStyle(color: AppColors.black)),
-                  onTap: () {
-                    // Lógica para editar la publicación
-                    Navigator.pop(context); // Cerrar el modal
-                    onEditTap();
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(MaterialIcons.delete, color: AppColors.errorRed),
-                  title: const Text('Eliminar', style: TextStyle(color: AppColors.errorRed)),
-                  onTap: () {
-                    Navigator.pop(context); // Cerrar el modal primero
-                    _onDeleteItem(context); // Mostrar el diálogo de confirmación
-                  },
-                ),
-              ] else ...[
-                ListTile(
-                  leading: const Icon(MaterialIcons.report, color: AppColors.errorRed),
-                  title: const Text('Reportar', style: TextStyle(color: AppColors.errorRed)),
-                  onTap: () {
-                    // Lógica para reportar la publicación
-                    Navigator.pop(context); // Cerrar el modal
-                    onReportTap();
-                  },
-                ),
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.whiteapp,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            ),
+            padding: EdgeInsets.zero,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (currentUserId == authorId) ...[
+                  ListTile(
+                    leading: const Icon(CupertinoIcons.pencil, color: AppColors.black),
+                    title: const Text(
+                      'Editar',
+                      style: TextStyle(color: AppColors.black, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Cerrar el modal
+                      onEditTap();
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(CupertinoIcons.delete_solid, color: AppColors.errorRed),
+                    title: const Text(
+                      'Eliminar',
+                      style: TextStyle(color: AppColors.errorRed, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Cerrar el modal primero
+                      _onDeleteItem(context); // Mostrar el diálogo de confirmación
+                    },
+                  ),
+                ] else ...[
+                  ListTile(
+                    leading: const Icon(MaterialIcons.report, color: AppColors.errorRed),
+                    title: const Text(
+                      'Reportar',
+                      style: TextStyle(color: AppColors.errorRed, fontSize: AppFond.subtitle),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Cerrar el modal
+                      onReportTap();
+                    },
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },
@@ -155,43 +165,53 @@ class PostWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.whiteapp,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-          ),
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(MaterialIcons.repeat),
-                title: const Text('Compartir'),
-                onTap: () {
-                  // Lógica para repostear
-                  Navigator.pop(context); 
-                  onShareTap();
-                },
-              ),
-              ListTile(
-                leading: const Icon(MaterialIcons.editNote),
-                title: const Text('Repostear'),
-                onTap: () {
-                  Navigator.pop(context); // Cerrar el modal
-                  onRepostTap!();
-                },
-              ),
-            ],
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.whiteapp,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            ),
+            padding: EdgeInsets.zero,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    CupertinoIcons.arrow_2_squarepath,
+                    size: 22,
+                  ),
+                  title: const Text('Compartir', 
+                  style: TextStyle(color: AppColors.black, fontSize: AppFond.subtitle),)
+                  ,
+                  onTap: () {
+                    Navigator.pop(context); 
+                    onShareTap();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(CupertinoIcons.pencil_ellipsis_rectangle, size: 22),
+                  title: const Text('Repostear',
+                  style: TextStyle(color: AppColors.black, fontSize: AppFond.subtitle),),
+                  onTap: () {
+                    Navigator.pop(context); // Cerrar el modal
+                    onRepostTap!();
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return
-      Container(
+    return MediaQuery(
+    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    child: Container(
         margin: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
@@ -214,7 +234,7 @@ class PostWidget extends StatelessWidget {
                     imageProvider: profilePhotoUser != null && profilePhotoUser!.isNotEmpty
                         ? NetworkImage(profilePhotoUser!)
                         : null,
-                    avatarSize: 40.0,
+                    avatarSize: AppFond.avatarSize,
                     showBorder: true,
                     onPressed: onProfileTap,
                   ),
@@ -235,32 +255,37 @@ class PostWidget extends StatelessWidget {
                                   Expanded(
                                     child: Row(
                                       children: [
-                                        Text(
-                                          usernameUser,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                        Flexible(
+                                          child: Text(
+                                            usernameUser,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: AppFond.username,
+                                            ),
+                                            overflow: TextOverflow.ellipsis, // Recortar con puntos suspensivos si es demasiado largo
+                                            maxLines: 1, // Limitar a una sola línea
                                           ),
-                                          overflow: TextOverflow.ellipsis,
                                         ),
                                         const SizedBox(width: 4), // Espacio entre el nombre y el ícono de verificación
                                         if (isVerified)
                                           const Icon(
                                             CupertinoIcons.checkmark_seal_fill,
-                                            size: 16,
-                                            color: AppColors.primaryBlue// Cambia el color según prefieras
+                                            size: AppFond.iconVerified,
+                                            color: AppColors.primaryBlue, // Cambia el color según prefieras
                                           ),
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(width: 10),
                                   // Tres puntos
                                   GestureDetector(
                                     onTap: () {
                                       _showOptionsModal(context);
                                     },
                                     child: const Icon(
-                                      MaterialIcons.more,
+                                      CupertinoIcons.ellipsis,
                                       color: AppColors.grey, // Color de los tres puntos
+                                      size: AppFond.iconMore,
                                     ),
                                   ),
                                 ],
@@ -271,7 +296,7 @@ class PostWidget extends StatelessWidget {
                               _formatDate(createdAt),
                               style: const TextStyle(
                                 color: AppColors.grey,
-                                fontSize: 14,
+                                fontSize: AppFond.date,
                               ),
                             ),
                           ],
@@ -290,7 +315,7 @@ class PostWidget extends StatelessWidget {
                 Text(
                   body!,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: AppFond.body,
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -317,22 +342,22 @@ class PostWidget extends StatelessWidget {
                               return ScaleTransition(scale: animation, child: child);
                             },
                             child: Icon(
-                              reaction ? MaterialIcons.favorite // Si reaccionado, icono lleno
-                              : MaterialIcons.favoriteBorder,
+                              reaction ? CupertinoIcons.heart_fill // Si reaccionado, icono lleno
+                              : CupertinoIcons.heart,
                               key: ValueKey<bool>(reaction),
                               color: reaction ? AppColors.errorRed : AppColors.grey,
-                              size: 24,
+                              size: AppFond.iconHeart,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         GestureDetector(
                           onTap: onIndexLikeTap,
                           child: Text(
                             reactionsCount.toString(),
                             style: const TextStyle(
                               color: AppColors.grey,
-                              fontSize: 18,
+                              fontSize: AppFond.count,
                             ),
                           ),
                         ),
@@ -348,16 +373,17 @@ class PostWidget extends StatelessWidget {
                           child: const Icon(
                             CupertinoIcons.bubble_left,
                             color: AppColors.grey,
+                            size: AppFond.iconChat,
                           ),
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         GestureDetector(
                           onTap: onIndexCommentTap,
                           child: Text(
                             commentsCount.toString(),
                             style: const TextStyle(
                               color: AppColors.grey,
-                              fontSize: 18,
+                              fontSize: AppFond.count,
                             ),
                           ),
                         ),
@@ -373,14 +399,15 @@ class PostWidget extends StatelessWidget {
                           child: const Icon(
                             CupertinoIcons.arrow_2_squarepath,
                             color: AppColors.grey,
+                            size: AppFond.iconShare,
                           ),
                         ),
-                        const SizedBox(width: 15),
+                        const SizedBox(width: 10),
                         Text(
                           totalSharesCount.toString(),
                           style: const TextStyle(
                             color: AppColors.grey,
-                            fontSize: 18,
+                            fontSize: AppFond.count,
                           ),
                         ),
                       ],
@@ -391,7 +418,8 @@ class PostWidget extends StatelessWidget {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 
 }

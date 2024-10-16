@@ -237,6 +237,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
                 ),
+                textScaleFactor: 1.0,
               ),
               const Text(
                 'Configuración',
@@ -245,6 +246,7 @@ class _EmailUpdateState extends State<EmailUpdate> {
                   color: AppColors.inputDark,
                   fontStyle: FontStyle.italic,
                 ),
+                textScaleFactor: 1.0,
               ),
             ],
           ),
@@ -262,10 +264,11 @@ class _EmailUpdateState extends State<EmailUpdate> {
                     'Ingresa tu contraseña actual para cambiar el correo electrónico',
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppFond.title,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                   const SizedBox(height: 10.0),
                   BasicInput(
@@ -295,20 +298,22 @@ class _EmailUpdateState extends State<EmailUpdate> {
                     'Cambiar correo electrónico',
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppFond.title,
                       fontWeight: FontWeight.w500,
                       color: AppColors.black,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                   const SizedBox(height: 1.0),
                   Text(
                     'Correo actual: ${userEmail ?? '...'}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: AppFond.text,
                       color: AppColors.black,
                       fontStyle: FontStyle.italic,
                     ),
+                    textScaleFactor: 1.0,
                   ),
                   const SizedBox(height: 10.0),
                   EmailInput(

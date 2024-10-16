@@ -35,16 +35,16 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(MaterialIcons.camera, color: AppColors.black),
-                title: const Text('Tomar Foto', style: TextStyle(color: AppColors.black)), // Opción para tomar foto
+                leading: const Icon( CupertinoIcons.photo_camera_solid, size: AppFond.iconShare,color: AppColors.black),
+                title: const Text('Tomar Foto', style: TextStyle(fontSize: AppFond.subtitle, color: AppColors.black),textScaleFactor: 1.0), // Opción para tomar foto
                 onTap: () {
                   _pickImage(context, ImageSource.camera); // Llama al método para tomar una foto
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                leading: const Icon(MaterialIcons.image, color: AppColors.black),
-                title: const Text('Imagen', style: TextStyle(color: AppColors.black)), // Opción para seleccionar imágenes de la galería
+                leading: const Icon(CupertinoIcons.photo_fill, size: AppFond.iconShare, color: AppColors.black),
+                title: const Text('Imagen', style: TextStyle(fontSize: AppFond.subtitle, color: AppColors.black,), textScaleFactor: 1.0), // Opción para seleccionar imágenes de la galería
                 onTap: () async {
                   Navigator.pop(context); // Cerrar el modal
                   final List<XFile>? selectedFiles = await _picker.pickMultiImage();
@@ -54,8 +54,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 },
               ),
               ListTile(
-                leading: const Icon(MaterialIcons.video, color: AppColors.black),
-                title: const Text('Video', style: TextStyle(color: AppColors.black)), // Opción para seleccionar videos de la galería
+                leading: const Icon(CupertinoIcons.video_camera_solid, size: AppFond.iconShare, color: AppColors.black),
+                title: const Text('Video', style: TextStyle(fontSize: AppFond.subtitle, color: AppColors.black), textScaleFactor: 1.0), // Opción para seleccionar videos de la galería
                 onTap: () async {
                   Navigator.pop(context); // Cerrar el modal
                   final XFile? videoFile = await _picker.pickVideo(source: ImageSource.gallery);
@@ -198,7 +198,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                           children: [
                             Text(
                               'Seleccionar Archivos',
-                              style: TextStyle(fontSize: 14, color: AppColors.black),
+                              style: TextStyle(fontSize: AppFond.subtitle, color: AppColors.black),
+                              textScaleFactor: 1.0
                             ),
                           ],
                         ),
@@ -213,7 +214,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                       padding: const EdgeInsets.only(right: 30), // Padding del lado derecho
                       child: Text(
                         '${_mediaFiles.length}/9',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.black),
+                        style: const TextStyle(fontSize: AppFond.subtitle, fontWeight: FontWeight.bold, color: AppColors.black),
+                        textScaleFactor: 1.0       
                       ),
                     ),
                     ],

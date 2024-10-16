@@ -273,7 +273,7 @@ class _IndexPostState extends State<IndexPost> {
     });
   }
 
-  void showPostPopup(BuildContext context, String? body, int postId, mediaUrls){
+  void showPostPopup(BuildContext context, String? body, int postId, mediaUrls, bool isVerified){
     // Limpia los mensajes de error antes de abrir el diálogo
     _clearErrorMessages();
     postId_ = postId;
@@ -295,6 +295,7 @@ class _IndexPostState extends State<IndexPost> {
                 error: _errorMessages['body'],
                 body: body!,
                 mediaUrls: mediaUrls,
+                isVerified: isVerified,
                 onCancel: () {
                   _clearErrorMessages(); // Limpia los mensajes de error
                   Navigator.of(context).pop(); // Cerrar el diálogo
@@ -608,9 +609,10 @@ class _IndexPostState extends State<IndexPost> {
                         child: Text(
                           'No hay publicaciones.',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: AppFond.subtitle,
                             color: AppColors.black,
                           ),
+                          textScaleFactor: 1.0,
                         ),
                       )
                     : CustomRefreshIndicator(
@@ -632,6 +634,8 @@ class _IndexPostState extends State<IndexPost> {
                           final mediaUrls = post.relationships.files.map((file) => file.attributes.url).toList();
                           final mediaUrlsRepost = post.relationships.post?.relationships.files.map((file) => file.attributes.url).toList();
                           final bool hasReaction = reactionStates[post.id]!;
+                          final bool isVerified = post.relationships.user.groupId?.contains(1) == true ||
+                              post.relationships.user.groupId?.contains(2) == true;
                           if (post.attributes.postId == null) {
                             // Si existe el postId, devolvemos el PostWidget
                             return PostWidget(
@@ -692,7 +696,7 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               onEditTap: () {
                                 input['body']!.text = post.attributes.body ?? '';
-                                showPostPopup(context, input['body']!.text, post.id, mediaUrls);
+                                showPostPopup(context, input['body']!.text, post.id, mediaUrls, isVerified);
                               },
                               onRepostTap: () { 
                               int postId = post.id;
@@ -714,8 +718,7 @@ class _IndexPostState extends State<IndexPost> {
                                 int postId = post.id;
                                 _postShare(postId, context);
                               }, 
-                              isVerified: post.relationships.user.groupId?.contains(1) == true ||
-                              post.relationships.user.groupId?.contains(2) == true,
+                              isVerified: isVerified,
                             );
                           } else {
                             return RepostWidget(
@@ -774,7 +777,7 @@ class _IndexPostState extends State<IndexPost> {
                               },
                               onEditTap: () {
                                 input['body']!.text = post.attributes.body ?? '';
-                                showPostPopup(context, input['body']!.text, post.id, mediaUrls);
+                                showPostPopup(context, input['body']!.text, post.id, mediaUrls, isVerified);
                               },
                               // Repost
                               bodyRepost: post.relationships.post!.attributes.body,
@@ -815,8 +818,7 @@ class _IndexPostState extends State<IndexPost> {
                                 int postId = post.relationships.post!.id;
                                 _postShare(postId, context);
                               }, 
-                              isVerified: post.relationships.user.groupId?.contains(1) == true ||
-                              post.relationships.user.groupId?.contains(2) == true, 
+                              isVerified: isVerified,
                               isVerifiedRepost: post.relationships.post?.relationships.user.groupId?.contains(1) == true ||
                               post.relationships.post?.relationships.user.groupId?.contains(2) == true, 
                             );

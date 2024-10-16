@@ -139,19 +139,21 @@ class _RecoverAccountVerificationState
             const Text(
               'Verifica tu Correo Electrónico',
               style: TextStyle(
-                fontSize: 19.0,
+                fontSize: AppFond.title,
                 fontWeight: FontWeight.bold, // Texto en negrita
               ),
+              textScaleFactor: 1.0
             ),
             const SizedBox(height: 8.0),
             const Text(
               'Escribe el código de 8 dígitos que enviamos a:',
-              style: TextStyle(fontSize: 13.0),
+              style: TextStyle(fontSize: AppFond.text),
+              textScaleFactor: 1.0
             ),
             Text(
               widget.email,
               style:
-                  const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                  const TextStyle(fontSize: AppFond.text, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
             SecureInput(
@@ -161,7 +163,8 @@ class _RecoverAccountVerificationState
             const SizedBox(height: 16.0),
             const Text(
               'Puedes solicitar un nuevo código en:',
-              style: TextStyle(fontSize: 14.0, color: Colors.black),
+              style: TextStyle(fontSize: AppFond.subtitle, color: Colors.black),
+              textScaleFactor: 1.0
             ),
             const SizedBox(height: 10.0),
             Align(

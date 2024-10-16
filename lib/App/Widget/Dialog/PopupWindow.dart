@@ -33,11 +33,13 @@ class PopupWindow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return  MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), // Mantiene el tamaño del texto
+      child: AlertDialog(
       title: Text(
         title,
         style: TextStyle(
-          fontSize: 20, // Tamaño de la fuente del título
+          fontSize: AppFond.title, // Tamaño de la fuente del título
           fontWeight: FontWeight.bold, // Opcional: para hacer el título negrita
           color: titleColor, // Aplicar color al título
         ),
@@ -48,7 +50,7 @@ class PopupWindow extends StatelessWidget {
         child: Text(
           message,
           style: TextStyle(
-            fontSize: 16, // Tamaño de la fuente del mensaje
+            fontSize: AppFond.subtitle, // Tamaño de la fuente del mensaje
             color: messageColor, // Aplicar color al mensaje
           ),
         ),
@@ -62,13 +64,13 @@ class PopupWindow extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8), // Esquinas redondeadas
             ),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
                 vertical: 8, horizontal: 16), // Relleno del botón
           ),
-          child: Text(
+          child: const Text(
             'Aceptar',
             style: TextStyle(
-              fontSize: 16, // Tamaño de la fuente del texto del botón
+              fontSize: AppFond.subtitle, // Tamaño de la fuente del texto del botón
               fontWeight: FontWeight.bold, // Negrita para mayor énfasis
             ),
           ),
@@ -82,7 +84,8 @@ class PopupWindow extends StatelessWidget {
         borderRadius: BorderRadius.circular(
             30), // Esquinas redondeadas del cuadro de diálogo
       ),
-      contentPadding: EdgeInsets.all(20), // Espacio interno del contenido
+      contentPadding: const EdgeInsets.all(20), // Espacio interno del contenido
+      )
     );
   }
 }
@@ -113,14 +116,16 @@ class AutoClosePopup extends StatelessWidget {
       Navigator.of(context).pop(); // Cerrar el diálogo automáticamente
     });
 
-    return AlertDialog(
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), // Mantiene el tamaño del texto
+      child: AlertDialog(
       title: (title != null &&
               title!
                   .isNotEmpty) // Verificar si el título no es nulo y no está vacío
           ? Text(
               title!,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: AppFond.title,
                 fontWeight: FontWeight.bold,
                 color: titleColor,
               ),
@@ -133,16 +138,16 @@ class AutoClosePopup extends StatelessWidget {
             const SizedBox(height: 20),
             child!, // Mostrar el widget child si no es nulo
           ],
-          SizedBox(height: 5.0),
+          const SizedBox(height: 5.0),
           Text(
             message,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: AppFond.subtitle,
               color: messageColor,
             ),
             textAlign: TextAlign.center, // Centrar el texto del mensaje
           ),
-          SizedBox(height: 37.0),
+          const SizedBox(height: 37.0),
         ],
       ),
       backgroundColor: backgroundColor,
@@ -150,6 +155,7 @@ class AutoClosePopup extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       contentPadding: const EdgeInsets.all(20),
+      )
     );
   }
 }
@@ -179,14 +185,16 @@ class AutoClosePopupFail extends StatelessWidget {
       Navigator.of(context).pop(); // Cerrar el diálogo automáticamente
     });
 
-    return AlertDialog(
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), // Mantiene el tamaño del texto
+      child: AlertDialog(
       title: (title != null &&
               title!
                   .isNotEmpty) // Verificar si el título no es nulo y no está vacío
           ? Text(
               title!,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: AppFond.title,
                 fontWeight: FontWeight.bold,
                 color: titleColor,
               ),
@@ -203,7 +211,7 @@ class AutoClosePopupFail extends StatelessWidget {
           Text(
             message,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: AppFond.subtitle,
               color: messageColor,
             ),
             textAlign: TextAlign.center, // Centrar el texto del mensaje
@@ -216,6 +224,7 @@ class AutoClosePopupFail extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       contentPadding: const EdgeInsets.all(20),
+      )
     );
   }
 }

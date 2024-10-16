@@ -49,33 +49,33 @@ class ImagePickerDialog extends StatelessWidget {
         children: [
           LabelAction(
             text: 'Tomar Foto',
-            icon: MaterialIcons.camera,
+            icon: CupertinoIcons.photo_camera_solid,
             onPressed: () => _pickImage(context, ImageSource.camera),
             style: const TextStyle(
                 color: AppColors.black, // Color rojo para el texto
-                fontSize: 16, // Tamaño de texto
+                fontSize: AppFond.label, // Tamaño de texto
               ),
           ),
           LabelAction(
             text: 'Elegir Foto Existente',
-            icon: MaterialIcons.image,
+            icon: CupertinoIcons.photo_fill,
             onPressed: () => _pickImage(context, ImageSource.gallery),
             style: const TextStyle(
                 color: AppColors.black, // Color rojo para el texto
-                fontSize: 16, // Tamaño de texto
+                fontSize: AppFond.label, // Tamaño de texto
               ),
           ),
           if (hasPhoto) // Muestra la opción de borrar solo si hay una foto
             LabelAction(
               text: 'Eliminar Foto',
-              icon: MaterialIcons.delete,
+              icon: CupertinoIcons.delete_solid,
               onPressed: () {
                 Navigator.of(context).pop();
                 _showDeleteConfirmation(context);
               },
               style: const TextStyle(
                 color: AppColors.errorRed, // Color rojo para el texto
-                fontSize: 16, // Tamaño de texto
+                fontSize: AppFond.label, // Tamaño de texto
               ),
             ),
         ],
