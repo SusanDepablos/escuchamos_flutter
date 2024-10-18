@@ -1,7 +1,7 @@
-import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
 import 'package:flutter/material.dart';
-import 'package:escuchamos_flutter/Constants/Constants.dart'; // Asegúrate de importar tus constantes de colores
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart'; // Asegúrate de tener un widget para el logo
+import 'package:escuchamos_flutter/App/Widget/Ui/Label.dart';
+import 'package:escuchamos_flutter/Constants/Constants.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,15 +11,15 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  void _launchURL(String url) async {
+  // Método para abrir URLs utilizando url_launcher
+  Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);  // Abrir en navegador externo
-    } else {
-      throw 'No se pudo abrir el enlace: $url';
+    print('Intentando abrir la URL: $url');
+
+    if (!await launchUrl(uri)) {
+      throw Exception('No se pudo abrir la URL: $url');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -34,49 +34,41 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
           ],
         ),
-        centerTitle: true, // Mantiene el título centrado visualmente
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        // Aquí envolvemos el contenido en un scroll
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Sección: ¿Quiénes Somos?
               _buildSectionTitle('¿Quiénes Somos?'),
               _buildSectionContent(
                 'Somos una comunidad en Rubio, Táchira, dedicada a transformar nuestro entorno social y cultural. EscuChamos nació en 2021 con la misión de empoderar a mujeres y jóvenes, liderando un cambio positivo en sus comunidades.',
               ),
-              // Sección: Nuestra Misión
               _buildSectionTitle('Nuestra Misión'),
               _buildSectionContent(
                 'Fortalecemos a las comunidades mediante educación y comunicación, promoviendo la identidad comunitaria, la resolución pacífica de conflictos y el emprendimiento.',
               ),
-              // Sección: Nuestra Visión
               _buildSectionTitle('Nuestra Visión'),
               _buildSectionContent(
                 'Ser una red de ciudadanos proactivos y conectados, capaces de generar cambios sostenibles en sus vidas y en sus comunidades, tanto a nivel local como global.',
               ),
-              // Sección: ¿Qué Hacemos?
               _buildSectionTitle('¿Qué Hacemos?'),
               _buildSectionContent(
                 'Liderazgo Comunitario: Empoderamos a mujeres y jóvenes como líderes del cambio.\n\n'
                 'Identidad Comunitaria: Fomentamos un sentido de pertenencia y solidaridad.\n\n'
                 'Emprendimiento: Ofrecemos herramientas para desarrollar proyectos de vida.',
               ),
-              // Sección: La App EscuChamos
               _buildSectionTitle('La App EscuChamos'),
               _buildSectionContent(
                 'La app "EscuChamos" es tu puerta a una participación más activa y directa con nuestra comunidad. Mantente informado, participa en nuestras actividades y conecta con otros miembros de manera fácil y rápida.',
               ),
-              // Sección: Nuestro Compromiso
               _buildSectionTitle('Nuestro Compromiso'),
               _buildSectionContent(
                 'Estamos comprometidos con la innovación y el uso de tecnología para fortalecer el tejido social. Con esta app, queremos asegurarnos de que estés siempre conectado y puedas contribuir al cambio.',
               ),
               LogoIcon(size: 150.0),
-              // Enlaces de redes sociales o sitio web
               const Center(
                 child: Text(
                   'Conéctate con nosotros:',
@@ -93,33 +85,54 @@ class _AboutScreenState extends State<AboutScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    LabelAction(
-                      icon: MaterialIcons.web,
-                      onPressed: () {
-                        _launchURL(ApiUrl.WebSite); // Lanza la URL del sitio web
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: LabelAction(
+                        icon: MaterialIcons.web,
+                        iconSize: 30.0,
+                        onPressed: () {
+                          _launchURL('https://asociacioncivilescuchamos.onrender.com');
+                        },
+                      ),
                     ),
-                    const SizedBox(width: 24.0), // Espacio entre íconos
-                    LabelAction(
-                      icon: MaterialIcons.facebook,
-                      onPressed: () {
-                        _launchURL(ApiUrl
-                            .Facebook); // Reemplaza con tu enlace de Facebook
-                      },
+                    const SizedBox(width: 24.0),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: LabelAction(
+                        icon: MaterialIcons.facebook,
+                        iconSize: 30.0,
+                        onPressed: () {
+                          // Intentar abrir la app de Facebook, si no está, abrir el enlace en el navegador
+                          final Uri facebookUri = Uri.parse('fb://facewebmodal/f?href=https://www.facebook.com/profile.php?id=100075837644778&mibextid=ZbWKwL');
+                          final Uri fallbackUri = Uri.parse('https://www.facebook.com/profile.php?id=100075837644778&mibextid=ZbWKwL');
+
+                          // Verifica si la app de Facebook está instalada
+                          canLaunchUrl(facebookUri).then((isInstalled) {
+                            if (isInstalled) {
+                              launchUrl(facebookUri);
+                            } else {
+                              launchUrl(fallbackUri);
+                            }
+                          });
+                        },
+                      ),
                     ),
-                    const SizedBox(width: 24.0), // Espacio entre íconos
-                    LabelAction(
-                      icon: MaterialIcons.email,
-                      onPressed: () {
-                        _launchURL(ApiUrl
-                            .Correo); // Reemplaza con tu correo electrónico
-                      },
+
+                    const SizedBox(width: 24.0),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: LabelAction(
+                        icon: MaterialIcons.email,
+                        iconSize: 30.0,
+                        onPressed: () {
+                          _launchURL('mailto:escuchamos2024@gmail.com');
+                        },
+                      ),
                     ),
                   ],
                 ),
               ),
               const Divider(color: AppColors.inputLigth, height: 40.0),
-              // Información de versión
               const Center(
                 child: Text(
                   'Versión 1.0.0',
@@ -159,6 +172,28 @@ class _AboutScreenState extends State<AboutScreen> {
         textAlign: TextAlign.justify,
         textScaleFactor: 1.0,
       ),
+    );
+  }
+}
+
+// Asegúrate de que el widget LabelAction esté preparado para aceptar iconSize
+class LabelAction extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  final double iconSize;
+
+  const LabelAction({
+    required this.icon,
+    required this.onPressed,
+    this.iconSize = 24.0,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(icon, size: iconSize),
+      onPressed: onPressed,
     );
   }
 }
