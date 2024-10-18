@@ -69,6 +69,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 'Estamos comprometidos con la innovación y el uso de tecnología para fortalecer el tejido social. Con esta app, queremos asegurarnos de que estés siempre conectado y puedas contribuir al cambio.',
               ),
               LogoIcon(size: 150.0),
+              const SizedBox(height: 5.0),
               const Center(
                 child: Text(
                   'Conéctate con nosotros:',
@@ -80,27 +81,27 @@ class _AboutScreenState extends State<AboutScreen> {
                   textScaleFactor: 1.0,
                 ),
               ),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 1.0),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: LabelAction(
                         icon: MaterialIcons.web,
-                        iconSize: 30.0,
+                        iconSize: 31.0,
                         onPressed: () {
                           _launchURL('https://asociacioncivilescuchamos.onrender.com');
                         },
                       ),
                     ),
-                    const SizedBox(width: 24.0),
+
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: LabelAction(
                         icon: MaterialIcons.facebook,
-                        iconSize: 30.0,
+                        iconSize: 31.0,
                         onPressed: () {
                           // Intentar abrir la app de Facebook, si no está, abrir el enlace en el navegador
                           final Uri facebookUri = Uri.parse('fb://facewebmodal/f?href=https://www.facebook.com/profile.php?id=100075837644778&mibextid=ZbWKwL');
@@ -117,13 +118,68 @@ class _AboutScreenState extends State<AboutScreen> {
                         },
                       ),
                     ),
+                    const SizedBox(width: 1.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Intentar abrir la app de Instagram, si no está, abrir el enlace en el navegador
+                            final Uri instagramUri = Uri.parse('instagram://user?username=proyectoescuchamos'); // Cambia 'TuNombreDeUsuario' por el de tu cuenta
+                            final Uri fallbackUri = Uri.parse('https://www.instagram.com/proyectoescuchamos'); // Cambia 'TuNombreDeUsuario' por el de tu cuenta
 
-                    const SizedBox(width: 24.0),
+                            // Verifica si la app de Instagram está instalada
+                            canLaunchUrl(instagramUri).then((isInstalled) {
+                              if (isInstalled) {
+                                launchUrl(instagramUri);
+                              } else {
+                                launchUrl(fallbackUri);
+                              }
+                            });
+                          },
+                          child: Image.asset(
+                            'assets/instagram.png', // Asegúrate de que esta ruta sea correcta
+                            width: 31.0,
+                            height: 31.0,
+                          ),
+                        ),
+                      ),
+
+                    const SizedBox(width: 10.0),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                          onTap: () {
+                            // Intentar abrir la app de YouTube, si no está, abrir el enlace en el navegador
+                            final Uri youtubeUri = Uri.parse('vnd.youtube:@acescuchamos'); // Cambia 'TuIDDeCanal' por el ID de tu canal de YouTube
+                            final Uri fallbackUri = Uri.parse('https://www.youtube.com/@acescuchamos'); // Cambia 'TuIDDeCanal' por el ID de tu canal
+
+                            // Verifica si la app de YouTube está instalada
+                            canLaunchUrl(youtubeUri).then((isInstalled) {
+                              if (isInstalled) {
+                                launchUrl(youtubeUri);
+                              } else {
+                                launchUrl(fallbackUri);
+                              }
+                            });
+                          },
+                          child: Image.asset(
+                            'assets/youtube.png', // Asegúrate de que esta ruta sea correcta
+                            width: 31.0,
+                            height: 31.0,
+                          ),
+                        ),
+                      ),
+
+
+
+
+                    const SizedBox(width: 6.0),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: LabelAction(
                         icon: MaterialIcons.email,
-                        iconSize: 30.0,
+                        iconSize: 31.0,
                         onPressed: () {
                           _launchURL('mailto:escuchamos2024@gmail.com');
                         },

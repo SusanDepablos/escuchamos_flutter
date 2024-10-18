@@ -88,6 +88,8 @@ flutter:
     - assets/banner.png
     - assets/settings_inactive.png
     - assets/settings_active.png
+    - assets/instagram.png
+    - assets/youtube.png
     - assets/sounds/click.mp3
 
   # To add assets to your application, add an assets section, like this:
