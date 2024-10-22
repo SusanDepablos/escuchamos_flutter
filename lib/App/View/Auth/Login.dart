@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/AuthCommand.dart'; // Asegúrate de ajustar la ruta
 import 'package:escuchamos_flutter/Api/Service/AuthService.dart'; // Asegúrate de ajustar la ruta
 import 'package:escuchamos_flutter/Api/Response/SuccessResponse.dart';
-import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
+import 'package:escuchamos_flutter/Api/Service/NotificationService.dart';
 import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/Input.dart';
@@ -75,6 +75,7 @@ class _LoginState extends State<Login> {
           });
         }
       } else if (response is SuccessResponse) {
+        NotificationService().fetchNotifications();
         Navigator.pushReplacementNamed(
           context,
           'base',
