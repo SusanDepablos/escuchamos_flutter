@@ -18,7 +18,7 @@ class PreMain {
     final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult.contains(ConnectivityResult.none)) {
-      print('No hay conexión a Internet.');
+      runApp(MyApp(initialRoute: 'no-connection'));
     } else {
       Map<String, String> allValues = await _storage.readAll();
 

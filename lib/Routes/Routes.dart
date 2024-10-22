@@ -5,6 +5,7 @@ import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewRepost.dart';
 import 'package:escuchamos_flutter/App/View/Post/Show.dart';
 import 'package:escuchamos_flutter/App/View/Admin/Report/NavigatorReport.dart';
+import 'package:escuchamos_flutter/NoConnectionScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Register.dart';
@@ -41,6 +42,7 @@ class AppRoutes {
     // Pantallas de autenticación
     'login': (context) => Login(),
     'register': (context) => Register(),
+    'no-connection': (context) => NoConnectionScreen(),
     'verify-code': (context) {
       final args = ModalRoute.of(context)!.settings.arguments as String;
       return VerifyCodeView(email: args);
