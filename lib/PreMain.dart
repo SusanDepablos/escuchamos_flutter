@@ -27,11 +27,8 @@ class PreMain {
       if (response == true) {
         NotificationService().fetchNotifications();
         runApp(MyApp(initialRoute: 'base'));
-      } else {
-        await _storage.deleteAll();
-        runApp(MyApp(initialRoute: 'login'));
       }
-
     }
+    runApp(MyApp(initialRoute: 'login'));
   }
 }
