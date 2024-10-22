@@ -5,7 +5,7 @@ import 'dart:convert';
 
 class SessionInfoService {
   Future<ServiceResponse> sessioninfo(String body) async {
-    final url = Uri.parse('${ApiUrl.baseUrl}session/Info/');
+    final url = Uri.parse('${ApiUrl.baseUrl}session/info/');
 
     final headers = {
       'Content-Type': 'application/json',
