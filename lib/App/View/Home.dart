@@ -4,6 +4,7 @@ import 'package:escuchamos_flutter/Api/Response/ErrorResponse.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/Api/Service/StoryService.dart';
 import 'package:escuchamos_flutter/App/Widget/Dialog/PopupWindow.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/Api/Command/UserCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/UserService.dart';
@@ -29,14 +30,36 @@ class _HomeState extends State<Home> {
   bool _showAddIcon = false;
   bool _showBorder = false;
   bool? _isGradientBorder;
+  List<Datum> stories = [];
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  bool _hasMorePages = true;
+  bool _initialLoading = true;
+  int page = 1;
+
+  final filters = {
+    'pag': '10',
+    'page': null,
+  };
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+          if (_hasMorePages && !_isLoading) {
+            fetchStories();
+          }
+        }
+      });
     _getData().then((_) {
-    _callUser();
-    _callStory();
-  });}
+      _callUser();
+      _callStory();
+    });
+    fetchStories();
+  }
+
 
   Future<void> _getData() async {
     final id = await _storage.read(key: 'user') ?? '';
@@ -99,17 +122,15 @@ class _HomeState extends State<Home> {
 
 
   Future<void> _callStory() async {
-    final postCommand = StoryGroupedCommandShow(StoryGroupedShow(), _id);
+    final storyCommand = StoryGroupedCommandShow(StoryGroupedShow(), _id);
     try {
-      final response = await postCommand.execute();
+      final response = await storyCommand.execute();
       if (mounted) {
         if (response is StoryGroupedModel) {
           setState(() {
             _showBorder = true;
             _story = response; // Establecer _post aquí
             _isGradientBorder = _story?.data.allRead;
-            // _username = _story?.data.user.username;
-            // _profilePhotoUrl = _story?.data.user.profilePhotoUrl;
           });
         } else if (response is SimpleErrorResponse){
           setState(() {
@@ -143,49 +164,114 @@ class _HomeState extends State<Home> {
     }
   }
 
+    Future<void> fetchStories() async {
+    if (_isLoading || !_hasMorePages) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    filters['page'] = page.toString();
+
+    final storyCommand = StoryCommandIndex(StoryIndex(), filters);
+
+    try {
+      var response = await storyCommand.execute();
+
+      if (response is StoriesModel) {
+        print(response);
+        setState(() {
+          stories.addAll(response.results.data);
+          _hasMorePages = response.next != null && response.next!.isNotEmpty;
+          page++;
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: response is InternalServerError ? 'Error de servidor' : 'Error de conexión',
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      print(e);
+        showDialog(
+          context: context,
+          builder: (context) => PopupWindow(
+            title: 'Error de Flutter',
+            message: 'Espera un poco, pronto lo solucionaremos.',
+          ),
+        );
+      }
+    finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _initialLoading = false;
+        });
+      }
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteapp,
       body: CustomScrollView(
         slivers: [
-          // Sección de historias
+          // Sección de historias desplazables horizontalmente
           SliverToBoxAdapter(
             child: Container(
               height: 100, // Ajusta la altura según lo necesites
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  StoryList(
-                    profilePhotoUser: _profilePhotoUrl ?? '',
-                    username: _username ?? '...',
-                    showAddIcon: _showAddIcon,
-                    isGradientBorder: _isGradientBorder ?? true,
-                    showBorder: _showBorder,
-                    isMyStory: true,
-                    onIconTap: () {
-                      Navigator.pushNamed(context, 'new-story'); 
-                    },
-                  ),
-                  StoryList(
-                    profilePhotoUser: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
-                    username: 'juan.pablo',
-                  ),
-                  StoryList(
-                    profilePhotoUser: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
-                    username: 'beele',
-                  ),
-                  StoryList(
-                    profilePhotoUser: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
-                    username: 'susan.depablos.official',
-                  ),
-                  StoryList(
-                    profilePhotoUser: 'https://asociacioncivilescuchamos.onrender.com/media/photos_user/735d91fb-e21a-4838-9975-ad8213867af7.jpg',
-                    username: 'escuchamos',
-                  ),
-                  // Agrega más StoryList según sea necesario...
-                ],
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal, // Desplazamiento horizontal
+                controller: _scrollController, // Controlador del scroll
+                itemCount: stories.length + 1 + (_isLoading ? 1 : 0), // +1 para la historia personalizada del usuario
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    // Mostrar la historia personalizada del usuario (el primer elemento)
+                    return StoryList(
+                      profilePhotoUser: _profilePhotoUrl ?? '',
+                      username: _username ?? '...',
+                      showAddIcon: _showAddIcon,
+                      isGradientBorder: _isGradientBorder ?? true,
+                      showBorder: _showBorder,
+                      isMyStory: true,
+                      onIconTap: () {
+                        Navigator.pushNamed(context, 'new-story');
+                      },
+                      onStoryTap: () {
+                        int userId = _id;
+                        Navigator.pushNamed(
+                          context,
+                          'show-story',
+                          arguments: {
+                            'userId': userId,
+                          },
+                        );
+                      },
+                    );
+                  }
+
+                  if (index == stories.length + 1) {
+                    // Mostrar un indicador de carga al final de la lista si está cargando más historias
+                    return SizedBox(
+                      width: 60.0, // Tamaño para el indicador de carga en horizontal
+                      child: Center(
+                        child: CustomLoadingIndicator(color: AppColors.primaryBlue),
+                      ),
+                    );
+                  }
+
+                  // Mostrar la historia correspondiente en cada índice después de la historia del usuario
+                  final story = stories[index - 1]; // Restar 1 porque el primer elemento es la historia del usuario
+                  return StoryList(
+                    profilePhotoUser: story.user.profilePhotoUrl, 
+                    username: story.user.username,
+                  );
+                },
               ),
             ),
           ),
@@ -199,4 +285,5 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
 }

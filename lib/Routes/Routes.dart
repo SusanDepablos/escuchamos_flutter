@@ -6,6 +6,7 @@ import 'package:escuchamos_flutter/App/View/Post/NewRepost.dart';
 import 'package:escuchamos_flutter/App/View/Post/Show.dart';
 import 'package:escuchamos_flutter/App/View/Admin/Report/NavigatorReport.dart';
 import 'package:escuchamos_flutter/App/View/Story/NewStory.dart';
+import 'package:escuchamos_flutter/App/View/Story/Show.dart';
 import 'package:escuchamos_flutter/NoConnectionScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
@@ -124,15 +125,15 @@ class AppRoutes {
       );
     },
 
-    'navigator-post': (context) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      final initialTab = args['initialTab'] as String;
-      final userId = args['userId'] as int;
-      return NavigatorFollow(
-        initialTab: initialTab, userId: userId,
-      );
-    },
+    // 'navigator-post': (context) {
+    //   final args =
+    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    //   final initialTab = args['initialTab'] as String;
+    //   final userId = args['userId'] as int;
+    //   return NavigatorFollow(
+    //     initialTab: initialTab, userId: userId,
+    //   );
+    // },
 
     // pantalla de comentarios
     'index-comments': (context) {
@@ -172,6 +173,11 @@ class AppRoutes {
     },
 
     'new-story': (context) => MyApp(),
+    'show-story': (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final userId = args['userId'] as int;
+      return ShowStory(userId: userId);
+    },
 
     //admin
     'navigator-report': (context){

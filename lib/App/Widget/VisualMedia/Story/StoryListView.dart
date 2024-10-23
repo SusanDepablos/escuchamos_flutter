@@ -11,6 +11,7 @@ class StoryList extends StatelessWidget {
   final bool showBorder; // Para controlar la visibilidad del borde
   final bool isMyStory;
   final VoidCallback? onIconTap;
+  final VoidCallback? onStoryTap;
 
   const StoryList({
     Key? key,
@@ -21,6 +22,7 @@ class StoryList extends StatelessWidget {
     this.showBorder = true, // Por defecto, el borde se muestra
     this.isMyStory = false,
     this.onIconTap,
+    this.onStoryTap,
   }) : super(key: key);
 
   void _showStoryOptionsModal(BuildContext context, String? profilePhotoUser, String username) {
@@ -39,16 +41,19 @@ class StoryList extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  leading: const Icon(
-                    MaterialIcons.add,
-                    size: 22,
-                  ),
-                  title: const Text(
-                    'Subir nueva historia',
-                    style: TextStyle(color: AppColors.black, fontSize: AppFond.subtitle),
-                  ),
-                  onTap: onIconTap,
+                leading: const Icon(
+                  MaterialIcons.add,
+                  size: 22,
                 ),
+                title: const Text(
+                  'Subir nueva historia',
+                  style: TextStyle(color: AppColors.black, fontSize: AppFond.subtitle),
+                ),
+                onTap: () {
+                  Navigator.pop(context); // Cerrar el modal
+                  onIconTap!(); // Llama a la función proporcionada
+                },
+              ),
                 ListTile(
                   leading: const Icon(CupertinoIcons.eye_fill, size: 22),
                   title: const Text(
@@ -57,17 +62,7 @@ class StoryList extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context); // Cerrar el modal
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenStory(
-                          imageUrl: profilePhotoUser ?? '',
-                          username: username,
-                          timestamp: "Hace 5 minutos",
-                          profileAvatarUrl: profilePhotoUser,
-                        ),
-                      ),
-                    );
+                    onStoryTap!();
                   },
                 ),
               ],
@@ -77,7 +72,6 @@ class StoryList extends StatelessWidget {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,21 +86,11 @@ class StoryList extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    if (isMyStory) {
+                    if (isMyStory && !showAddIcon) {
                       _showStoryOptionsModal(context, profilePhotoUser, username);
                     } else if (!showAddIcon) {
                       // Si no es su propia historia y no se muestra el ícono de agregar
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FullScreenStory(
-                            imageUrl: profilePhotoUser ?? '',
-                            username: username,
-                            timestamp: "Hace 5 minutos",
-                            profileAvatarUrl: profilePhotoUser,
-                          ),
-                        ),
-                      );
+                      onStoryTap!();
                     }
                   },
                   child: Container(
