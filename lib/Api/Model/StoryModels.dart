@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///MODELO DE STORIES PARA INDEX
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 StoriesModel storiesModelFromJson(String str) => StoriesModel.fromJson(json.decode(str));
 
 String storiesModelToJson(StoriesModel data) => json.encode(data.toJson());
@@ -32,6 +36,34 @@ class StoriesModel {
     };
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///MODELO DE STORY PARA SHOW AGRUPADO
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+StoryGroupedModel storyGroupedModelFromJson(String str) => StoryGroupedModel.fromJson(json.decode(str));
+
+String storyGroupedModelToJson(StoryGroupedModel data) => json.encode(data.toJson());
+
+class StoryGroupedModel {
+    Datum data;
+
+    StoryGroupedModel({
+        required this.data,
+    });
+
+    factory StoryGroupedModel.fromJson(Map<String, dynamic> json) => StoryGroupedModel(
+        data: Datum.fromJson(json["data"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "data": data.toJson(),
+    };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///CLASES EN COMÚN
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 class Results {
     List<Datum> data;
 
@@ -49,30 +81,58 @@ class Results {
 }
 
 class Datum {
-    int id;
-    DatumAttributes attributes;
-    DatumRelationships relationships;
+    User user;
+    List<Story> stories;
+    bool allRead;
 
     Datum({
-        required this.id,
-        required this.attributes,
-        required this.relationships,
+        required this.user,
+        required this.stories,
+        required this.allRead,
     });
 
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+        user: User.fromJson(json["user"]),
+        stories: List<Story>.from(json["stories"].map((x) => Story.fromJson(x))),
+        allRead: json["all_read"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "user": user.toJson(),
+        "stories": List<dynamic>.from(stories.map((x) => x.toJson())),
+        "all_read": allRead,
+    };
+}
+
+class Story {
+    int id;
+    StoryAttributes attributes;
+    Relationships relationships;
+    bool isRead;
+
+    Story({
+        required this.id,
+        required this.attributes,
+        required this.relationships,
+        required this.isRead,
+    });
+
+    factory Story.fromJson(Map<String, dynamic> json) => Story(
         id: json["id"],
-        attributes: DatumAttributes.fromJson(json["attributes"]),
-        relationships: DatumRelationships.fromJson(json["relationships"]),
+        attributes: StoryAttributes.fromJson(json["attributes"]),
+        relationships: Relationships.fromJson(json["relationships"]),
+        isRead: json["is_read"],
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
         "attributes": attributes.toJson(),
         "relationships": relationships.toJson(),
+        "is_read": isRead,
     };
 }
 
-class DatumAttributes {
+class StoryAttributes {
     String? content;
     bool archive;
     int userId;
@@ -81,7 +141,7 @@ class DatumAttributes {
     DateTime createdAt;
     DateTime updatedAt;
 
-    DatumAttributes({
+    StoryAttributes({
         required this.content,
         required this.archive,
         required this.userId,
@@ -91,8 +151,8 @@ class DatumAttributes {
         required this.updatedAt,
     });
 
-    factory DatumAttributes.fromJson(Map<String, dynamic> json) => DatumAttributes(
-        content: json["content"] as String,
+    factory StoryAttributes.fromJson(Map<String, dynamic> json) => StoryAttributes(
+        content: json["content"],
         archive: json["archive"],
         userId: json["user_id"],
         statusId: json["status_id"],
@@ -112,8 +172,7 @@ class DatumAttributes {
     };
 }
 
-class DatumRelationships {
-    User user;
+class Relationships {
     Status status;
     Post? post;
     List<FileElement> file;
@@ -121,8 +180,7 @@ class DatumRelationships {
     int reactionsCount;
     int reportsCount;
 
-    DatumRelationships({
-        required this.user,
+    Relationships({
         required this.status,
         required this.post,
         required this.file,
@@ -131,8 +189,7 @@ class DatumRelationships {
         required this.reportsCount,
     });
 
-    factory DatumRelationships.fromJson(Map<String, dynamic> json) => DatumRelationships(
-        user: User.fromJson(json["user"]),
+    factory Relationships.fromJson(Map<String, dynamic> json) => Relationships(
         status: Status.fromJson(json["status"]),
         post: json["post"] == null ? null : Post.fromJson(json["post"]),
         file: List<FileElement>.from(json["file"].map((x) => FileElement.fromJson(x))),
@@ -142,7 +199,6 @@ class DatumRelationships {
     );
 
     Map<String, dynamic> toJson() => {
-        "user": user.toJson(),
         "status": status.toJson(),
         "post": post?.toJson(),
         "file": List<dynamic>.from(file.map((x) => x.toJson())),

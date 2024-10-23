@@ -292,6 +292,7 @@ class CommentWidget extends StatelessWidget {
                           color: AppColors.grey,
                           fontSize: AppFond.response,
                         ),
+                        textScaleFactor: 1.0
                       ),
                     ),
                     const SizedBox(width: 10.0),

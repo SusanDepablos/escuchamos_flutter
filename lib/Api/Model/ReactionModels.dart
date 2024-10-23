@@ -1,5 +1,3 @@
-// models/reactions_model.dart
-
 import 'dart:convert';
 
 // Deserializa el JSON en un modelo de ReactionsModel

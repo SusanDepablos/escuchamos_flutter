@@ -5,6 +5,7 @@ import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewRepost.dart';
 import 'package:escuchamos_flutter/App/View/Post/Show.dart';
 import 'package:escuchamos_flutter/App/View/Admin/Report/NavigatorReport.dart';
+import 'package:escuchamos_flutter/App/View/Story/NewStory.dart';
 import 'package:escuchamos_flutter/NoConnectionScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:escuchamos_flutter/App/View/Auth/Login.dart';
@@ -169,6 +170,8 @@ class AppRoutes {
       final postId = args['postId'] as int;
       return NewRepost(postId: postId);
     },
+
+    'new-story': (context) => MyApp(),
 
     //admin
     'navigator-report': (context){

@@ -87,7 +87,7 @@ class PostCreate {
 }
 
 class PostShow {
-  Future<ServiceResponse> showpost(int id) async {
+  Future<ServiceResponse> showPost(int id) async {
     final url = Uri.parse('${ApiUrl.baseUrl}post/$id/');
     final token = await _storage.read(key: 'token') ?? '';
 
@@ -100,7 +100,6 @@ class PostShow {
       url,
       headers: headers,
     );
-
     return ServiceResponse.fromJsonString(
       utf8.decode(response.bodyBytes),
       response.statusCode,

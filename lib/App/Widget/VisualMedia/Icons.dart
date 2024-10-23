@@ -47,6 +47,8 @@ class CupertinoIcons {
     fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
   static const IconData exclamationmark_circle_fill = IconData(0xf659,
     fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
+  static const IconData eye_fill = IconData(0xf425,
+    fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons');
 
 }
 

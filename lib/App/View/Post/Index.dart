@@ -53,7 +53,6 @@ class _IndexPostState extends State<IndexPost> {
   String? _username;
   String? _profilePhotoUser;
 
-
   final filters = {
     'pag': '10',
     'page': null,

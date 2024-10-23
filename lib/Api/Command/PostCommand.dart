@@ -79,7 +79,7 @@ class PostCommandShow {
 
   Future<dynamic> execute() async {
     try {
-      var response = await _postShowService.showpost(id);
+      var response = await _postShowService.showPost(id);
 
       if (response.statusCode == 200) {
         return PostModel.fromJson(response.body);

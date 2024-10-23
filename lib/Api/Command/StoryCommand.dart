@@ -71,31 +71,31 @@ class StoryCommandIndex {
 //   }
 // }
 
-// class PostCommandShow {
-//   final PostShow _postShowService;
-//   final int id;
+class StoryGroupedCommandShow {
+  final StoryGroupedShow _storyGroupedShowService;
+  final int id;
 
-//   PostCommandShow(this._postShowService, this.id);
+  StoryGroupedCommandShow(this._storyGroupedShowService, this.id);
 
-//   Future<dynamic> execute() async {
-//     try {
-//       var response = await _postShowService.showpost(id);
+  Future<dynamic> execute() async {
+    try {
+      var response = await _storyGroupedShowService.showStoryGrouped(id);
 
-//       if (response.statusCode == 200) {
-//         return PostModel.fromJson(response.body);
-//       } else if (response.statusCode == 404) {
-//         return SimpleErrorResponse.fromServiceResponse(response);
-//       } else {
-//         return InternalServerError.fromServiceResponse(response);
-//       }
-//     } on SocketException catch (e) {
-//       return ApiError();
-//     } on FlutterError catch (flutterError) {
-//       throw Exception(
-//           'Error en la aplicación Flutter: ${flutterError.message}');
-//     }
-//   }
-// }
+      if (response.statusCode == 200) {
+        return StoryGroupedModel.fromJson(response.body);
+      } else if (response.statusCode == 404) {
+        return SimpleErrorResponse.fromServiceResponse(response);
+      } else {
+        return InternalServerError.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
 
 // class PostCommandUpdate {
 //   final PostUpdate _postUpdateService;

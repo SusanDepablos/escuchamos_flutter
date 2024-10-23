@@ -48,15 +48,15 @@ class AppFond {
   static const double body = 14.0;
   static const double count = 15.0;
   static const double countComment = 14.0;
-  static const double response = 13.0;
+  static const double response = 14.0;
 
 // ----------------------------Iconos---------------------------------------------//
   static const double iconVerified = 14.0;
-  static const double iconMore = 20.0;
-  static const double iconHeart = 20.0;
-  static const double iconHeartComment = 18.0;
-  static const double iconChat = 20.0;
-  static const double iconShare = 20.0;
+  static const double iconMore = 23.0;
+  static const double iconHeart = 25.0;
+  static const double iconHeartComment = 20.0;
+  static const double iconChat = 23.0;
+  static const double iconShare = 23.0;
   static const double avatarSize = 40.0;
   static const double avatarSizeSmall = 25.0;
   static const double avatarSizeShare = 30.0;
