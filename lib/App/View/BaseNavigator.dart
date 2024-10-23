@@ -14,9 +14,11 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/NotificationIcon.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
+import 'package:escuchamos_flutter/Api/Service/NotificationService.dart';
 
 class BaseNavigator extends StatefulWidget {
   @override
@@ -358,7 +360,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
                     ],
                   ),
                   
-                  child: BottomNavigationBar(
+child: BottomNavigationBar(
                     currentIndex: _currentIndex,
                     onTap: (int index) {
                       _onBottomNavTap(index); // Cambia aquí
@@ -379,9 +381,44 @@ class _BaseNavigatorState extends State<BaseNavigator> {
                         activeIcon: Icon(MaterialIcons.addCircle, size: 39),
                         label: '',
                       ),
-                      const BottomNavigationBarItem(
-                        icon: Icon(MaterialIcons.notificationsOutlined, size: 28),
-                        activeIcon: Icon(MaterialIcons.notifications, size: 28),
+                      BottomNavigationBarItem(
+                        icon: Stack(
+                          children: [
+                            const Icon(MaterialIcons.notificationsOutlined,
+                                size: 28),
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: notification,
+                                builder: (context, value, child) {
+                                  if (value == 0) return SizedBox.shrink();
+                                  return NotificationBadge(
+                                    notificationText: value > 99 ? '+99' : '$value',
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        activeIcon: Stack(
+                          children: [
+                            const Icon(MaterialIcons.notifications, size: 28),
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: notification,
+                                builder: (context, value, child) {
+                                  if (value == 0) return const SizedBox.shrink();
+                                  return NotificationBadge(
+                                    notificationText: value > 99 ? '+99' : '$value',
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                         label: '',
                       ),
                       BottomNavigationBarItem(
