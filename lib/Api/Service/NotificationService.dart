@@ -1,47 +1,48 @@
 import 'package:http/http.dart' as http;
 import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
 
-final FlutterSecureStorage _storage = FlutterSecureStorage();
+final ValueNotifier<int> notification = ValueNotifier<int>(0);
+final _storage = FlutterSecureStorage();
 
 class NotificationService {
   Future<void> fetchNotifications() async {
-    final id = await _storage.read(key: 'user') ?? '0';
+    var id = await _storage.read(key: 'user') ?? '0';
     var uri = Uri.parse('${ApiUrl.baseUrl}notifications/$id/');
 
-    final headers = {
-      'Content-Type': 'text/event-stream',
-    };
-
     try {
-      http.Client()
-          .send(http.Request('GET', uri)..headers.addAll(headers))
-          .asStream()
-          .listen((response) {
-        response.stream.transform(utf8.decoder).listen((eventData) {
-          if (eventData.isNotEmpty) {
-            _processData(eventData);
+      var response = await http.Client().send(http.Request('GET', uri));
+
+      if (response.statusCode != 200) {
+        await Future.delayed(Duration(seconds: 15));
+        fetchNotifications();
+      } else {
+        response.stream.transform(utf8.decoder).listen((data) {
+          if (data.startsWith('data: ')) {
+            data = data.substring(6);
           }
+          _processData(jsonDecode(data.replaceAll("'", '"')));
         });
-      });
+      }
+    } on SocketException catch (e) {
+      print('Error de conexión a tiempo real: $e');
+      await Future.delayed(Duration(seconds: 15));
+      fetchNotifications();
     } catch (e) {
-      print('Error al recibir notificaciones: $e');
+      print('Errora tiempo real: $e');
+      await Future.delayed(Duration(seconds: 15));
     }
   }
 
-  void _processData(String data) {
-    if (data.startsWith('data: ')) {
-      data = data.substring(6);
-    }
-
-    data = data.replaceAll("'", '"');
-
+  void _processData(Map<String, dynamic> jsonData) {
     try {
-      Map<String, dynamic> jsonData = jsonDecode(data);
-      print('Notificación recibida: ${jsonData['notifications']}');
+      notification.value = jsonData['notifications']; // Notifica el cambio
     } catch (e) {
-      print('Error al decodificar JSON: $e');
+      print('Error al procesar los datos: $e');
     }
   }
 }

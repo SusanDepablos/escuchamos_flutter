@@ -38,6 +38,7 @@ import 'package:escuchamos_flutter/App/View/Reaction/Index.dart';
 import 'package:escuchamos_flutter/App/View/Comment/Index.dart';
 import 'package:escuchamos_flutter/App/View/Comment/NestedComment.dart';
 import 'package:escuchamos_flutter/App/View/Admin/Users/ManageUsersView.dart';
+import 'package:escuchamos_flutter/App/View/Notifications/Index.dart';
 
 class AppRoutes {
   static final routes = {
@@ -201,7 +202,9 @@ class AppRoutes {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       final postId = args['postId'] as int;
       return ShowReportPost(postId: postId);
-    }
+    },
 
+    //pantalla de comentarios
+    'notifications': (context) => Notifications(),
   };
 }
