@@ -19,6 +19,7 @@ import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
 import 'package:escuchamos_flutter/Api/Service/NotificationService.dart';
+import 'package:escuchamos_flutter/App/View/Notifications/Index.dart';
 
 class BaseNavigator extends StatefulWidget {
   @override
@@ -143,7 +144,7 @@ class _BaseNavigatorState extends State<BaseNavigator> {
     Home(), 
     SearchView(), 
     NewPost(),
-    const Center(child: Text('notificaciones')),
+    Notifications(),
     IndexEscuChamos(),
   ];
 
@@ -360,10 +361,10 @@ class _BaseNavigatorState extends State<BaseNavigator> {
                     ],
                   ),
                   
-child: BottomNavigationBar(
+                  child: BottomNavigationBar(
                     currentIndex: _currentIndex,
                     onTap: (int index) {
-                      _onBottomNavTap(index); // Cambia aquí
+                      _onBottomNavTap(index);
                     },
                     items: [
                       const BottomNavigationBarItem(
