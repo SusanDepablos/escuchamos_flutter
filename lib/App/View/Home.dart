@@ -164,7 +164,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-    Future<void> fetchStories() async {
+  Future<void> fetchStories() async {
     if (_isLoading || !_hasMorePages) return;
 
     setState(() {
@@ -179,7 +179,6 @@ class _HomeState extends State<Home> {
       var response = await storyCommand.execute();
 
       if (response is StoriesModel) {
-        print(response);
         setState(() {
           stories.addAll(response.results.data);
           _hasMorePages = response.next != null && response.next!.isNotEmpty;
@@ -249,12 +248,13 @@ class _HomeState extends State<Home> {
                           'show-story',
                           arguments: {
                             'userId': userId,
+                          }).then((_) {
+                            _callStory();
                           },
                         );
                       },
                     );
                   }
-
                   if (index == stories.length + 1) {
                     // Mostrar un indicador de carga al final de la lista si está cargando más historias
                     return SizedBox(
@@ -264,7 +264,6 @@ class _HomeState extends State<Home> {
                       ),
                     );
                   }
-
                   // Mostrar la historia correspondiente en cada índice después de la historia del usuario
                   final story = stories[index - 1]; // Restar 1 porque el primer elemento es la historia del usuario
                   return StoryList(

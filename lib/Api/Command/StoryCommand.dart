@@ -97,6 +97,40 @@ class StoryGroupedCommandShow {
   }
 }
 
+
+class StoryViewCommandPost {
+  final StoryViewPost _storyViewService;
+
+  StoryViewCommandPost(this._storyViewService);
+
+  Future<dynamic> execute(
+    int storyId
+  ) async {
+    try {
+      var response = await _storyViewService.postStoryView(storyId);
+
+      if (response.statusCode == 201) {
+        return SuccessResponse.fromServiceResponse(response);
+      } else if (response.statusCode == 204) {
+        return 1;
+      } else if (response.statusCode == 500) {
+        return InternalServerError.fromServiceResponse(response);
+      } else {
+        var content = response.body['validation'] ?? response.body['error'];
+        if (content is String) {
+          return SimpleErrorResponse.fromServiceResponse(response);
+        }
+        return ValidationResponse.fromServiceResponse(response);
+      }
+    } on SocketException catch (e) {
+      return ApiError();
+    } on FlutterError catch (flutterError) {
+      throw Exception(
+          'Error en la aplicación Flutter: ${flutterError.message}');
+    }
+  }
+}
+
 // class PostCommandUpdate {
 //   final PostUpdate _postUpdateService;
 

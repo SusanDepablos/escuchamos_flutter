@@ -108,6 +108,39 @@ class StoryGroupedShow {
   }
 }
 
+class StoryViewPost {
+  Future<ServiceResponse> postStoryView(
+      int storyId) async {
+    final url = Uri.parse('${ApiUrl.baseUrl}story-view/');
+    final token = await _storage.read(key: 'token') ?? '';
+
+    final body = jsonEncode({
+      'story_id': storyId,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    };
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    if (response.statusCode == 204) {
+      // No hay contenido, devuelve un objeto ServiceResponse vacío o similar
+      return ServiceResponse.fromJsonString('{}', response.statusCode);
+    }
+
+    return ServiceResponse.fromJsonString(
+      utf8.decode(response.bodyBytes),
+      response.statusCode,
+    );
+  }
+}
+
 // class PostUpdate {
 //   Future<ServiceResponse> updatePost(String bodyPost, int id) async {
 //     // Define el URL al que se enviará la solicitud POST

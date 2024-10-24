@@ -68,7 +68,6 @@ class ReportGroupedIndex {
   }
 }
 
-
 class ReportPost {
   Future<ServiceResponse> postReport(
       String model, int objectId, String observation) async {
