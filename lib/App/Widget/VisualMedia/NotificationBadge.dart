@@ -11,13 +11,13 @@ class NotificationBadge extends StatelessWidget {
     // Tamaño fijo para la altura del círculo
     double circleHeight = 16; // Altura fija
 
-    // Calcular el ancho del texto para ajustar el tamaño del círculo
     final textPainter = TextPainter(
       text: TextSpan(
         text: notificationText,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 10, // Tamaño de fuente
+          fontSize: 10,
+          fontWeight: FontWeight.bold, // Negrita
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -26,7 +26,8 @@ class NotificationBadge extends StatelessWidget {
     textPainter.layout();
 
     // Tamaño del círculo basado en el ancho del texto, manteniendo altura constante
-    double circleWidth = textPainter.size.width + 9; // Añadir más padding a los lados
+    double circleWidth =
+        textPainter.size.width + 9; // Añadir más padding a los lados
 
     return Container(
       width: circleWidth,
@@ -38,9 +39,10 @@ class NotificationBadge extends StatelessWidget {
       child: Center(
         child: Text(
           notificationText,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
-            fontSize: 10, // Tamaño de fuente constante
+            fontSize: 11,
+            fontWeight: FontWeight.bold, // Negrita
           ),
         ),
       ),

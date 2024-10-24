@@ -14,11 +14,11 @@ import 'package:escuchamos_flutter/Constants/Constants.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Logo.dart';
 import 'package:escuchamos_flutter/App/Widget/Ui/CustomDrawer.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/ProfileAvatar.dart'; 
-import 'package:escuchamos_flutter/App/Widget/VisualMedia/NotificationIcon.dart';
+import 'package:escuchamos_flutter/App/Widget/VisualMedia/NotificationBadge.dart';
 import 'package:escuchamos_flutter/Api/Response/InternalServerError.dart';
 import 'package:escuchamos_flutter/App/View/Post/NewPost.dart';
 import 'package:escuchamos_flutter/App/Widget/VisualMedia/Loading/LoadingBasic.dart';
-import 'package:escuchamos_flutter/Api/Service/NotificationService.dart';
+import 'package:escuchamos_flutter/Api/Service/NotificationLive.dart';
 import 'package:escuchamos_flutter/App/View/Notifications/Index.dart';
 
 class BaseNavigator extends StatefulWidget {

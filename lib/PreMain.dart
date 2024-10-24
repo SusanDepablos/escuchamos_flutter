@@ -5,7 +5,7 @@ import 'package:escuchamos_flutter/main.dart';
 import 'package:escuchamos_flutter/Api/Command/SessionCommand.dart';
 import 'package:escuchamos_flutter/Api/Service/SessionService.dart';
 import 'dart:convert';
-import 'Api/Service/NotificationService.dart';
+import 'Api/Service/NotificationLive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 final FlutterSecureStorage _storage = FlutterSecureStorage();
